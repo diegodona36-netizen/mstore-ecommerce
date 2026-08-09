@@ -43,7 +43,7 @@ export const SupportChatWidget = () => {
               </div>
               <div>
                 <h4 className="text-sm font-extrabold font-space text-white flex items-center gap-1.5">
-                  <span>Asesor M Store VIP</span>
+                  <span>Asesor M Store</span>
                   <Sparkles className="w-3.5 h-3.5 text-[#00E5FF]" />
                 </h4>
                 <p className="text-[11px] font-bold text-emerald-400 flex items-center gap-1">
@@ -94,11 +94,11 @@ export const SupportChatWidget = () => {
         </div>
       )}
 
-      {/* BOTÓN CHAT ASESOR VIP (CYAN) — único botón flotante */}
+      {/* BOTÓN CHAT ASESOR (CYAN) — único botón flotante */}
       <button
         onClick={handleOpen}
-        aria-label="Abrir Asesor de Soporte M Store VIP"
-        title="Asesor M Store VIP en vivo"
+        aria-label="Abrir Asesor de Soporte M Store"
+        title="Asesor M Store en vivo"
         className="relative p-4 rounded-full bg-[#00E5FF] text-black shadow-[0_0_35px_#00E5FF] hover:scale-110 active:scale-95 focus-visible:ring-2 focus-visible:ring-white transition-all flex items-center justify-center cursor-pointer group min-w-[56px] min-h-[56px]"
       >
         <MessageSquare className="w-6 h-6 fill-black group-hover:scale-110 transition-transform" />

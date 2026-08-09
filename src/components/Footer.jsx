@@ -30,7 +30,7 @@ export const Footer = () => {
           <div className="lg:col-span-2 space-y-4">
             <Logo size="large" />
             <p className="text-xs text-slate-300 max-w-sm leading-relaxed pt-2">
-              M Store es tu destino de confianza para la mejor tecnología en Venezuela. Televisores Smart 4K, Neveras Inverter, Cocinas, Smartphones Insignia y Audio High-End con atención y compras concretadas 100% por WhatsApp VIP.
+              M Store es tu destino de confianza para la mejor tecnología en Venezuela. Televisores Smart 4K, Neveras Inverter, Cocinas, Smartphones Insignia y Audio High-End con atención y compras concretadas 100% por WhatsApp.
             </p>
 
             {/* Redes Sociales */}
@@ -90,7 +90,7 @@ export const Footer = () => {
 
           {/* Col 3: Atención al Cliente por WhatsApp */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-white font-space">Atención WhatsApp VIP</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-white font-space">Atención por WhatsApp</h4>
             <ul className="space-y-2.5 text-xs text-slate-300">
               <li>
                 <a 
@@ -99,7 +99,7 @@ export const Footer = () => {
                   rel="noreferrer" 
                   className="hover:text-[#00E5FF] transition-colors flex items-center gap-2 text-[#00E5FF] font-bold font-space"
                 >
-                  <Phone className="w-4 h-4 fill-[#00E5FF]" /> WhatsApp VIP +58 (412) 000-0000
+                  <Phone className="w-4 h-4 fill-[#00E5FF]" /> WhatsApp +58 (412) 000-0000
                 </a>
               </li>
               <li><span className="flex items-center gap-1.5 text-slate-300"><MapPin className="w-3.5 h-3.5 text-[#00E5FF]" /> Av. Principal CC High-End, Caracas</span></li>
@@ -107,17 +107,17 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Col 4: Club M Store VIP (Sin métodos de pago visibles, todo por WS) */}
+          {/* Col 4: Club M Store (Sin métodos de pago visibles, todo por WS) */}
           <div className="space-y-4">
             <div className="p-3.5 rounded-2xl bg-[#00E5FF]/10 border border-[#00E5FF]/40 space-y-1">
-              <span className="text-[11px] font-extrabold text-[#00E5FF] uppercase font-space block">💬 Atención & Pagos VIP</span>
+              <span className="text-[11px] font-extrabold text-[#00E5FF] uppercase font-space block">💬 Atención & Pagos Directos</span>
               <p className="text-[11px] text-slate-200 leading-snug">
                 Todas las compras, métodos de pago en $USD y despachos se coordinan directamente por WhatsApp.
               </p>
             </div>
 
             <div className="space-y-2">
-              <h5 className="text-[11px] font-bold uppercase tracking-wider text-white font-space">Club M Store VIP</h5>
+              <h5 className="text-[11px] font-bold uppercase tracking-wider text-white font-space">Novedades M Store</h5>
               <form onSubmit={handleSubscribe} className="flex gap-2">
                 <input
                   type="email"
@@ -139,7 +139,7 @@ export const Footer = () => {
 
               {subscribed && (
                 <div className="text-[10px] font-bold font-space text-emerald-400 flex items-center gap-1">
-                  <Check className="w-3.5 h-3.5" /> ¡Gracias por suscribirte al Club VIP M Store!
+                  <Check className="w-3.5 h-3.5" /> ¡Gracias por suscribirte a M Store!
                 </div>
               )}
             </div>

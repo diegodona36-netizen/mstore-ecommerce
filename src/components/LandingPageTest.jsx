@@ -61,7 +61,7 @@ export const LandingPageTest = ({
       title: 'Smart TV 75" Neo QLED 4K AI',
       subtitle: 'Síragon & Samsung Pro Series',
       highlight: 'Pantalla Gigante 120Hz',
-      desc: 'Experiencia de cine en casa con procesamiento de IA. Incluye combo VIP de regalo: Barra de Sonido Dolby Atmos + Instalación Oficial a Domicilio.',
+      desc: 'Experiencia de cine en casa con procesamiento de IA. Incluye combo especial de regalo: Barra de Sonido Dolby Atmos + Instalación Oficial a Domicilio.',
       price: '$1,499.00',
       oldPrice: '$1,899.00',
       discount: '21% OFF',
@@ -75,7 +75,7 @@ export const LandingPageTest = ({
       title: 'iPhone 16 Pro Max 1TB Titanio',
       subtitle: 'Edición Titanio Negro 2026',
       highlight: 'Procesador A18 Pro 3nm',
-      desc: 'El smartphone más potente con botón de cámara táctil. Regalo VIP: Funda MagSafe Oficial + Vidrio Templado + Envío 24H.',
+      desc: 'El smartphone más potente con botón de cámara táctil. Regalo especial: Funda MagSafe Oficial + Vidrio Templado + Envío 24H.',
       price: '$1,299.00',
       oldPrice: '$1,499.00',
       discount: '13% OFF',
@@ -206,7 +206,7 @@ export const LandingPageTest = ({
       return [...prev, prodObj];
     });
 
-    setToastMsg(`¡${prodObj.name} añadido al Carrito VIP!`);
+    setToastMsg(`¡${prodObj.name} añadido al Carrito!`);
     setTimeout(() => setToastMsg(''), 3000);
   };
 
@@ -231,7 +231,7 @@ export const LandingPageTest = ({
     if (cartItems.length === 0) return;
 
     const orderNumber = Math.floor(100000 + Math.random() * 900000);
-    let orderText = `*¡NUEVA ORDEN DE COMPRA M STORE VIP #${orderNumber}!*\n\n`;
+    let orderText = `*¡NUEVA ORDEN DE COMPRA M STORE #${orderNumber}!*\n\n`;
     orderText += `*Detalle del Pedido:*\n`;
 
     cartItems.forEach((item, index) => {
@@ -291,57 +291,111 @@ export const LandingPageTest = ({
         </div>
       )}
 
-      {/* HEADER ESTILO IVOO DARK MODE NEÓN (SIN BOTÓN DE ADMIN VISIBLE) */}
-      <header className="sticky top-0 z-40 bg-[#0A0908]/95 backdrop-blur-xl border-b border-[#00E5FF]/30 px-4 md:px-8 py-3.5">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      {/* MICRO-BANNER SUPERIOR FORMAL */}
+      <div className="bg-[#050B14] border-b border-white/10 text-[11px] font-space text-slate-300 py-2 px-4 text-center">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center sm:justify-between gap-2">
+          <div className="flex items-center gap-4 text-slate-300">
+            <span className="flex items-center gap-1.5">
+              <span className="text-[#00E5FF]">🚚</span> Envíos a Nivel Nacional
+            </span>
+            <span className="hidden md:inline text-white/20">•</span>
+            <span className="hidden md:flex items-center gap-1.5">
+              <span className="text-[#00E5FF]">🛡️</span> Garantía Oficial M Store 1 Año
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-[#00E5FF] font-semibold">
+            <span>💬 Atención Personalizada por WhatsApp</span>
+          </div>
+        </div>
+      </div>
+
+      {/* HEADER PRINCIPAL RESPONSIVE SIN DESBORDE */}
+      <header className="sticky top-0 z-40 bg-[#0A0908]/95 backdrop-blur-xl border-b border-[#00E5FF]/30 px-3 sm:px-6 md:px-8 py-3">
+        <div className="max-w-7xl mx-auto space-y-2.5 md:space-y-0">
           
-          {/* Logo M Store */}
-          <div className="shrink-0">
-            <Logo size="medium" />
+          {/* Fila Principal */}
+          <div className="flex items-center justify-between gap-2 sm:gap-4">
+            
+            {/* Logo M Store */}
+            <div className="shrink-0">
+              <Logo size="medium" />
+            </div>
+
+            {/* En escritorio (md+): Menú + Buscador + Carrito juntos */}
+            <div className="hidden md:flex flex-1 items-center gap-4 mx-4">
+              {/* Menú de Categorías Button */}
+              <button
+                onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
+                aria-label="Abrir Menú de Categorías"
+                aria-expanded={isMegaMenuOpen}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/60 hover:bg-[#00E5FF] hover:text-black focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none transition-all text-xs font-extrabold font-space shrink-0 shadow-[0_0_20px_rgba(0,229,255,0.4)] group active:scale-95 min-h-[44px]"
+              >
+                <Menu className="w-4 h-4 group-hover:rotate-90 transition-transform" />
+                <span>Menú de Categorías</span>
+              </button>
+
+              {/* Buscador Amplio en Escritorio */}
+              <div className="flex-1 max-w-xl">
+                <div className="relative">
+                  <Search className="w-4 h-4 text-slate-300 absolute left-4 top-3 pointer-events-none" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Buscar televisores, neveras, cocinas, lavadoras, teléfonos..."
+                    aria-label="Buscar productos por nombre"
+                    className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] focus:shadow-[0_0_15px_rgba(0,229,255,0.3)] focus-visible:ring-2 focus-visible:ring-[#00E5FF] rounded-full pl-11 pr-4 py-2.5 text-xs text-white placeholder-slate-400 outline-none font-inter min-h-[44px]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Acciones Rápidas (Móvil y Escritorio) */}
+            <div className="flex items-center gap-2 shrink-0 text-xs font-space">
+              {/* En móvil: Botón Menú Categorías corto */}
+              <button
+                onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
+                aria-label="Abrir Categorías"
+                className="md:hidden flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/50 hover:bg-[#00E5FF] hover:text-black text-xs font-bold font-space min-h-[44px]"
+              >
+                <Menu className="w-4 h-4" />
+                <span>Categorías</span>
+              </button>
+
+              {/* Carrito de Compras */}
+              <button 
+                onClick={() => setIsCartOpen(true)}
+                aria-label={`Ver Carrito de Compras (${cartItems.reduce((a, b) => a + b.quantity, 0)} productos)`}
+                className="relative cursor-pointer p-3 rounded-2xl bg-[#00E5FF]/10 border border-[#00E5FF]/50 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none transition-all shadow-[0_0_20px_rgba(0,229,255,0.4)] active:scale-95 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                title="Ver Carrito de Compras"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {cartItems.length > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#00E5FF] text-black font-extrabold text-[10px] flex items-center justify-center font-space shadow-[0_0_12px_#00E5FF] animate-bounce">
+                    {cartItems.reduce((a, b) => a + b.quantity, 0)}
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
 
-          {/* Menú de Categorías Button */}
-          <button
-            onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
-            aria-label="Abrir Menú de Categorías"
-            aria-expanded={isMegaMenuOpen}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/60 hover:bg-[#00E5FF] hover:text-black focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none transition-all text-xs font-extrabold font-space shrink-0 shadow-[0_0_20px_rgba(0,229,255,0.4)] group active:scale-95 min-h-[44px]"
-          >
-            <Menu className="w-4 h-4 group-hover:rotate-90 transition-transform" />
-            <span>Menú de Categorías</span>
-          </button>
-
-          {/* Buscador Amplio al Centro */}
-          <div className="flex-1 max-w-xl mx-2">
-            <div className="relative">
-              <Search className="w-4 h-4 text-slate-300 absolute left-4 top-3 pointer-events-none" />
+          {/* Fila 2 en Móvil: Buscador completo */}
+          <div className="md:hidden pt-1">
+            <div className="relative w-full">
+              <Search className="w-4 h-4 text-slate-300 absolute left-3.5 top-3 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar televisores, neveras, cocinas, lavadoras, teléfonos..."
-                aria-label="Buscar productos por nombre"
-                className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] focus:shadow-[0_0_15px_rgba(0,229,255,0.3)] focus-visible:ring-2 focus-visible:ring-[#00E5FF] rounded-full pl-11 pr-4 py-2.5 text-xs text-white placeholder-slate-400 outline-none font-inter min-h-[44px]"
+                placeholder="Buscar en el catálogo..."
+                aria-label="Buscar productos"
+                className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] focus:shadow-[0_0_15px_rgba(0,229,255,0.3)] rounded-full pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-400 outline-none font-inter min-h-[44px]"
               />
             </div>
           </div>
 
-          {/* Carrito de Compras VIP */}
-          <div className="flex items-center gap-3 shrink-0 text-xs font-space">
-            <button 
-              onClick={() => setIsCartOpen(true)}
-              aria-label={`Ver Carrito de Compras VIP (${cartItems.reduce((a, b) => a + b.quantity, 0)} productos)`}
-              className="relative cursor-pointer p-3 rounded-2xl bg-[#00E5FF]/10 border border-[#00E5FF]/50 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none transition-all shadow-[0_0_20px_rgba(0,229,255,0.4)] active:scale-95 min-w-[44px] min-h-[44px] flex items-center justify-center"
-              title="Ver Carrito de Compras VIP"
-            >
-              <ShoppingCart className="w-5 h-5" />
-              {cartItems.length > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#00E5FF] text-black font-extrabold text-[10px] flex items-center justify-center font-space shadow-[0_0_12px_#00E5FF] animate-bounce">
-                  {cartItems.reduce((a, b) => a + b.quantity, 0)}
-                </span>
-              )}
-            </button>
-          </div>
+        </div>
+      </header>
 
         </div>
       </header>
@@ -396,10 +450,10 @@ export const LandingPageTest = ({
 
                 <button 
                   onClick={() => handleAddToCart({ id: heroSlides[currentSlide].id, name: heroSlides[currentSlide].title, price: 1499.00, image: heroSlides[currentSlide].image })}
-                  aria-label={`Comprar Oferta VIP ${heroSlides[currentSlide].title}`}
+                  aria-label={`Comprar ${heroSlides[currentSlide].title}`}
                   className="btn-cyan-glow px-7 py-3.5 rounded-2xl text-black font-extrabold text-xs font-space uppercase tracking-wider shadow-[0_0_25px_#00E5FF] hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-white transition-all flex items-center gap-2 group min-h-[44px]"
                 >
-                  <span>Comprar Oferta VIP</span>
+                  <span>Comprar Producto</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
@@ -670,7 +724,7 @@ export const LandingPageTest = ({
         <div 
           role="dialog" 
           aria-modal="true" 
-          aria-label="Carrito de Compras VIP"
+          aria-label="Carrito de Compras"
           className="fixed inset-0 z-50 flex justify-end animate-fadeIn"
         >
           <div 
@@ -683,7 +737,7 @@ export const LandingPageTest = ({
               <div className="flex items-center justify-between pb-4 border-b border-white/10">
                 <div className="flex items-center gap-2 text-[#00E5FF] font-space font-extrabold">
                   <ShoppingCart className="w-5 h-5" />
-                  <span>Tu Carrito de Compras VIP</span>
+                  <span>Tu Carrito de Compras</span>
                 </div>
                 <button 
                   onClick={() => setIsCartOpen(false)} 
@@ -735,11 +789,11 @@ export const LandingPageTest = ({
 
                 <button
                   onClick={handleSendOrderToWhatsApp}
-                  aria-label="Finalizar Compra enviando pedido a WhatsApp VIP"
+                  aria-label="Finalizar Compra enviando pedido a WhatsApp"
                   className="w-full btn-cyan-glow py-3.5 rounded-2xl text-black font-extrabold text-xs font-space uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_0_25px_#00E5FF] min-h-[44px]"
                 >
                   <Phone className="w-4 h-4 fill-black" />
-                  <span>Finalizar Compra por WhatsApp VIP</span>
+                  <span>Finalizar Compra por WhatsApp</span>
                 </button>
               </div>
             )}

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Logo } from './Logo';
-import { Send, ShieldCheck, Heart, KeyRound, Phone, MapPin, Clock, Check, CreditCard, DollarSign, Wallet } from 'lucide-react';
+import { Send, ShieldCheck, Phone, MapPin, Clock, Check, MessageSquare } from 'lucide-react';
 
-export const Footer = ({ onOpenAdmin }) => {
+export const Footer = () => {
   const [subscribed, setSubscribed] = useState(false);
   const [email, setEmail] = useState('');
 
@@ -30,7 +30,7 @@ export const Footer = ({ onOpenAdmin }) => {
           <div className="lg:col-span-2 space-y-4">
             <Logo size="large" />
             <p className="text-xs text-slate-300 max-w-sm leading-relaxed pt-2">
-              M Store es tu destino de confianza para la mejor tecnología en Venezuela. Televisores Smart 4K, Neveras Inverter, Cocinas, Smartphones Insignia y Audio High-End con garantía oficial M Store y despacho asegurado a todo el país.
+              M Store es tu destino de confianza para la mejor tecnología en Venezuela. Televisores Smart 4K, Neveras Inverter, Cocinas, Smartphones Insignia y Audio High-End con atención y compras concretadas 100% por WhatsApp VIP.
             </p>
 
             {/* Redes Sociales */}
@@ -88,28 +88,35 @@ export const Footer = ({ onOpenAdmin }) => {
             </ul>
           </div>
 
-          {/* Col 3: Atención al Cliente */}
+          {/* Col 3: Atención al Cliente por WhatsApp */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-white font-space">Atención al Cliente</h4>
-            <ul className="space-y-2 text-xs text-slate-300">
-              <li><a href="https://wa.me/584120000000" target="_blank" rel="noreferrer" className="hover:text-[#00E5FF] transition-colors flex items-center gap-1.5"><Phone className="w-3.5 h-3.5 text-[#00E5FF]" /> WhatsApp VIP +58 (412) 000-0000</a></li>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-white font-space">Atención WhatsApp VIP</h4>
+            <ul className="space-y-2.5 text-xs text-slate-300">
+              <li>
+                <a 
+                  href="https://wa.me/584120000000" 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="hover:text-[#00E5FF] transition-colors flex items-center gap-2 text-[#00E5FF] font-bold font-space"
+                >
+                  <Phone className="w-4 h-4 fill-[#00E5FF]" /> WhatsApp VIP +58 (412) 000-0000
+                </a>
+              </li>
               <li><span className="flex items-center gap-1.5 text-slate-300"><MapPin className="w-3.5 h-3.5 text-[#00E5FF]" /> Av. Principal CC High-End, Caracas</span></li>
               <li><span className="flex items-center gap-1.5 text-slate-300"><Clock className="w-3.5 h-3.5 text-[#00E5FF]" /> Lun a Sáb: 9:00 AM - 8:00 PM</span></li>
-              <li><a href="#catalogo-productos" className="hover:text-[#00E5FF] transition-colors">Calculadora de Cuotas Flexibles</a></li>
             </ul>
           </div>
 
-          {/* Col 4: Métodos de Pago & Club M Store */}
+          {/* Col 4: Club M Store VIP (Sin métodos de pago visibles, todo por WS) */}
           <div className="space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-white font-space">Pagos Aceptados en $USD</h4>
-            <div className="flex flex-wrap gap-2 text-[10px] font-space font-bold">
-              <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/15 text-[#00E5FF]">💵 Zelle</span>
-              <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/15 text-emerald-400">⚡ Pago Móvil</span>
-              <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/15 text-amber-400">🟡 Binance Pay</span>
-              <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/15 text-purple-400">💳 Cuotas M Store</span>
+            <div className="p-3.5 rounded-2xl bg-[#00E5FF]/10 border border-[#00E5FF]/40 space-y-1">
+              <span className="text-[11px] font-extrabold text-[#00E5FF] uppercase font-space block">💬 Atención & Pagos VIP</span>
+              <p className="text-[11px] text-slate-200 leading-snug">
+                Todas las compras, métodos de pago en $USD y despachos se coordinan directamente por WhatsApp.
+              </p>
             </div>
 
-            <div className="pt-2 space-y-2">
+            <div className="space-y-2">
               <h5 className="text-[11px] font-bold uppercase tracking-wider text-white font-space">Club M Store VIP</h5>
               <form onSubmit={handleSubscribe} className="flex gap-2">
                 <input
@@ -141,26 +148,14 @@ export const Footer = ({ onOpenAdmin }) => {
         </div>
 
         {/* Bottom Rights */}
-        <div className="pt-4 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+        <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <div className="flex items-center gap-2">
             <span>© 2026 M Store. Todos los derechos reservados.</span>
           </div>
 
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5 text-slate-300">
-              <ShieldCheck className="w-4 h-4 text-[#00E5FF]" /> Compras 100% Encriptadas & Seguras
-            </span>
-
-            {/* Private Worker Access Lock Icon */}
-            <button
-              onClick={onOpenAdmin}
-              aria-label="Acceso privado para empleados M Store"
-              className="flex items-center gap-1.5 text-slate-400 hover:text-[#00E5FF] transition-colors p-1.5 rounded-lg border border-transparent hover:border-[#00E5FF]/40"
-              title="Acceso Privado para Empleados M Store (#admin)"
-            >
-              <KeyRound className="w-4 h-4 text-[#00E5FF]" />
-              <span className="text-[11px] font-space font-bold">Panel Empleados (#admin)</span>
-            </button>
+          <div className="flex items-center gap-2 text-slate-300">
+            <ShieldCheck className="w-4 h-4 text-[#00E5FF]" /> 
+            <span>Compras & Asesoría 100% Protegidas por WhatsApp</span>
           </div>
         </div>
 

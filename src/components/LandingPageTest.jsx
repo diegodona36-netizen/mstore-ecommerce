@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Menu, Search, ShoppingCart, User, Heart, ChevronRight, X, 
+  Menu, Search, ShoppingCart, Heart, ChevronRight, X, 
   Tv, Smartphone, Watch, Headphones, Flame, Shield, Sparkles, Check,
   MapPin, Clock, Phone, Navigation, Truck, RefreshCw, Zap, Gift, ChevronLeft,
   Star, Calculator, Award, MessageSquare, ArrowRight, Tag, Grid, Eye, Trash2, Plus, Minus
@@ -10,6 +10,7 @@ import { CategoryMegaMenuTest } from './CategoryMegaMenuTest';
 import { QuickViewModal } from './QuickViewModal';
 import { AdminPanelModal } from './AdminPanelModal';
 import { Footer } from './Footer';
+import { SupportChatWidget } from './SupportChatWidget';
 
 export const LandingPageTest = ({ 
   customCategories = [],
@@ -35,6 +36,18 @@ export const LandingPageTest = ({
   // Cart & Checkout Drawer States
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  // Secret Hash Listener for #admin
+  useEffect(() => {
+    const handleHashCheck = () => {
+      if (window.location.hash === '#admin') {
+        setIsAdminOpen(true);
+      }
+    };
+    handleHashCheck();
+    window.addEventListener('hashchange', handleHashCheck);
+    return () => window.removeEventListener('hashchange', handleHashCheck);
+  }, []);
 
   // Hero Slider State (High-Impact Production Style)
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -83,7 +96,7 @@ export const LandingPageTest = ({
     }
   ];
 
-  // Countdown timer for IVOO Oferta Banner
+  // Countdown timer
   const [timer, setTimer] = useState({ hours: 45, minutes: 52, seconds: 27 });
 
   // Installment Calculator State
@@ -131,7 +144,7 @@ export const LandingPageTest = ({
     { id: 'p-12', category: 'cocina', brand: 'siragon', name: 'Cocina de Inducción 4 Hornillas Síragon', price: 340.00, originalPrice: 410.00, rating: 5.0, image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=600&auto=format&fit=crop', specs: ['Superficie Cristal Vitrocerámico', 'Control Táctil Slider', 'Bloqueo de Seguridad Niños'], description: 'Cocción rápida y limpia de máxima eficiencia con sensores de detección de sartenes.' }
   ];
 
-  // Combined product list (admin added products + default catalog)
+  // Combined product list
   const allCatalogProducts = [...adminProducts, ...defaultCatalogProducts];
 
   // Cart operations
@@ -232,7 +245,7 @@ export const LandingPageTest = ({
         </div>
       )}
 
-      {/* HEADER ESTILO IVOO DARK MODE NEÓN */}
+      {/* HEADER ESTILO IVOO DARK MODE NEÓN (SIN BOTÓN DE ADMIN VISIBLE) */}
       <header className="sticky top-0 z-40 bg-[#0A0908]/95 backdrop-blur-xl border-b border-[#00E5FF]/30 px-4 md:px-8 py-3.5">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
@@ -267,18 +280,8 @@ export const LandingPageTest = ({
             </div>
           </div>
 
-          {/* Admin PIN Access & Carrito */}
+          {/* Carrito de Compras VIP */}
           <div className="flex items-center gap-3 shrink-0 text-xs font-space">
-            <button
-              onClick={() => setIsAdminOpen(true)}
-              aria-label="Abrir Panel Administrador"
-              className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/15 hover:border-[#00E5FF] text-slate-200 hover:text-[#00E5FF] focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none transition-all min-h-[44px]"
-              title="Panel Administrador (PIN 1234)"
-            >
-              <User className="w-4 h-4 text-[#00E5FF]" />
-              <span className="hidden sm:inline">Admin</span>
-            </button>
-
             <button 
               onClick={() => setIsCartOpen(true)}
               aria-label={`Ver Carrito de Compras VIP (${cartItems.reduce((a, b) => a + b.quantity, 0)} productos)`}
@@ -409,7 +412,7 @@ export const LandingPageTest = ({
         </div>
       </section>
 
-      {/* CINTA DE MARCAS OFICIALES CON ELEMENTOS SEMÁNTICOS BUTTON */}
+      {/* CINTA DE MARCAS OFICIALES */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 mt-8" aria-label="Marcas Oficiales">
         <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-wrap items-center justify-around gap-3 text-center">
           {officialBrands.map((b, idx) => (
@@ -426,7 +429,7 @@ export const LandingPageTest = ({
         </div>
       </section>
 
-      {/* CATÁLOGO PRINCIPAL FOCADO EN CATEGORÍAS PRINCIPALES */}
+      {/* CATÁLOGO PRINCIPAL DE PRODUCTOS */}
       <main id="catalogo-productos" className="max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-10">
 
         {/* CATALOG HEADER & MAIN CATEGORY FILTER BAR */}
@@ -469,7 +472,7 @@ export const LandingPageTest = ({
           </div>
         </div>
 
-        {/* PRODUCTS GRID (DESIGNED FOR HUNDREDS OF ITEMS - 4 COLUMNS IVOO STYLE) */}
+        {/* PRODUCTS GRID (DESIGNED FOR HUNDREDS OF ITEMS) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {visibleProducts.map((p) => (
             <div key={p.id} className="glass-card rounded-2xl p-4 border border-white/10 hover:border-[#00E5FF]/60 transition-all flex flex-col justify-between space-y-3 group hover:shadow-[0_10px_30px_rgba(0,229,255,0.2)]">
@@ -594,8 +597,8 @@ export const LandingPageTest = ({
 
       </main>
 
-      {/* FOOTER DE ALTA GAMA DE 5 COLUMNAS */}
-      <Footer onOpenAdmin={() => setIsAdminOpen(true)} />
+      {/* FOOTER LIMPIO SIN MÉTODOS DE PAGO Y SIN BOTÓN PÚBLICO DE ADMIN */}
+      <Footer />
 
       {/* DRAWER DE CARRITO CON CHECKOUT DIRECTO A WHATSAPP EN USD ($) */}
       {isCartOpen && (
@@ -690,10 +693,15 @@ export const LandingPageTest = ({
         />
       )}
 
-      {/* ADMIN PANEL MODAL (PIN 1234) */}
+      {/* SECRET ADMIN PANEL MODAL (ACCESIBLE VÍA HASH #admin O TECLADO) */}
       <AdminPanelModal
         isOpen={isAdminOpen}
-        onClose={() => setIsAdminOpen(false)}
+        onClose={() => {
+          setIsAdminOpen(false);
+          if (window.location.hash === '#admin') {
+            window.location.hash = '';
+          }
+        }}
         products={adminProducts}
         onAddProduct={onAddProduct}
         onRemoveProduct={onRemoveProduct}
@@ -702,17 +710,8 @@ export const LandingPageTest = ({
         onRemoveCategory={onRemoveCategory}
       />
 
-      {/* BOTÓN FLOTANTE DE WHATSAPP VIP */}
-      <a
-        href="https://wa.me/584120000000?text=Hola%20M%20Store!%20Deseo%20informaci%C3%B3n%20sobre%20sus%20productos."
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Contactar a M Store por WhatsApp VIP"
-        className="fixed bottom-6 right-6 z-50 p-4 rounded-full bg-[#00E5FF] text-black shadow-[0_0_35px_#00E5FF] hover:scale-110 active:scale-95 focus-visible:ring-2 focus-visible:ring-white transition-all flex items-center justify-center cursor-pointer group min-w-[56px] min-h-[56px]"
-        title="Atención Directa WhatsApp M Store"
-      >
-        <Phone className="w-6 h-6 fill-black group-hover:rotate-12 transition-transform" />
-      </a>
+      {/* WIDGET CHAT DE SOPORTE FLOTANTE REPLICANDO LA IMAGEN DEL USUARIO */}
+      <SupportChatWidget />
 
     </div>
   );

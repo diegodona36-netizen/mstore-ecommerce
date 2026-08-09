@@ -379,31 +379,38 @@ export const LandingPageTest = ({
             </div>
           </div>
 
-          {/* ACCESSIBLE SLIDER CONTROLS (≥44px TOUCH TARGETS) */}
-          <div className="absolute bottom-5 left-6 z-20 flex items-center gap-4">
+          {/* SLIDER CONTROLS — bottom right, no overlap with badge */}
+          <div className="absolute bottom-5 right-6 z-20 flex items-center gap-3">
             <button 
-              onClick={() => setCurrentSlide(prev => (prev - 1 + heroSlides.length) % heroSlides.length)}
+              onClick={(e) => { e.stopPropagation(); setCurrentSlide(prev => (prev - 1 + heroSlides.length) % heroSlides.length); }}
               aria-label="Ver slide anterior"
               className="p-3 rounded-full bg-black/70 border border-white/30 hover:border-[#00E5FF] text-white hover:text-black hover:bg-[#00E5FF] focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none transition-all min-w-[44px] min-h-[44px] flex items-center justify-center"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
 
-            <div className="flex gap-2.5 items-center">
+            {/* DOTS — each wrapped in a 44x44 touch area */}
+            <div className="flex gap-1.5 items-center">
               {heroSlides.map((_, idx) => (
                 <button
                   key={idx}
-                  onClick={() => setCurrentSlide(idx)}
+                  onClick={(e) => { e.stopPropagation(); setCurrentSlide(idx); }}
                   aria-label={`Ir al slide ${idx + 1}`}
-                  className={`h-3 rounded-full transition-all duration-500 focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none ${
-                    currentSlide === idx ? 'w-10 bg-[#00E5FF] shadow-[0_0_10px_#00E5FF]' : 'w-3 bg-white/30 hover:bg-white/60'
-                  }`}
-                />
+                  className="p-3 flex items-center justify-center focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none rounded-full min-w-[44px] min-h-[44px]"
+                >
+                  <span
+                    className={`block rounded-full transition-all duration-500 ${
+                      currentSlide === idx
+                        ? 'w-8 h-2.5 bg-[#00E5FF] shadow-[0_0_10px_#00E5FF]'
+                        : 'w-2.5 h-2.5 bg-white/40 hover:bg-white/70'
+                    }`}
+                  />
+                </button>
               ))}
             </div>
 
             <button 
-              onClick={() => setCurrentSlide(prev => (prev + 1) % heroSlides.length)}
+              onClick={(e) => { e.stopPropagation(); setCurrentSlide(prev => (prev + 1) % heroSlides.length); }}
               aria-label="Ver siguiente slide"
               className="p-3 rounded-full bg-black/70 border border-white/30 hover:border-[#00E5FF] text-white hover:text-black hover:bg-[#00E5FF] focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none transition-all min-w-[44px] min-h-[44px] flex items-center justify-center"
             >

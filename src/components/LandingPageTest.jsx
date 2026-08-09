@@ -9,6 +9,7 @@ import { Logo } from './Logo';
 import { CategoryMegaMenuTest } from './CategoryMegaMenuTest';
 import { QuickViewModal } from './QuickViewModal';
 import { AdminPanelModal } from './AdminPanelModal';
+import { Footer } from './Footer';
 
 export const LandingPageTest = ({ 
   customCategories = [],
@@ -592,6 +593,9 @@ export const LandingPageTest = ({
         </section>
 
       </main>
+
+      {/* FOOTER DE ALTA GAMA DE 5 COLUMNAS */}
+      <Footer onOpenAdmin={() => setIsAdminOpen(true)} />
 
       {/* DRAWER DE CARRITO CON CHECKOUT DIRECTO A WHATSAPP EN USD ($) */}
       {isCartOpen && (

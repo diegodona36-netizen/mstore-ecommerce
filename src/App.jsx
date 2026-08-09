@@ -89,6 +89,32 @@ export function App() {
     });
   };
 
+  const handleUpdateProductFromAdmin = (updatedProd) => {
+    setProducts(prev => {
+      const exists = prev.some(p => p.id === updatedProd.id);
+      if (exists) {
+        return prev.map(p => p.id === updatedProd.id ? { ...p, ...updatedProd } : p);
+      }
+      return [updatedProd, ...prev];
+    });
+
+    const savedCustoms = localStorage.getItem('mstore_custom_products');
+    let customs = [];
+    if (savedCustoms) {
+      try { customs = JSON.parse(savedCustoms); } catch(e){}
+    }
+    const updatedCustoms = customs.some(c => c.id === updatedProd.id)
+      ? customs.map(c => c.id === updatedProd.id ? { ...c, ...updatedProd } : c)
+      : [updatedProd, ...customs];
+
+    localStorage.setItem('mstore_custom_products', JSON.stringify(updatedCustoms));
+
+    setToastData({
+      product: updatedProd,
+      message: `¡Producto "${updatedProd.name}" actualizado!`
+    });
+  };
+
   const handleRemoveProductFromAdmin = (productId) => {
     setProducts(prev => {
       const updated = prev.filter(p => p.id !== productId);
@@ -240,6 +266,7 @@ export function App() {
           }}
           products={products}
           onAddProduct={handleAddProductFromAdmin}
+          onUpdateProduct={handleUpdateProductFromAdmin}
           onRemoveProduct={handleRemoveProductFromAdmin}
           categories={customCategories}
           onAddCategory={handleAddCategory}
@@ -267,6 +294,7 @@ export function App() {
       customCategories={customCategories}
       adminProducts={products}
       onAddProduct={handleAddProductFromAdmin}
+      onUpdateProduct={handleUpdateProductFromAdmin}
       onRemoveProduct={handleRemoveProductFromAdmin}
       onAddCategory={handleAddCategory}
       onRemoveCategory={handleRemoveCategory}

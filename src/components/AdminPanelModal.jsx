@@ -8,6 +8,7 @@ export const AdminPanelModal = ({
   isOpen, 
   onClose, 
   onAddProduct,
+  onUpdateProduct,
   products = [],
   onRemoveProduct,
   categories = [],
@@ -20,15 +21,16 @@ export const AdminPanelModal = ({
   const [activeTab, setActiveTab] = useState('producto'); // 'producto' | 'categorias' | 'inventario'
 
   // Product Form state
+  const [editingId, setEditingId] = useState(null);
   const [name, setName] = useState('');
-  const [category, setCategory] = useState('smartphones');
+  const [category, setCategory] = useState('televisores');
   const [subcategory, setSubcategory] = useState('');
   const [price, setPrice] = useState('');
   const [originalPrice, setOriginalPrice] = useState('');
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [previewImage, setPreviewImage] = useState('');
-  const [specsInput, setSpecsInput] = useState('Pantalla AMOLED, Batería 5000mAh, Garantía 1 Año');
+  const [specsInput, setSpecsInput] = useState('Garantía M Store 1 Año, Envío 24H');
   const [successMsg, setSuccessMsg] = useState('');
 
   // Category Creation Form state
@@ -71,31 +73,23 @@ export const AdminPanelModal = ({
     setPreviewImage(url);
   };
 
-  // Product Submit
-  const handleProductSubmit = (e) => {
-    e.preventDefault();
-    if (!name || !price || !imageUrl) return;
+  // Start Editing a product
+  const handleStartEdit = (prod) => {
+    setEditingId(prod.id);
+    setName(prod.name || '');
+    setCategory(prod.category || 'televisores');
+    setSubcategory(prod.subcategory || '');
+    setPrice(prod.price ? prod.price.toString() : '');
+    setOriginalPrice(prod.originalPrice ? prod.originalPrice.toString() : '');
+    setDescription(prod.description || '');
+    setImageUrl(prod.image || '');
+    setPreviewImage(prod.image || '');
+    setSpecsInput(prod.specs ? prod.specs.join(', ') : 'Garantía M Store 1 Año, Envío 24H');
+    setActiveTab('producto');
+  };
 
-    const specsArray = specsInput.split(',').map(s => s.trim()).filter(Boolean);
-
-    const newProd = {
-      id: Date.now(),
-      name,
-      category,
-      subcategory: subcategory || 'Novedad Cyber',
-      price: parseFloat(price),
-      originalPrice: originalPrice ? parseFloat(originalPrice) : parseFloat(price) * 1.15,
-      rating: 5.0,
-      image: imageUrl,
-      thumbnails: [imageUrl, imageUrl, imageUrl],
-      specs: specsArray.length > 0 ? specsArray : ['Garantía M Store 1 Año', 'Envío Gratis 24H'],
-      description: description || `${name} importado de alta gama con garantía oficial M Store.`,
-      tag: subcategory ? subcategory.toUpperCase() : 'NUEVO'
-    };
-
-    onAddProduct(newProd);
-
-    setSuccessMsg(`¡Producto "${name}" guardado e integrado exitosamente!`);
+  const handleCancelEdit = () => {
+    setEditingId(null);
     setName('');
     setPrice('');
     setOriginalPrice('');
@@ -103,7 +97,39 @@ export const AdminPanelModal = ({
     setImageUrl('');
     setPreviewImage('');
     setSubcategory('');
-    
+  };
+
+  // Product Submit (Add or Update)
+  const handleProductSubmit = (e) => {
+    e.preventDefault();
+    if (!name || !price || !imageUrl) return;
+
+    const specsArray = specsInput.split(',').map(s => s.trim()).filter(Boolean);
+
+    const prodData = {
+      id: editingId || Date.now(),
+      name,
+      category,
+      subcategory: subcategory || 'Novedad M Store',
+      price: parseFloat(price),
+      originalPrice: originalPrice ? parseFloat(originalPrice) : parseFloat(price) * 1.15,
+      rating: 5.0,
+      image: imageUrl,
+      thumbnails: [imageUrl, imageUrl, imageUrl],
+      specs: specsArray.length > 0 ? specsArray : ['Garantía M Store 1 Año', 'Envío Gratis 24H'],
+      description: description || `${name} con garantía oficial M Store.`,
+      tag: subcategory ? subcategory.toUpperCase() : 'OFERTA'
+    };
+
+    if (editingId && onUpdateProduct) {
+      onUpdateProduct(prodData);
+      setSuccessMsg(`¡Producto "${name}" actualizado exitosamente!`);
+    } else if (onAddProduct) {
+      onAddProduct(prodData);
+      setSuccessMsg(`¡Producto "${name}" guardado e integrado exitosamente!`);
+    }
+
+    handleCancelEdit();
     setTimeout(() => setSuccessMsg(''), 4000);
   };
 
@@ -176,7 +202,7 @@ export const AdminPanelModal = ({
 
             <div>
               <h4 className="text-lg font-bold font-space text-white">Ingresa el PIN de Seguridad</h4>
-              <p className="text-xs text-slate-400 mt-1">Clave predeterminada para empleados: <strong className="text-[#00E5FF]">1234</strong></p>
+              <p className="text-xs text-slate-400 mt-1">Clave para empleados: <strong className="text-[#00E5FF]">1234</strong></p>
             </div>
 
             <div className="max-w-xs mx-auto space-y-3">
@@ -219,7 +245,7 @@ export const AdminPanelModal = ({
                 }`}
               >
                 <Plus className="w-4 h-4" />
-                Cargar Producto
+                {editingId ? 'Editar Producto' : 'Cargar Producto'}
               </button>
               
               <button
@@ -247,10 +273,26 @@ export const AdminPanelModal = ({
               </button>
             </div>
 
-            {/* TAB 1: PRODUCT LOAD FORM */}
+            {/* TAB 1: PRODUCT LOAD / EDIT FORM */}
             {activeTab === 'producto' && (
               <form onSubmit={handleProductSubmit} className="space-y-4 text-left">
                 
+                {editingId && (
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 text-[#00E5FF] text-xs font-bold font-space">
+                    <span className="flex items-center gap-2">
+                      <Edit className="w-4 h-4" />
+                      Editando: {name}
+                    </span>
+                    <button 
+                      type="button" 
+                      onClick={handleCancelEdit}
+                      className="text-xs text-slate-300 hover:text-white underline"
+                    >
+                      Cancelar Edición
+                    </button>
+                  </div>
+                )}
+
                 {successMsg && (
                   <div className="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-2 animate-fadeIn">
                     <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
@@ -267,12 +309,12 @@ export const AdminPanelModal = ({
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="Ej: Smart TV Samsung 65 QLED"
+                      placeholder="Ej: Smart TV Síragon 55 4K"
                       className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] rounded-xl px-3.5 py-2.5 text-xs text-white outline-none"
                     />
                   </div>
 
-                  {/* Category Selection */}
+                  {/* Category Selection — Synchronized with Catálogo Main */}
                   <div className="space-y-1">
                     <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider font-space">Categoría Principal *</label>
                     <select
@@ -280,11 +322,13 @@ export const AdminPanelModal = ({
                       onChange={(e) => setCategory(e.target.value)}
                       className="w-full bg-[#141824] border border-white/15 focus:border-[#00E5FF] rounded-xl px-3.5 py-2.5 text-xs text-white outline-none font-space"
                     >
-                      <option value="smartphones">📱 Smartphones & Flagships</option>
-                      <option value="linea-blanca">📺 Línea Blanca & Smart TV</option>
-                      <option value="audio">🎧 Audio High-End & Hi-Fi</option>
-                      <option value="wearables">⌚ Wearables & Relojes</option>
-                      <option value="accesorios">⚡ Accesorios & Powerbanks</option>
+                      <option value="televisores">📺 Televisores</option>
+                      <option value="computadoras">💻 Computadoras</option>
+                      <option value="aires">🌬️ Aires Acondicionados</option>
+                      <option value="telefonos">📱 Teléfonos & Smartphones</option>
+                      <option value="neveras">🧊 Neveras & Refrigeración</option>
+                      <option value="lavadoras">🧺 Lavadoras</option>
+                      <option value="audio">🔊 Audio High-End</option>
                       {categories.map(c => (
                         <option key={c.id} value={c.id}>🏷️ {c.name}</option>
                       ))}
@@ -314,10 +358,22 @@ export const AdminPanelModal = ({
                       required
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
-                      placeholder="999.00"
+                      placeholder="499.00"
                       className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] rounded-xl px-3.5 py-2.5 text-xs text-white outline-none"
                     />
                   </div>
+                </div>
+
+                {/* Description */}
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider font-space">Descripción corta</label>
+                  <textarea
+                    rows={2}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Descripción rápida del producto..."
+                    className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] rounded-xl px-3.5 py-2 text-xs text-white outline-none font-inter"
+                  />
                 </div>
 
                 {/* File Upload Selector (.JPG / .PNG / .WebP) */}
@@ -330,7 +386,7 @@ export const AdminPanelModal = ({
                   <div className="flex flex-col sm:flex-row items-center gap-3">
                     <label className="w-full sm:w-auto shrink-0 cursor-pointer flex items-center justify-center gap-2 bg-[#00E5FF]/10 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black border border-[#00E5FF]/40 px-4 py-2.5 rounded-xl text-xs font-bold font-space transition-all">
                       <Upload className="w-4 h-4" />
-                      <span>Examinar Imagen (.JPG/.PNG)</span>
+                      <span>Examinar Imagen</span>
                       <input 
                         type="file" 
                         accept="image/jpeg, image/png, image/webp, image/jpg"
@@ -352,10 +408,10 @@ export const AdminPanelModal = ({
 
                   {previewImage && (
                     <div className="mt-2 p-2 bg-white/5 rounded-2xl border border-white/10 flex items-center gap-3">
-                      <div className="w-14 h-14 rounded-xl bg-[#F4F5F7] p-1 overflow-hidden shrink-0">
+                      <div className="w-14 h-14 rounded-xl bg-white p-1 overflow-hidden shrink-0">
                         <img src={previewImage} alt="Vista previa" className="w-full h-full object-contain" />
                       </div>
-                      <span className="text-xs text-emerald-400 font-semibold">✓ Imagen cargada correctamente</span>
+                      <span className="text-xs text-emerald-400 font-semibold">✓ Imagen lista</span>
                     </div>
                   )}
                 </div>
@@ -364,7 +420,7 @@ export const AdminPanelModal = ({
                   type="submit"
                   className="w-full btn-cyan-glow py-3 rounded-xl font-bold text-xs font-space text-black uppercase tracking-wider mt-4"
                 >
-                  Guardar Producto en la Tienda
+                  {editingId ? 'Guardar Cambios del Producto' : 'Guardar Producto en la Tienda'}
                 </button>
               </form>
             )}
@@ -392,7 +448,7 @@ export const AdminPanelModal = ({
                       required
                       value={newCatName}
                       onChange={(e) => setNewCatName(e.target.value)}
-                      placeholder="Nombre de Categoría (ej: Gaming & Consolas)"
+                      placeholder="Nombre de Categoría (ej: Consolas & Gaming)"
                       className="bg-black/40 border border-white/15 focus:border-[#00E5FF] rounded-xl px-3.5 py-2 text-xs text-white outline-none"
                     />
 
@@ -414,11 +470,13 @@ export const AdminPanelModal = ({
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
                     {[
-                      { id: 'smartphones', name: 'Smartphones & Flagships' },
-                      { id: 'linea-blanca', name: 'Línea Blanca & Smart TV' },
-                      { id: 'audio', name: 'Audio High-End & Hi-Fi' },
-                      { id: 'wearables', name: 'Wearables & Relojes' },
-                      { id: 'accesorios', name: 'Accesorios & Powerbanks' },
+                      { id: 'televisores',  name: 'Televisores' },
+                      { id: 'computadoras', name: 'Computadoras' },
+                      { id: 'aires',        name: 'Aires Acondicionados' },
+                      { id: 'telefonos',    name: 'Teléfonos & Smartphones' },
+                      { id: 'neveras',      name: 'Neveras & Refrigeración' },
+                      { id: 'lavadoras',    name: 'Lavadoras' },
+                      { id: 'audio',        name: 'Audio High-End' },
                       ...categories
                     ].map((catItem) => (
                       <div 
@@ -476,7 +534,7 @@ export const AdminPanelModal = ({
                         className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-[#00E5FF]/30 transition-all gap-3"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-xl bg-[#F4F5F7] p-1 shrink-0 overflow-hidden">
+                          <div className="w-12 h-12 rounded-xl bg-white p-1 shrink-0 overflow-hidden">
                             <img src={p.image} alt={p.name} className="w-full h-full object-contain" />
                           </div>
                           <div>
@@ -488,13 +546,24 @@ export const AdminPanelModal = ({
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {/* BOTÓN EDITAR */}
+                          <button
+                            onClick={() => handleStartEdit(p)}
+                            className="p-2 rounded-xl bg-[#00E5FF]/10 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black border border-[#00E5FF]/30 transition-all flex items-center gap-1 text-xs font-bold font-space"
+                            title="Editar producto"
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                            <span className="hidden sm:inline">Editar</span>
+                          </button>
+
+                          {/* BOTÓN ELIMINAR */}
                           <button
                             onClick={() => onRemoveProduct && onRemoveProduct(p.id)}
                             className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/30 transition-all"
                             title="Eliminar producto del catálogo"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       </div>

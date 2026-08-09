@@ -18,6 +18,7 @@ export const LandingPageTest = ({
   customCategories = [],
   adminProducts = [],
   onAddProduct,
+  onUpdateProduct,
   onRemoveProduct,
   onAddCategory,
   onRemoveCategory
@@ -768,6 +769,7 @@ export const LandingPageTest = ({
         }}
         products={adminProducts}
         onAddProduct={onAddProduct}
+        onUpdateProduct={onUpdateProduct}
         onRemoveProduct={onRemoveProduct}
         categories={customCategories}
         onAddCategory={onAddCategory}

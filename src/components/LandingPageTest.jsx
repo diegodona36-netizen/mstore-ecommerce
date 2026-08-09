@@ -397,9 +397,6 @@ export const LandingPageTest = ({
         </div>
       </header>
 
-        </div>
-      </header>
-
       {/* MENÚ DE CATEGORÍAS 5 COLUMNAS DIRECTAS IVOO */}
       <CategoryMegaMenuTest
         isOpen={isMegaMenuOpen}

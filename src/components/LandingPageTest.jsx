@@ -11,6 +11,7 @@ import { QuickViewModal } from './QuickViewModal';
 import { AdminPanelModal } from './AdminPanelModal';
 import { Footer } from './Footer';
 import { SupportChatWidget } from './SupportChatWidget';
+import { LocationSection } from './LocationSection';
 
 export const LandingPageTest = ({ 
   customCategories = [],
@@ -209,11 +210,12 @@ export const LandingPageTest = ({
   // Official Brands Filter Grid
   const officialBrands = [
     { name: 'Zona Síragon', filterId: 'siragon', logo: 'SÍRAGON', desc: 'TVs & Electrodomésticos' },
-    { name: 'Zona Samsung', filterId: 'samsung', logo: 'SAMSUNG', desc: 'Galaxy & Neo QLED' },
-    { name: 'Zona Apple', filterId: 'apple', logo: ' APPLE', desc: 'iPhone & MacBooks' },
+    { name: 'Zona Samsung', filterId: 'samsung', logo: 'SAMSUNG', desc: 'Smart TVs & Galaxy' },
+    { name: 'Zona Apple', filterId: 'apple', logo: ' APPLE', desc: 'iPhone & AirPods' },
     { name: 'Zona Xiaomi', filterId: 'xiaomi', logo: 'XIAOMI', desc: 'Smartphones & Smart Home' },
     { name: 'Zona LG', filterId: 'lg', logo: 'LG ELECTRONICS', desc: 'Línea Blanca Inverter' },
-    { name: 'Zona Soneview', filterId: 'soneview', logo: 'SONEVIEW', desc: 'Google TVs & Audio' }
+    { name: 'Zona Soneview', filterId: 'soneview', logo: 'SONEVIEW', desc: 'Google TVs & Audio' },
+    { name: 'Zona Viotto', filterId: 'viotto', logo: 'VIOTTO', desc: 'Smart TVs Económicos' }
   ];
 
   const calculatedMonthly = (calcAmount / calcMonths).toFixed(2);
@@ -596,6 +598,9 @@ export const LandingPageTest = ({
         </section>
 
       </main>
+
+      {/* SECCIÓN TIENDA FÍSICA CON MAPA */}
+      <LocationSection />
 
       {/* FOOTER LIMPIO SIN MÉTODOS DE PAGO Y SIN BOTÓN PÚBLICO DE ADMIN */}
       <Footer />

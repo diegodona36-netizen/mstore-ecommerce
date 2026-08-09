@@ -16,7 +16,7 @@ import { LandingPageTest } from './components/LandingPageTest';
 import { PRODUCTS as INITIAL_PRODUCTS } from './data/products';
 
 export function App() {
-  const [isTestMode, setIsTestMode] = useState(() => window.location.hash === '#test');
+  const [isOldMode, setIsOldMode] = useState(() => window.location.hash === '#vieja' || window.location.hash === '#old');
 
   const [products, setProducts] = useState(() => {
     const saved = localStorage.getItem('mstore_custom_products');
@@ -51,7 +51,7 @@ export function App() {
 
   useEffect(() => {
     const handleHashCheck = () => {
-      setIsTestMode(window.location.hash === '#test');
+      setIsOldMode(window.location.hash === '#vieja' || window.location.hash === '#old');
       if (window.location.hash === '#admin' || window.location.pathname.endsWith('/admin')) {
         setIsAdminOpen(true);
       }
@@ -182,124 +182,95 @@ export function App() {
 
   const cartTotalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
-  // If in #test route, render the isolated sandbox with IVOO Pro Mega Menu & full Admin integration
-  if (isTestMode) {
+  // If in #vieja or #old route, render old legacy page
+  if (isOldMode) {
     return (
-      <LandingPageTest 
-        customCategories={customCategories}
-        adminProducts={products}
-        onAddProduct={handleAddProductFromAdmin}
-        onRemoveProduct={handleRemoveProductFromAdmin}
-        onAddCategory={handleAddCategory}
-        onRemoveCategory={handleRemoveCategory}
-      />
+      <div className="min-h-screen bg-[#0A0908] text-white font-inter selection:bg-[#00E5FF] selection:text-black">
+        {/* Old page layout */}
+        <Navbar
+          cartCount={cartTotalCount}
+          onOpenCart={() => setIsCartOpen(true)}
+          onToggleMegaMenu={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
+          isMegaMenuOpen={isMegaMenuOpen}
+          searchQuery={searchQuery}
+          onSearchChange={(q) => {
+            setSearchQuery(q);
+            if (q) handleExploreClick();
+          }}
+          onSearchSubmit={handleExploreClick}
+        />
+        <main>
+          <Hero onExploreClick={handleExploreClick} onQuickViewHero={() => setQuickViewProduct(products[0])} />
+          <BentoGrid onSelectCategory={handleSelectCategoryFromBento} />
+          <ProductCarousel
+            products={products}
+            activeCategory={activeCategory}
+            onCategoryChange={setActiveCategory}
+            onAddToCart={handleAddToCart}
+            onQuickView={setQuickViewProduct}
+            searchQuery={searchQuery}
+            customCategories={customCategories}
+          />
+          <LocationSection />
+          <BenefitsBanner />
+        </main>
+        <Footer onOpenAdmin={() => setIsAdminOpen(true)} />
+        <CategoryMegaMenu
+          isOpen={isMegaMenuOpen}
+          onClose={() => setIsMegaMenuOpen(false)}
+          onSelectCategory={handleSelectCategoryFromBento}
+          customCategories={customCategories}
+        />
+        {quickViewProduct && (
+          <QuickViewModal
+            product={quickViewProduct}
+            onClose={() => setQuickViewProduct(null)}
+            onAddToCart={handleAddToCart}
+            onToggleFavorite={handleToggleFavorite}
+            isFavorite={favorites.includes(quickViewProduct.id)}
+          />
+        )}
+        <AdminPanelModal
+          isOpen={isAdminOpen}
+          onClose={() => {
+            setIsAdminOpen(false);
+            if (window.location.hash === '#admin') {
+              window.history.pushState('', document.title, window.location.pathname);
+            }
+          }}
+          products={products}
+          onAddProduct={handleAddProductFromAdmin}
+          onRemoveProduct={handleRemoveProductFromAdmin}
+          categories={customCategories}
+          onAddCategory={handleAddCategory}
+          onRemoveCategory={handleRemoveCategory}
+        />
+        <CartDrawer
+          isOpen={isCartOpen}
+          onClose={() => setIsCartOpen(false)}
+          cartItems={cartItems}
+          onUpdateQuantity={handleUpdateQuantity}
+          onRemoveItem={handleRemoveItem}
+          onClearCart={() => setCartItems([])}
+        />
+        {toastData && (
+          <Toast product={toastData.product} message={toastData.message} onClose={() => setToastData(null)} />
+        )}
+        <WhatsappButton />
+      </div>
     );
   }
 
+  // DEFAULT MAIN PRODUCTION PAGE (NEW IMPROVED M STORE)
   return (
-    <div className="min-h-screen bg-[#0A0908] text-white font-inter selection:bg-[#00E5FF] selection:text-black">
-      
-      {/* 1. Header & Search Bar (0% verde, 100% cian neón) */}
-      <Navbar
-        cartCount={cartTotalCount}
-        onOpenCart={() => setIsCartOpen(true)}
-        onToggleMegaMenu={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
-        isMegaMenuOpen={isMegaMenuOpen}
-        searchQuery={searchQuery}
-        onSearchChange={(q) => {
-          setSearchQuery(q);
-          if (q) handleExploreClick();
-        }}
-        onSearchSubmit={handleExploreClick}
-      />
-
-      <main>
-        <Hero
-          onExploreClick={handleExploreClick}
-          onQuickViewHero={() => setQuickViewProduct(products[0])}
-        />
-
-        {/* 2. Bento Grid Categorías Visuales */}
-        <BentoGrid
-          onSelectCategory={handleSelectCategoryFromBento}
-        />
-
-        {/* 3. Catálogo de Productos con Pestañas */}
-        <ProductCarousel
-          products={products}
-          activeCategory={activeCategory}
-          onCategoryChange={setActiveCategory}
-          onAddToCart={handleAddToCart}
-          onQuickView={setQuickViewProduct}
-          searchQuery={searchQuery}
-          customCategories={customCategories}
-        />
-
-        {/* 4. Ubicación Física & Google Maps API (Estilo Odoo) */}
-        <LocationSection />
-
-        <BenefitsBanner />
-      </main>
-
-      <Footer
-        onOpenAdmin={() => setIsAdminOpen(true)}
-      />
-
-      <CategoryMegaMenu
-        isOpen={isMegaMenuOpen}
-        onClose={() => setIsMegaMenuOpen(false)}
-        onSelectCategory={handleSelectCategoryFromBento}
-        customCategories={customCategories}
-      />
-
-      {quickViewProduct && (
-        <QuickViewModal
-          product={quickViewProduct}
-          onClose={() => setQuickViewProduct(null)}
-          onAddToCart={handleAddToCart}
-          onToggleFavorite={handleToggleFavorite}
-          isFavorite={favorites.includes(quickViewProduct.id)}
-        />
-      )}
-
-      {/* 5. Panel Administrador (PIN 1234 con Cargar Producto, Categorías e Inventario) */}
-      <AdminPanelModal
-        isOpen={isAdminOpen}
-        onClose={() => {
-          setIsAdminOpen(false);
-          if (window.location.hash === '#admin') {
-            window.history.pushState('', document.title, window.location.pathname);
-          }
-        }}
-        products={products}
-        onAddProduct={handleAddProductFromAdmin}
-        onRemoveProduct={handleRemoveProductFromAdmin}
-        categories={customCategories}
-        onAddCategory={handleAddCategory}
-        onRemoveCategory={handleRemoveCategory}
-      />
-
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cartItems={cartItems}
-        onUpdateQuantity={handleUpdateQuantity}
-        onRemoveItem={handleRemoveItem}
-        onClearCart={() => setCartItems([])}
-      />
-
-      {toastData && (
-        <Toast
-          product={toastData.product}
-          message={toastData.message}
-          onClose={() => setToastData(null)}
-        />
-      )}
-
-      {/* 6. Botón Flotante de WhatsApp */}
-      <WhatsappButton />
-
-    </div>
+    <LandingPageTest 
+      customCategories={customCategories}
+      adminProducts={products}
+      onAddProduct={handleAddProductFromAdmin}
+      onRemoveProduct={handleRemoveProductFromAdmin}
+      onAddCategory={handleAddCategory}
+      onRemoveCategory={handleRemoveCategory}
+    />
   );
 }
 

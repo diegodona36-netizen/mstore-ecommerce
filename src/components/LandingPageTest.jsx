@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Menu, Search, ShoppingCart, Heart, ChevronRight, X, 
-  Tv, Smartphone, Watch, Headphones, Flame, Shield, Sparkles, Check,
-  MapPin, Clock, Phone, Navigation, Truck, RefreshCw, Zap, Gift, ChevronLeft,
-  Star, Calculator, Award, MessageSquare, ArrowRight, Tag, Grid, Eye, Trash2, Plus, Minus
+  Menu, Search, ShoppingCart, Heart, ChevronRight, X,
+  Tv, Smartphone, Headphones, Flame, Sparkles, Check,
+  MapPin, Clock, Phone, Navigation, Gift, ChevronLeft,
+  Calculator, MessageSquare, ArrowRight, Tag, Eye, Trash2, Plus, Minus,
+  Wind, Refrigerator, WashingMachine, Laptop, LayoutGrid
 } from 'lucide-react';
 import { Logo } from './Logo';
 import { CategoryMegaMenuTest } from './CategoryMegaMenuTest';
@@ -127,22 +128,64 @@ export const LandingPageTest = ({
     return () => clearInterval(countdown);
   }, []);
 
-  // REAL PRODUCTION PRODUCTS DATABASE (MERGED WITH ADMIN PRODUCTS)
+  // CATÁLOGO BASE — 1 producto representativo por categoría (editables desde Admin)
   const defaultCatalogProducts = [
-    { id: 'p-1', category: 'televisores', brand: 'soneview', name: '43" Google TV FHD Soneview', price: 259.99, originalPrice: 299.00, rating: 5.0, image: 'https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=600&auto=format&fit=crop', specs: ['Smart Google TV', 'FHD 1080p', 'HDR10', 'Control por Voz'], description: 'Televisor Smart FHD Soneview con sistema Google TV oficial, Google Assistant y acceso a Netflix, Disney+ y YouTube.' },
-    { id: 'p-2', category: 'televisores', brand: 'viotto', name: '43" Google TV FHD Viotto', price: 293.00, originalPrice: 340.00, rating: 5.0, image: 'https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=600&auto=format&fit=crop', specs: ['Procesador Quad Core', 'Sonido Surround', 'Conexión WiFi 5G'], description: 'Pantalla inteligente Viotto de 43 pulgadas con colores vibrantes y sonido envolvente cinematográfico.' },
-    { id: 'p-3', category: 'televisores', brand: 'viotto', name: '32" Google TV HD Viotto', price: 184.00, originalPrice: 210.00, rating: 5.0, image: 'https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=600&auto=format&fit=crop', specs: ['Diseño Ultra Delgado', 'Fácil Conectividad HDMI/USB'], description: 'Ideal para habitaciones u oficinas. Conecta tus dispositivos y disfruta de tus apps preferidas.' },
-    { id: 'p-4', category: 'televisores', brand: 'siragon', name: '50" Google TV UHD 4K Síragon', price: 380.00, originalPrice: 450.00, rating: 5.0, image: 'https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=600&auto=format&fit=crop', specs: ['Resolución 4K Real', 'Marcos Invisibles', 'Chromecast Integrado'], description: 'Imágenes 4K hiperrealistas con tecnología de procesamiento de color de Síragon.' },
-    { id: 'p-5', category: 'televisores', brand: 'siragon', name: '75" Neo QLED 4K Síragon Pro', price: 1499.00, originalPrice: 1899.00, rating: 5.0, image: 'https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=600&auto=format&fit=crop', specs: ['Neo QLED 120Hz', 'Dolby Atmos', 'Modo Juego VRR'], description: 'La máxima expresión del entretenimiento. Pantalla de 75 pulgadas con brillo superior y 120Hz de refresco.' },
-
-    { id: 'p-6', category: 'smartphones', brand: 'apple', name: 'iPhone 16 Pro Max 1TB Titanio Negro', price: 1299.00, originalPrice: 1499.00, rating: 5.0, image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-blacktitanium?wid=5120&hei=2880&fmt=p-jpeg', specs: ['Chip A18 Pro 3nm', 'Botón de Cámara Táctil', 'Titanio Grado 5', 'Batería 33h'], description: 'El iPhone más avanzado hasta la fecha con diseño en titanio y sistema de cámaras profesional de 48MP.' },
-    { id: 'p-7', category: 'smartphones', brand: 'samsung', name: 'Samsung Galaxy S24 Ultra 512GB AI', price: 1199.00, originalPrice: 1399.00, rating: 5.0, image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?q=80&w=600&auto=format&fit=crop', specs: ['Galaxy AI Integrado', 'Cámara 200MP Zoom 100x', 'S Pen Incluido'], description: 'Potencia absoluta impulsada por Inteligencia Artificial. Pantalla AMOLED 2X brillante y marco de titanio.' },
-    { id: 'p-8', category: 'smartphones', brand: 'xiaomi', name: 'Xiaomi 14 Ultra 512GB Leica', price: 999.00, originalPrice: 1199.00, rating: 5.0, image: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=600&auto=format&fit=crop', specs: ['Lentes Ópticos Leica', 'Carga Ultra Rápida 90W', 'Snapdragon 8 Gen 3'], description: 'Fotografía profesional en tu bolsillo con cuádruple cámara Leica de 50MP.' },
-
-    { id: 'p-9', category: 'neveras', brand: 'siragon', name: 'Nevera Síragon 18 Pies Inverter Smart', price: 899.00, originalPrice: 1099.00, rating: 5.0, image: 'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?q=80&w=600&auto=format&fit=crop', specs: ['Compresor Inverter Ahorro 60%', 'Tecnología No Frost', 'Dispensador de Agua'], description: 'Nevera inteligente de alta capacidad en acero inoxidable anti-huellas.' },
-    { id: 'p-10', category: 'lavadoras', brand: 'lg', name: 'Lavadora Carga Frontal LG 12KG AI', price: 749.00, originalPrice: 899.00, rating: 5.0, image: 'https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?q=80&w=600&auto=format&fit=crop', specs: ['Motor AI DD Inteligente', 'Lavado a Vapor Steam', '10 Años Garantía Motor'], description: 'Protege las fibras de tus prendas con inteligencia artificial que detecta el peso y suavidad de las telas.' },
-    { id: 'p-11', category: 'aires', brand: 'siragon', name: 'Aire Acondicionado 12000 BTU Inverter', price: 299.00, originalPrice: 360.00, rating: 5.0, image: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=600&auto=format&fit=crop', specs: ['Gas Ecológico R410A', 'Filtro Anti-Bacterias', 'Súper Silencioso 19dB'], description: 'Enfriamiento ultra rápido con máximo ahorro energético Inverter para tu hogar u oficina.' },
-    { id: 'p-12', category: 'cocina', brand: 'siragon', name: 'Cocina de Inducción 4 Hornillas Síragon', price: 340.00, originalPrice: 410.00, rating: 5.0, image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=600&auto=format&fit=crop', specs: ['Superficie Cristal Vitrocerámico', 'Control Táctil Slider', 'Bloqueo de Seguridad Niños'], description: 'Cocción rápida y limpia de máxima eficiencia con sensores de detección de sartenes.' }
+    {
+      id: 'p-1', category: 'televisores', brand: 'siragon',
+      name: 'Smart TV 55" 4K UHD Google TV Síragon',
+      price: 499.00, originalPrice: 599.00, rating: 4.9,
+      image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f4834c?q=80&w=600&auto=format&fit=crop',
+      specs: ['Google TV Oficial', '4K UHD', 'HDR10+', 'Control por Voz'],
+      description: 'Televisor 55 pulgadas con sistema Google TV, acceso a Netflix, YouTube, Disney+ y Google Assistant integrado.'
+    },
+    {
+      id: 'p-2', category: 'computadoras', brand: 'samsung',
+      name: 'Laptop Samsung Galaxy Book4 Pro 16"',
+      price: 1299.00, originalPrice: 1499.00, rating: 4.9,
+      image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=600&auto=format&fit=crop',
+      specs: ['Intel Core Ultra 7', 'RAM 16GB LPDDR5', 'SSD 512GB NVMe', 'Pantalla AMOLED 3K'],
+      description: 'Laptop ultradelgada premium con pantalla AMOLED de 3K, procesador de última generación y batería de 76Wh.'
+    },
+    {
+      id: 'p-3', category: 'aires', brand: 'lg',
+      name: 'Aire Acondicionado LG 18000 BTU Inverter V',
+      price: 549.00, originalPrice: 649.00, rating: 4.8,
+      image: 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?q=80&w=600&auto=format&fit=crop',
+      specs: ['Inverter V Ahorro 70%', 'Wi-Fi ThinQ', 'Filtro PM1.0', 'Gas R32 Ecológico'],
+      description: 'Aire acondicionado Inverter de alto rendimiento con control inteligente desde tu smartphone y máxima eficiencia energética.'
+    },
+    {
+      id: 'p-4', category: 'telefonos', brand: 'apple',
+      name: 'iPhone 16 Pro Max 256GB Titanio Negro',
+      price: 1199.00, originalPrice: 1399.00, rating: 5.0,
+      image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-blacktitanium?wid=5120&hei=2880&fmt=p-jpeg',
+      specs: ['Chip A18 Pro 3nm', 'Cámara 48MP ProRAW', 'Titanio Grado 5', 'Batería 33h video'],
+      description: 'El iPhone más avanzado. Diseño en titanio, sistema de cámaras profesional con botón de cámara táctil y chip A18 Pro.'
+    },
+    {
+      id: 'p-5', category: 'neveras', brand: 'siragon',
+      name: 'Nevera Síragon No Frost 18 Pies Inverter',
+      price: 899.00, originalPrice: 1099.00, rating: 4.9,
+      image: 'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?q=80&w=600&auto=format&fit=crop',
+      specs: ['Compresor Inverter', 'No Frost Total', 'Dispensador de Agua', 'Acero Inoxidable'],
+      description: 'Nevera de alta eficiencia con compresor Inverter, panel digital y diseño en acero inoxidable anti-huellas.'
+    },
+    {
+      id: 'p-6', category: 'lavadoras', brand: 'lg',
+      name: 'Lavadora LG Carga Frontal 12KG Steam AI',
+      price: 749.00, originalPrice: 899.00, rating: 4.9,
+      image: 'https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?q=80&w=600&auto=format&fit=crop',
+      specs: ['Motor AI Direct Drive', 'Lavado a Vapor', '10 Años Garantía Motor', 'EcoHybrid'],
+      description: 'Lavadora de carga frontal con inteligencia artificial que detecta el tipo de tela y ajusta el ciclo automáticamente.'
+    },
+    {
+      id: 'p-7', category: 'audio', brand: 'samsung',
+      name: 'Soundbar Samsung HW-Q990D 11.1.4ch Dolby',
+      price: 699.00, originalPrice: 849.00, rating: 4.8,
+      image: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?q=80&w=600&auto=format&fit=crop',
+      specs: ['11.1.4 Canales', 'Dolby Atmos', 'DTS:X', 'SpaceFit Sound Pro'],
+      description: 'Barra de sonido premium con tecnología Dolby Atmos, 11 altavoces integrados y configuración automática de audio.'
+    }
   ];
 
   // Combined product list
@@ -441,41 +484,46 @@ export const LandingPageTest = ({
       {/* CATÁLOGO PRINCIPAL DE PRODUCTOS */}
       <main id="catalogo-productos" className="max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-10">
 
-        {/* CATALOG HEADER & MAIN CATEGORY FILTER BAR */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/10">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00E5FF]/10 text-[#00E5FF] text-xs font-extrabold font-space uppercase mb-1">
-              <Grid className="w-3.5 h-3.5" />
-              <span>Catálogo Principal de Productos</span>
+        {/* CATALOG HEADER */}
+        <div className="space-y-4 pb-4 border-b border-white/10">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00E5FF]/10 text-[#00E5FF] text-xs font-extrabold font-space uppercase mb-1">
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span>Catálogo M Store</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold font-space text-white">
+                {selectedCategoryName}
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">{filteredProducts.length} productos disponibles</p>
             </div>
-            <h2 className="text-3xl font-extrabold font-space text-white">
-              {selectedCategoryName}
-            </h2>
-            <p className="text-xs text-slate-300">Mostrando {visibleProducts.length} de {filteredProducts.length} productos en esta categoría</p>
           </div>
 
-          {/* Quick Main Category Buttons */}
-          <div className="flex flex-wrap items-center gap-2">
+          {/* CATEGORY FILTER — horizontal scroll en móvil, iconos Lucide */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
             {[
-              { id: 'todos', name: 'Todos' },
-              { id: 'televisores', name: '📺 Televisores' },
-              { id: 'neveras', name: '🧊 Neveras' },
-              { id: 'cocina', name: '🍳 Cocinas' },
-              { id: 'lavadoras', name: '🧺 Lavadoras' },
-              { id: 'smartphones', name: '📱 Smartphones' },
-              ...customCategories.map(c => ({ id: c.id, name: `🏷️ ${c.name}` }))
-            ].map(cat => (
+              { id: 'todos',        name: 'Todos',          Icon: LayoutGrid },
+              { id: 'televisores',  name: 'Televisores',    Icon: Tv },
+              { id: 'computadoras', name: 'Computadoras',   Icon: Laptop },
+              { id: 'aires',        name: 'Aires A/C',      Icon: Wind },
+              { id: 'telefonos',    name: 'Teléfonos',      Icon: Smartphone },
+              { id: 'neveras',      name: 'Neveras',        Icon: Refrigerator },
+              { id: 'lavadoras',    name: 'Lavadoras',      Icon: WashingMachine },
+              { id: 'audio',        name: 'Audio',          Icon: Headphones },
+              ...customCategories.map(c => ({ id: c.id, name: c.name, Icon: LayoutGrid }))
+            ].map(({ id, name, Icon }) => (
               <button
-                key={cat.id}
-                onClick={() => handleCategorySelectFromMenu(cat.id, cat.name)}
-                aria-label={`Filtrar por ${cat.name}`}
-                className={`px-3.5 py-2.5 rounded-xl text-xs font-bold font-space transition-all border min-h-[44px] focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none ${
-                  activeFilterId === cat.id
+                key={id}
+                onClick={() => handleCategorySelectFromMenu(id, name)}
+                aria-label={`Filtrar por ${name}`}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold font-space transition-all border shrink-0 min-h-[44px] focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none ${
+                  activeFilterId === id
                     ? 'bg-[#00E5FF] text-black border-[#00E5FF] shadow-[0_0_15px_#00E5FF]'
-                    : 'bg-white/5 border-white/10 text-slate-200 hover:border-[#00E5FF]/40'
+                    : 'bg-white/5 border-white/10 text-slate-200 hover:border-[#00E5FF]/40 hover:text-white'
                 }`}
               >
-                {cat.name}
+                <Icon className="w-3.5 h-3.5 shrink-0" />
+                <span>{name}</span>
               </button>
             ))}
           </div>
@@ -527,28 +575,14 @@ export const LandingPageTest = ({
                 </div>
               </div>
 
-              {/* ACTION BUTTONS */}
-              <div className="grid grid-cols-2 gap-2 pt-1">
-                {/* WhatsApp VIP button — stops propagation */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const text = encodeURIComponent(`Hola M Store! Me interesa el producto: *${p.name}* a $${p.price} USD. ¿Está disponible?`);
-                    window.open(`https://wa.me/584120000000?text=${text}`, '_blank');
-                  }}
-                  aria-label={`Consultar ${p.name} por WhatsApp VIP`}
-                  className="py-2.5 rounded-xl border border-emerald-500/40 hover:border-emerald-400 text-xs font-bold font-space text-emerald-400 hover:bg-emerald-500/10 focus-visible:ring-2 focus-visible:ring-emerald-400 transition-all min-h-[44px] flex items-center justify-center gap-1"
-                >
-                  <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-current shrink-0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                  WS VIP
-                </button>
-                {/* Add to cart — stops propagation */}
+              {/* ACTION BUTTON — solo Carrito */}
+              <div className="pt-1">
                 <button
                   onClick={(e) => { e.stopPropagation(); handleAddToCart(p); }}
                   aria-label={`Añadir ${p.name} al carrito`}
-                  className="btn-cyan-glow py-2.5 rounded-xl text-xs font-extrabold font-space text-black active:scale-95 focus-visible:ring-2 focus-visible:ring-white shadow-[0_0_15px_rgba(0,229,255,0.4)] min-h-[44px]"
+                  className="w-full btn-cyan-glow py-2.5 rounded-xl text-xs font-extrabold font-space text-black active:scale-95 focus-visible:ring-2 focus-visible:ring-white shadow-[0_0_15px_rgba(0,229,255,0.4)] min-h-[44px]"
                 >
-                  + Carrito
+                  Añadir al Carrito
                 </button>
               </div>
             </div>

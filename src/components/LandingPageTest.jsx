@@ -316,7 +316,13 @@ export const LandingPageTest = ({
               <span className="text-[#00E5FF]">🛡️</span> Garantía Oficial M Store 1 Año
             </span>
           </div>
-          <div className="flex items-center gap-2 text-[#00E5FF] font-semibold">
+          <div className="flex items-center gap-3 text-[#00E5FF] font-semibold">
+            <a 
+              href="#soytechno" 
+              className="bg-red-600/20 border border-red-500/40 text-red-400 hover:bg-red-600 hover:text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-all flex items-center gap-1"
+            >
+              <span>🧪 Experimento Soy Techno</span>
+            </a>
             <span>💬 Atención Personalizada por WhatsApp</span>
           </div>
         </div>

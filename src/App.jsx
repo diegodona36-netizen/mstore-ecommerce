@@ -13,10 +13,25 @@ import { WhatsappButton } from './components/WhatsappButton';
 import { Footer } from './components/Footer';
 import { Toast } from './components/Toast';
 import { LandingPageTest } from './components/LandingPageTest';
+import { SoyTechnoExperiment } from './components/SoyTechnoExperiment';
 import { PRODUCTS as INITIAL_PRODUCTS } from './data/products';
 
 export function App() {
   const [isOldMode, setIsOldMode] = useState(() => window.location.hash === '#vieja' || window.location.hash === '#old');
+  const [isSoyTechnoMode, setIsSoyTechnoMode] = useState(() => window.location.hash === '#soytechno');
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setIsOldMode(window.location.hash === '#vieja' || window.location.hash === '#old');
+      setIsSoyTechnoMode(window.location.hash === '#soytechno');
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  if (isSoyTechnoMode) {
+    return <SoyTechnoExperiment onBackToMain={() => { window.location.hash = ''; setIsSoyTechnoMode(false); }} />;
+  }
 
   const [products, setProducts] = useState(() => {
     const saved = localStorage.getItem('mstore_custom_products');

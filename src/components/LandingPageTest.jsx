@@ -354,7 +354,7 @@ export const LandingPageTest = ({
                       <div className="flex-1 min-w-0">
                         <h5 className="text-xs font-bold font-space text-white truncate">{p.name}</h5>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-[#00E5FF] font-bold font-space">${p.price.toFixed ? p.price.toFixed(2) : p.price} USD</span>
+                          <span className="text-xs text-white font-bold font-inter">${p.price.toFixed ? p.price.toFixed(2) : p.price} USD</span>
                         </div>
                       </div>
                     </div>
@@ -411,7 +411,7 @@ export const LandingPageTest = ({
                         <div className="flex-1 min-w-0">
                           <h5 className="text-xs font-bold font-space text-white truncate">{p.name}</h5>
                           <div className="flex items-center gap-3 mt-1">
-                            <span className="text-xs text-[#00E5FF] font-bold font-space">${p.price.toFixed ? p.price.toFixed(2) : p.price} USD</span>
+                            <span className="text-xs text-white font-bold font-inter">${p.price.toFixed ? p.price.toFixed(2) : p.price} USD</span>
                           </div>
                         </div>
                         <span className="text-[#00E5FF] font-bold font-space text-xs hover:underline shrink-0">Ver &rarr;</span>
@@ -485,12 +485,12 @@ export const LandingPageTest = ({
               {/* Precio + Botón de Comprar */}
               <div className="space-y-3 pt-1">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl sm:text-4xl font-extrabold font-space text-[#00E5FF] drop-shadow-[0_0_15px_#00E5FF]">
+                  <span className="text-3xl sm:text-4xl font-black font-inter text-white tracking-tight">
                     {heroSlides[currentSlide].price}
                   </span>
-                  <span className="text-xs font-extrabold text-[#00E5FF] font-space">USD</span>
+                  <span className="text-xs font-extrabold text-[#00E5FF] font-inter">USD</span>
                   {heroSlides[currentSlide].oldPrice && (
-                    <span className="text-xs sm:text-sm text-slate-400 line-through font-space ml-1">
+                    <span className="text-xs sm:text-sm text-slate-400 line-through font-inter ml-1">
                       {heroSlides[currentSlide].oldPrice}
                     </span>
                   )}
@@ -668,9 +668,16 @@ export const LandingPageTest = ({
                   <span className="text-slate-300">(142 reseñas)</span>
                 </div>
                 <h3 className="text-xs font-bold font-space text-slate-100 line-clamp-2 min-h-[32px]">{p.name}</h3>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-base font-extrabold text-[#00E5FF] font-space pt-1">${p.price.toFixed ? p.price.toFixed(2) : p.price} USD</span>
-                  {p.originalPrice && <span className="text-xs text-slate-400 line-through">${p.originalPrice.toFixed ? p.originalPrice.toFixed(2) : p.originalPrice}</span>}
+                <div className="flex items-baseline gap-1.5 pt-1">
+                  <span className="text-lg font-black text-white font-inter tracking-tight">
+                    ${p.price.toFixed ? p.price.toFixed(2) : p.price}
+                  </span>
+                  <span className="text-xs font-extrabold text-[#00E5FF] font-inter">USD</span>
+                  {p.originalPrice && (
+                    <span className="text-xs text-slate-400 line-through font-inter ml-1">
+                      ${p.originalPrice.toFixed ? p.originalPrice.toFixed(2) : p.originalPrice}
+                    </span>
+                  )}
                 </div>
               </div>
 

@@ -115,12 +115,12 @@ export const QuickViewModal = ({ product, onClose, onAddToCart, onToggleFavorite
 
             {/* Price (Sin saltos de línea ni USD caído) */}
             <div className="flex items-baseline gap-2 flex-wrap">
-              <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold font-space text-white">
+              <span className="text-2xl sm:text-3xl md:text-4xl font-black font-inter text-white tracking-tight">
                 ${product.price.toLocaleString('en-US', { minimumFractionDigits: 2 })}
               </span>
-              <span className="text-xs sm:text-sm font-extrabold text-[#00E5FF] font-space">USD</span>
+              <span className="text-xs sm:text-sm font-extrabold text-[#00E5FF] font-inter">USD</span>
               {product.originalPrice && (
-                <span className="text-xs sm:text-base text-slate-400 line-through font-space ml-2">
+                <span className="text-xs sm:text-base text-slate-400 line-through font-inter ml-2">
                   ${product.originalPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                 </span>
               )}

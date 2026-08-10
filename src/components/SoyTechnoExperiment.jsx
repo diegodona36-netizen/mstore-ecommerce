@@ -1,581 +1,412 @@
 import React, { useState, useMemo } from 'react';
 import { 
-  Smartphone, Search, ShoppingBag, ArrowLeft, Truck, ShieldCheck, 
-  Sparkles, Star, ChevronRight, Filter, Flame, Phone, Tag, Check, Award,
-  SlidersHorizontal, RefreshCw, Eye, X, Home, Grid, Heart, MapPin, Percent
+  Search, ShoppingBag, ArrowLeft, Truck, ShieldCheck, 
+  ChevronRight, ChevronDown, Filter, Phone, Check, X, Home, Grid,
+  MessageCircle, User, Sliders, LayoutGrid, List
 } from 'lucide-react';
 
 export function SoyTechnoExperiment({ onBackToMain }) {
-  // State for search, filters, sorting and quick view
+  // Filters & State
   const [selectedBrand, setSelectedBrand] = useState('todos');
   const [selectedRam, setSelectedRam] = useState('todos');
   const [selectedStorage, setSelectedStorage] = useState('todos');
-  const [selectedNetwork, setSelectedNetwork] = useState('todos');
-  const [sortBy, setSortBy] = useState('popular');
   const [searchQuery, setSearchQuery] = useState('');
-  const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [sortBy, setSortBy] = useState('default');
   const [cartCount, setCartCount] = useState(0);
-  const [toastMsg, setToastMsg] = useState(null);
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
 
-  // Expanded High-Fidelity Catalog from SoyTechno Venezuela
-  const soyTechnoProducts = [
+  // Exact Brand circles matching SoyTechno screenshot
+  const brandBadges = [
+    { id: 'Samsung', name: 'Teléfono Celular Samsung', logoText: 'SAMSUNG', color: 'text-blue-700' },
+    { id: 'Apple', name: 'iPhone', logoText: '', color: 'text-black text-2xl font-normal' },
+    { id: 'Honor', name: 'Teléfono Celular Honor', logoText: 'HONOR', color: 'text-slate-800 tracking-widest' },
+    { id: 'Xiaomi', name: 'Teléfono Celular Xiaomi', logoText: 'mi', color: 'text-orange-500 font-extrabold text-xl' },
+    { id: 'Tecno', name: 'Teléfono Celular Tecno', logoText: 'TECNO', color: 'text-blue-600 font-black' },
+    { id: 'Infinix', name: 'Teléfono Celular Infinix', logoText: 'Infinix', color: 'text-emerald-600 font-bold' },
+  ];
+
+  // Exact Products catalog
+  const products = [
     {
       id: 'st-1',
       brand: 'Tecno',
-      name: 'Tecno Spark 30 Pro 256GB + 8GB RAM',
-      specs: 'Pantalla AMOLED 120Hz | Cámara 108MP | Batería 5000mAh | Helio G100',
+      name: 'Teléfono Celular Tecno Spark 30 Pro 256GB / 8GB RAM',
       price: 169.00,
       oldPrice: 199.00,
-      discount: '15% OFF',
-      badge: 'ENVÍO GRATIS NACIONAL',
       ram: '8GB',
       storage: '256GB',
-      network: '4G',
-      rating: 4.9,
-      reviews: 210,
       image: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=600&auto=format&fit=crop',
-      tag: 'OFERTA RELÁMPAGO',
-      tagBg: 'bg-red-600'
+      badge: 'ENVÍO GRATIS'
     },
     {
       id: 'st-2',
       brand: 'Infinix',
-      name: 'Infinix Note 40 Pro 256GB + 12GB RAM',
-      specs: 'Carga Rápida 70W | Cámara 108MP OIS | Pantalla Curva AMOLED 120Hz',
+      name: 'Teléfono Celular Infinix Note 40 Pro 256GB / 12GB RAM',
       price: 229.00,
       oldPrice: 269.00,
-      discount: '14% OFF',
-      badge: 'MÁS VENDIDO',
       ram: '12GB',
       storage: '256GB',
-      network: '4G',
-      rating: 5.0,
-      reviews: 185,
       image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=600&auto=format&fit=crop',
-      tag: 'SUPER PRECIO',
-      tagBg: 'bg-amber-500'
+      badge: 'OFERTA'
     },
     {
       id: 'st-3',
       brand: 'Xiaomi',
-      name: 'Xiaomi Redmi Note 13 Pro+ 5G 512GB + 12GB RAM',
-      specs: 'Cámara 200MP OIS | Carga HyperCharge 120W | IP68 Resistente al Agua',
+      name: 'Teléfono Celular Xiaomi Redmi Note 13 Pro+ 512GB / 12GB RAM',
       price: 389.00,
       oldPrice: 449.00,
-      discount: '13% OFF',
-      badge: 'ENVÍO EXPRESS 24H',
       ram: '12GB',
       storage: '512GB',
-      network: '5G',
-      rating: 4.9,
-      reviews: 340,
       image: 'https://images.unsplash.com/photo-1565849904461-04a58ad377e0?q=80&w=600&auto=format&fit=crop',
-      tag: 'TOP GAMA',
-      tagBg: 'bg-purple-600'
+      badge: 'ENVÍO GRATIS'
     },
     {
       id: 'st-4',
       brand: 'Samsung',
-      name: 'Samsung Galaxy A55 5G 256GB + 8GB RAM',
-      specs: 'Procesador Exynos 1480 4nm | Cámara 50MP OIS | Pantalla Super AMOLED',
+      name: 'Teléfono Celular Samsung Galaxy A55 5G 256GB / 8GB RAM',
       price: 349.00,
       oldPrice: 399.00,
-      discount: '12% OFF',
-      badge: 'GARANTÍA OFICIAL 1 AÑO',
       ram: '8GB',
       storage: '256GB',
-      network: '5G',
-      rating: 4.8,
-      reviews: 290,
       image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?q=80&w=600&auto=format&fit=crop',
-      tag: 'SAMSUNG OFICIAL',
-      tagBg: 'bg-blue-600'
+      badge: 'OFICIAL'
     },
     {
       id: 'st-5',
       brand: 'Honor',
-      name: 'Honor Magic6 Lite 5G 256GB + 8GB RAM',
-      specs: 'Pantalla Anti-Caídas 360° | Batería 5300mAh | Cámara 108MP',
+      name: 'Teléfono Celular Honor Magic6 Lite 256GB / 8GB RAM',
       price: 249.00,
       oldPrice: 289.00,
-      discount: '13% OFF',
-      badge: 'DELIVERY GRATIS CARACAS',
       ram: '8GB',
       storage: '256GB',
-      network: '5G',
-      rating: 4.9,
-      reviews: 160,
       image: 'https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?q=80&w=600&auto=format&fit=crop',
-      tag: 'ULTRA RESISTENTE',
-      tagBg: 'bg-emerald-600'
+      badge: 'ENVÍO GRATIS'
     },
     {
       id: 'st-6',
-      brand: 'Tecno',
-      name: 'Tecno Camon 30 Premier 5G 512GB + 12GB RAM',
-      specs: 'Lente Periscopio 50MP | Chip de Imagen Sony | Carga 70W',
-      price: 419.00,
-      oldPrice: 489.00,
-      discount: '14% OFF',
-      badge: 'ENVÍO GRATIS NACIONAL',
-      ram: '12GB',
-      storage: '512GB',
-      network: '5G',
-      rating: 5.0,
-      reviews: 95,
-      image: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?q=80&w=600&auto=format&fit=crop',
-      tag: 'CÁMARA PRO',
-      tagBg: 'bg-red-600'
-    },
-    {
-      id: 'st-7',
-      brand: 'Infinix',
-      name: 'Infinix Hot 40 Pro 256GB + 8GB RAM',
-      specs: 'Motor Helio G99 Ultra | Cámara 108MP | Pantalla FHD+ 120Hz',
-      price: 149.00,
-      oldPrice: 179.00,
-      discount: '16% OFF',
-      badge: 'OFERTA ECONÓMICA',
+      brand: 'Apple',
+      name: 'iPhone 15 Pro Max 256GB Titanio Natural',
+      price: 1199.00,
+      oldPrice: 1299.00,
       ram: '8GB',
       storage: '256GB',
-      network: '4G',
-      rating: 4.7,
-      reviews: 410,
-      image: 'https://images.unsplash.com/photo-1546054454-aa25e27610f9?q=80&w=600&auto=format&fit=crop',
-      tag: 'CALIDAD PRECIO',
-      tagBg: 'bg-amber-500'
-    },
-    {
-      id: 'st-8',
-      brand: 'Xiaomi',
-      name: 'Poco X6 Pro 5G 512GB + 12GB RAM',
-      specs: 'Procesador Dimensity 8300 Ultra | Pantalla 1.5K AMOLED 120Hz | Carga 67W',
-      price: 329.00,
-      oldPrice: 379.00,
-      discount: '13% OFF',
-      badge: 'GAMER EDITION',
-      ram: '12GB',
-      storage: '512GB',
-      network: '5G',
-      rating: 4.9,
-      reviews: 520,
-      image: 'https://images.unsplash.com/photo-1580910051074-3eb694886505?q=80&w=600&auto=format&fit=crop',
-      tag: 'GAMER 120FPS',
-      tagBg: 'bg-amber-600'
+      image: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?q=80&w=600&auto=format&fit=crop',
+      badge: 'PREMIUM'
     }
   ];
 
-  const brands = [
-    { id: 'todos', name: 'Todas las Marcas' },
-    { id: 'Tecno', name: 'Tecno Mobile' },
-    { id: 'Infinix', name: 'Infinix' },
-    { id: 'Xiaomi', name: 'Xiaomi / Poco' },
-    { id: 'Samsung', name: 'Samsung Galaxy' },
-    { id: 'Honor', name: 'Honor' }
-  ];
-
-  // Filter and Sort Logic
-  const filteredAndSorted = useMemo(() => {
-    let result = soyTechnoProducts.filter(p => {
-      const matchBrand = selectedBrand === 'todos' || p.brand === selectedBrand;
+  const filteredProducts = useMemo(() => {
+    return products.filter(p => {
+      const matchBrand = selectedBrand === 'todos' || p.brand.toLowerCase() === selectedBrand.toLowerCase();
       const matchRam = selectedRam === 'todos' || p.ram === selectedRam;
       const matchStorage = selectedStorage === 'todos' || p.storage === selectedStorage;
-      const matchNetwork = selectedNetwork === 'todos' || p.network === selectedNetwork;
-      const matchQuery = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.brand.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchBrand && matchRam && matchStorage && matchNetwork && matchQuery;
+      const matchSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchBrand && matchRam && matchStorage && matchSearch;
     });
+  }, [selectedBrand, selectedRam, selectedStorage, searchQuery]);
 
-    if (sortBy === 'lowPrice') {
-      result.sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'highPrice') {
-      result.sort((a, b) => b.price - a.price);
-    } else if (sortBy === 'rating') {
-      result.sort((a, b) => b.rating - a.rating);
-    }
-
-    return result;
-  }, [selectedBrand, selectedRam, selectedStorage, selectedNetwork, sortBy, searchQuery]);
-
-  const handleAddToCart = (product) => {
-    setCartCount(prev => prev + 1);
-    setToastMsg(`¡${product.name} añadido al carrito!`);
-    setTimeout(() => setToastMsg(null), 3000);
-  };
-
-  const handleWhatsAppOrder = (product) => {
-    const msg = `Hola M Store! Deseo realizar el pedido del equipo estilo SoyTechno: *${product.name}* por *${product.price.toFixed(2)} USD*. ¿Tienen disponibilidad inmediata para envío?`;
-    window.open(`https://wa.me/584120000000?text=${encodeURIComponent(msg)}`, '_blank');
+  const handleWhatsApp = (p) => {
+    const text = `Hola M Store! Quisiera comprar: *${p.name}* (${p.price} USD). ¿Tienen stock en tienda?`;
+    window.open(`https://wa.me/584120000000?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   return (
-    <div className="min-h-screen bg-[#070A12] text-slate-100 font-inter pb-24 relative">
-
-      {/* TOAST FEEDBACK */}
-      {toastMsg && (
-        <div className="fixed top-20 right-6 z-50 bg-red-600 text-white font-bold text-xs px-4 py-3 rounded-2xl shadow-[0_0_25px_rgba(239,68,68,0.5)] flex items-center gap-2 animate-bounce">
-          <Check className="w-4 h-4 text-white" />
-          <span>{toastMsg}</span>
-        </div>
-      )}
-
-      {/* BARRA SUPERIOR PROMOCIONAL ANUNCIO SOYTECHNO */}
-      <div className="bg-gradient-to-r from-red-600 via-rose-600 to-amber-500 text-white text-xs font-bold py-2 px-4 text-center flex items-center justify-between shadow-md">
+    <div className="min-h-screen bg-[#F4F6F9] text-slate-800 font-sans selection:bg-[#0055FF] selection:text-white pb-20 text-left">
+      
+      {/* 1. TOP BAR AMARILLA CASHEA / OFERTAS (EXACTA A SOYTECHNO) */}
+      <div className="bg-[#FFE600] text-black font-extrabold text-xs py-2 px-4 sm:px-8 flex items-center justify-between shadow-sm">
         <button 
           onClick={onBackToMain}
-          className="flex items-center gap-1.5 bg-black/40 hover:bg-black/70 text-white px-3.5 py-1 rounded-full transition-all text-[11px] font-extrabold min-h-[32px]"
+          className="flex items-center gap-1.5 bg-black/10 hover:bg-black/20 text-black px-3 py-1 rounded-full text-[11px] transition-all"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Volver a M Store Principal</span>
         </button>
-        <div className="flex items-center gap-2 truncate text-[11px] sm:text-xs">
-          <Truck className="w-4 h-4 shrink-0 text-amber-300" />
-          <span className="font-extrabold uppercase">ENVÍOS GRATIS A NIVEL NACIONAL • MRW / ZOOM / TEALCA</span>
+
+        <div className="flex items-center gap-2 font-black text-[11px] sm:text-xs tracking-tight">
+          <span className="bg-black text-white px-2 py-0.5 rounded text-[10px] uppercase font-mono font-bold">PROMO</span>
+          <span>Compra en cuotas o contado directo con Envío Gratis hoy</span>
         </div>
-        <div className="hidden lg:flex items-center gap-2 text-[11px]">
-          <ShieldCheck className="w-4 h-4 text-amber-300" />
-          <span>Garantía Oficial M Store 1 Año</span>
+
+        <div className="hidden md:flex items-center gap-3 text-[11px] font-bold">
+          <span>📍 Sucursales Venezuela</span>
+          <span>•</span>
+          <span>📞 Soporte Directo</span>
         </div>
       </div>
 
-      {/* HEADER STICKY CON LOGO SOYTECHNO & BÚSQUEDA */}
-      <header className="bg-[#0B101D]/95 border-b border-red-500/30 sticky top-0 z-40 backdrop-blur-xl px-4 py-3.5">
+      {/* 2. HEADER PRINCIPAL AZUL MARINO DEEP NAVY (EXACTO SOYTECHNO) */}
+      <header className="bg-[#0C1A38] text-white py-4 px-4 sm:px-8 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
-          {/* LOGO */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-red-600 to-amber-500 flex items-center justify-center font-black text-white text-xl shadow-[0_0_20px_rgba(239,68,68,0.5)]">
+          {/* LOGO SOYTECHNO STYLE */}
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setSelectedBrand('todos')}>
+            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-xl shadow-lg">
               M
             </div>
-            <div className="text-left">
-              <div className="flex items-center gap-1.5">
-                <span className="text-xl font-black font-space tracking-wider text-white">M STORE</span>
-                <span className="bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase">TECHNO</span>
+            <div>
+              <div className="flex items-center gap-1">
+                <span className="text-2xl font-black tracking-tighter text-white font-mono">SOYTECHNO</span>
               </div>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Catálogo Celulares 2026</p>
+              <p className="text-[9px] text-blue-300 font-bold uppercase tracking-widest">Tienda Oficial M Store</p>
             </div>
           </div>
 
-          {/* BUSCADOR */}
+          {/* BUSCADOR CON BOTÓN AZUL (EXACTO AL CAPTURE DE SOYTECHNO) */}
           <div className="flex-1 max-w-xl relative hidden md:block">
-            <Search className="w-4 h-4 text-slate-400 absolute left-4 top-3.5 pointer-events-none" />
-            <input 
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar Tecno, Infinix, Xiaomi, Samsung, Honor..."
-              className="w-full bg-white/5 border border-red-500/30 focus:border-red-500 focus:shadow-[0_0_15px_rgba(239,68,68,0.3)] rounded-full pl-11 pr-8 py-2.5 text-xs text-white placeholder-slate-400 outline-none transition-all"
-            />
-            {searchQuery && (
-              <button onClick={() => setSearchQuery('')} className="absolute right-3.5 top-3.5 text-slate-400 hover:text-white">
-                <X className="w-4 h-4" />
+            <div className="relative flex items-center">
+              <input 
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Búsqueda de productos"
+                className="w-full bg-white text-slate-900 rounded-full pl-5 pr-14 py-2.5 text-xs placeholder-slate-400 outline-none shadow-inner border border-slate-200"
+              />
+              <button className="absolute right-1 w-9 h-9 rounded-full bg-[#0055FF] hover:bg-blue-700 text-white flex items-center justify-center shadow-md transition-all">
+                <Search className="w-4 h-4" />
               </button>
-            )}
+            </div>
           </div>
 
-          {/* BOTONES CARRITO Y ATENCIÓN */}
-          <div className="flex items-center gap-3">
+          {/* ÍCONOS Y CONTACTO DE CABECERA */}
+          <div className="flex items-center gap-5 text-xs font-semibold">
+            <div className="hidden lg:flex items-center gap-2">
+              <Truck className="w-5 h-5 text-blue-400" />
+              <div className="text-left text-[11px] leading-tight">
+                <span className="block font-bold">Envíos GRATIS</span>
+                <span className="text-slate-400 text-[10px]">a Nivel Nacional</span>
+              </div>
+            </div>
+
             <a 
               href="https://wa.me/584120000000" 
               target="_blank" 
               rel="noreferrer"
-              className="flex items-center gap-2 bg-emerald-600/20 border border-emerald-500/50 text-emerald-400 px-3.5 py-2 rounded-xl text-xs font-bold hover:bg-emerald-600 hover:text-white transition-all min-h-[40px]"
+              className="flex items-center gap-2 hover:text-blue-300 transition-colors"
             >
-              <Phone className="w-4 h-4" />
-              <span className="hidden sm:inline">WhatsApp Vantas</span>
+              <Phone className="w-5 h-5 text-emerald-400" />
+              <div className="text-left text-[11px] leading-tight hidden sm:block">
+                <span className="block font-bold">Contáctanos por</span>
+                <span className="text-emerald-400 font-extrabold">WHATSAPP</span>
+              </div>
             </a>
 
-            <div className="relative">
-              <button className="p-2.5 rounded-2xl bg-white/5 border border-white/15 text-white hover:border-red-500 min-h-[40px] min-w-[40px] flex items-center justify-center">
-                <ShoppingBag className="w-5 h-5" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center animate-pulse shadow-[0_0_10px_#ef4444]">
-                    {cartCount}
-                  </span>
-                )}
+            <div className="flex items-center gap-3">
+              <button className="p-2 text-white hover:text-blue-300">
+                <User className="w-5 h-5" />
               </button>
+              <div className="relative cursor-pointer" onClick={() => setCartCount(c => c + 1)}>
+                <ShoppingBag className="w-6 h-6 text-white" />
+                <span className="absolute -top-1.5 -right-2 bg-blue-600 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              </div>
             </div>
           </div>
 
         </div>
       </header>
 
-      {/* BANNER PRINCIPAL HIGH-IMPACT AMBIENTE SOYTECHNO */}
-      <section className="max-w-7xl mx-auto px-4 mt-6">
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-950 via-red-950/80 to-slate-950 border border-red-500/40 p-6 sm:p-10 shadow-[0_0_40px_rgba(239,68,68,0.25)] flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-4 max-w-xl text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-600/20 border border-red-500/60 text-red-400 text-xs font-black uppercase shadow-sm">
-              <Flame className="w-4 h-4 text-red-500 animate-pulse" />
-              <span>ZONA DE CELULARES SOY TECHNO 2026</span>
-            </div>
-            <h1 className="text-3xl sm:text-5xl font-black text-white font-space leading-tight">
-              Los Celulares Más Vendidos de Venezuela
-            </h1>
-            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-inter">
-              Equipos 100% nuevos en caja sellada con Garantía Oficial. Tecno, Infinix, Xiaomi, Samsung y Honor con Envío Gratis a nivel nacional.
-            </p>
-            
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <div className="bg-amber-400 text-black font-black text-xs px-4 py-2.5 rounded-xl shadow-lg uppercase tracking-wider">
-                🚚 ENVÍO GRATIS EXPRESS
-              </div>
-              <div className="text-xs text-slate-300 font-bold bg-white/5 border border-white/10 px-3 py-2 rounded-xl">
-                ✓ Cobro a Destino Asegurado
-              </div>
-            </div>
+      {/* 3. BARRA DE CATEGORÍAS BLANCA SUB-HEADER */}
+      <nav className="bg-white border-b border-slate-200 px-4 sm:px-8 py-2.5 shadow-sm hidden md:block">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-6 text-xs font-bold text-slate-700">
+          
+          <button className="bg-[#0055FF] text-white px-5 py-2 rounded-full font-extrabold flex items-center gap-2 hover:bg-blue-700 transition-colors shadow-sm">
+            <span>≡ Categorías</span>
+          </button>
+
+          <div className="flex items-center gap-6">
+            <span className="hover:text-blue-600 cursor-pointer">Tienda electrónica</span>
+            <span className="hover:text-blue-600 cursor-pointer text-red-600 font-black">Ofertas</span>
+            <span className="hover:text-blue-600 cursor-pointer">Ubicaciones</span>
+            <span className="hover:text-blue-600 cursor-pointer">Métodos de pago</span>
+            <span className="hover:text-blue-600 cursor-pointer">Nosotros</span>
+            <span className="hover:text-blue-600 cursor-pointer">Contacto</span>
+            <span className="hover:text-blue-600 cursor-pointer">Rastrea tu pedido</span>
+            <span className="hover:text-blue-600 cursor-pointer text-blue-600">Club SoyTechno</span>
           </div>
 
-          <div className="w-56 h-56 sm:w-64 sm:h-64 rounded-3xl bg-white p-4 border-2 border-red-500/50 shadow-[0_0_35px_rgba(239,68,68,0.35)] flex items-center justify-center shrink-0 group hover:scale-105 transition-transform">
-            <img 
-              src="https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=600&auto=format&fit=crop" 
-              alt="Tecno Spark 30 Pro"
-              className="w-full h-full object-contain filter drop-shadow-md" 
-            />
-          </div>
         </div>
-      </section>
+      </nav>
 
-      {/* CINTA DE FILTROS POR MARCAS */}
-      <section className="max-w-7xl mx-auto px-4 mt-8">
-        <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
-          {brands.map(b => (
-            <button
+      {/* 4. BREADCRUMBS Y CONTADOR */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3 flex items-center justify-between text-xs text-slate-500 font-medium">
+        <div>
+          <span className="hover:underline cursor-pointer" onClick={onBackToMain}>Inicio</span> / <span className="text-slate-900 font-bold">Teléfonos Celulares</span>
+        </div>
+        <div>
+          Mostrando {filteredProducts.length} de {products.length} resultados
+        </div>
+      </div>
+
+      {/* 5. CÍRCULOS DE MARCAS DE SOYTECHNO (REPLICADOS EXACTOS) */}
+      <section className="bg-white border-y border-slate-200 py-6 px-4 sm:px-8">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 overflow-x-auto pb-2 scrollbar-none">
+          {brandBadges.map((b) => (
+            <div 
               key={b.id}
-              onClick={() => setSelectedBrand(b.id)}
-              className={`px-5 py-3 rounded-2xl text-xs font-black transition-all border shrink-0 min-h-[44px] flex items-center gap-2.5 ${
-                selectedBrand === b.id
-                  ? 'bg-red-600 text-white border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.5)]'
-                  : 'bg-white/5 border-white/10 text-slate-300 hover:border-red-500/40 hover:text-white'
-              }`}
+              onClick={() => setSelectedBrand(selectedBrand === b.id ? 'todos' : b.id)}
+              className={`flex flex-col items-center gap-2 cursor-pointer group shrink-0 transition-transform ${selectedBrand === b.id ? 'scale-105' : ''}`}
             >
-              <Smartphone className="w-4 h-4 shrink-0" />
-              <span>{b.name}</span>
-            </button>
+              <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white border-2 flex items-center justify-center shadow-md group-hover:shadow-lg transition-all ${selectedBrand === b.id ? 'border-blue-600 ring-4 ring-blue-100' : 'border-slate-200'}`}>
+                <span className={`font-black text-sm sm:text-base ${b.color}`}>{b.logoText}</span>
+              </div>
+              <span className="text-xs font-bold text-slate-700 group-hover:text-blue-600 text-center max-w-[110px] leading-tight">
+                {b.name}
+              </span>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* BARRA DE FILTROS SECUNDARIOS (RAM, ALMACENAMIENTO, RED & ORDEN) */}
-      <section className="max-w-7xl mx-auto px-4 mt-6 bg-[#0B101D] p-4 rounded-2xl border border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs font-bold">
-        <div className="flex flex-wrap items-center gap-4">
-          
-          {/* RAM */}
-          <div className="flex items-center gap-2">
-            <span className="text-slate-400">RAM:</span>
-            {['todos', '8GB', '12GB'].map(ram => (
-              <button
-                key={ram}
-                onClick={() => setSelectedRam(ram)}
-                className={`px-3 py-1.5 rounded-xl border transition-all ${
-                  selectedRam === ram
-                    ? 'bg-amber-400 text-black border-amber-400 font-extrabold'
-                    : 'bg-white/5 border-white/10 text-slate-300 hover:text-white'
-                }`}
-              >
-                {ram === 'todos' ? 'Todas' : ram}
-              </button>
-            ))}
-          </div>
+      {/* 6. ZONA PRINCIPAL DE TIENDA CON SIDEBAR DE FILTROS */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 flex flex-col md:flex-row gap-8">
+        
+        {/* BARRA LATERAL DE FILTROS (EXACTA A SOYTECHNO) */}
+        <aside className="w-full md:w-64 shrink-0 space-y-6">
+          <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4 text-left">
+            <h3 className="font-extrabold text-sm text-slate-900 border-b border-slate-100 pb-3 flex items-center justify-between">
+              <span>Filtrar Productos</span>
+              <Filter className="w-4 h-4 text-slate-400" />
+            </h3>
 
-          {/* STORAGE */}
-          <div className="flex items-center gap-2">
-            <span className="text-slate-400">Almacenamiento:</span>
-            {['todos', '256GB', '512GB'].map(st => (
-              <button
-                key={st}
-                onClick={() => setSelectedStorage(st)}
-                className={`px-3 py-1.5 rounded-xl border transition-all ${
-                  selectedStorage === st
-                    ? 'bg-amber-400 text-black border-amber-400 font-extrabold'
-                    : 'bg-white/5 border-white/10 text-slate-300 hover:text-white'
-                }`}
-              >
-                {st === 'todos' ? 'Todos' : st}
-              </button>
-            ))}
-          </div>
-
-          {/* NETWORK */}
-          <div className="flex items-center gap-2">
-            <span className="text-slate-400">Red:</span>
-            {['todos', '4G', '5G'].map(net => (
-              <button
-                key={net}
-                onClick={() => setSelectedNetwork(net)}
-                className={`px-3 py-1.5 rounded-xl border transition-all ${
-                  selectedNetwork === net
-                    ? 'bg-red-600 text-white border-red-500 font-extrabold'
-                    : 'bg-white/5 border-white/10 text-slate-300 hover:text-white'
-                }`}
-              >
-                {net === 'todos' ? 'Todas' : net}
-              </button>
-            ))}
-          </div>
-
-        </div>
-
-        {/* ORDENAR POR */}
-        <div className="flex items-center gap-2 ml-auto">
-          <span className="text-slate-400">Ordenar por:</span>
-          <select 
-            value={sortBy} 
-            onChange={(e) => setSortBy(e.target.value)}
-            className="bg-white/5 border border-white/15 text-white rounded-xl px-3 py-1.5 outline-none font-bold text-xs cursor-pointer focus:border-red-500"
-          >
-            <option value="popular" className="bg-[#0B101D]">Más Populares</option>
-            <option value="lowPrice" className="bg-[#0B101D]">Precio: Menor a Mayor</option>
-            <option value="highPrice" className="bg-[#0B101D]">Precio: Mayor a Menor</option>
-            <option value="rating" className="bg-[#0B101D]">Mejores Reseñas</option>
-          </select>
-        </div>
-      </section>
-
-      {/* LISTADO DE PRODUCTOS HIGH FIDELITY */}
-      <main className="max-w-7xl mx-auto px-4 mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {filteredAndSorted.map(p => (
-          <div 
-            key={p.id}
-            className="bg-[#0D1322] rounded-3xl p-4 border border-red-500/20 hover:border-red-500 transition-all flex flex-col justify-between space-y-3 group hover:shadow-[0_10px_35px_rgba(239,68,68,0.25)] relative text-left"
-          >
-            {/* BADGES SUPERIORES */}
-            <div className="flex items-center justify-between gap-1">
-              <span className={`${p.tagBg} text-white text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm truncate`}>
-                {p.tag}
-              </span>
-              <span className="bg-amber-400/20 border border-amber-400/50 text-amber-300 text-[9px] font-bold px-2 py-0.5 rounded-md shrink-0">
-                {p.network}
-              </span>
+            {/* MARCA CHECKBOXES */}
+            <div className="space-y-2">
+              <span className="text-xs font-extrabold text-slate-700 block">Marca</span>
+              {['todos', 'Samsung', 'Apple', 'Honor', 'Xiaomi', 'Tecno', 'Infinix'].map(m => (
+                <label key={m} className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer hover:text-blue-600">
+                  <input 
+                    type="checkbox"
+                    checked={selectedBrand === m}
+                    onChange={() => setSelectedBrand(m)}
+                    className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span>{m === 'todos' ? 'Todas las marcas' : m}</span>
+                </label>
+              ))}
             </div>
 
-            {/* FOTO CON MARCO BLANCO ESTUDIO */}
-            <div 
-              className="w-full h-48 bg-white rounded-2xl p-3 flex items-center justify-center border border-slate-200 shadow-sm relative overflow-hidden cursor-pointer"
-              onClick={() => setQuickViewProduct(p)}
-            >
-              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                <span className="bg-red-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-lg">
-                  VER DETALLES →
-                </span>
-              </div>
-              <img src={p.image} alt={p.name} className="w-full h-full object-contain filter drop-shadow-sm group-hover:scale-105 transition-transform" />
+            {/* RAM CHECKBOXES */}
+            <div className="space-y-2 pt-2 border-t border-slate-100">
+              <span className="text-xs font-extrabold text-slate-700 block">Memoria RAM</span>
+              {['todos', '8GB', '12GB'].map(ram => (
+                <label key={ram} className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer hover:text-blue-600">
+                  <input 
+                    type="checkbox"
+                    checked={selectedRam === ram}
+                    onChange={() => setSelectedRam(ram)}
+                    className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span>{ram === 'todos' ? 'Cualquier RAM' : ram}</span>
+                </label>
+              ))}
             </div>
 
-            {/* INFORMACIÓN DEL EQUIPO */}
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-red-400 font-black uppercase tracking-wider">{p.brand}</span>
-                <span className="text-amber-400 font-bold flex items-center gap-1">
-                  <Star className="w-3 h-3 fill-amber-400" /> {p.rating} ({p.reviews})
-                </span>
-              </div>
-
-              <h3 className="text-xs font-bold text-white line-clamp-2 min-h-[32px] font-space">{p.name}</h3>
-              <p className="text-[10px] text-slate-400 line-clamp-2 leading-relaxed">{p.specs}</p>
-
-              {/* PRECIO LEGIBLE EN BLANCO HD */}
-              <div className="flex items-baseline gap-1.5 pt-1">
-                <span className="text-xl font-black text-white font-inter tracking-tight">${p.price.toFixed(2)}</span>
-                <span className="text-[10px] font-extrabold text-red-400">USD</span>
-                {p.oldPrice && (
-                  <span className="text-[11px] text-slate-500 line-through font-inter ml-1">${p.oldPrice.toFixed(2)}</span>
-                )}
-                <span className="ml-auto bg-emerald-500/20 text-emerald-400 text-[9px] font-bold px-1.5 py-0.5 rounded-md">
-                  {p.discount}
-                </span>
-              </div>
-            </div>
-
-            {/* BOTONES DE ACCIÓN */}
-            <div className="grid grid-cols-2 gap-2 pt-1">
-              <button
-                onClick={() => handleAddToCart(p)}
-                className="w-full bg-white/10 hover:bg-white/20 text-white font-bold py-2.5 rounded-xl text-[11px] transition-all min-h-[40px] flex items-center justify-center gap-1"
-              >
-                <span>Añadir</span>
-              </button>
-
-              <button
-                onClick={() => handleWhatsAppOrder(p)}
-                className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black py-2.5 rounded-xl text-[11px] uppercase tracking-wider shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all flex items-center justify-center gap-1 min-h-[40px]"
-              >
-                <span>Comprar</span>
-              </button>
-            </div>
-          </div>
-        ))}
-      </main>
-
-      {/* MODAL VISTA RÁPIDA SOYTECHNO */}
-      {quickViewProduct && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#0B101D] border-2 border-red-500/50 rounded-3xl max-w-lg w-full p-6 space-y-4 relative shadow-[0_0_50px_rgba(239,68,68,0.4)] text-left">
+            {/* BOTÓN LIMPIAR */}
             <button 
-              onClick={() => setQuickViewProduct(null)} 
-              className="absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-full bg-white/5"
+              onClick={() => { setSelectedBrand('todos'); setSelectedRam('todos'); setSelectedStorage('todos'); setSearchQuery(''); }}
+              className="w-full text-center text-xs font-bold text-blue-600 hover:underline pt-2 block"
             >
-              <X className="w-5 h-5" />
+              Restablecer Filtros
             </button>
+          </div>
+        </aside>
 
-            <div className="flex items-center gap-2 text-xs font-black text-red-400 uppercase">
-              <Smartphone className="w-4 h-4" />
-              <span>{quickViewProduct.brand} • {quickViewProduct.ram} / {quickViewProduct.storage}</span>
-            </div>
+        {/* CATÁLOGO DE PRODUCTOS (GRID DE TARJETAS LIMPIAS) */}
+        <main className="flex-1 space-y-6">
+          
+          {/* HEADER DEL CATÁLOGO (TITULO + USD SELECTOR + SORTING) */}
+          <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+            <h2 className="text-xl font-black text-[#0C1A38]">Teléfonos Celulares</h2>
 
-            <h3 className="text-lg font-black text-white font-space">{quickViewProduct.name}</h3>
+            <div className="flex items-center gap-4 text-xs font-bold">
+              {/* USD DROPDOWN SELECTOR DE DIVISAS */}
+              <div className="flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                <span>🇺🇸</span>
+                <span className="font-mono">USD Dólares</span>
+              </div>
 
-            <div className="w-full h-56 bg-white rounded-2xl p-4 flex items-center justify-center border border-slate-200">
-              <img src={quickViewProduct.image} alt={quickViewProduct.name} className="w-full h-full object-contain" />
-            </div>
-
-            <p className="text-xs text-slate-300 leading-relaxed bg-white/5 p-3 rounded-xl border border-white/10">
-              {quickViewProduct.specs}
-            </p>
-
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black text-white font-inter">${quickViewProduct.price.toFixed(2)}</span>
-              <span className="text-xs font-bold text-red-400">USD</span>
-              {quickViewProduct.oldPrice && (
-                <span className="text-sm text-slate-500 line-through ml-2">${quickViewProduct.oldPrice.toFixed(2)}</span>
-              )}
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <button
-                onClick={() => { handleAddToCart(quickViewProduct); setQuickViewProduct(null); }}
-                className="w-full bg-white/10 hover:bg-white/20 text-white font-bold py-3 rounded-2xl text-xs"
+              {/* SORT DROPDOWN */}
+              <select 
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="bg-slate-100 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-700 outline-none cursor-pointer"
               >
-                Añadir al Carrito
-              </button>
-
-              <button
-                onClick={() => handleWhatsAppOrder(quickViewProduct)}
-                className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black py-3 rounded-2xl text-xs uppercase tracking-wider shadow-lg"
-              >
-                Comprar por WhatsApp
-              </button>
+                <option value="default">Orden predeterminado</option>
+                <option value="low">Precio: Menor a Mayor</option>
+                <option value="high">Precio: Mayor a Menor</option>
+              </select>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* NAVEGACIÓN MÓVIL INFERIOR STICKY ESTILO SOYTECHNO */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0B101D]/95 border-t border-red-500/30 backdrop-blur-xl px-4 py-2 flex items-center justify-around text-[10px] font-bold text-slate-400">
-        <button onClick={onBackToMain} className="flex flex-col items-center gap-1 hover:text-white">
-          <Home className="w-5 h-5 text-red-500" />
-          <span>Inicio</span>
-        </button>
-        <button onClick={() => setSelectedBrand('todos')} className="flex flex-col items-center gap-1 hover:text-white">
-          <Grid className="w-5 h-5 text-slate-300" />
-          <span>Marcas</span>
-        </button>
-        <button onClick={() => setSelectedRam('8GB')} className="flex flex-col items-center gap-1 hover:text-white">
-          <Flame className="w-5 h-5 text-amber-400 animate-pulse" />
-          <span>Ofertas</span>
-        </button>
-        <a href="https://wa.me/584120000000" target="_blank" rel="noreferrer" className="flex flex-col items-center gap-1 hover:text-white">
-          <Phone className="w-5 h-5 text-emerald-400" />
-          <span>Contacto</span>
-        </a>
+          {/* GRID TARJETAS */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProducts.map(p => (
+              <div 
+                key={p.id}
+                className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-3 group"
+              >
+                {/* BADGE */}
+                <div className="flex items-center justify-between">
+                  <span className="bg-blue-600 text-white text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase">
+                    {p.badge}
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-mono">{p.brand}</span>
+                </div>
+
+                {/* IMAGEN MARCO BLANCO */}
+                <div className="w-full h-48 p-3 flex items-center justify-center overflow-hidden">
+                  <img 
+                    src={p.image} 
+                    alt={p.name} 
+                    className="w-full h-full object-contain group-hover:scale-105 transition-transform" 
+                  />
+                </div>
+
+                {/* TITULO Y PRECIOS */}
+                <div className="space-y-1.5 text-left">
+                  <h3 className="text-xs font-bold text-slate-900 line-clamp-2 min-h-[32px]">{p.name}</h3>
+                  <div className="flex items-baseline gap-2 pt-1">
+                    <span className="text-xl font-black text-slate-900 font-sans">${p.price.toFixed(2)}</span>
+                    <span className="text-xs font-bold text-blue-600 font-mono">USD</span>
+                    {p.oldPrice && (
+                      <span className="text-xs text-slate-400 line-through font-mono ml-auto">${p.oldPrice.toFixed(2)}</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* BOTÓN DE COMPRA WHATSAPP */}
+                <button
+                  onClick={() => handleWhatsApp(p)}
+                  className="w-full bg-[#0055FF] hover:bg-blue-700 text-white font-extrabold py-2.5 rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                >
+                  <span>Comprar por WhatsApp</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+
+        </main>
+
+      </div>
+
+      {/* FLOATING WHATSAPP BUTTON (ESTILO SOYTECHNO) */}
+      <a 
+        href="https://wa.me/584120000000" 
+        target="_blank" 
+        rel="noreferrer"
+        className="fixed bottom-6 right-6 z-50 bg-emerald-500 text-white p-3.5 rounded-full shadow-[0_4px_20px_rgba(16,185,129,0.5)] hover:scale-110 transition-transform flex items-center justify-center"
+      >
+        <Phone className="w-6 h-6 fill-white" />
+      </a>
+
+      {/* FLOATING BOT CHATBOT ASSISTANT (ESTILO SOYTECHNO) */}
+      <div className="fixed bottom-6 left-6 z-50 bg-white border border-slate-200 shadow-xl rounded-2xl px-4 py-2.5 flex items-center gap-3 text-xs font-bold text-slate-800 hidden sm:flex">
+        <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-black">
+          🤖
+        </div>
+        <span>¿En qué puedo ayudarte? 👋</span>
       </div>
 
     </div>

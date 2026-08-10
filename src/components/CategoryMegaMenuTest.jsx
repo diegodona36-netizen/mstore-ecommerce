@@ -83,14 +83,14 @@ export const CategoryMegaMenuTest = ({ isOpen, onClose, onSelectCategory, custom
           </button>
         </div>
 
-        {/* DIRECT MAIN CATEGORIES GRID */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 text-xs font-space">
+        {/* DIRECT MAIN CATEGORIES GRID (1 col en móvil para perfecto espacio de etiquetas) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 text-xs font-space max-h-[65vh] md:max-h-none overflow-y-auto pr-1">
           {allCategories.map((cat, idx) => (
             <button 
               key={idx}
               onClick={() => handleCategoryClick(cat.filterId, cat.name)}
               aria-label={`Filtrar por categoría ${cat.name}`}
-              className="flex items-center justify-between p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:border-[#00E5FF] hover:bg-[#00E5FF]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00E5FF] cursor-pointer text-slate-200 hover:text-[#00E5FF] transition-all group text-left active:scale-95 min-h-[44px]"
+              className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-[#00E5FF] hover:bg-[#00E5FF]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00E5FF] cursor-pointer text-slate-200 hover:text-[#00E5FF] transition-all group text-left active:scale-95 min-h-[44px]"
             >
               <div className="flex items-center gap-2.5">
                 {cat.Icon && (

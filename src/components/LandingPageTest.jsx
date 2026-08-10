@@ -313,15 +313,15 @@ export const LandingPageTest = ({
       <header className="sticky top-0 z-40 bg-[#0A0908]/95 backdrop-blur-xl border-b border-[#00E5FF]/30 px-3 sm:px-6 md:px-8 py-3">
         <div className="max-w-7xl mx-auto space-y-2.5 md:space-y-0">
           
-          {/* Fila Principal */}
+          {/* Fila Principal de Navegación */}
           <div className="flex items-center justify-between gap-2 sm:gap-4">
             
             {/* Logo M Store */}
-            <div className="shrink-0">
+            <div className="shrink-0 flex items-center">
               <Logo size="medium" />
             </div>
 
-            {/* En escritorio (md+): Menú + Buscador + Carrito juntos */}
+            {/* En escritorio (md+): Menú + Buscador juntos */}
             <div className="hidden md:flex flex-1 items-center gap-4 mx-4">
               {/* Menú de Categorías Button */}
               <button
@@ -337,7 +337,7 @@ export const LandingPageTest = ({
               {/* Buscador Amplio en Escritorio */}
               <div className="flex-1 max-w-xl">
                 <div className="relative">
-                  <Search className="w-4 h-4 text-slate-300 absolute left-4 top-3 pointer-events-none" />
+                  <Search className="w-4 h-4 text-slate-300 absolute left-4 top-3.5 pointer-events-none" />
                   <input
                     type="text"
                     value={searchQuery}
@@ -350,15 +350,15 @@ export const LandingPageTest = ({
               </div>
             </div>
 
-            {/* Acciones Rápidas (Móvil y Escritorio) */}
+            {/* Acciones Rápidas (Móvil y Escritorio) — 100% Simétricas */}
             <div className="flex items-center gap-2 shrink-0 text-xs font-space">
-              {/* En móvil: Botón Menú Categorías corto */}
+              {/* En móvil: Botón Menú Categorías */}
               <button
                 onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
                 aria-label="Abrir Categorías"
-                className="md:hidden flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/50 hover:bg-[#00E5FF] hover:text-black text-xs font-bold font-space min-h-[44px]"
+                className="md:hidden flex items-center gap-1.5 px-3 py-2.5 rounded-2xl bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/50 hover:bg-[#00E5FF] hover:text-black text-xs font-bold font-space min-h-[44px] shadow-[0_0_15px_rgba(0,229,255,0.2)]"
               >
-                <Menu className="w-4 h-4" />
+                <Menu className="w-4 h-4 shrink-0" />
                 <span>Categorías</span>
               </button>
 
@@ -366,7 +366,7 @@ export const LandingPageTest = ({
               <button 
                 onClick={() => setIsCartOpen(true)}
                 aria-label={`Ver Carrito de Compras (${cartItems.reduce((a, b) => a + b.quantity, 0)} productos)`}
-                className="relative cursor-pointer p-3 rounded-2xl bg-[#00E5FF]/10 border border-[#00E5FF]/50 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none transition-all shadow-[0_0_20px_rgba(0,229,255,0.4)] active:scale-95 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                className="relative cursor-pointer p-3 rounded-2xl bg-[#00E5FF]/10 border border-[#00E5FF]/50 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none transition-all shadow-[0_0_15px_rgba(0,229,255,0.2)] active:scale-95 min-w-[44px] min-h-[44px] flex items-center justify-center"
                 title="Ver Carrito de Compras"
               >
                 <ShoppingCart className="w-5 h-5" />
@@ -382,14 +382,14 @@ export const LandingPageTest = ({
           {/* Fila 2 en Móvil: Buscador completo */}
           <div className="md:hidden pt-1">
             <div className="relative w-full">
-              <Search className="w-4 h-4 text-slate-300 absolute left-3.5 top-3 pointer-events-none" />
+              <Search className="w-4 h-4 text-slate-300 absolute left-4 top-3.5 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar en el catálogo..."
+                placeholder="Buscar televisores, neveras, teléfonos..."
                 aria-label="Buscar productos"
-                className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] focus:shadow-[0_0_15px_rgba(0,229,255,0.3)] rounded-full pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-400 outline-none font-inter min-h-[44px]"
+                className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] focus:shadow-[0_0_15px_rgba(0,229,255,0.3)] rounded-full pl-11 pr-4 py-2.5 text-xs text-white placeholder-slate-400 outline-none font-inter min-h-[44px]"
               />
             </div>
           </div>

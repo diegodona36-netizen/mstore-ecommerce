@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { MessageSquare, X, Send, CheckCheck, Sparkles } from 'lucide-react';
 
-export const SupportChatWidget = () => {
+export const SupportChatWidget = ({ isHidden = false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [unreadCount, setUnreadCount] = useState(1);
+
+  if (isHidden) return null;
 
   const handleOpen = () => {
     setIsOpen(!isOpen);

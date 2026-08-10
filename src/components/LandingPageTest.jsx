@@ -816,11 +816,12 @@ export const LandingPageTest = ({
         onRemoveCategory={onRemoveCategory}
       />
 
-      {/* WIDGET CHAT DE SOPORTE FLOTANTE REPLICANDO LA IMAGEN DEL USUARIO */}
-      <SupportChatWidget />
+      {/* WIDGET CHAT DE SOPORTE FLOTANTE (SE OCULTA AUTOMÁTICAMENTE CUANDO EL MEGA MENÚ ESTÁ ABIERTO) */}
+      <SupportChatWidget isHidden={isMegaMenuOpen} />
 
-      {/* BARRA NAVEGADORA INFERIOR TIPO APP PARA CELULARES */}
+      {/* BARRA NAVEGADORA INFERIOR TIPO APP PARA CELULARES (SE OCULTA CUANDO EL MEGA MENÚ ESTÁ ABIERTO) */}
       <MobileBottomNav 
+        isHidden={isMegaMenuOpen}
         cartCount={cartItems.reduce((a, b) => a + b.quantity, 0)}
         onOpenMegaMenu={() => setIsMegaMenuOpen(true)}
         onOpenCart={() => setIsCartOpen(true)}

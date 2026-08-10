@@ -57,7 +57,7 @@ export const CategoryMegaMenuTest = ({ isOpen, onClose, onSelectCategory, custom
       role="dialog"
       aria-modal="true"
       aria-label="Menú de Categorías M Store"
-      className="fixed inset-0 z-50 bg-[#0A0908]/98 backdrop-blur-2xl p-4 sm:p-8 md:p-12 overflow-y-auto animate-fadeIn flex flex-col justify-between"
+      className="fixed inset-0 z-[60] bg-[#0A0908]/98 backdrop-blur-2xl p-4 sm:p-8 md:p-12 overflow-y-auto animate-fadeIn flex flex-col justify-between"
     >
       <div className="max-w-7xl mx-auto w-full relative space-y-6 my-auto">
         

@@ -6,8 +6,11 @@ export const MobileBottomNav = ({
   onOpenMegaMenu, 
   onOpenCart, 
   onScrollToHome, 
-  onScrollToLocation 
+  onScrollToLocation,
+  isHidden = false
 }) => {
+  if (isHidden) return null;
+
   return (
     <div className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-[#0A0908]/95 backdrop-blur-2xl border-t border-[#00E5FF]/30 py-2 px-3 font-space text-[10px]">
       <div className="grid grid-cols-4 items-center gap-1 text-center">

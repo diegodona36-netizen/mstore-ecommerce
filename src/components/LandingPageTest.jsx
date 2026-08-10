@@ -382,7 +382,7 @@ export const LandingPageTest = ({
                 )}
               </button>
             </div>
-
+          </div>
         </div>
       </header>
 

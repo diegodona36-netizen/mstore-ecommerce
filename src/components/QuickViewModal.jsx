@@ -44,12 +44,9 @@ export const QuickViewModal = ({ product, onClose, onAddToCart, onToggleFavorite
         
         {/* MODAL TOP HEADER BAR (Garantiza 0 solapamiento en móviles) */}
         <div className="flex items-center justify-between pb-3 mb-2 border-b border-white/10 shrink-0">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <span className="text-[10px] font-extrabold tracking-wider uppercase bg-[#00E5FF] text-black px-3 py-1 rounded-full font-space shadow-[0_0_12px_#00E5FF] truncate">
-              {product.tag || 'Insignia M Store'}
-            </span>
-            <span className="text-xs font-bold text-[#00E5FF] uppercase tracking-wider font-space truncate hidden sm:inline">
-              • {product.category}
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-xs font-bold text-[#00E5FF] uppercase tracking-wider font-space truncate">
+              {product.category}
             </span>
           </div>
 
@@ -116,13 +113,14 @@ export const QuickViewModal = ({ product, onClose, onAddToCart, onToggleFavorite
               {product.name}
             </h2>
 
-            {/* Price */}
-            <div className="flex items-baseline gap-3">
-              <span className="text-3xl md:text-4xl font-extrabold font-space text-white">
-                ${product.price.toLocaleString('en-US', { minimumFractionDigits: 2 })} USD
+            {/* Price (Sin saltos de línea ni USD caído) */}
+            <div className="flex items-baseline gap-2 flex-wrap">
+              <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold font-space text-white">
+                ${product.price.toLocaleString('en-US', { minimumFractionDigits: 2 })}
               </span>
+              <span className="text-xs sm:text-sm font-extrabold text-[#00E5FF] font-space">USD</span>
               {product.originalPrice && (
-                <span className="text-base text-slate-400 line-through font-space">
+                <span className="text-xs sm:text-base text-slate-400 line-through font-space ml-2">
                   ${product.originalPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                 </span>
               )}

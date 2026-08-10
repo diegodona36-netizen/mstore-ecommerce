@@ -102,8 +102,11 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRem
 
                   {/* Details */}
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-xs font-bold text-white font-space truncate">{item.name}</h4>
-                    <p className="text-xs font-extrabold text-[#00E5FF] mt-0.5">${item.price.toLocaleString()}</p>
+                    <h4 className="text-xs font-bold text-white font-space line-clamp-2 leading-tight">{item.name}</h4>
+                    <p className="text-xs font-extrabold text-[#00E5FF] mt-1 flex items-baseline gap-1">
+                      <span>${item.price.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                      <span className="text-[10px] text-slate-400 font-space">USD</span>
+                    </p>
                     
                     {/* Quantity Selector */}
                     <div className="flex items-center gap-2 mt-2">
@@ -126,7 +129,7 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRem
                   {/* Remove Button */}
                   <button
                     onClick={() => onRemoveItem(item.id)}
-                    className="p-2 text-slate-500 hover:text-red-400 transition-colors"
+                    className="p-2 text-slate-500 hover:text-red-400 transition-colors shrink-0"
                     title="Eliminar producto"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -138,31 +141,34 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRem
 
           {/* Cart Footer Checkout */}
           {cartItems.length > 0 && (
-            <div className="p-6 border-t border-white/10 bg-black/40 space-y-4">
+            <div className="p-5 border-t border-white/10 bg-black/60 space-y-3.5">
               <div className="space-y-1.5 text-xs">
                 <div className="flex justify-between text-slate-400">
                   <span>Subtotal</span>
-                  <span className="text-white font-medium">${subtotal.toLocaleString()}</span>
+                  <span className="text-white font-medium">${subtotal.toLocaleString('en-US', { minimumFractionDigits: 2 })} USD</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span>Envío Exprés</span>
                   <span className="text-emerald-400 font-bold">
-                    {subtotal >= freeShippingThreshold ? 'GRATIS' : '$15'}
+                    {subtotal >= freeShippingThreshold ? 'GRATIS' : '$15 USD'}
                   </span>
                 </div>
-                <div className="flex justify-between text-base font-extrabold text-white font-space pt-2 border-t border-white/10">
-                  <span>Total</span>
-                  <span className="text-[#00E5FF]">${subtotal.toLocaleString()}</span>
+                <div className="flex justify-between items-center text-sm font-extrabold text-white font-space pt-2 border-t border-white/10">
+                  <span>Total Pedido:</span>
+                  <div className="flex items-baseline gap-1 text-right">
+                    <span className="text-lg text-[#00E5FF] font-extrabold">${subtotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                    <span className="text-xs text-[#00E5FF] font-bold">USD</span>
+                  </div>
                 </div>
               </div>
 
-              {/* WhatsApp Checkout Primary Action */}
+              {/* WhatsApp Primary Action */}
               <button
                 onClick={handleWhatsAppCheckout}
-                className="w-full py-4 rounded-xl font-extrabold text-sm flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-400 text-black shadow-[0_0_25px_rgba(16,185,129,0.5)] hover:scale-[1.02] transition-all"
+                className="w-full py-3.5 px-4 rounded-2xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 bg-[#00E5FF] hover:bg-[#00F2FE] text-black shadow-[0_0_20px_rgba(0,229,255,0.5)] active:scale-95 transition-all"
               >
-                <MessageCircle className="w-5 h-5 fill-black" />
-                <span>Finalizar Pedido por WhatsApp</span>
+                <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 fill-black shrink-0" />
+                <span className="truncate">Comprar por WhatsApp</span>
               </button>
 
               <div className="flex items-center justify-center gap-2 text-[10px] text-slate-500">

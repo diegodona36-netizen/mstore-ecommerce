@@ -647,6 +647,15 @@ export const LandingPageTest = ({
             >
               {/* IMAGE AREA */}
               <div className="w-full h-48 rounded-xl bg-white p-3 flex items-center justify-center relative overflow-hidden">
+                {/* Botón de Favoritos (Corazón) */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); toggleWishlist(p.id); }}
+                  aria-label={wishlist.includes(p.id) ? `Quitar ${p.name} de favoritos` : `Añadir ${p.name} a favoritos`}
+                  className="absolute top-2 left-2 p-2 rounded-full bg-black/50 hover:bg-black/80 text-slate-300 hover:text-red-500 transition-colors min-w-[38px] min-h-[38px] flex items-center justify-center z-10"
+                >
+                  <Heart className={`w-4 h-4 ${wishlist.includes(p.id) ? 'fill-red-500 text-red-500' : ''}`} />
+                </button>
+
                 {/* Quick view hover badge */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 rounded-xl z-10">
                   <span className="bg-[#00E5FF] text-black text-[10px] font-extrabold font-space px-3 py-1.5 rounded-full shadow-[0_0_15px_#00E5FF]">
@@ -669,10 +678,11 @@ export const LandingPageTest = ({
                   {p.originalPrice && <span className="text-xs text-slate-400 line-through">${p.originalPrice.toFixed ? p.originalPrice.toFixed(2) : p.originalPrice}</span>}
                 </div>
 
-                {/* BADGE DISTINTIVO OFICIAL DE CASHEA VENEZUELA */}
+                {/* BADGE DISTINTIVO CON LOGO OFICIAL DE CASHEA VENEZUELA */}
                 <div className="pt-1">
-                  <div className="flex items-center gap-1 bg-[#FFF500] text-black px-2 py-1 rounded-xl font-extrabold text-[10px] font-space w-full justify-center shadow-[0_0_10px_rgba(255,245,0,0.3)]">
-                    <span>🟡 Cashea: Inicial ${(p.price * 0.5).toFixed(0)} + 3 cuotas de ${((p.price * 0.5) / 3).toFixed(0)}</span>
+                  <div className="flex items-center gap-1.5 bg-[#FFF500] text-black px-2.5 py-1 rounded-xl font-extrabold text-[10px] font-space w-full justify-center shadow-[0_0_10px_rgba(255,245,0,0.3)]">
+                    <img src="/cashea-logo.png" alt="Cashea" className="w-4 h-4 object-contain rounded shrink-0" />
+                    <span>Inicial ${(p.price * 0.5).toFixed(0)} + 3 cuotas de ${((p.price * 0.5) / 3).toFixed(0)} USD</span>
                   </div>
                 </div>
               </div>
@@ -705,15 +715,15 @@ export const LandingPageTest = ({
           </div>
         )}
 
-        {/* SIMULADOR DE FINANCIAMIENTO / CUOTAS FLEXIBLES */}
-        <section className="glass-card rounded-3xl p-6 sm:p-8 border border-[#00E5FF]/40 space-y-6 text-left shadow-[0_0_30px_rgba(0,229,255,0.2)]">
+        {/* SIMULADOR DE FINANCIAMIENTO / CUOTAS CASHEA VENEZUELA */}
+        <section className="glass-card rounded-3xl p-6 sm:p-8 border border-[#FFF500]/40 space-y-6 text-left shadow-[0_0_30px_rgba(255,245,0,0.15)]">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-2xl bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/40 shadow-[0_0_15px_rgba(0,229,255,0.3)]">
-              <Calculator className="w-6 h-6" />
-            </div>
+            <img src="/cashea-logo.png" alt="Cashea Venezuela" className="w-12 h-12 object-contain rounded-2xl border border-[#FFF500]/50 shadow-[0_0_15px_rgba(255,245,0,0.4)] shrink-0" />
             <div>
-              <h3 className="text-xl font-extrabold font-space text-white">Calculadora de Cuotas Flexibles M Store</h3>
-              <p className="text-xs text-[#00E5FF] font-semibold">Simula tu cuota en USD ($) para la compra de tus equipos</p>
+              <h3 className="text-xl font-extrabold font-space text-white flex items-center gap-2">
+                Simulador Oficial de Cuotas <span className="text-[#FFF500]">Cashea</span>
+              </h3>
+              <p className="text-xs text-[#FFF500] font-semibold">Calcula tu inicial (50%) y tus 3 cuotas quincenales sin intereses</p>
             </div>
           </div>
 

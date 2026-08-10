@@ -62,23 +62,23 @@ export const CategoryMegaMenuTest = ({ isOpen, onClose, onSelectCategory, custom
       <div className="max-w-7xl mx-auto w-full relative space-y-6 my-auto">
         
         {/* Header & Close Button */}
-        <div className="flex items-center justify-between pb-4 border-b border-white/10">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30">
-              <LayoutGrid className="w-6 h-6" />
+        <div className="flex items-center justify-between pb-4 border-b border-white/10 shrink-0 gap-2">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="p-2 sm:p-2.5 rounded-2xl bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30 shrink-0">
+              <LayoutGrid className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
-            <div>
-              <h3 className="text-xl sm:text-2xl font-extrabold font-space text-white">Menú de Categorías M Store</h3>
-              <p className="text-xs text-slate-400 font-inter">Selecciona una categoría para filtrar el catálogo instantáneamente</p>
+            <div className="min-w-0">
+              <h3 className="text-base sm:text-2xl font-extrabold font-space text-white truncate">Menú de Categorías M Store</h3>
+              <p className="text-[11px] sm:text-xs text-slate-400 font-inter truncate">Selecciona una categoría para filtrar el catálogo</p>
             </div>
           </div>
           
           <button 
             onClick={onClose}
             aria-label="Cerrar Menú de Categorías"
-            className="p-3 rounded-full bg-white/10 hover:bg-[#00E5FF] text-slate-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00E5FF] transition-all min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0"
+            className="p-2.5 rounded-full bg-white/10 hover:bg-[#00E5FF] text-slate-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00E5FF] transition-all min-w-[40px] min-h-[40px] flex items-center justify-center shrink-0"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 

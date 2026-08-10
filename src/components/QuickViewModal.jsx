@@ -42,16 +42,27 @@ export const QuickViewModal = ({ product, onClose, onAddToCart, onToggleFavorite
       {/* Main IVOO Style Modal Container */}
       <div className="relative z-10 glass-modal w-full max-w-4xl rounded-3xl overflow-hidden border border-[#00E5FF]/40 p-6 md:p-8 my-auto">
         
-        {/* Standalone Close Button (Positioned cleanly at top-right without overlapping text) */}
-        <button
-          onClick={onClose}
-          className="absolute top-5 right-5 p-2.5 rounded-full bg-white/10 hover:bg-[#00E5FF]/20 border border-white/20 hover:border-[#00E5FF] text-slate-300 hover:text-[#00E5FF] transition-all duration-300 z-30 shadow-lg group"
-          aria-label="Cerrar modal"
-        >
-          <X className="w-5 h-5 transition-transform group-hover:rotate-90" />
-        </button>
+        {/* MODAL TOP HEADER BAR (Garantiza 0 solapamiento en móviles) */}
+        <div className="flex items-center justify-between pb-3 mb-2 border-b border-white/10 shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="text-[10px] font-extrabold tracking-wider uppercase bg-[#00E5FF] text-black px-3 py-1 rounded-full font-space shadow-[0_0_12px_#00E5FF] truncate">
+              {product.tag || 'Insignia M Store'}
+            </span>
+            <span className="text-xs font-bold text-[#00E5FF] uppercase tracking-wider font-space truncate hidden sm:inline">
+              • {product.category}
+            </span>
+          </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-2">
+          <button
+            onClick={onClose}
+            className="p-2.5 rounded-full bg-white/10 hover:bg-[#00E5FF] text-slate-300 hover:text-black border border-white/20 hover:border-[#00E5FF] transition-all duration-300 shadow-lg group shrink-0 min-w-[40px] min-h-[40px] flex items-center justify-center"
+            aria-label="Cerrar modal"
+          >
+            <X className="w-5 h-5 transition-transform group-hover:rotate-90" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start">
           
           {/* Left Column: Gallery Thumbnails + Main Photo Frame (Dark Glassmorphic Style) */}
           <div className="lg:col-span-7 flex flex-col sm:flex-row gap-4 items-center sm:items-start">
@@ -74,13 +85,8 @@ export const QuickViewModal = ({ product, onClose, onAddToCart, onToggleFavorite
             </div>
 
             {/* Main Image Frame (Dark Glassmorphic Cyan Container) */}
-            <div className="relative flex-1 w-full h-72 sm:h-80 md:h-96 rounded-3xl bg-[#050A14]/90 p-6 flex items-center justify-center border border-[#00E5FF]/30 overflow-hidden shadow-[0_0_30px_rgba(0,229,255,0.15)] order-1 sm:order-2">
+            <div className="relative flex-1 w-full h-64 sm:h-80 md:h-96 rounded-3xl bg-[#050A14]/90 p-5 flex items-center justify-center border border-[#00E5FF]/30 overflow-hidden shadow-[0_0_30px_rgba(0,229,255,0.15)] order-1 sm:order-2">
               
-              {/* Product Badge Tag */}
-              <span className="absolute top-4 left-4 text-[10px] font-extrabold tracking-wider uppercase bg-[#00E5FF] text-black px-3 py-1 rounded-full font-space shadow-[0_0_12px_#00E5FF] z-10">
-                {product.tag || 'Insignia M Store'}
-              </span>
-
               {/* Prev / Next Navigation Arrows */}
               <button
                 onClick={() => setActiveThumbIdx(prev => (prev === 0 ? thumbnails.length - 1 : prev - 1))}
@@ -94,7 +100,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart, onToggleFavorite
               <img
                 src={thumbnails[activeThumbIdx]}
                 alt={product.name}
-                className="h-full max-h-[85%] object-contain filter drop-shadow-[0_15px_30px_rgba(0,229,255,0.25)] transition-transform duration-300 hover:scale-105"
+                className="h-full max-h-[90%] object-contain filter drop-shadow-[0_15px_30px_rgba(0,229,255,0.25)] transition-transform duration-300 hover:scale-105"
               />
 
               <button

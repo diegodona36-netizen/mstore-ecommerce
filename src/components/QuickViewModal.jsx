@@ -53,38 +53,39 @@ export const QuickViewModal = ({ product, onClose, onAddToCart, onToggleFavorite
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-2">
           
-          {/* Left Column: Gallery Thumbnails + Main Photo Frame (IVOO Style) */}
-          <div className="lg:col-span-7 flex gap-4 items-start">
+          {/* Left Column: Gallery Thumbnails + Main Photo Frame (Dark Glassmorphic Style) */}
+          <div className="lg:col-span-7 flex flex-col sm:flex-row gap-4 items-center sm:items-start">
             
-            {/* Thumbnails list (IVOO Left Column) */}
-            <div className="flex flex-col gap-3 shrink-0">
+            {/* Thumbnails list (Horizontal on mobile, vertical on sm+) */}
+            <div className="flex sm:flex-col gap-3 shrink-0 order-2 sm:order-1 overflow-x-auto max-w-full pb-1 sm:pb-0">
               {thumbnails.map((imgUrl, idx) => (
                 <button
                   key={idx}
                   onClick={() => setActiveThumbIdx(idx)}
-                  className={`w-16 h-16 rounded-xl overflow-hidden p-1.5 border-2 transition-all bg-[#F4F5F7] flex items-center justify-center ${
+                  className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden p-2 border-2 transition-all bg-[#050A14] flex items-center justify-center shrink-0 ${
                     activeThumbIdx === idx
-                      ? 'border-emerald-400 scale-105 shadow-[0_0_12px_rgba(16,185,129,0.5)]'
-                      : 'border-slate-300 hover:border-slate-400 opacity-70 hover:opacity-100'
+                      ? 'border-[#00E5FF] scale-105 shadow-[0_0_15px_rgba(0,229,255,0.4)]'
+                      : 'border-white/10 hover:border-white/30 opacity-70 hover:opacity-100'
                   }`}
                 >
-                  <img src={imgUrl} alt="" className="h-full object-contain filter drop-shadow-sm" />
+                  <img src={imgUrl} alt="" className="h-full w-full object-contain" />
                 </button>
               ))}
             </div>
 
-            {/* Main Image Frame (IVOO Soft Light High-Contrast Container) */}
-            <div className="relative flex-1 h-72 md:h-96 rounded-2xl bg-[#F4F5F7] p-6 flex items-center justify-center border border-slate-200 overflow-hidden shadow-inner">
+            {/* Main Image Frame (Dark Glassmorphic Cyan Container) */}
+            <div className="relative flex-1 w-full h-72 sm:h-80 md:h-96 rounded-3xl bg-[#050A14]/90 p-6 flex items-center justify-center border border-[#00E5FF]/30 overflow-hidden shadow-[0_0_30px_rgba(0,229,255,0.15)] order-1 sm:order-2">
               
               {/* Product Badge Tag */}
-              <span className="absolute top-3 left-3 text-[10px] font-bold tracking-wider uppercase bg-[#00E5FF] text-black px-3 py-1 rounded-full font-space shadow-[0_0_10px_#00E5FF] z-10">
-                {product.tag || 'Insignia'}
+              <span className="absolute top-4 left-4 text-[10px] font-extrabold tracking-wider uppercase bg-[#00E5FF] text-black px-3 py-1 rounded-full font-space shadow-[0_0_12px_#00E5FF] z-10">
+                {product.tag || 'Insignia M Store'}
               </span>
 
               {/* Prev / Next Navigation Arrows */}
               <button
                 onClick={() => setActiveThumbIdx(prev => (prev === 0 ? thumbnails.length - 1 : prev - 1))}
-                className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white text-emerald-600 shadow-md transition-all z-10"
+                className="absolute left-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/60 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black border border-white/20 shadow-lg transition-all z-10 active:scale-95"
+                aria-label="Foto anterior"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
@@ -93,12 +94,13 @@ export const QuickViewModal = ({ product, onClose, onAddToCart, onToggleFavorite
               <img
                 src={thumbnails[activeThumbIdx]}
                 alt={product.name}
-                className="h-full object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.15)] transition-transform duration-300 hover:scale-105"
+                className="h-full max-h-[85%] object-contain filter drop-shadow-[0_15px_30px_rgba(0,229,255,0.25)] transition-transform duration-300 hover:scale-105"
               />
 
               <button
                 onClick={() => setActiveThumbIdx(prev => (prev === thumbnails.length - 1 ? 0 : prev + 1))}
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white text-emerald-600 shadow-md transition-all z-10"
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/60 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black border border-white/20 shadow-lg transition-all z-10 active:scale-95"
+                aria-label="Foto siguiente"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>

@@ -642,8 +642,8 @@ export const LandingPageTest = ({
               tabIndex={0}
               onKeyDown={(e) => e.key === 'Enter' && setQuickViewProduct(p)}
             >
-              {/* IMAGE AREA */}
-              <div className="w-full h-48 rounded-xl bg-white p-3 flex items-center justify-center relative overflow-hidden">
+              {/* IMAGE AREA (Dark Glassmorphic Frame) */}
+              <div className="w-full h-48 rounded-xl bg-[#050A14] p-3 flex items-center justify-center relative overflow-hidden border border-white/10 group-hover:border-[#00E5FF]/40 transition-colors">
                 {/* Quick view hover badge */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 rounded-xl z-10">
                   <span className="bg-[#00E5FF] text-black text-[10px] font-extrabold font-space px-3 py-1.5 rounded-full shadow-[0_0_15px_#00E5FF]">

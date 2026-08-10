@@ -292,15 +292,15 @@ export const LandingPageTest = ({
         </div>
       )}
 
-      {/* MICRO-BANNER SUPERIOR FORMAL */}
-      <div className="bg-[#050B14] border-b border-white/10 text-[11px] font-space text-slate-300 py-2 px-4 text-center">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center sm:justify-between gap-2">
+      {/* MICRO-BANNER SUPERIOR FORMAL (SOLO EN ESCRITORIO) */}
+      <div className="hidden md:block bg-[#050B14] border-b border-white/10 text-[11px] font-space text-slate-300 py-2 px-4 text-center">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           <div className="flex items-center gap-4 text-slate-300">
             <span className="flex items-center gap-1.5">
               <span className="text-[#00E5FF]">🚚</span> Envíos a Nivel Nacional
             </span>
-            <span className="hidden md:inline text-white/20">•</span>
-            <span className="hidden md:flex items-center gap-1.5">
+            <span className="text-white/20">•</span>
+            <span className="flex items-center gap-1.5">
               <span className="text-[#00E5FF]">🛡️</span> Garantía Oficial M Store 1 Año
             </span>
           </div>
@@ -310,19 +310,34 @@ export const LandingPageTest = ({
         </div>
       </div>
 
-      {/* HEADER PRINCIPAL RESPONSIVE SIN DESBORDE */}
-      <header className="sticky top-0 z-40 bg-[#0A0908]/95 backdrop-blur-xl border-b border-[#00E5FF]/30 px-3 sm:px-6 md:px-8 py-3">
-        <div className="max-w-7xl mx-auto space-y-2.5 md:space-y-0">
+      {/* HEADER PRINCIPAL RESPONSIVE */}
+      <header className="sticky top-0 z-40 bg-[#0A0908]/95 backdrop-blur-xl border-b border-[#00E5FF]/30 px-3 sm:px-6 md:px-8 py-2.5 md:py-3">
+        <div className="max-w-7xl mx-auto">
           
-          {/* Fila Principal de Navegación */}
-          <div className="flex items-center justify-between gap-2 sm:gap-4">
+          {/* Fila Única en Móvil (Logo + Buscador) / Fila Completa en Escritorio */}
+          <div className="flex items-center justify-between gap-2.5 sm:gap-4">
             
             {/* Logo M Store */}
             <div className="shrink-0 flex items-center">
               <Logo size="medium" />
             </div>
 
-            {/* En escritorio (md+): Menú + Buscador juntos */}
+            {/* BUSCADOR MÓVIL (Fila Única en Celular) */}
+            <div className="flex-1 md:hidden">
+              <div className="relative w-full">
+                <Search className="w-4 h-4 text-slate-300 absolute left-3.5 top-3 pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Buscar productos..."
+                  aria-label="Buscar productos"
+                  className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] focus:shadow-[0_0_15px_rgba(0,229,255,0.3)] rounded-full pl-9 pr-3 py-2 text-xs text-white placeholder-slate-400 outline-none font-inter min-h-[40px]"
+                />
+              </div>
+            </div>
+
+            {/* EN ESCRITORIO (md+): Menú Categorías + Buscador + Carrito */}
             <div className="hidden md:flex flex-1 items-center gap-4 mx-4">
               {/* Menú de Categorías Button */}
               <button
@@ -351,19 +366,8 @@ export const LandingPageTest = ({
               </div>
             </div>
 
-            {/* Acciones Rápidas (Móvil y Escritorio) — 100% Simétricas */}
-            <div className="flex items-center gap-2 shrink-0 text-xs font-space">
-              {/* En móvil: Botón Menú Categorías */}
-              <button
-                onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
-                aria-label="Abrir Categorías"
-                className="md:hidden flex items-center gap-1.5 px-3 py-2.5 rounded-2xl bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/50 hover:bg-[#00E5FF] hover:text-black text-xs font-bold font-space min-h-[44px] shadow-[0_0_15px_rgba(0,229,255,0.2)]"
-              >
-                <Menu className="w-4 h-4 shrink-0" />
-                <span>Categorías</span>
-              </button>
-
-              {/* Carrito de Compras */}
+            {/* Carrito de Compras en Escritorio (md+) */}
+            <div className="hidden md:flex items-center shrink-0 text-xs font-space">
               <button 
                 onClick={() => setIsCartOpen(true)}
                 aria-label={`Ver Carrito de Compras (${cartItems.reduce((a, b) => a + b.quantity, 0)} productos)`}
@@ -378,22 +382,6 @@ export const LandingPageTest = ({
                 )}
               </button>
             </div>
-          </div>
-
-          {/* Fila 2 en Móvil: Buscador completo */}
-          <div className="md:hidden pt-1">
-            <div className="relative w-full">
-              <Search className="w-4 h-4 text-slate-300 absolute left-4 top-3.5 pointer-events-none" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar televisores, neveras, teléfonos..."
-                aria-label="Buscar productos"
-                className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] focus:shadow-[0_0_15px_rgba(0,229,255,0.3)] rounded-full pl-11 pr-4 py-2.5 text-xs text-white placeholder-slate-400 outline-none font-inter min-h-[44px]"
-              />
-            </div>
-          </div>
 
         </div>
       </header>

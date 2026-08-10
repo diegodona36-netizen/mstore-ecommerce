@@ -558,6 +558,26 @@ export function SoyTechnoExperiment({ onBackToMain }) {
         </div>
       )}
 
+      {/* NAVEGACIÓN MÓVIL INFERIOR STICKY ESTILO SOYTECHNO */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0B101D]/95 border-t border-red-500/30 backdrop-blur-xl px-4 py-2 flex items-center justify-around text-[10px] font-bold text-slate-400">
+        <button onClick={onBackToMain} className="flex flex-col items-center gap-1 hover:text-white">
+          <Home className="w-5 h-5 text-red-500" />
+          <span>Inicio</span>
+        </button>
+        <button onClick={() => setSelectedBrand('todos')} className="flex flex-col items-center gap-1 hover:text-white">
+          <Grid className="w-5 h-5 text-slate-300" />
+          <span>Marcas</span>
+        </button>
+        <button onClick={() => setSelectedRam('8GB')} className="flex flex-col items-center gap-1 hover:text-white">
+          <Flame className="w-5 h-5 text-amber-400 animate-pulse" />
+          <span>Ofertas</span>
+        </button>
+        <a href="https://wa.me/584120000000" target="_blank" rel="noreferrer" className="flex flex-col items-center gap-1 hover:text-white">
+          <Phone className="w-5 h-5 text-emerald-400" />
+          <span>Contacto</span>
+        </a>
+      </div>
+
     </div>
   );
 }

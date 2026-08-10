@@ -58,7 +58,7 @@ export const LandingPageTest = ({
   const heroSlides = [
     {
       id: 1,
-      tag: '🔥 OFERTA RELÁMPAGO STAR',
+      tag: 'OFERTA DESTACADA',
       title: 'Smart TV 75" Neo QLED 4K AI',
       subtitle: 'Síragon & Samsung Pro Series',
       highlight: 'Pantalla Gigante 120Hz',
@@ -66,27 +66,27 @@ export const LandingPageTest = ({
       price: '$1,499.00',
       oldPrice: '$1,899.00',
       discount: '21% OFF',
-      badge: '🎁 Combo Soundbar + Instalación Gratis',
+      badge: 'Combo Soundbar + Instalación Gratis',
       image: 'https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=800&auto=format&fit=crop',
       bgGradient: 'from-blue-950/90 via-[#0A0908] to-cyan-950/90'
     },
     {
       id: 2,
-      tag: '📱 ZONA APPLE FLAGSHIP',
+      tag: 'ZONA APPLE',
       title: 'iPhone 16 Pro Max 1TB Titanio',
-      subtitle: 'Edición Titanio Negro 2026',
+      subtitle: 'Edición Titanio Negro',
       highlight: 'Procesador A18 Pro 3nm',
       desc: 'El smartphone más potente con botón de cámara táctil. Regalo especial: Funda MagSafe Oficial + Vidrio Templado + Envío 24H.',
       price: '$1,299.00',
       oldPrice: '$1,499.00',
       discount: '13% OFF',
-      badge: '🛡️ Garantía Oficial M Store 1 Año',
+      badge: 'Garantía Oficial M Store 1 Año',
       image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-finish-select-202409-6-9inch-blacktitanium?wid=5120&hei=2880&fmt=p-jpeg',
       bgGradient: 'from-[#00E5FF]/20 via-[#0A0908] to-purple-950/90'
     },
     {
       id: 3,
-      tag: '🧊 LÍNEA BLANCA SMART AI',
+      tag: 'LÍNEA BLANCA SMART',
       title: 'Nevera Síragon 18 Pies Inverter',
       subtitle: 'Tecnología No Frost & Dispensador',
       highlight: 'Ahorro del 60% de Luz',
@@ -94,7 +94,7 @@ export const LandingPageTest = ({
       price: '$899.00',
       oldPrice: '$1,099.00',
       discount: '18% OFF',
-      badge: '⚡ 5 Años de Garantía en Compresor',
+      badge: '5 Años de Garantía en Compresor',
       image: 'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?q=80&w=800&auto=format&fit=crop',
       bgGradient: 'from-emerald-950/90 via-[#0A0908] to-cyan-950/90'
     }
@@ -526,8 +526,8 @@ export const LandingPageTest = ({
 
           </div>
 
-          {/* CONTROLES DE SLIDER EN LA ESQUINA INFERIOR DERECHA */}
-          <div className="absolute bottom-4 right-6 z-20 flex items-center gap-2">
+          {/* CONTROLES DE SLIDER (Fila limpia sin solapamientos en móviles) */}
+          <div className="w-full flex items-center justify-center sm:justify-end gap-2 pt-4 sm:pt-0 sm:absolute sm:bottom-4 sm:right-6 z-20">
             <button 
               onClick={(e) => { e.stopPropagation(); setCurrentSlide(prev => (prev - 1 + heroSlides.length) % heroSlides.length); }}
               aria-label="Ver slide anterior"

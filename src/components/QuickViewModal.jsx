@@ -86,30 +86,12 @@ export const QuickViewModal = ({ product, onClose, onAddToCart, onToggleFavorite
 
             {/* Main Image Frame (Crisp White Studio Canvas with Cyan Glow) */}
             <div className="relative flex-1 w-full h-64 sm:h-80 md:h-96 rounded-3xl bg-white p-6 flex items-center justify-center border-2 border-[#00E5FF]/40 overflow-hidden shadow-[0_0_30px_rgba(0,229,255,0.25)] order-1 sm:order-2">
-              
-              {/* Prev / Next Navigation Arrows */}
-              <button
-                onClick={() => setActiveThumbIdx(prev => (prev === 0 ? thumbnails.length - 1 : prev - 1))}
-                className="absolute left-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-slate-900/80 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black border border-slate-700 shadow-xl transition-all z-10 active:scale-95"
-                aria-label="Foto anterior"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-
               {/* Main Photo Display */}
               <img
                 src={thumbnails[activeThumbIdx]}
                 alt={product.name}
                 className="h-full max-h-[90%] object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.15)] transition-transform duration-300 hover:scale-105"
               />
-
-              <button
-                onClick={() => setActiveThumbIdx(prev => (prev === thumbnails.length - 1 ? 0 : prev + 1))}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-slate-900/80 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black border border-slate-700 shadow-xl transition-all z-10 active:scale-95"
-                aria-label="Foto siguiente"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
             </div>
 
           </div>
@@ -193,7 +175,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart, onToggleFavorite
                 className="w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 bg-[#00E5FF] hover:bg-[#00F2FE] text-black shadow-[0_0_20px_rgba(0,229,255,0.6)] transition-all"
               >
                 <MessageCircle className="w-5 h-5 fill-black" />
-                <span>Checkout WhatsApp Directo</span>
+                <span>Comprar por WhatsApp</span>
               </button>
             </div>
 

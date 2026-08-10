@@ -145,7 +145,7 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRem
                   <span className="text-white font-medium">${subtotal.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
-                  <span>Envío VIP</span>
+                  <span>Envío Exprés</span>
                   <span className="text-emerald-400 font-bold">
                     {subtotal >= freeShippingThreshold ? 'GRATIS' : '$15'}
                   </span>

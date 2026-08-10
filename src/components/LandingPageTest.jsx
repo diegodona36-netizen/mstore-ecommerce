@@ -57,6 +57,18 @@ export const LandingPageTest = ({
   const [currentSlide, setCurrentSlide] = useState(0);
   const heroSlides = [
     {
+      id: 0,
+      tag: '🔥 GRAN VENTA ANIVERSARIO',
+      title: 'Envíos Nacionales & Ofertas Especiales',
+      subtitle: 'MRW • ZOOM • TEALCA • Cobro a Destino',
+      desc: 'Disfruta de ofertas exclusivas en Smartphones, Smart TVs y Electrodomésticos con Envío Seguro y Garantía Oficial M Store.',
+      price: 'HASTA 30% OFF',
+      oldPrice: '',
+      badge: 'Envíos Nacionales Asegurados a Todo el País',
+      image: '/mstore_hero_banner.jpg',
+      bgGradient: 'from-blue-950/90 via-[#0A0908] to-cyan-950/90'
+    },
+    {
       id: 1,
       tag: 'OFERTA DESTACADA',
       title: 'Smart TV 75" Neo QLED 4K AI',
@@ -517,15 +529,25 @@ export const LandingPageTest = ({
               </div>
             </div>
 
-            {/* PRODUCT PHOTO CONTAINER (Lienzo Blanco Estudio Impecable) */}
+            {/* PRODUCT PHOTO / BANNER CONTAINER */}
             <div className="lg:col-span-5 flex justify-center relative">
-              <div className="w-52 h-52 sm:w-64 sm:h-64 rounded-3xl bg-white p-4 border-2 border-[#00E5FF]/40 flex items-center justify-center shadow-[0_0_30px_rgba(0,229,255,0.25)] group transition-transform hover:scale-105">
-                <img 
-                  src={heroSlides[currentSlide].image} 
-                  alt={heroSlides[currentSlide].title}
-                  className="w-full h-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.15)]" 
-                />
-              </div>
+              {heroSlides[currentSlide].image.endsWith('.jpg') ? (
+                <div className="w-full max-w-md h-48 sm:h-60 rounded-3xl overflow-hidden border-2 border-[#00E5FF]/50 shadow-[0_0_35px_rgba(0,229,255,0.35)] group transition-transform hover:scale-105 bg-black/60 p-1 flex items-center justify-center">
+                  <img 
+                    src={heroSlides[currentSlide].image} 
+                    alt={heroSlides[currentSlide].title}
+                    className="w-full h-full object-cover rounded-2xl filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.3)]" 
+                  />
+                </div>
+              ) : (
+                <div className="w-52 h-52 sm:w-64 sm:h-64 rounded-3xl bg-white p-4 border-2 border-[#00E5FF]/40 flex items-center justify-center shadow-[0_0_30px_rgba(0,229,255,0.25)] group transition-transform hover:scale-105">
+                  <img 
+                    src={heroSlides[currentSlide].image} 
+                    alt={heroSlides[currentSlide].title}
+                    className="w-full h-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.15)]" 
+                  />
+                </div>
+              )}
             </div>
 
           </div>

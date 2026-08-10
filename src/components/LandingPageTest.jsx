@@ -13,6 +13,7 @@ import { AdminPanelModal } from './AdminPanelModal';
 import { Footer } from './Footer';
 import { SupportChatWidget } from './SupportChatWidget';
 import { LocationSection } from './LocationSection';
+import { MobileBottomNav } from './MobileBottomNav';
 
 export const LandingPageTest = ({ 
   customCategories = [],
@@ -281,7 +282,7 @@ export const LandingPageTest = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0908] text-white font-inter selection:bg-[#00E5FF] selection:text-black relative">
+    <div className="min-h-screen bg-[#0A0908] text-white font-inter selection:bg-[#00E5FF] selection:text-black relative pb-16 md:pb-0">
       
       {/* Toast Notification */}
       {toastMsg && (
@@ -829,6 +830,19 @@ export const LandingPageTest = ({
 
       {/* WIDGET CHAT DE SOPORTE FLOTANTE REPLICANDO LA IMAGEN DEL USUARIO */}
       <SupportChatWidget />
+
+      {/* BARRA NAVEGADORA INFERIOR TIPO APP PARA CELULARES */}
+      <MobileBottomNav 
+        cartCount={cartItems.reduce((a, b) => a + b.quantity, 0)}
+        onOpenMegaMenu={() => setIsMegaMenuOpen(true)}
+        onOpenCart={() => setIsCartOpen(true)}
+        onScrollToHome={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        onScrollToLocation={() => {
+          const el = document.getElementById('ubicacion');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+          else window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }}
+      />
 
     </div>
   );

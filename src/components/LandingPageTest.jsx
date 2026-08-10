@@ -453,99 +453,102 @@ export const LandingPageTest = ({
         customCategories={customCategories}
       />
 
-      {/* HERO BANNER SLIDER DE ALTO IMPACTO */}
+      {/* HERO BANNER PRINCIPAL (Limpio, Elegante y Fácil de Editar) */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 mt-6" aria-label="Banners Principales de Ofertas">
-        <div className={`relative rounded-3xl overflow-hidden glass-card border border-[#00E5FF]/50 min-h-[420px] flex items-center p-6 sm:p-12 transition-all duration-700 bg-gradient-to-r ${heroSlides[currentSlide].bgGradient} shadow-[0_0_40px_rgba(0,229,255,0.25)]`}>
+        <div className={`relative rounded-3xl overflow-hidden glass-card border border-[#00E5FF]/40 min-h-[380px] sm:min-h-[420px] flex items-center p-6 sm:p-10 transition-all duration-700 bg-gradient-to-r ${heroSlides[currentSlide].bgGradient} shadow-[0_0_40px_rgba(0,229,255,0.2)]`}>
           
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center w-full">
-            <div className="lg:col-span-7 space-y-5 text-left">
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#00E5FF]/20 border border-[#00E5FF]/60 text-[#00E5FF] text-xs font-extrabold font-space uppercase shadow-[0_0_15px_rgba(0,229,255,0.4)]">
-                  <Flame className="w-4 h-4 text-red-400 animate-bounce" />
-                  <span>{heroSlides[currentSlide].tag}</span>
-                </div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/20 border border-red-500/40 text-red-400 text-xs font-bold font-space">
-                  <Tag className="w-3.5 h-3.5" />
-                  <span>{heroSlides[currentSlide].discount}</span>
-                </div>
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center w-full">
+            
+            {/* TEXT & PRICE COLUMN */}
+            <div className="lg:col-span-7 space-y-4 text-left">
+              {/* Badge Única */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#00E5FF]/15 border border-[#00E5FF]/50 text-[#00E5FF] text-xs font-extrabold font-space uppercase shadow-[0_0_12px_rgba(0,229,255,0.3)]">
+                <Flame className="w-4 h-4 text-red-400 shrink-0" />
+                <span className="truncate">{heroSlides[currentSlide].tag}</span>
               </div>
 
+              {/* Título Limpio de 2 Líneas Max */}
               <div className="space-y-1">
-                <p className="text-xs font-bold font-space text-slate-300 uppercase tracking-widest">{heroSlides[currentSlide].subtitle}</p>
-                <h1 className="text-3xl sm:text-5xl xl:text-6xl font-extrabold font-space leading-tight text-white">
-                  {heroSlides[currentSlide].title} <br/>
-                  <span className="text-[#00E5FF] drop-shadow-[0_0_25px_#00E5FF]">
-                    {heroSlides[currentSlide].highlight}
-                  </span>
+                <p className="text-xs font-bold font-space text-slate-300 uppercase tracking-wider">{heroSlides[currentSlide].subtitle}</p>
+                <h1 className="text-2xl sm:text-4xl xl:text-5xl font-extrabold font-space text-white leading-tight">
+                  {heroSlides[currentSlide].title}
                 </h1>
               </div>
 
-              <p className="text-slate-200 text-xs sm:text-sm font-inter leading-relaxed max-w-xl">
+              {/* Descripción Corta */}
+              <p className="text-slate-300 text-xs sm:text-sm font-inter leading-relaxed line-clamp-2 max-w-xl">
                 {heroSlides[currentSlide].desc}
               </p>
 
-              <div className="flex flex-wrap items-center gap-4 pt-2">
-                <div className="space-y-0.5">
-                  <span className="text-[11px] text-slate-300 font-space uppercase block">Precio Oferta Especial</span>
-                  <div className="text-3xl sm:text-4xl font-extrabold font-space text-white flex items-baseline gap-3">
-                    <span className="text-[#00E5FF] drop-shadow-[0_0_15px_#00E5FF]">{heroSlides[currentSlide].price}</span>
-                    <span className="text-sm text-slate-400 line-through font-normal">{heroSlides[currentSlide].oldPrice}</span>
-                  </div>
+              {/* Precio + Botón de Comprar */}
+              <div className="flex flex-wrap items-center gap-4 pt-1">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl sm:text-4xl font-extrabold font-space text-[#00E5FF] drop-shadow-[0_0_15px_#00E5FF]">
+                    {heroSlides[currentSlide].price}
+                  </span>
+                  <span className="text-xs font-extrabold text-[#00E5FF] font-space">USD</span>
+                  {heroSlides[currentSlide].oldPrice && (
+                    <span className="text-xs sm:text-sm text-slate-400 line-through font-space ml-1">
+                      {heroSlides[currentSlide].oldPrice}
+                    </span>
+                  )}
                 </div>
 
                 <button 
                   onClick={() => handleAddToCart({ id: heroSlides[currentSlide].id, name: heroSlides[currentSlide].title, price: 1499.00, image: heroSlides[currentSlide].image })}
                   aria-label={`Comprar ${heroSlides[currentSlide].title}`}
-                  className="btn-cyan-glow px-7 py-3.5 rounded-2xl text-black font-extrabold text-xs font-space uppercase tracking-wider shadow-[0_0_25px_#00E5FF] hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-white transition-all flex items-center gap-2 group min-h-[44px]"
+                  className="btn-cyan-glow px-6 py-3 rounded-xl text-black font-extrabold text-xs font-space uppercase tracking-wider shadow-[0_0_20px_#00E5FF] hover:scale-105 active:scale-95 transition-all flex items-center gap-2 group min-h-[44px]"
                 >
-                  <span>Comprar Producto</span>
+                  <span>Comprar Ahora</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
 
-              <div className="pt-2">
-                <div className="inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 px-4 py-2 rounded-xl text-xs font-bold font-space">
-                  <Gift className="w-4 h-4 text-emerald-400" />
+              {/* Garantía / Badge Adicional */}
+              <div className="pt-1">
+                <div className="inline-flex items-center gap-2 text-emerald-400 text-xs font-bold font-space">
+                  <Gift className="w-4 h-4 text-emerald-400 shrink-0" />
                   <span>{heroSlides[currentSlide].badge}</span>
                 </div>
               </div>
             </div>
 
+            {/* PRODUCT PHOTO CONTAINER (Lienzo Blanco Estudio Impecable) */}
             <div className="lg:col-span-5 flex justify-center relative">
-              <div className="w-64 h-64 sm:w-72 sm:h-72 rounded-3xl bg-white/5 border border-white/15 p-5 backdrop-blur-xl flex items-center justify-center shadow-2xl group">
+              <div className="w-52 h-52 sm:w-64 sm:h-64 rounded-3xl bg-white p-4 border-2 border-[#00E5FF]/40 flex items-center justify-center shadow-[0_0_30px_rgba(0,229,255,0.25)] group transition-transform hover:scale-105">
                 <img 
                   src={heroSlides[currentSlide].image} 
                   alt={heroSlides[currentSlide].title}
-                  className="w-full h-full object-contain filter drop-shadow-[0_15px_30px_rgba(0,229,255,0.4)] group-hover:scale-110 transition-transform duration-500" 
+                  className="w-full h-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.15)]" 
                 />
               </div>
             </div>
+
           </div>
 
-          {/* SLIDER CONTROLS — bottom right, no overlap with badge */}
-          <div className="absolute bottom-5 right-6 z-20 flex items-center gap-3">
+          {/* CONTROLES DE SLIDER EN LA ESQUINA INFERIOR DERECHA */}
+          <div className="absolute bottom-4 right-6 z-20 flex items-center gap-2">
             <button 
               onClick={(e) => { e.stopPropagation(); setCurrentSlide(prev => (prev - 1 + heroSlides.length) % heroSlides.length); }}
               aria-label="Ver slide anterior"
-              className="p-3 rounded-full bg-black/70 border border-white/30 hover:border-[#00E5FF] text-white hover:text-black hover:bg-[#00E5FF] focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none transition-all min-w-[44px] min-h-[44px] flex items-center justify-center"
+              className="p-2 rounded-full bg-black/70 border border-white/20 hover:border-[#00E5FF] text-white hover:text-[#00E5FF] transition-all min-w-[36px] min-h-[36px] flex items-center justify-center active:scale-95"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-4 h-4" />
             </button>
 
-            {/* DOTS — each wrapped in a 44x44 touch area */}
-            <div className="flex gap-1.5 items-center">
+            <div className="flex gap-1.5 items-center px-1">
               {heroSlides.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={(e) => { e.stopPropagation(); setCurrentSlide(idx); }}
                   aria-label={`Ir al slide ${idx + 1}`}
-                  className="p-3 flex items-center justify-center focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none rounded-full min-w-[44px] min-h-[44px]"
+                  className="p-1 flex items-center justify-center focus-visible:outline-none"
                 >
                   <span
-                    className={`block rounded-full transition-all duration-500 ${
+                    className={`block rounded-full transition-all duration-300 ${
                       currentSlide === idx
-                        ? 'w-8 h-2.5 bg-[#00E5FF] shadow-[0_0_10px_#00E5FF]'
-                        : 'w-2.5 h-2.5 bg-white/40 hover:bg-white/70'
+                        ? 'w-6 h-2 bg-[#00E5FF] shadow-[0_0_8px_#00E5FF]'
+                        : 'w-2 h-2 bg-white/40 hover:bg-white/70'
                     }`}
                   />
                 </button>
@@ -555,9 +558,9 @@ export const LandingPageTest = ({
             <button 
               onClick={(e) => { e.stopPropagation(); setCurrentSlide(prev => (prev + 1) % heroSlides.length); }}
               aria-label="Ver siguiente slide"
-              className="p-3 rounded-full bg-black/70 border border-white/30 hover:border-[#00E5FF] text-white hover:text-black hover:bg-[#00E5FF] focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none transition-all min-w-[44px] min-h-[44px] flex items-center justify-center"
+              className="p-2 rounded-full bg-black/70 border border-white/20 hover:border-[#00E5FF] text-white hover:text-[#00E5FF] transition-all min-w-[36px] min-h-[36px] flex items-center justify-center active:scale-95"
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-4 h-4" />
             </button>
           </div>
 

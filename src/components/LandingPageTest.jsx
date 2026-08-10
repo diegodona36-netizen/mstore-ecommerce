@@ -453,18 +453,20 @@ export const LandingPageTest = ({
         customCategories={customCategories}
       />
 
-      {/* HERO BANNER PRINCIPAL (Limpio, Elegante y Fácil de Editar) */}
+      {/* HERO BANNER PRINCIPAL (Limpio, Elegante y Espacioso) */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 mt-6" aria-label="Banners Principales de Ofertas">
-        <div className={`relative rounded-3xl overflow-hidden glass-card border border-[#00E5FF]/40 min-h-[380px] sm:min-h-[420px] flex items-center p-6 sm:p-10 transition-all duration-700 bg-gradient-to-r ${heroSlides[currentSlide].bgGradient} shadow-[0_0_40px_rgba(0,229,255,0.2)]`}>
+        <div className={`relative rounded-3xl overflow-hidden glass-card border border-[#00E5FF]/40 min-h-[400px] sm:min-h-[420px] flex flex-col justify-between p-6 sm:p-10 pt-8 sm:pt-10 pb-8 transition-all duration-700 bg-gradient-to-r ${heroSlides[currentSlide].bgGradient} shadow-[0_0_40px_rgba(0,229,255,0.2)]`}>
           
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center w-full">
             
             {/* TEXT & PRICE COLUMN */}
             <div className="lg:col-span-7 space-y-4 text-left">
               {/* Badge Única */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#00E5FF]/15 border border-[#00E5FF]/50 text-[#00E5FF] text-xs font-extrabold font-space uppercase shadow-[0_0_12px_rgba(0,229,255,0.3)]">
-                <Flame className="w-4 h-4 text-red-400 shrink-0" />
-                <span className="truncate">{heroSlides[currentSlide].tag}</span>
+              <div>
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#00E5FF]/15 border border-[#00E5FF]/50 text-[#00E5FF] text-xs font-extrabold font-space uppercase shadow-[0_0_12px_rgba(0,229,255,0.3)]">
+                  <Flame className="w-4 h-4 text-red-400 shrink-0" />
+                  <span className="truncate">{heroSlides[currentSlide].tag}</span>
+                </div>
               </div>
 
               {/* Título Limpio de 2 Líneas Max */}
@@ -481,7 +483,7 @@ export const LandingPageTest = ({
               </p>
 
               {/* Precio + Botón de Comprar */}
-              <div className="flex flex-wrap items-center gap-4 pt-1">
+              <div className="space-y-3 pt-1">
                 <div className="flex items-baseline gap-2">
                   <span className="text-2xl sm:text-4xl font-extrabold font-space text-[#00E5FF] drop-shadow-[0_0_15px_#00E5FF]">
                     {heroSlides[currentSlide].price}
@@ -494,14 +496,16 @@ export const LandingPageTest = ({
                   )}
                 </div>
 
-                <button 
-                  onClick={() => handleAddToCart({ id: heroSlides[currentSlide].id, name: heroSlides[currentSlide].title, price: 1499.00, image: heroSlides[currentSlide].image })}
-                  aria-label={`Comprar ${heroSlides[currentSlide].title}`}
-                  className="btn-cyan-glow px-6 py-3 rounded-xl text-black font-extrabold text-xs font-space uppercase tracking-wider shadow-[0_0_20px_#00E5FF] hover:scale-105 active:scale-95 transition-all flex items-center gap-2 group min-h-[44px]"
-                >
-                  <span>Comprar Ahora</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
+                <div>
+                  <button 
+                    onClick={() => handleAddToCart({ id: heroSlides[currentSlide].id, name: heroSlides[currentSlide].title, price: 1499.00, image: heroSlides[currentSlide].image })}
+                    aria-label={`Comprar ${heroSlides[currentSlide].title}`}
+                    className="w-full sm:w-auto btn-cyan-glow px-6 py-3 rounded-xl text-black font-extrabold text-xs font-space uppercase tracking-wider shadow-[0_0_20px_#00E5FF] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 group min-h-[44px]"
+                  >
+                    <span>Comprar Ahora</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
               </div>
 
               {/* Garantía / Badge Adicional */}
@@ -526,8 +530,8 @@ export const LandingPageTest = ({
 
           </div>
 
-          {/* CONTROLES DE SLIDER (Fila limpia sin solapamientos en móviles) */}
-          <div className="w-full flex items-center justify-center sm:justify-end gap-2 pt-4 sm:pt-0 sm:absolute sm:bottom-4 sm:right-6 z-20">
+          {/* CONTROLES DE SLIDER EN SU PROPIA FILA SEPARADA */}
+          <div className="w-full flex items-center justify-center sm:justify-end gap-2 pt-6 sm:pt-0 sm:absolute sm:bottom-6 sm:right-8 z-20">
             <button 
               onClick={(e) => { e.stopPropagation(); setCurrentSlide(prev => (prev - 1 + heroSlides.length) % heroSlides.length); }}
               aria-label="Ver slide anterior"

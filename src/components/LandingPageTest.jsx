@@ -355,7 +355,6 @@ export const LandingPageTest = ({
                         <h5 className="text-xs font-bold font-space text-white truncate">{p.name}</h5>
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-[#00E5FF] font-bold font-space">${p.price.toFixed ? p.price.toFixed(2) : p.price} USD</span>
-                          <span className="text-[9px] bg-[#FFF500] text-black font-extrabold px-1.5 py-0.5 rounded">Cashea: ${(p.price * 0.5).toFixed(0)}</span>
                         </div>
                       </div>
                     </div>
@@ -413,9 +412,6 @@ export const LandingPageTest = ({
                           <h5 className="text-xs font-bold font-space text-white truncate">{p.name}</h5>
                           <div className="flex items-center gap-3 mt-1">
                             <span className="text-xs text-[#00E5FF] font-bold font-space">${p.price.toFixed ? p.price.toFixed(2) : p.price} USD</span>
-                            <span className="text-[10px] bg-[#FFF500] text-black font-extrabold px-2 py-0.5 rounded-md font-space">
-                              🟡 Cashea: Inicial ${(p.price * 0.5).toFixed(2)} + 3 cuotas de ${((p.price * 0.5) / 3).toFixed(2)}
-                            </span>
                           </div>
                         </div>
                         <span className="text-[#00E5FF] font-bold font-space text-xs hover:underline shrink-0">Ver &rarr;</span>
@@ -677,14 +673,6 @@ export const LandingPageTest = ({
                   <span className="text-base font-extrabold text-[#00E5FF] font-space pt-1">${p.price.toFixed ? p.price.toFixed(2) : p.price} USD</span>
                   {p.originalPrice && <span className="text-xs text-slate-400 line-through">${p.originalPrice.toFixed ? p.originalPrice.toFixed(2) : p.originalPrice}</span>}
                 </div>
-
-                {/* BADGE DISTINTIVO CON LOGO OFICIAL DE CASHEA VENEZUELA */}
-                <div className="pt-1">
-                  <div className="flex items-center gap-1.5 bg-[#FFF500] text-black px-2.5 py-1 rounded-xl font-extrabold text-[10px] font-space w-full justify-center shadow-[0_0_10px_rgba(255,245,0,0.3)]">
-                    <img src="/cashea-logo.png" alt="Cashea" className="w-4 h-4 object-contain rounded shrink-0" />
-                    <span>Inicial ${(p.price * 0.5).toFixed(0)} + 3 cuotas de ${((p.price * 0.5) / 3).toFixed(0)} USD</span>
-                  </div>
-                </div>
               </div>
 
               {/* ACTION BUTTON — solo Carrito */}
@@ -714,59 +702,6 @@ export const LandingPageTest = ({
             </button>
           </div>
         )}
-
-        {/* SIMULADOR DE FINANCIAMIENTO / CUOTAS CASHEA VENEZUELA */}
-        <section className="glass-card rounded-3xl p-6 sm:p-8 border border-[#FFF500]/40 space-y-6 text-left shadow-[0_0_30px_rgba(255,245,0,0.15)]">
-          <div className="flex items-center gap-3">
-            <img src="/cashea-logo.png" alt="Cashea Venezuela" className="w-12 h-12 object-contain rounded-2xl border border-[#FFF500]/50 shadow-[0_0_15px_rgba(255,245,0,0.4)] shrink-0" />
-            <div>
-              <h3 className="text-xl font-extrabold font-space text-white flex items-center gap-2">
-                Simulador Oficial de Cuotas <span className="text-[#FFF500]">Cashea</span>
-              </h3>
-              <p className="text-xs text-[#FFF500] font-semibold">Calcula tu inicial (50%) y tus 3 cuotas quincenales sin intereses</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2 items-center">
-            <div className="space-y-2">
-              <label htmlFor="calc-amount-input" className="text-xs font-bold font-space text-slate-200">Monto de la Compra ($USD):</label>
-              <input
-                id="calc-amount-input"
-                type="number"
-                value={calcAmount}
-                onChange={(e) => setCalcAmount(Number(e.target.value))}
-                aria-label="Monto de la compra en dólares"
-                className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] focus-visible:ring-2 focus-visible:ring-[#00E5FF] rounded-2xl p-3.5 text-xs text-white outline-none font-space font-extrabold text-base focus:shadow-[0_0_15px_rgba(0,229,255,0.3)] min-h-[44px]"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold font-space text-slate-200">Plazo en Meses:</label>
-              <div className="grid grid-cols-3 gap-2">
-                {[3, 6, 12].map(m => (
-                  <button
-                    key={m}
-                    onClick={() => setCalcMonths(m)}
-                    aria-label={`Calcular a ${m} meses`}
-                    className={`py-3 rounded-2xl text-xs font-extrabold font-space transition-all border min-h-[44px] focus-visible:ring-2 focus-visible:ring-[#00E5FF] ${
-                      calcMonths === m
-                        ? 'bg-[#00E5FF] text-black border-[#00E5FF] shadow-[0_0_20px_#00E5FF]'
-                        : 'bg-white/5 border-white/10 text-slate-200 hover:border-[#00E5FF]/40'
-                    }`}
-                  >
-                    {m} Meses
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-[#00E5FF]/10 border border-[#00E5FF]/50 text-center space-y-1 shadow-[0_0_20px_rgba(0,229,255,0.2)]">
-              <span className="text-[11px] text-slate-300 font-space uppercase">Tu Cuota Estimada</span>
-              <div className="text-3xl font-extrabold text-[#00E5FF] font-space drop-shadow-[0_0_10px_#00E5FF]">${calculatedMonthly} USD / mes</div>
-              <p className="text-xs text-emerald-400 font-semibold">✓ 0% Intereses en Dólares con Financiamiento M Store</p>
-            </div>
-          </div>
-        </section>
 
       </main>
 

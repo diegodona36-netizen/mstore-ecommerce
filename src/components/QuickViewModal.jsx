@@ -126,30 +126,16 @@ export const QuickViewModal = ({ product, onClose, onAddToCart, onToggleFavorite
               {product.name}
             </h2>
 
-            {/* Price + Badge Cashea Venezuela */}
-            <div className="space-y-3">
-              <div className="flex items-baseline gap-3">
-                <span className="text-3xl md:text-4xl font-extrabold font-space text-white">
-                  ${product.price.toLocaleString('en-US', { minimumFractionDigits: 2 })} USD
+            {/* Price */}
+            <div className="flex items-baseline gap-3">
+              <span className="text-3xl md:text-4xl font-extrabold font-space text-white">
+                ${product.price.toLocaleString('en-US', { minimumFractionDigits: 2 })} USD
+              </span>
+              {product.originalPrice && (
+                <span className="text-base text-slate-400 line-through font-space">
+                  ${product.originalPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                 </span>
-                {product.originalPrice && (
-                  <span className="text-base text-slate-400 line-through font-space">
-                    ${product.originalPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                  </span>
-                )}
-              </div>
-
-              {/* CARD INFORMATIVA CASHEA VENEZUELA */}
-              <div className="bg-[#FFF500]/10 border border-[#FFF500]/40 rounded-2xl p-3.5 space-y-1 text-left">
-                <div className="flex items-center gap-2 text-[#FFF500] font-extrabold font-space text-xs">
-                  <span className="text-base">🟡</span>
-                  <span>Opción de Pago con Cashea sin Intereses</span>
-                </div>
-                <div className="flex flex-wrap items-center justify-between text-xs text-slate-200 font-space font-semibold gap-2 pt-1">
-                  <span>Inicial (50%): <strong className="text-white">${(product.price * 0.5).toFixed(2)} USD</strong></span>
-                  <span>3 Cuotas Quincenales: <strong className="text-[#00E5FF]">${((product.price * 0.5) / 3).toFixed(2)} USD</strong></span>
-                </div>
-              </div>
+              )}
             </div>
 
             {/* Quantity Selector */}

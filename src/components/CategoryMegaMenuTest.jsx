@@ -82,26 +82,27 @@ export const CategoryMegaMenuTest = ({ isOpen, onClose, onSelectCategory, custom
           </button>
         </div>
 
-        {/* DIRECT MAIN CATEGORIES GRID (Limpio sin etiquetas sobrantes) */}
+        {/* DIRECT MAIN CATEGORIES GRID (Estética Cian Neón Homogénea y Vibrante) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 text-xs font-space">
           {allCategories.map((cat, idx) => (
             <button 
               key={idx}
               onClick={() => handleCategoryClick(cat.filterId, cat.name)}
               aria-label={`Filtrar por categoría ${cat.name}`}
-              className={`flex items-center gap-3 p-3.5 rounded-2xl transition-all group text-left active:scale-95 min-h-[48px] border ${
-                cat.isBrand
-                  ? 'bg-[#00E5FF]/5 border-[#00E5FF]/30 hover:border-[#00E5FF] hover:bg-[#00E5FF]/15 text-slate-200 hover:text-[#00E5FF]'
-                  : 'bg-white/5 border-white/10 hover:border-[#00E5FF] hover:bg-[#00E5FF]/10 text-slate-200 hover:text-[#00E5FF]'
-              }`}
+              className="flex items-center justify-between p-3.5 rounded-2xl transition-all duration-300 group text-left active:scale-95 min-h-[48px] border bg-[#00E5FF]/5 border-[#00E5FF]/30 hover:border-[#00E5FF] hover:bg-[#00E5FF]/15 text-slate-100 hover:text-[#00E5FF] shadow-[0_0_15px_rgba(0,229,255,0.08)] hover:shadow-[0_0_20px_rgba(0,229,255,0.3)]"
             >
-              {cat.Icon && (
-                <cat.Icon className="w-5 h-5 shrink-0 text-slate-400 group-hover:text-[#00E5FF] transition-colors" />
-              )}
-              {cat.isBrand && (
-                <span className="w-2 h-2 rounded-full bg-[#00E5FF] shadow-[0_0_8px_#00E5FF] shrink-0"></span>
-              )}
-              <span className="font-bold text-xs group-hover:translate-x-1 transition-transform leading-snug">{cat.name}</span>
+              <div className="flex items-center gap-3 min-w-0">
+                {cat.Icon ? (
+                  <cat.Icon className="w-5 h-5 shrink-0 text-[#00E5FF] drop-shadow-[0_0_8px_#00E5FF] group-hover:scale-110 transition-transform" />
+                ) : (
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#00E5FF] shadow-[0_0_10px_#00E5FF] shrink-0 group-hover:scale-125 transition-transform"></span>
+                )}
+                <span className="font-bold text-xs group-hover:translate-x-0.5 transition-transform leading-snug truncate">{cat.name}</span>
+              </div>
+
+              <span className="text-[#00E5FF] text-xs font-extrabold opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all shrink-0 ml-1">
+                &rarr;
+              </span>
             </button>
           ))}
         </div>

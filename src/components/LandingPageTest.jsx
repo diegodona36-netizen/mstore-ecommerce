@@ -711,7 +711,7 @@ export const LandingPageTest = ({
           role="dialog" 
           aria-modal="true" 
           aria-label="Carrito de Compras"
-          className="fixed inset-0 z-50 flex justify-end animate-fadeIn"
+          className="fixed inset-0 z-[60] flex justify-end animate-fadeIn"
         >
           <div 
             onClick={() => setIsCartOpen(false)} 
@@ -816,12 +816,12 @@ export const LandingPageTest = ({
         onRemoveCategory={onRemoveCategory}
       />
 
-      {/* WIDGET CHAT DE SOPORTE FLOTANTE (SE OCULTA AUTOMÁTICAMENTE CUANDO EL MEGA MENÚ ESTÁ ABIERTO) */}
-      <SupportChatWidget isHidden={isMegaMenuOpen} />
+      {/* WIDGET CHAT DE SOPORTE FLOTANTE (SE OCULTA AUTOMÁTICAMENTE CUANDO HAY MODALES O CARRITO ABIERTO) */}
+      <SupportChatWidget isHidden={isMegaMenuOpen || isCartOpen || isAdminOpen || Boolean(quickViewProduct)} />
 
-      {/* BARRA NAVEGADORA INFERIOR TIPO APP PARA CELULARES (SE OCULTA CUANDO EL MEGA MENÚ ESTÁ ABIERTO) */}
+      {/* BARRA NAVEGADORA INFERIOR TIPO APP PARA CELULARES (SE OCULTA CUANDO HAY MODALES O CARRITO ABIERTO) */}
       <MobileBottomNav 
-        isHidden={isMegaMenuOpen}
+        isHidden={isMegaMenuOpen || isCartOpen || isAdminOpen || Boolean(quickViewProduct)}
         cartCount={cartItems.reduce((a, b) => a + b.quantity, 0)}
         onOpenMegaMenu={() => setIsMegaMenuOpen(true)}
         onOpenCart={() => setIsCartOpen(true)}

@@ -73,10 +73,10 @@ export const QuickViewModal = ({ product, onClose, onAddToCart, onToggleFavorite
                 <button
                   key={idx}
                   onClick={() => setActiveThumbIdx(idx)}
-                  className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden p-2 border-2 transition-all bg-[#050A14] flex items-center justify-center shrink-0 ${
+                  className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden p-1.5 border-2 transition-all bg-white flex items-center justify-center shrink-0 ${
                     activeThumbIdx === idx
-                      ? 'border-[#00E5FF] scale-105 shadow-[0_0_15px_rgba(0,229,255,0.4)]'
-                      : 'border-white/10 hover:border-white/30 opacity-70 hover:opacity-100'
+                      ? 'border-[#00E5FF] scale-105 shadow-[0_0_15px_rgba(0,229,255,0.5)]'
+                      : 'border-slate-300 hover:border-[#00E5FF]/60 opacity-80 hover:opacity-100'
                   }`}
                 >
                   <img src={imgUrl} alt="" className="h-full w-full object-contain" />
@@ -84,13 +84,13 @@ export const QuickViewModal = ({ product, onClose, onAddToCart, onToggleFavorite
               ))}
             </div>
 
-            {/* Main Image Frame (Dark Glassmorphic Cyan Container) */}
-            <div className="relative flex-1 w-full h-64 sm:h-80 md:h-96 rounded-3xl bg-[#050A14]/90 p-5 flex items-center justify-center border border-[#00E5FF]/30 overflow-hidden shadow-[0_0_30px_rgba(0,229,255,0.15)] order-1 sm:order-2">
+            {/* Main Image Frame (Crisp White Studio Canvas with Cyan Glow) */}
+            <div className="relative flex-1 w-full h-64 sm:h-80 md:h-96 rounded-3xl bg-white p-6 flex items-center justify-center border-2 border-[#00E5FF]/40 overflow-hidden shadow-[0_0_30px_rgba(0,229,255,0.25)] order-1 sm:order-2">
               
               {/* Prev / Next Navigation Arrows */}
               <button
                 onClick={() => setActiveThumbIdx(prev => (prev === 0 ? thumbnails.length - 1 : prev - 1))}
-                className="absolute left-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/60 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black border border-white/20 shadow-lg transition-all z-10 active:scale-95"
+                className="absolute left-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-slate-900/80 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black border border-slate-700 shadow-xl transition-all z-10 active:scale-95"
                 aria-label="Foto anterior"
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -100,12 +100,12 @@ export const QuickViewModal = ({ product, onClose, onAddToCart, onToggleFavorite
               <img
                 src={thumbnails[activeThumbIdx]}
                 alt={product.name}
-                className="h-full max-h-[90%] object-contain filter drop-shadow-[0_15px_30px_rgba(0,229,255,0.25)] transition-transform duration-300 hover:scale-105"
+                className="h-full max-h-[90%] object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.15)] transition-transform duration-300 hover:scale-105"
               />
 
               <button
                 onClick={() => setActiveThumbIdx(prev => (prev === thumbnails.length - 1 ? 0 : prev + 1))}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/60 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black border border-white/20 shadow-lg transition-all z-10 active:scale-95"
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-slate-900/80 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black border border-slate-700 shadow-xl transition-all z-10 active:scale-95"
                 aria-label="Foto siguiente"
               >
                 <ChevronRight className="w-5 h-5" />

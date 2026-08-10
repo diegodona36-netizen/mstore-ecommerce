@@ -322,8 +322,8 @@ export const LandingPageTest = ({
               <Logo size="medium" />
             </div>
 
-            {/* BUSCADOR MÓVIL (Fila Única en Celular) */}
-            <div className="flex-1 md:hidden">
+            {/* BUSCADOR MÓVIL CON DESPLEGABLE PREDICTIVO EN TIEMPO REAL */}
+            <div className="flex-1 md:hidden relative">
               <div className="relative w-full">
                 <Search className="w-4 h-4 text-slate-300 absolute left-3.5 top-3 pointer-events-none" />
                 <input
@@ -332,9 +332,39 @@ export const LandingPageTest = ({
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Buscar productos..."
                   aria-label="Buscar productos"
-                  className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] focus:shadow-[0_0_15px_rgba(0,229,255,0.3)] rounded-full pl-9 pr-3 py-2 text-xs text-white placeholder-slate-400 outline-none font-inter min-h-[40px]"
+                  className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] focus:shadow-[0_0_15px_rgba(0,229,255,0.3)] rounded-full pl-9 pr-8 py-2 text-xs text-white placeholder-slate-400 outline-none font-inter min-h-[40px]"
                 />
+                {searchQuery && (
+                  <button onClick={() => setSearchQuery('')} className="absolute right-3 top-2.5 text-slate-400 hover:text-white">
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
               </div>
+
+              {/* Desplegable Predictivo Móvil */}
+              {searchQuery.trim().length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-[#0A0E17]/98 border border-[#00E5FF]/40 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.9)] backdrop-blur-2xl overflow-hidden z-50 divide-y divide-white/10 max-h-72 overflow-y-auto">
+                  {filteredProducts.slice(0, 5).map(p => (
+                    <div 
+                      key={p.id} 
+                      onClick={() => { setQuickViewProduct(p); setSearchQuery(''); }}
+                      className="p-3 flex items-center gap-3 hover:bg-[#00E5FF]/10 cursor-pointer transition-colors text-left"
+                    >
+                      <img src={p.image} alt={p.name} className="w-10 h-10 object-contain bg-white rounded-lg p-1 shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <h5 className="text-xs font-bold font-space text-white truncate">{p.name}</h5>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-[#00E5FF] font-bold font-space">${p.price.toFixed ? p.price.toFixed(2) : p.price} USD</span>
+                          <span className="text-[9px] bg-[#FFF500] text-black font-extrabold px-1.5 py-0.5 rounded">Cashea: ${(p.price * 0.5).toFixed(0)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  {filteredProducts.length === 0 && (
+                    <div className="p-4 text-xs text-slate-400 font-space text-center">No se encontraron productos para "{searchQuery}"</div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* EN ESCRITORIO (md+): Menú Categorías + Buscador + Carrito */}
@@ -350,8 +380,8 @@ export const LandingPageTest = ({
                 <span>Menú de Categorías</span>
               </button>
 
-              {/* Buscador Amplio en Escritorio */}
-              <div className="flex-1 max-w-xl">
+              {/* Buscador Amplio en Escritorio con Desplegable Predictivo */}
+              <div className="flex-1 max-w-xl relative">
                 <div className="relative">
                   <Search className="w-4 h-4 text-slate-300 absolute left-4 top-3.5 pointer-events-none" />
                   <input
@@ -360,9 +390,42 @@ export const LandingPageTest = ({
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Buscar televisores, neveras, cocinas, lavadoras, teléfonos..."
                     aria-label="Buscar productos por nombre"
-                    className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] focus:shadow-[0_0_15px_rgba(0,229,255,0.3)] focus-visible:ring-2 focus-visible:ring-[#00E5FF] rounded-full pl-11 pr-4 py-2.5 text-xs text-white placeholder-slate-400 outline-none font-inter min-h-[44px]"
+                    className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] focus:shadow-[0_0_15px_rgba(0,229,255,0.3)] focus-visible:ring-2 focus-visible:ring-[#00E5FF] rounded-full pl-11 pr-8 py-2.5 text-xs text-white placeholder-slate-400 outline-none font-inter min-h-[44px]"
                   />
+                  {searchQuery && (
+                    <button onClick={() => setSearchQuery('')} className="absolute right-3.5 top-3.5 text-slate-400 hover:text-white">
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
+
+                {/* Desplegable Predictivo Escritorio */}
+                {searchQuery.trim().length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-[#0A0E17]/98 border border-[#00E5FF]/40 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9)] backdrop-blur-2xl overflow-hidden z-50 divide-y divide-white/10 max-h-80 overflow-y-auto">
+                    {filteredProducts.slice(0, 6).map(p => (
+                      <div 
+                        key={p.id} 
+                        onClick={() => { setQuickViewProduct(p); setSearchQuery(''); }}
+                        className="p-3.5 flex items-center gap-3.5 hover:bg-[#00E5FF]/10 cursor-pointer transition-colors text-left"
+                      >
+                        <img src={p.image} alt={p.name} className="w-12 h-12 object-contain bg-white rounded-xl p-1 shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <h5 className="text-xs font-bold font-space text-white truncate">{p.name}</h5>
+                          <div className="flex items-center gap-3 mt-1">
+                            <span className="text-xs text-[#00E5FF] font-bold font-space">${p.price.toFixed ? p.price.toFixed(2) : p.price} USD</span>
+                            <span className="text-[10px] bg-[#FFF500] text-black font-extrabold px-2 py-0.5 rounded-md font-space">
+                              🟡 Cashea: Inicial ${(p.price * 0.5).toFixed(2)} + 3 cuotas de ${((p.price * 0.5) / 3).toFixed(2)}
+                            </span>
+                          </div>
+                        </div>
+                        <span className="text-[#00E5FF] font-bold font-space text-xs hover:underline shrink-0">Ver &rarr;</span>
+                      </div>
+                    ))}
+                    {filteredProducts.length === 0 && (
+                      <div className="p-4 text-xs text-slate-400 font-space text-center">No se encontraron resultados para "{searchQuery}"</div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -584,15 +647,6 @@ export const LandingPageTest = ({
             >
               {/* IMAGE AREA */}
               <div className="w-full h-48 rounded-xl bg-white p-3 flex items-center justify-center relative overflow-hidden">
-                {/* Wishlist heart — stops propagation so it doesn't open modal */}
-                <button
-                  onClick={(e) => { e.stopPropagation(); toggleWishlist(p.id); }}
-                  aria-label={wishlist.includes(p.id) ? `Quitar ${p.name} de favoritos` : `Añadir ${p.name} a favoritos`}
-                  className="absolute top-2 left-2 p-2.5 rounded-full bg-black/40 hover:bg-black/70 text-slate-300 hover:text-red-500 focus-visible:ring-2 focus-visible:ring-[#00E5FF] transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center z-10"
-                >
-                  <Heart className={`w-5 h-5 ${wishlist.includes(p.id) ? 'fill-red-500 text-red-500' : ''}`} />
-                </button>
-
                 {/* Quick view hover badge */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 rounded-xl z-10">
                   <span className="bg-[#00E5FF] text-black text-[10px] font-extrabold font-space px-3 py-1.5 rounded-full shadow-[0_0_15px_#00E5FF]">
@@ -613,6 +667,13 @@ export const LandingPageTest = ({
                 <div className="flex items-baseline gap-2">
                   <span className="text-base font-extrabold text-[#00E5FF] font-space pt-1">${p.price.toFixed ? p.price.toFixed(2) : p.price} USD</span>
                   {p.originalPrice && <span className="text-xs text-slate-400 line-through">${p.originalPrice.toFixed ? p.originalPrice.toFixed(2) : p.originalPrice}</span>}
+                </div>
+
+                {/* BADGE DISTINTIVO OFICIAL DE CASHEA VENEZUELA */}
+                <div className="pt-1">
+                  <div className="flex items-center gap-1 bg-[#FFF500] text-black px-2 py-1 rounded-xl font-extrabold text-[10px] font-space w-full justify-center shadow-[0_0_10px_rgba(255,245,0,0.3)]">
+                    <span>🟡 Cashea: Inicial ${(p.price * 0.5).toFixed(0)} + 3 cuotas de ${((p.price * 0.5) / 3).toFixed(0)}</span>
+                  </div>
                 </div>
               </div>
 

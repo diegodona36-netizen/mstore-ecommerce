@@ -126,22 +126,34 @@ export const QuickViewModal = ({ product, onClose, onAddToCart, onToggleFavorite
               {product.name}
             </h2>
 
-            {/* Price (IVOO Large Price Tag) */}
-            <div className="flex items-baseline gap-3">
-              <span className="text-3xl md:text-4xl font-extrabold font-space text-white">
-                ${product.price.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-              </span>
-              {product.originalPrice && (
-                <span className="text-base text-slate-400 line-through font-space">
-                  ${product.originalPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            {/* Price + Badge Cashea Venezuela */}
+            <div className="space-y-3">
+              <div className="flex items-baseline gap-3">
+                <span className="text-3xl md:text-4xl font-extrabold font-space text-white">
+                  ${product.price.toLocaleString('en-US', { minimumFractionDigits: 2 })} USD
                 </span>
-              )}
+                {product.originalPrice && (
+                  <span className="text-base text-slate-400 line-through font-space">
+                    ${product.originalPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  </span>
+                )}
+              </div>
+
+              {/* CARD INFORMATIVA CASHEA VENEZUELA */}
+              <div className="bg-[#FFF500]/10 border border-[#FFF500]/40 rounded-2xl p-3.5 space-y-1 text-left">
+                <div className="flex items-center gap-2 text-[#FFF500] font-extrabold font-space text-xs">
+                  <span className="text-base">🟡</span>
+                  <span>Opción de Pago con Cashea sin Intereses</span>
+                </div>
+                <div className="flex flex-wrap items-center justify-between text-xs text-slate-200 font-space font-semibold gap-2 pt-1">
+                  <span>Inicial (50%): <strong className="text-white">${(product.price * 0.5).toFixed(2)} USD</strong></span>
+                  <span>3 Cuotas Quincenales: <strong className="text-[#00E5FF]">${((product.price * 0.5) / 3).toFixed(2)} USD</strong></span>
+                </div>
+              </div>
             </div>
 
-            {/* Quantity Selector + Favorites (IVOO Layout) */}
-            <div className="flex items-center gap-4 pt-2">
-              
-              {/* Quantity Counter (- 1 +) */}
+            {/* Quantity Selector */}
+            <div className="flex items-center gap-4 pt-1">
               <div className="flex items-center bg-slate-200 text-slate-900 rounded-xl px-3 py-1.5 font-bold text-sm">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -157,20 +169,6 @@ export const QuickViewModal = ({ product, onClose, onAddToCart, onToggleFavorite
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
-
-              {/* Favorites Button */}
-              <button
-                onClick={() => onToggleFavorite(product.id)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold border transition-all ${
-                  isFavorite 
-                    ? 'bg-rose-500/20 border-rose-500 text-rose-400' 
-                    : 'bg-white/5 border-white/10 text-slate-300 hover:text-white hover:border-white/20'
-                }`}
-              >
-                <Heart className={`w-4 h-4 ${isFavorite ? 'fill-rose-500 text-rose-500' : ''}`} />
-                <span className="hidden sm:inline">Agregar a Favoritos</span>
-              </button>
-
             </div>
 
             {/* Action Buttons (IVOO Emerald Green & Cyan Glow Buttons) */}

@@ -564,18 +564,19 @@ export const LandingPageTest = ({
         </div>
       </section>
 
-      {/* CINTA DE MARCAS OFICIALES */}
-      <section className="max-w-7xl mx-auto px-4 md:px-8 mt-8" aria-label="Marcas Oficiales">
-        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-wrap items-center justify-around gap-3 text-center">
+      {/* CINTA DE MARCAS OFICIALES — CARRUSEL MINIMALISTA EN 1 FILA */}
+      <section className="max-w-7xl mx-auto px-4 md:px-8 mt-6" aria-label="Marcas Oficiales">
+        <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
           {officialBrands.map((b, idx) => (
             <button 
               key={idx}
               onClick={() => handleCategorySelectFromMenu(b.filterId, b.name)}
               aria-label={`Filtrar productos de ${b.name}`}
-              className="p-3 rounded-xl hover:bg-[#00E5FF]/10 focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none transition-all group border border-transparent hover:border-[#00E5FF]/30 min-h-[44px] text-left"
+              className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-[#00E5FF]/5 border border-[#00E5FF]/30 hover:border-[#00E5FF] hover:bg-[#00E5FF]/15 hover:shadow-[0_0_20px_rgba(0,229,255,0.25)] focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none transition-all group shrink-0 active:scale-95 min-h-[44px]"
             >
-              <span className="text-sm font-extrabold font-space text-white group-hover:text-[#00E5FF] tracking-wider block">{b.logo}</span>
-              <span className="text-[11px] text-slate-300 font-space block mt-0.5">{b.desc}</span>
+              <span className="w-2 h-2 rounded-full bg-[#00E5FF] shadow-[0_0_8px_#00E5FF] shrink-0 group-hover:scale-125 transition-transform"></span>
+              <span className="text-xs font-extrabold font-space text-white group-hover:text-[#00E5FF] tracking-wider whitespace-nowrap">{b.logo}</span>
+              <span className="text-[10px] text-slate-400 font-inter whitespace-nowrap">({b.desc})</span>
             </button>
           ))}
         </div>
@@ -599,10 +600,10 @@ export const LandingPageTest = ({
             </div>
           </div>
 
-          {/* CATEGORY FILTER — horizontal scroll en móvil, iconos Lucide */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
+          {/* CATEGORY QUICK FILTER PILLS */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 text-xs font-space">
             {[
-              { id: 'todos',        name: 'Todos',          Icon: LayoutGrid },
+              { id: 'todos',        name: 'Todos los Productos', Icon: LayoutGrid },
               { id: 'televisores',  name: 'Televisores',    Icon: Tv },
               { id: 'computadoras', name: 'Computadoras',   Icon: Laptop },
               { id: 'aires',        name: 'Aires A/C',      Icon: Wind },
@@ -643,15 +644,6 @@ export const LandingPageTest = ({
             >
               {/* IMAGE AREA */}
               <div className="w-full h-48 rounded-xl bg-white p-3 flex items-center justify-center relative overflow-hidden">
-                {/* Botón de Favoritos (Corazón) */}
-                <button
-                  onClick={(e) => { e.stopPropagation(); toggleWishlist(p.id); }}
-                  aria-label={wishlist.includes(p.id) ? `Quitar ${p.name} de favoritos` : `Añadir ${p.name} a favoritos`}
-                  className="absolute top-2 left-2 p-2 rounded-full bg-black/50 hover:bg-black/80 text-slate-300 hover:text-red-500 transition-colors min-w-[38px] min-h-[38px] flex items-center justify-center z-10"
-                >
-                  <Heart className={`w-4 h-4 ${wishlist.includes(p.id) ? 'fill-red-500 text-red-500' : ''}`} />
-                </button>
-
                 {/* Quick view hover badge */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 rounded-xl z-10">
                   <span className="bg-[#00E5FF] text-black text-[10px] font-extrabold font-space px-3 py-1.5 rounded-full shadow-[0_0_15px_#00E5FF]">

@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { 
-  Search, ShoppingBag, ArrowLeft, Truck, ShieldCheck, 
-  ChevronRight, ChevronDown, Filter, Phone, Check, X, Home, Grid,
-  User, Shuffle, Heart, MapPin, CreditCard, Sparkles, Star, Tag, MessageCircle
+  Search, ShoppingBag, ArrowLeft, Truck,
+  ChevronRight, Filter, Phone, Check, X,
+  User, MapPin, CreditCard
 } from 'lucide-react';
 
 /* ────────────────────────── DATA DE SOYTECHNO ────────────────────────── */
@@ -535,13 +535,22 @@ export function SoyTechnoExperiment({ onBackToMain }) {
                     </div>
 
                     {/* BOTONES */}
-                    <button
-                      onClick={() => handleWhatsApp(p)}
-                      className="w-full bg-[#0055FF] hover:bg-blue-700 text-white font-black py-3 rounded-2xl text-xs transition-colors flex items-center justify-center gap-1.5 shadow-md active:scale-95"
-                    >
-                      <span>Comprar por WhatsApp</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center gap-2 pt-1">
+                      <button
+                        onClick={() => handleAddToCart(p)}
+                        className="p-3 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-2xl transition-colors shrink-0"
+                        title="Agregar al Carrito"
+                      >
+                        <ShoppingBag className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleWhatsApp(p)}
+                        className="flex-1 bg-[#0055FF] hover:bg-blue-700 text-white font-black py-3 rounded-2xl text-xs transition-colors flex items-center justify-center gap-1.5 shadow-md active:scale-95"
+                      >
+                        <span>Comprar por WhatsApp</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 );
               })}

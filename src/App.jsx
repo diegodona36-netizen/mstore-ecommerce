@@ -35,24 +35,6 @@ export function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  if (isCleanMode) {
-    return <CleanBrightStore onBackToMain={() => { window.location.hash = ''; setIsCleanMode(false); }} />;
-  }
-
-  if (isSoyTechnoMode) {
-    return <SoyTechnoExperiment onBackToMain={() => { window.location.hash = ''; setIsSoyTechnoMode(false); }} />;
-  }
-
-  if (!isOldMode) {
-    // POR DEFECTO: Mostrar la portada principal SoyTechno M Store
-    return (
-      <SoyTechnoHomePage 
-        onBackToMain={() => { window.location.hash = '#old'; setIsOldMode(true); }} 
-        onOpenCelularesCategory={() => { window.location.hash = '#soytechno'; setIsSoyTechnoMode(true); }}
-      />
-    );
-  }
-
   const [products, setProducts] = useState(() => {
     const saved = localStorage.getItem('mstore_custom_products');
     if (saved) {
@@ -107,6 +89,24 @@ export function App() {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
+
+  if (isCleanMode) {
+    return <CleanBrightStore onBackToMain={() => { window.location.hash = ''; setIsCleanMode(false); }} />;
+  }
+
+  if (isSoyTechnoMode) {
+    return <SoyTechnoExperiment onBackToMain={() => { window.location.hash = ''; setIsSoyTechnoMode(false); }} />;
+  }
+
+  if (!isOldMode) {
+    // POR DEFECTO: Mostrar la portada principal SoyTechno M Store
+    return (
+      <SoyTechnoHomePage 
+        onBackToMain={() => { window.location.hash = '#old'; setIsOldMode(true); }} 
+        onOpenCelularesCategory={() => { window.location.hash = '#soytechno'; setIsSoyTechnoMode(true); }}
+      />
+    );
+  }
 
   const handleAddProductFromAdmin = (newProd) => {
     setProducts(prev => [newProd, ...prev]);

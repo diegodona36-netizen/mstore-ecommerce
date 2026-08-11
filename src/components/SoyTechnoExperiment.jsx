@@ -2,8 +2,9 @@ import React, { useState, useMemo } from 'react';
 import { 
   Search, ShoppingBag, ArrowLeft, Truck,
   ChevronRight, Filter, Phone, Check, X,
-  User, MapPin, CreditCard
+  User, MapPin, CreditCard, Tv, Smartphone, Laptop, Gamepad2, Printer, Tablet, Watch, Headphones, Zap
 } from 'lucide-react';
+import { QuickViewModal } from './QuickViewModal';
 
 /* ────────────────────────── DATA DE SOYTECHNO ────────────────────────── */
 
@@ -833,6 +834,20 @@ export function SoyTechnoExperiment({ onBackToMain }) {
             </a>
           </div>
         </div>
+      )}
+
+      {/* MODAL DETALLE DE PRODUCTO ESTILO SOYTECHNO (SCREENSHOT 2) */}
+      {activeModal === 'quickview' && quickViewProduct && (
+        <QuickViewModal
+          product={quickViewProduct}
+          onClose={() => { setActiveModal(null); setQuickViewProduct(null); }}
+          onAddToCart={(p) => {
+            setCartCount(c => c + 1);
+            showToast(`Agregado al carrito: ${p.name}`);
+            setActiveModal(null);
+            setQuickViewProduct(null);
+          }}
+        />
       )}
 
     </div>

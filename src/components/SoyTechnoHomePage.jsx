@@ -3,8 +3,9 @@ import {
   Search, ShoppingBag, ArrowLeft, Truck, ShieldCheck, 
   ChevronRight, ChevronLeft, Phone, User, Shuffle, Heart, 
   MapPin, CreditCard, Sparkles, Star, Flame, Tag, Check, X,
-  Tv, Smartphone, Laptop, Gamepad2, Refrigerator, Watch, Headphones, Zap
+  Tv, Smartphone, Laptop, Gamepad2, Refrigerator, Watch, Headphones, Zap, Printer, Tablet
 } from 'lucide-react';
+import { QuickViewModal } from './QuickViewModal';
 
 /* ────────────────────────── DATA DE LA HOME PAGE DE SOYTECHNO ────────────────────────── */
 
@@ -122,6 +123,8 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
   const [currency, setCurrency] = useState('USD');
   const [cartCount, setCartCount] = useState(0);
   const [toastMsg, setToastMsg] = useState(null);
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [isCategoriesDrawerOpen, setIsCategoriesDrawerOpen] = useState(false);
 
   const rateVES = 60.5;
 
@@ -252,18 +255,18 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
       {/* 3. SUB-NAVBAR CATEGORÍAS */}
       <nav className="bg-white border-b border-slate-200 px-4 sm:px-8 py-2.5 shadow-sm hidden md:block">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-6 text-xs font-bold text-slate-700">
-          <button onClick={onOpenCelularesCategory} className="bg-[#0055FF] text-white px-5 py-2 rounded-full font-extrabold flex items-center gap-2 hover:bg-blue-700 transition-colors shadow-sm">
+          <button onClick={() => setIsCategoriesDrawerOpen(true)} className="bg-[#0055FF] text-white px-5 py-2 rounded-full font-extrabold flex items-center gap-2 hover:bg-blue-700 transition-colors shadow-sm">
             <span>≡ Categorías</span>
           </button>
 
           <div className="flex items-center gap-6">
             <span className="text-blue-600 font-black cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Inicio</span>
-            <span className="hover:text-blue-600 cursor-pointer" onClick={onOpenCelularesCategory}>Teléfonos Celulares</span>
-            <span className="hover:text-blue-600 cursor-pointer text-red-600 font-black" onClick={onOpenCelularesCategory}>Ofertas M Store</span>
-            <span className="hover:text-blue-600 cursor-pointer" onClick={onOpenCelularesCategory}>Televisores 4K</span>
-            <span className="hover:text-blue-600 cursor-pointer" onClick={onOpenCelularesCategory}>Laptops & PC</span>
-            <span className="hover:text-blue-600 cursor-pointer" onClick={onOpenCelularesCategory}>Zona Gamer</span>
-            <span className="hover:text-blue-600 cursor-pointer text-blue-600 font-black" onClick={onOpenCelularesCategory}>Club M Store</span>
+            <span className="hover:text-blue-600 cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Teléfonos Celulares</span>
+            <span className="hover:text-blue-600 cursor-pointer text-red-600 font-black" onClick={() => setIsCategoriesDrawerOpen(true)}>Ofertas M Store</span>
+            <span className="hover:text-blue-600 cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Televisores 4K</span>
+            <span className="hover:text-blue-600 cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Laptops & PC</span>
+            <span className="hover:text-blue-600 cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Zona Gamer</span>
+            <span className="hover:text-blue-600 cursor-pointer text-blue-600 font-black" onClick={() => setIsCategoriesDrawerOpen(true)}>Club M Store</span>
           </div>
         </div>
       </nav>
@@ -278,18 +281,17 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
               <span>{HERO_SLIDES[currentSlide].badge}</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl font-black font-space leading-tight tracking-tight">
+            <h1 className="text-2xl sm:text-4xl font-black tracking-tight leading-tight uppercase font-space">
               {HERO_SLIDES[currentSlide].title}
             </h1>
-
-            <p className="text-slate-200 text-xs sm:text-sm leading-relaxed font-sans">
+            <p className="text-xs sm:text-sm text-slate-200 font-medium">
               {HERO_SLIDES[currentSlide].subtitle}
             </p>
 
-            <div className="flex items-center gap-4 pt-2">
+            <div className="pt-2 flex items-center gap-4">
               <button 
                 onClick={onOpenCelularesCategory}
-                className="bg-[#FFE600] hover:bg-amber-400 text-black font-black px-6 py-3 rounded-2xl text-xs uppercase tracking-wider shadow-lg transition-all active:scale-95 flex items-center gap-2"
+                className="bg-[#00E5FF] hover:bg-cyan-300 text-slate-950 px-6 py-3 rounded-2xl font-black text-xs transition-all flex items-center gap-2 shadow-lg hover:scale-105 active:scale-95"
               >
                 <span>{HERO_SLIDES[currentSlide].buttonText}</span>
                 <ChevronRight className="w-4 h-4" />
@@ -297,58 +299,46 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
             </div>
           </div>
 
-          <div className="w-64 h-64 sm:w-72 sm:h-72 bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 flex items-center justify-center shrink-0 shadow-2xl">
+          <div className="w-full md:w-80 h-64 sm:h-72 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 relative group shrink-0">
             <img 
               src={HERO_SLIDES[currentSlide].img} 
-              alt="Promoción SoyTechno" 
-              className="w-full h-full object-contain filter drop-shadow-2xl" 
+              alt="M Store Promo" 
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
           </div>
 
-          {/* CONTROLES SLIDER */}
-          <button 
-            onClick={() => setCurrentSlide((prev) => (prev === 0 ? HERO_SLIDES.length - 1 : prev - 1))}
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-all"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <button 
-            onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-all"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
+        </div>
+
+        {/* INDICADORES DEL SLIDER */}
+        <div className="flex items-center justify-center gap-2 mt-4">
+          {HERO_SLIDES.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentSlide(idx)}
+              className={`h-2 rounded-full transition-all ${currentSlide === idx ? 'w-8 bg-[#0055FF]' : 'w-2 bg-slate-300'}`}
+            />
+          ))}
         </div>
       </section>
 
-      {/* 5. SECCIÓN DE CATEGORÍAS DE LA HOME PAGE */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8 mt-12">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-black text-[#0C1A38]">Explora por Categorías</h2>
-            <p className="text-xs text-slate-500 font-medium">Toda la tecnología disponible con entrega rápida en Venezuela</p>
-          </div>
-          <button onClick={onOpenCelularesCategory} className="text-xs font-extrabold text-blue-600 hover:underline flex items-center gap-1">
-            <span>Ver Todo El Catálogo</span>
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-
+      {/* 5. NAVEGACIÓN DE CATEGORÍAS RÁPIDAS */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 mt-10">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-          {HOME_CATEGORIES.map((c) => {
-            const IconComp = c.icon;
+          {HOME_CATEGORIES.map((cat) => {
+            const IconComp = cat.icon;
             return (
-              <div 
-                key={c.id}
+              <div
+                key={cat.id}
                 onClick={onOpenCelularesCategory}
-                className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:shadow-xl transition-all cursor-pointer text-center space-y-3 group"
+                className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:shadow-xl transition-all cursor-pointer group text-center flex flex-col items-center justify-center space-y-3"
               >
-                <div className={`w-14 h-14 rounded-2xl mx-auto flex items-center justify-center ${c.color} group-hover:scale-110 transition-transform`}>
+                <div className={`w-14 h-14 rounded-2xl ${cat.color} flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner`}>
                   <IconComp className="w-7 h-7" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-xs text-slate-900 group-hover:text-blue-600 transition-colors">{c.name}</h3>
-                  <span className="text-[10px] text-slate-400 font-bold block mt-0.5">{c.count}</span>
+                  <h4 className="text-xs font-black text-slate-900 group-hover:text-blue-600 transition-colors">{cat.name}</h4>
+                  <span className="text-[10px] text-slate-400 font-bold">{cat.count}</span>
                 </div>
               </div>
             );
@@ -356,18 +346,15 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
         </div>
       </section>
 
-      {/* 6. CATÁLOGO DE PRODUCTOS DESTACADOS MULTICATEGORÍA */}
+      {/* 6. GRID DE PRODUCTOS DESTACADOS MULTICATEGORÍA */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 mt-12">
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4 mb-6">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-xl font-black text-[#0C1A38] flex items-center gap-2">
-              <Flame className="w-6 h-6 text-red-600 fill-red-600 animate-pulse" />
-              <span>Lo Más Vendido en Venezuela</span>
-            </h2>
-            <p className="text-xs text-slate-500 font-medium">Equipos 100% nuevos en caja sellada con Garantía Oficial</p>
+            <span className="text-xs font-extrabold text-blue-600 uppercase tracking-widest block">CATÁLOGO EXCLUSIVO</span>
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 font-space tracking-tight">Productos Destacados M Store</h2>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-white p-1 rounded-2xl border border-slate-200 shadow-sm">
             <button 
               onClick={() => setCurrency('USD')}
               className={`px-3 py-1 rounded-xl text-xs font-black transition-all ${currency === 'USD' ? 'bg-[#0055FF] text-white shadow-sm' : 'bg-slate-100 text-slate-600'}`}
@@ -400,7 +387,10 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
                   <span className="text-[10px] text-slate-400 font-mono font-bold uppercase">{p.brand}</span>
                 </div>
 
-                <div className="w-full h-52 p-3 flex items-center justify-center overflow-hidden">
+                <div 
+                  className="w-full h-52 p-3 flex items-center justify-center overflow-hidden cursor-pointer"
+                  onClick={() => setQuickViewProduct(p)}
+                >
                   <img 
                     src={p.image} 
                     alt={p.name} 
@@ -409,7 +399,12 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
                 </div>
 
                 <div className="space-y-2 text-left">
-                  <h3 className="text-xs font-bold text-slate-900 line-clamp-2 min-h-[36px]">{p.name}</h3>
+                  <h3 
+                    onClick={() => setQuickViewProduct(p)}
+                    className="text-xs font-bold text-slate-900 line-clamp-2 min-h-[36px] cursor-pointer hover:text-blue-600 transition-colors"
+                  >
+                    {p.name}
+                  </h3>
 
                   <div className="flex items-baseline gap-2 pt-1">
                     <span className="text-2xl font-black text-slate-900 font-sans tracking-tight">{finalPrice}</span>
@@ -419,13 +414,21 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
                   </div>
                 </div>
 
-                <button
-                  onClick={() => handleWhatsApp(p)}
-                  className="w-full bg-[#0055FF] hover:bg-blue-700 text-white font-black py-3 rounded-2xl text-xs transition-colors flex items-center justify-center gap-1.5 shadow-md active:scale-95"
-                >
-                  <span>Comprar por WhatsApp</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
+                <div className="grid grid-cols-2 gap-2 pt-1">
+                  <button
+                    onClick={() => setQuickViewProduct(p)}
+                    className="w-full bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3 rounded-2xl text-xs transition-colors flex items-center justify-center gap-1"
+                  >
+                    <span>Ver Detalle</span>
+                  </button>
+                  <button
+                    onClick={() => handleWhatsApp(p)}
+                    className="w-full bg-[#0055FF] hover:bg-blue-700 text-white font-black py-3 rounded-2xl text-xs transition-colors flex items-center justify-center gap-1 shadow-md active:scale-95"
+                  >
+                    <span>Comprar</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
             );
           })}
@@ -445,6 +448,81 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
           ))}
         </div>
       </section>
+
+      {/* DRAWER LATERAL DE CATEGORÍAS (REPLICANDO SCREENSHOT 1) */}
+      {isCategoriesDrawerOpen && (
+        <div className="fixed inset-0 z-50 flex animate-fadeIn">
+          <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm" onClick={() => setIsCategoriesDrawerOpen(false)} />
+
+          <div className="relative z-10 w-full max-w-xs sm:max-w-sm bg-white h-full shadow-2xl flex flex-col justify-between overflow-y-auto font-sans">
+            <div>
+              {/* HEADER DEL DRAWER */}
+              <div className="bg-[#0055FF] text-white p-5 flex items-center justify-between shadow-md">
+                <div className="flex items-center gap-2 font-black text-sm uppercase tracking-wide">
+                  <span>≡ Todas las Categorías</span>
+                </div>
+                <button 
+                  onClick={() => setIsCategoriesDrawerOpen(false)}
+                  className="p-1 rounded-full hover:bg-white/20 text-white transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* LISTA DE CATEGORÍAS ESTILO SOYTECHNO (SCREENSHOT 1) */}
+              <div className="divide-y divide-slate-100 text-left text-xs font-extrabold text-slate-800">
+                {[
+                  { name: 'Teléfonos Celulares', icon: Smartphone },
+                  { name: 'Televisores', icon: Tv },
+                  { name: 'Laptops', icon: Laptop },
+                  { name: 'Zona Gamer', icon: Gamepad2 },
+                  { name: 'Equipos de Computación', icon: Laptop },
+                  { name: 'Accesorios de Computación', icon: Headphones },
+                  { name: 'Impresoras', icon: Printer },
+                  { name: 'Tablets', icon: Tablet },
+                  { name: 'Relojes Inteligentes', icon: Watch },
+                  { name: 'Audífonos y Sonido', icon: Headphones },
+                  { name: 'Dispositivos Streaming', icon: Tv },
+                  { name: 'Contadoras Autenticadoras', icon: Zap }
+                ].map((item, idx) => {
+                  const IconC = item.icon;
+                  return (
+                    <div 
+                      key={idx}
+                      onClick={() => { setIsCategoriesDrawerOpen(false); onOpenCelularesCategory(); }}
+                      className="p-4 flex items-center justify-between hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <IconC className="w-4 h-4 text-blue-600 shrink-0" />
+                        <span>{item.name}</span>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-slate-300" />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* FOOTER DEL DRAWER */}
+            <div className="p-4 bg-slate-50 border-t border-slate-200 text-center">
+              <span className="text-[11px] font-bold text-slate-400">M Store Venezuela — Catálogo 2026</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DETALLE DE PRODUCTO ESTILO SOYTECHNO (SCREENSHOT 2) */}
+      {quickViewProduct && (
+        <QuickViewModal
+          product={quickViewProduct}
+          onClose={() => setQuickViewProduct(null)}
+          onAddToCart={(p) => {
+            setCartCount(c => c + 1);
+            showToast(`Agregado al carrito: ${p.name}`);
+            setQuickViewProduct(null);
+          }}
+        />
+      )}
 
       {/* FLOATING WHATSAPP & BOT */}
       <a 

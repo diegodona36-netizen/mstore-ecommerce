@@ -164,43 +164,42 @@ export function SoyTechnoExperiment({ onBackToMain }) {
         </div>
       )}
 
-      {/* 1. BARRA SUPERIOR AMARILLA DE OFERTAS & BANNER CASHEA */}
-      <div className="bg-[#FFE600] text-black font-extrabold text-xs py-2 px-4 sm:px-8 flex items-center justify-between shadow-sm">
+      {/* 1. BARRA SUPERIOR CIAN NEÓN DE OFERTAS & BANNER CASHEA M STORE */}
+      <div className="bg-[#00E5FF] text-slate-950 font-extrabold text-xs py-2 px-4 sm:px-8 flex items-center justify-between shadow-sm border-b border-cyan-400/40">
         <button 
           onClick={onBackToMain}
-          className="flex items-center gap-1.5 bg-black/10 hover:bg-black/20 text-black px-3.5 py-1 rounded-full text-[11px] transition-all shrink-0"
+          className="flex items-center gap-1.5 bg-slate-950/10 hover:bg-slate-950/20 text-slate-950 px-3.5 py-1 rounded-full text-[11px] font-black transition-all shrink-0"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Volver a M Store Principal</span>
         </button>
 
-        <div className="flex items-center gap-2 font-black text-[11px] sm:text-xs tracking-tight">
-          <span className="bg-black text-white px-2 py-0.5 rounded text-[10px] uppercase font-mono font-bold">SOYTECHNO</span>
-          <span>Compra en cuotas lo que necesitas hoy | Envío Gratis Nacional</span>
+        <div className="flex items-center gap-2 font-black text-[11px] sm:text-xs tracking-tight text-slate-950">
+          <span className="bg-slate-950 text-[#00E5FF] px-2.5 py-0.5 rounded text-[10px] uppercase font-mono font-black">M STORE</span>
+          <span>Compra en cuotas lo que necesitas hoy con Cashea | Envío Gratis Nacional</span>
         </div>
 
-        <div className="hidden md:flex items-center gap-4 text-[11px] font-bold">
+        <div className="hidden md:flex items-center gap-4 text-[11px] font-black text-slate-950">
           <span className="cursor-pointer hover:underline" onClick={() => setActiveTab('tiendas')}>📍 Nuestras Tiendas</span>
           <span>•</span>
           <a href="https://wa.me/584120000000" target="_blank" rel="noreferrer" className="hover:underline">💬 Atención WhatsApp</a>
         </div>
       </div>
 
-      {/* 2. HEADER PRINCIPAL AZUL MARINO DEEP NAVY */}
-      <header className="bg-[#0C1A38] text-white py-4 px-4 sm:px-8 shadow-md">
+      {/* 2. HEADER PRINCIPAL AZUL MARINO DEEP NAVY CON LOGO OFICIAL TRANSPARENTE */}
+      <header className="bg-[#0C1A38] text-white py-3.5 px-4 sm:px-8 shadow-xl border-b border-blue-900/40">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
-          {/* LOGO SOYTECHNO ESTILO OFICIAL */}
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => { setSelectedBrand('todos'); setActiveTab('catalogo'); }}>
-            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-xl shadow-lg">
-              M
-            </div>
-            <div>
-              <div className="flex items-center gap-1">
-                <span className="text-2xl font-black tracking-tighter text-white font-mono">SOYTECHNO</span>
-              </div>
-              <p className="text-[9px] text-blue-300 font-bold uppercase tracking-widest">Tienda Oficial M Store Venezuela</p>
-            </div>
+          {/* LOGO OFICIAL M STORE TRANSPARENTE */}
+          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => { setSelectedBrand('todos'); setActiveTab('catalogo'); }}>
+            <img 
+              src="/logo-white.png" 
+              alt="M Store - Tienda de Telefonía y Accesorios" 
+              className="h-10 md:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              onError={(e) => {
+                e.currentTarget.src = "/logo-official.png";
+              }}
+            />
           </div>
 
           {/* BUSCADOR EN TIEMPO REAL CON BOTÓN AZUL CIRCULAR */}
@@ -444,6 +443,15 @@ export function SoyTechnoExperiment({ onBackToMain }) {
                         {oldPriceText && (
                           <span className="text-xs text-slate-400 line-through font-mono ml-auto">{oldPriceText}</span>
                         )}
+                      </div>
+
+                      {/* FINANCIAMIENTO CASHEA M STORE */}
+                      <div className="bg-[#FFF9C4] border border-amber-300 rounded-2xl p-2.5 flex items-center justify-between text-[11px] font-black text-slate-900 shadow-sm">
+                        <div className="flex items-center gap-1.5">
+                          <span className="bg-[#FFE600] text-black px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider border border-amber-400/50">CASHEA</span>
+                          <span>Inicial: {currency === 'USD' ? `$${(p.price * 0.4).toFixed(2)}` : `${((p.price * 0.4) * rateVES).toLocaleString('es-VE', { maximumFractionDigits: 0 })} Bs`}</span>
+                        </div>
+                        <span className="text-[10px] text-amber-900 font-bold">+ 3 cuotas</span>
                       </div>
                     </div>
 

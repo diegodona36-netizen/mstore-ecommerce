@@ -15,11 +15,11 @@ export const Logo = ({ className = '', size = 'medium' }) => {
       */}
       <div className="relative flex items-center justify-center shrink-0">
         <img
-          src="/logo-dark-perfect.jpg"
+          src="/logo-white.png"
           alt="M Store - Tienda de Telefonía, Línea Blanca y Tecnología"
-          className={`${heightClass} w-auto object-contain relative z-10 rounded-lg transition-transform duration-300 group-hover:scale-[1.03]`}
+          className={`${heightClass} w-auto object-contain relative z-10 transition-transform duration-300 group-hover:scale-[1.03]`}
           onError={(e) => {
-            e.currentTarget.src = "/logo-dark-perfect.png";
+            e.currentTarget.src = "/logo-official.png";
           }}
         />
       </div>

@@ -39,17 +39,18 @@ export function App() {
     return <CleanBrightStore onBackToMain={() => { window.location.hash = ''; setIsCleanMode(false); }} />;
   }
 
-  if (isSoyTechnoHomeMode) {
-    return (
-      <SoyTechnoHomePage 
-        onBackToMain={() => { window.location.hash = ''; setIsSoyTechnoHomeMode(false); }} 
-        onOpenCelularesCategory={() => { window.location.hash = '#soytechno'; }}
-      />
-    );
-  }
-
   if (isSoyTechnoMode) {
     return <SoyTechnoExperiment onBackToMain={() => { window.location.hash = ''; setIsSoyTechnoMode(false); }} />;
+  }
+
+  if (!isOldMode) {
+    // POR DEFECTO: Mostrar la portada principal SoyTechno M Store
+    return (
+      <SoyTechnoHomePage 
+        onBackToMain={() => { window.location.hash = '#old'; setIsOldMode(true); }} 
+        onOpenCelularesCategory={() => { window.location.hash = '#soytechno'; setIsSoyTechnoMode(true); }}
+      />
+    );
   }
 
   const [products, setProducts] = useState(() => {

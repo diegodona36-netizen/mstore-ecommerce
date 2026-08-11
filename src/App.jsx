@@ -98,11 +98,10 @@ export function App() {
     return <SoyTechnoExperiment onBackToMain={() => { window.location.hash = ''; setIsSoyTechnoMode(false); }} />;
   }
 
-  if (!isOldMode) {
-    // POR DEFECTO: Mostrar la portada principal SoyTechno M Store
+  if (isSoyTechnoHomeMode) {
     return (
       <SoyTechnoHomePage 
-        onBackToMain={() => { window.location.hash = '#old'; setIsOldMode(true); }} 
+        onBackToMain={() => { window.location.hash = ''; setIsSoyTechnoHomeMode(false); }} 
         onOpenCelularesCategory={() => { window.location.hash = '#soytechno'; setIsSoyTechnoMode(true); }}
       />
     );

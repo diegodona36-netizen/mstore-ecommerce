@@ -1,0 +1,5 @@
+{
+  "summary":  "Ajuste de estilos CSS para que la imagen exacta del logotipo oficial de M Store se renderice con sus proporciones originales nítidas (height: 54px; max-width: 280px; object-fit: contain) sin distorsión ni compresión.",
+  "updatedAt":  "2026-08-11T03:53:32.064697200Z",
+  "userFacing":  true
+}

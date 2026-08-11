@@ -14,7 +14,7 @@ export const Logo = ({ className = '', size = 'medium', variant = 'dark' }) => {
         <img
           src={logoSrc}
           alt="M Store - Tienda de Telefonía y Accesorios"
-          className={`${heightClass} w-auto object-contain rounded-lg transition-transform duration-300 group-hover:scale-[1.03] shadow-sm`}
+          className={`${heightClass} w-auto object-contain transition-transform duration-300 group-hover:scale-[1.03]`}
           onError={(e) => {
             e.currentTarget.src = fallbackSrc;
           }}

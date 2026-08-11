@@ -158,30 +158,30 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
         </div>
       )}
 
-      {/* 1. BARRA SUPERIOR AMARILLA OFICIAL CASHEA (#FFE600) M STORE */}
-      <div className="bg-[#FFE600] text-black font-black text-xs py-2 px-4 sm:px-8 flex items-center justify-between shadow-sm border-b border-amber-400">
+      {/* 1. BARRA SUPERIOR ELEGANTE M STORE & CASHEA */}
+      <div className="bg-[#080A0E] text-slate-300 font-bold text-xs py-2 px-4 sm:px-8 flex items-center justify-between border-b border-slate-800">
         <button 
           onClick={onBackToMain}
-          className="flex items-center gap-1.5 bg-black/10 hover:bg-black/20 text-black px-3.5 py-1 rounded-full text-[11px] font-black transition-all shrink-0"
+          className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-full text-[11px] font-black transition-all shrink-0 border border-white/10"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Volver a M Store Principal</span>
         </button>
 
         <div className="flex items-center gap-2 text-[11px] sm:text-xs tracking-tight">
-          <span className="bg-black text-[#FFE600] px-2.5 py-0.5 rounded text-[10px] uppercase font-mono font-black">CASHEA</span>
-          <span>⚡ COMPRA HOY Y PAGA EN CUOTAS CON CASHEA SIN INTERÉS • ENVÍOS GRATIS A NIVEL NACIONAL</span>
+          <span className="bg-[#FFE600] text-black px-2.5 py-0.5 rounded text-[10px] uppercase font-mono font-black shadow-sm">CASHEA</span>
+          <span className="text-white font-extrabold">⚡ Compra hoy en cuotas sin interés con Cashea • Envíos gratis a todo el país</span>
         </div>
 
-        <div className="hidden md:flex items-center gap-4 text-[11px] font-black">
+        <div className="hidden md:flex items-center gap-4 text-[11px] font-semibold text-slate-400">
           <span>📍 Caracas & Lechería</span>
           <span>•</span>
-          <a href="https://wa.me/584120000000" target="_blank" rel="noreferrer" className="hover:underline">💬 Atención 24/7</a>
+          <a href="https://wa.me/584120000000" target="_blank" rel="noreferrer" className="hover:text-emerald-400 transition-colors">💬 Atención 24/7</a>
         </div>
       </div>
 
-      {/* 2. HEADER PRINCIPAL CON FONDO M STORE OFICIAL Y LOGO */}
-      <header className="mstore-dark-header-bg text-white py-3.5 px-4 sm:px-8 shadow-2xl border-b border-cyan-500/20">
+      {/* 2. HEADER PRINCIPAL M STORE CON LOGO Y BUSCADOR INTEGRADOSS */}
+      <header className="mstore-dark-header-bg text-white py-4 px-4 sm:px-8 shadow-xl border-b border-cyan-500/20">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
           {/* LOGO OFICIAL M STORE */}
@@ -189,7 +189,7 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
             <Logo variant="dark" size="medium" />
           </div>
 
-          {/* BUSCADOR CON BOTÓN CIRCULAR AZUL */}
+          {/* BUSCADOR ELEGANTE INTEGRADO */}
           <div className="flex-1 max-w-xl relative hidden md:block">
             <div className="relative flex items-center">
               <input 
@@ -197,18 +197,18 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="¿Qué buscas hoy? (iPhone 16, Galaxy S25, Smart TV 4K, Cashea...)"
-                className="w-full bg-slate-900/90 text-white rounded-full pl-5 pr-14 py-2.5 text-xs placeholder-slate-400 outline-none border border-slate-700 focus:border-cyan-400 transition-colors shadow-inner"
+                className="w-full bg-[#121624] text-white rounded-full pl-5 pr-14 py-2.5 text-xs placeholder-slate-400 outline-none border border-slate-700/70 focus:border-[#00E5FF] transition-all shadow-inner"
               />
-              <button className="absolute right-1 w-9 h-9 rounded-full bg-[#0055FF] hover:bg-blue-700 text-white flex items-center justify-center shadow-md transition-all">
+              <button className="absolute right-1 w-9 h-9 rounded-full bg-[#0055FF] hover:bg-blue-600 text-white flex items-center justify-center shadow-md transition-all">
                 <Search className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* MENÚ DERECHA */}
+          {/* ACCIONES Y MENÚ DERECHO */}
           <div className="flex items-center gap-5 text-xs font-semibold">
             <div className="hidden lg:flex items-center gap-2">
-              <Truck className="w-5 h-5 text-cyan-400" />
+              <Truck className="w-5 h-5 text-[#00E5FF]" />
               <div className="text-left text-[11px] leading-tight">
                 <span className="block font-bold text-white">Envíos GRATIS</span>
                 <span className="text-slate-400 text-[10px]">a Nivel Nacional</span>
@@ -219,23 +219,23 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
               href="https://wa.me/584120000000" 
               target="_blank" 
               rel="noreferrer"
-              className="flex items-center gap-2 hover:text-cyan-300 transition-colors"
+              className="flex items-center gap-2 hover:opacity-90 transition-opacity"
             >
               <Phone className="w-5 h-5 text-emerald-400" />
               <div className="text-left text-[11px] leading-tight hidden sm:block">
-                <span className="block font-bold text-white">Contáctanos por</span>
+                <span className="block font-bold text-slate-300">Atención</span>
                 <span className="text-emerald-400 font-extrabold">WHATSAPP</span>
               </div>
             </a>
 
             <div className="flex items-center gap-3">
-              <button className="p-2 text-white hover:text-cyan-300">
+              <button className="p-2 text-slate-300 hover:text-white transition-colors">
                 <User className="w-5 h-5" />
               </button>
               <div className="relative cursor-pointer" onClick={() => { setCartCount(c => c + 1); showToast('Carrito actualizado'); }}>
                 <ShoppingBag className="w-6 h-6 text-white" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1.5 -right-2 bg-blue-600 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1.5 -right-2 bg-[#0055FF] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}
@@ -246,40 +246,40 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
         </div>
       </header>
 
-      {/* 3. SUB-NAVBAR CATEGORÍAS */}
-      <nav className="bg-slate-900 text-white border-b border-slate-800 px-4 sm:px-8 py-2.5 shadow-sm hidden md:block">
+      {/* 3. NAV DE CATEGORÍAS SECUNDARIO */}
+      <nav className="bg-[#0F131F] text-white border-b border-slate-800 px-4 sm:px-8 py-2.5 shadow-sm hidden md:block">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-6 text-xs font-bold">
-          <button onClick={() => setIsCategoriesDrawerOpen(true)} className="bg-[#0055FF] text-white px-5 py-2 rounded-full font-extrabold flex items-center gap-2 hover:bg-blue-700 transition-colors shadow-sm">
+          <button onClick={() => setIsCategoriesDrawerOpen(true)} className="bg-[#0055FF] hover:bg-blue-600 text-white px-5 py-2 rounded-full font-extrabold flex items-center gap-2 transition-all shadow-md">
             <span>≡ Categorías</span>
           </button>
 
           <div className="flex items-center gap-6">
             <span className="text-[#00E5FF] font-black cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Inicio</span>
-            <span className="hover:text-cyan-300 cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Teléfonos Celulares</span>
-            <span className="bg-[#FFE600] text-black px-2.5 py-0.5 rounded-full font-black text-[10px] uppercase cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Cashea Financiación</span>
-            <span className="hover:text-cyan-300 cursor-pointer text-red-400 font-black" onClick={() => setIsCategoriesDrawerOpen(true)}>Ofertas M Store</span>
-            <span className="hover:text-cyan-300 cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Televisores 4K</span>
-            <span className="hover:text-cyan-300 cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Laptops & PC</span>
-            <span className="hover:text-cyan-300 cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Zona Gamer</span>
-            <span className="hover:text-cyan-300 cursor-pointer text-cyan-300 font-black" onClick={() => setIsCategoriesDrawerOpen(true)}>Club M Store</span>
+            <span className="hover:text-cyan-300 cursor-pointer transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Teléfonos Celulares</span>
+            <span className="bg-[#FFE600]/15 text-[#FFE600] border border-[#FFE600]/30 px-3 py-1 rounded-full font-black text-[10px] uppercase cursor-pointer hover:bg-[#FFE600] hover:text-black transition-all" onClick={() => setIsCategoriesDrawerOpen(true)}>Cashea Financiación</span>
+            <span className="hover:text-red-400 cursor-pointer text-red-400 font-extrabold transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Ofertas M Store</span>
+            <span className="hover:text-cyan-300 cursor-pointer transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Televisores 4K</span>
+            <span className="hover:text-cyan-300 cursor-pointer transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Laptops & PC</span>
+            <span className="hover:text-cyan-300 cursor-pointer transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Zona Gamer</span>
+            <span className="text-cyan-300 font-extrabold cursor-pointer hover:underline" onClick={() => setIsCategoriesDrawerOpen(true)}>Club M Store</span>
           </div>
         </div>
       </nav>
 
-      {/* 4. HERO BANNER CAROUSEL CON FINANCIAMIENTO CASHEA */}
+      {/* 4. HERO BANNER CAROUSEL DE ALTO IMPACTO VISUAL */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 mt-6">
         <div className="relative rounded-3xl overflow-hidden mstore-dark-header-bg text-white p-8 sm:p-12 shadow-2xl border border-cyan-500/30 flex flex-col md:flex-row items-center justify-between gap-8">
           
           <div className="space-y-4 max-w-xl text-left">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFE600] text-black text-xs font-black uppercase tracking-wider shadow-md">
               <Zap className="w-4 h-4 fill-black" />
-              <span>PAGA EN CUOTAS CON CASHEA EN M STORE</span>
+              <span>COMPRA HOY Y PAGA EN CUOTAS CON CASHEA</span>
             </div>
 
             <h1 className="text-2xl sm:text-4xl font-black tracking-tight leading-tight uppercase font-space text-white">
               {HERO_SLIDES[currentSlide].title}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-300 font-medium">
+            <p className="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed">
               {HERO_SLIDES[currentSlide].subtitle}
             </p>
 
@@ -327,27 +327,29 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
         </div>
       </section>
 
-      {/* 5. SECCIÓN DESTACADA BANNER CASHEA AMARILLO (#FFE600) */}
+      {/* 5. TARJETA PROMINENTE Y ELEGANTE DE FINANCIACIÓN CASHEA */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 mt-10">
-        <div className="bg-[#FFE600] rounded-3xl p-6 sm:p-8 text-black shadow-xl border border-amber-400 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-2 text-left max-w-xl">
-            <div className="inline-block bg-black text-[#FFE600] font-black text-[10px] px-3 py-1 rounded-full uppercase tracking-wider">
-              M STORE ES ALIANZA CASHEA EN VENEZUELA
+        <div className="bg-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-2xl border border-amber-400/40 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#FFE600]/10 rounded-full blur-3xl -z-0"></div>
+          
+          <div className="space-y-3 text-left max-w-xl relative z-10">
+            <div className="inline-flex items-center gap-2 bg-[#FFE600] text-black font-black text-[11px] px-3.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
+              <span>ALIADOS OFICIALES CASHEA VENEZUELA</span>
             </div>
-            <h2 className="text-xl sm:text-3xl font-black font-space tracking-tight">
-              Llévatelo hoy pagando solo la inicial
+            <h2 className="text-xl sm:text-3xl font-black font-space tracking-tight text-white">
+              Pagas la Inicial y te lo llevas HOY mismo
             </h2>
-            <p className="text-xs sm:text-sm font-bold text-slate-900 leading-relaxed">
-              Disfruta de la libertad de renovar tu smartphone o equipo de tecnología. Eliges tu producto en M Store, pagas la inicial en caja o transferencias, y el resto lo pagas en 3 cuotas fijas cada 14 días.
+            <p className="text-xs sm:text-sm font-medium text-slate-300 leading-relaxed">
+              Elige tu smartphone o equipo de tecnología en M Store. Cancela la inicial en tienda o en línea, y divide el saldo en 3 cuotas iguales sin interés cada 14 días.
             </p>
           </div>
 
-          <div className="bg-black text-white p-5 rounded-2xl shadow-2xl border border-amber-300/40 text-center shrink-0 min-w-[260px]">
+          <div className="bg-[#121624] text-white p-5 rounded-2xl shadow-2xl border border-amber-400/30 text-center shrink-0 min-w-[270px] relative z-10">
             <span className="text-[10px] font-mono text-[#FFE600] uppercase font-black block">EJEMPLO DE CUOTAS CASHEA</span>
             <div className="text-2xl font-black text-[#FFE600] my-1">$100 USD</div>
-            <div className="text-xs font-bold space-y-1 text-slate-300">
-              <p>• Inicial: <span className="text-white">$40.00 USD</span></p>
-              <p>• 3 cuotas de: <span className="text-[#FFE600]">$20.00 USD</span></p>
+            <div className="text-xs font-semibold space-y-1 text-slate-300">
+              <p>• Inicial (40%): <span className="text-white font-bold">$40.00 USD</span></p>
+              <p>• 3 cuotas de: <span className="text-[#FFE600] font-black">$20.00 USD</span></p>
             </div>
           </div>
         </div>

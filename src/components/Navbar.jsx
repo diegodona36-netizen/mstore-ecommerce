@@ -76,25 +76,34 @@ export const Navbar = ({
             </div>
           </form>
 
-          {/* 3b. Buscador Compacto en Móvil */}
+          {/* 3b. Buscador Amplio en Móvil (Ocupa todo el espacio restable) */}
           <form 
             onSubmit={handleSearchFormSubmit}
-            className="flex-1 relative md:hidden max-w-[200px]"
+            className="flex-1 relative md:hidden ml-1 sm:ml-2"
           >
             <div className="relative flex items-center">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 pointer-events-none" />
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery || ''}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Buscar productos..."
-                className="w-full bg-white/[0.05] border border-white/15 focus:border-[#00E5FF] text-white text-[11px] rounded-full pl-8 pr-3 py-1.5 outline-none font-inter min-h-[34px]"
+                className="w-full bg-white/[0.06] border border-white/15 focus:border-[#00E5FF] focus:bg-black/60 text-white text-xs rounded-full pl-9 pr-3 py-2 outline-none font-inter min-h-[38px] placeholder:text-slate-400"
               />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => onSearchChange('')}
+                  className="absolute right-3 text-slate-400 hover:text-white text-xs"
+                >
+                  ✕
+                </button>
+              )}
             </div>
           </form>
 
           {/* 4. Right Actions */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="hidden md:flex items-center gap-2 sm:gap-3 shrink-0">
             
             {/* Quick Link Cyber */}
             <a
@@ -105,10 +114,10 @@ export const Navbar = ({
               Ofertas Cyber
             </a>
 
-            {/* Shopping Cart Button (Escritorio - en Móvil está abajo en el Bottom Nav) */}
+            {/* Shopping Cart Button */}
             <button
               onClick={onOpenCart}
-              className="hidden md:flex relative items-center gap-2 bg-[#00E5FF]/10 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black border border-[#00E5FF]/40 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold font-space transition-all duration-300 group hover:shadow-[0_0_20px_#00E5FF]"
+              className="relative flex items-center gap-2 bg-[#00E5FF]/10 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black border border-[#00E5FF]/40 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold font-space transition-all duration-300 group hover:shadow-[0_0_20px_#00E5FF]"
               aria-label="Ver Carrito de Compras"
             >
               <ShoppingBag className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
@@ -118,15 +127,6 @@ export const Navbar = ({
                   {cartCount}
                 </span>
               )}
-            </button>
-
-            {/* Mobile Menu Toggle Icon */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden text-slate-300 hover:text-white p-2 rounded-xl bg-white/5 border border-white/10 shrink-0 min-w-[36px] min-h-[36px] flex items-center justify-center"
-              aria-label="Abrir Menú"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
 

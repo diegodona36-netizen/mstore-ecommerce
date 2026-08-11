@@ -124,14 +124,43 @@ export function SoyTechnoExperiment({ onBackToMain }) {
   const [sortBy, setSortBy] = useState('default');
   const [currency, setCurrency] = useState('USD'); // USD | VES
   const [cartCount, setCartCount] = useState(0);
+  const [cartItems, setCartItems] = useState([]);
   const [toastMsg, setToastMsg] = useState(null);
   const [activeTab, setActiveTab] = useState('catalogo'); // catalogo | tiendas
+  const [activeModal, setActiveModal] = useState(null); // 'payment' | 'tracking' | 'club' | 'user' | 'categories' | 'contact' | 'cart' | 'quickview'
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [trackingCode, setTrackingCode] = useState('');
+  const [trackingStatus, setTrackingStatus] = useState(null);
 
   const rateVES = 60.5; // Tasa de cambio referencial Bolívares
 
   const showToast = (msg) => {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(null), 3000);
+  };
+
+  const handleAddToCart = (product) => {
+    setCartItems(prev => {
+      const existing = prev.find(item => item.id === product.id);
+      if (existing) {
+        return prev.map(item => item.id === product.id ? { ...item, qty: item.qty + 1 } : item);
+      }
+      return [...prev, { ...product, qty: 1 }];
+    });
+    setCartCount(c => c + 1);
+    showToast(`"${product.name.slice(0, 22)}..." agregado al Carrito M Store`);
+  };
+
+  const handleTrackSubmit = (e) => {
+    e.preventDefault();
+    if (!trackingCode.trim()) return;
+    setTrackingStatus({
+      code: trackingCode.toUpperCase(),
+      status: 'EN CAMINO / DESPACHADO',
+      courier: 'Tealca Express / Delivery M Store',
+      location: 'Centro de Distribución M Store - Caracas',
+      eta: 'Hoy antes de las 5:00 PM'
+    });
   };
 
   const filteredProducts = useMemo(() => {
@@ -242,13 +271,20 @@ export function SoyTechnoExperiment({ onBackToMain }) {
             </a>
 
             <div className="flex items-center gap-3">
-              <button className="p-2 text-white hover:text-blue-300">
+              <button 
+                onClick={() => setActiveModal('user')}
+                className="p-2 text-white hover:text-[#00E5FF] transition-colors"
+                title="Mi Cuenta"
+              >
                 <User className="w-5 h-5" />
               </button>
-              <div className="relative cursor-pointer" onClick={() => { setCartCount(c => c + 1); showToast('Carrito de compras actualizado'); }}>
+              <div 
+                className="relative cursor-pointer hover:scale-105 transition-transform" 
+                onClick={() => setActiveModal('cart')}
+              >
                 <ShoppingBag className="w-6 h-6 text-white" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1.5 -right-2 bg-blue-600 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1.5 -right-2 bg-[#00E5FF] text-slate-950 text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-md">
                     {cartCount}
                   </span>
                 )}
@@ -259,23 +295,66 @@ export function SoyTechnoExperiment({ onBackToMain }) {
         </div>
       </header>
 
-      {/* 3. BARRA BLANCA DE CATEGORÍAS */}
+      {/* 3. BARRA BLANCA DE CATEGORÍAS & MENÚS INTERACTIVOS */}
       <nav className="bg-white border-b border-slate-200 px-4 sm:px-8 py-2.5 shadow-sm hidden md:block">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-6 text-xs font-bold text-slate-700">
           
-          <button className="bg-[#0055FF] text-white px-5 py-2 rounded-full font-extrabold flex items-center gap-2 hover:bg-blue-700 transition-colors shadow-sm">
+          <button 
+            onClick={() => setActiveModal('categories')}
+            className="bg-[#0055FF] text-white px-5 py-2 rounded-full font-extrabold flex items-center gap-2 hover:bg-blue-700 transition-colors shadow-sm active:scale-95"
+          >
             <span>≡ Categorías</span>
           </button>
 
           <div className="flex items-center gap-6">
-            <span className={`hover:text-blue-600 cursor-pointer ${activeTab === 'catalogo' ? 'text-blue-600 font-black' : ''}`} onClick={() => setActiveTab('catalogo')}>Tienda electrónica</span>
-            <span className="hover:text-blue-600 cursor-pointer text-red-600 font-black">Ofertas SoyTechno</span>
-            <span className={`hover:text-blue-600 cursor-pointer ${activeTab === 'tiendas' ? 'text-blue-600 font-black' : ''}`} onClick={() => setActiveTab('tiendas')}>Ubicaciones / Tiendas</span>
-            <span className="hover:text-blue-600 cursor-pointer">Métodos de pago</span>
-            <span className="hover:text-blue-600 cursor-pointer">Nosotros</span>
-            <span className="hover:text-blue-600 cursor-pointer">Contacto</span>
-            <span className="hover:text-blue-600 cursor-pointer">Rastrea tu pedido</span>
-            <span className="hover:text-blue-600 cursor-pointer text-blue-600">Club SoyTechno</span>
+            <span 
+              className={`hover:text-blue-600 cursor-pointer ${activeTab === 'catalogo' && selectedBrand === 'todos' ? 'text-blue-600 font-black' : ''}`} 
+              onClick={() => { setSelectedBrand('todos'); setActiveTab('catalogo'); }}
+            >
+              Tienda electrónica
+            </span>
+            <span 
+              className="hover:text-blue-600 cursor-pointer text-red-600 font-black"
+              onClick={() => { setSelectedBrand('todos'); setSortBy('low'); setActiveTab('catalogo'); showToast('Mostrando ofertas destacadas'); }}
+            >
+              Ofertas M Store
+            </span>
+            <span 
+              className={`hover:text-blue-600 cursor-pointer ${activeTab === 'tiendas' ? 'text-blue-600 font-black' : ''}`} 
+              onClick={() => setActiveTab('tiendas')}
+            >
+              Ubicaciones / Tiendas
+            </span>
+            <span 
+              className="hover:text-blue-600 cursor-pointer"
+              onClick={() => setActiveModal('payment')}
+            >
+              Métodos de pago
+            </span>
+            <span 
+              className="hover:text-blue-600 cursor-pointer"
+              onClick={() => setActiveModal('contact')}
+            >
+              Nosotros
+            </span>
+            <span 
+              className="hover:text-blue-600 cursor-pointer"
+              onClick={() => setActiveModal('contact')}
+            >
+              Contacto
+            </span>
+            <span 
+              className="hover:text-blue-600 cursor-pointer"
+              onClick={() => setActiveModal('tracking')}
+            >
+              Rastrea tu pedido
+            </span>
+            <span 
+              className="hover:text-blue-600 cursor-pointer text-blue-600 font-black"
+              onClick={() => setActiveModal('club')}
+            >
+              Club M Store
+            </span>
           </div>
 
         </div>
@@ -512,12 +591,240 @@ export function SoyTechnoExperiment({ onBackToMain }) {
         <Phone className="w-6 h-6 fill-white" />
       </a>
 
-      <div className="fixed bottom-6 left-6 z-50 bg-white border border-slate-200 shadow-xl rounded-2xl px-4 py-2.5 flex items-center gap-3 text-xs font-bold text-slate-800 hidden sm:flex">
+      <div className="fixed bottom-6 left-6 z-50 bg-white border border-slate-200 shadow-xl rounded-2xl px-4 py-2.5 flex items-center gap-3 text-xs font-bold text-slate-800 hidden sm:flex cursor-pointer hover:border-blue-500 transition-all" onClick={() => setActiveModal('contact')}>
         <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-black">
           🤖
         </div>
         <span>¿En qué puedo ayudarte? 👋</span>
       </div>
+
+      {/* ────────────────────────── MODALES INTERACTIVOS REALES ────────────────────────── */}
+
+      {/* 1. MODAL MÉTODOS DE PAGO */}
+      {activeModal === 'payment' && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative space-y-6 text-left border border-slate-200 animate-in fade-in zoom-in-95">
+            <button onClick={() => setActiveModal(null)} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-900">
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-xl font-black text-[#0C1A38] flex items-center gap-2">
+              <CreditCard className="w-6 h-6 text-blue-600" />
+              <span>Métodos de Pago Oficiales M Store</span>
+            </h3>
+            <div className="space-y-3 text-xs">
+              <div className="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 flex items-center justify-between">
+                <div>
+                  <span className="font-black text-amber-900 block">🟡 CASHEA (3 Cuotas sin interés)</span>
+                  <span className="text-slate-600 text-[11px]">Compra hoy pagando solo la inicial con tu app Cashea</span>
+                </div>
+                <span className="bg-amber-400 text-slate-950 px-2 py-1 rounded font-black text-[10px]">ACTIVO</span>
+              </div>
+              <div className="p-3.5 bg-blue-50 rounded-2xl border border-blue-200 flex items-center justify-between">
+                <div>
+                  <span className="font-black text-blue-900 block">🏦 Pago Móvil & Transferencia Bs</span>
+                  <span className="text-slate-600 text-[11px]">Banesco, Mercantil, Provincial (Tasa BCV oficial)</span>
+                </div>
+                <span className="bg-blue-600 text-white px-2 py-1 rounded font-black text-[10px]">BCV</span>
+              </div>
+              <div className="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200 flex items-center justify-between">
+                <div>
+                  <span className="font-black text-emerald-900 block">💵 Zelle & Dólares Efectivo</span>
+                  <span className="text-slate-600 text-[11px]">Pagos directos en USD o retiro en tiendas físicas</span>
+                </div>
+                <span className="bg-emerald-600 text-white px-2 py-1 rounded font-black text-[10px]">USD</span>
+              </div>
+              <div className="p-3.5 bg-purple-50 rounded-2xl border border-purple-200 flex items-center justify-between">
+                <div>
+                  <span className="font-black text-purple-900 block">⚡ Binance Pay (USDT)</span>
+                  <span className="text-slate-600 text-[11px]">Transferencia directa QR en criptoactivos estables</span>
+                </div>
+                <span className="bg-purple-600 text-white px-2 py-1 rounded font-black text-[10px]">CRYPTO</span>
+              </div>
+            </div>
+            <button onClick={() => setActiveModal(null)} className="w-full bg-[#0055FF] text-white font-black py-3 rounded-2xl text-xs hover:bg-blue-700 transition-colors">
+              Entendido
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 2. MODAL RASTREO DE PEDIDO */}
+      {activeModal === 'tracking' && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative space-y-6 text-left border border-slate-200">
+            <button onClick={() => { setActiveModal(null); setTrackingStatus(null); }} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-900">
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-xl font-black text-[#0C1A38] flex items-center gap-2">
+              <Truck className="w-6 h-6 text-blue-600" />
+              <span>Rastrea tu Pedido M Store</span>
+            </h3>
+            <form onSubmit={handleTrackSubmit} className="space-y-4">
+              <input 
+                type="text" 
+                value={trackingCode}
+                onChange={(e) => setTrackingCode(e.target.value)}
+                placeholder="Ingresa tu código de pedido (Ej. MS-9842)" 
+                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+              />
+              <button type="submit" className="w-full bg-[#0055FF] text-white font-black py-3 rounded-2xl text-xs hover:bg-blue-700 transition-colors">
+                Buscar Estado del Envío
+              </button>
+            </form>
+            {trackingStatus && (
+              <div className="p-4 bg-blue-50 rounded-2xl border border-blue-200 space-y-2 text-xs">
+                <span className="bg-blue-600 text-white font-mono px-2 py-0.5 rounded font-black text-[10px]">{trackingStatus.code}</span>
+                <p className="font-extrabold text-blue-900">{trackingStatus.status}</p>
+                <p className="text-slate-600 text-[11px]">{trackingStatus.location}</p>
+                <p className="text-emerald-600 font-bold text-[11px]">Estimado de entrega: {trackingStatus.eta}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* 3. MODAL CLUB M STORE */}
+      {activeModal === 'club' && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative space-y-6 text-left border border-slate-200">
+            <button onClick={() => setActiveModal(null)} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-900">
+              <X className="w-5 h-5" />
+            </button>
+            <div className="text-center space-y-3">
+              <div className="w-14 h-14 rounded-full bg-[#00E5FF]/20 text-[#0055FF] flex items-center justify-center mx-auto text-2xl font-black">
+                ✨
+              </div>
+              <h3 className="text-xl font-black text-[#0C1A38]">Club M Store VIP</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Acumula 1 punto por cada $1 de compra. Canjea tus puntos por descuentos exclusivos en celulares, accesorios y cuotas Cashea preferenciales.
+              </p>
+            </div>
+            <button onClick={() => { setActiveModal(null); showToast('¡Bienvenido al Club M Store!'); }} className="w-full bg-[#0055FF] text-white font-black py-3 rounded-2xl text-xs hover:bg-blue-700 transition-colors">
+              Unirme Gratis al Club VIP
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 4. MODAL CATEGORÍAS MEGA MENU */}
+      {activeModal === 'categories' && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative space-y-6 text-left border border-slate-200">
+            <button onClick={() => setActiveModal(null)} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-900">
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-xl font-black text-[#0C1A38]">Categorías Principales M Store</h3>
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              {['Samsung', 'Apple', 'Honor', 'Xiaomi', 'Tecno', 'Vivo', 'Oukitel'].map((b) => (
+                <button 
+                  key={b}
+                  onClick={() => { setSelectedBrand(b); setActiveModal(null); setActiveTab('catalogo'); }}
+                  className="p-3 bg-slate-50 hover:bg-blue-50 border border-slate-200 rounded-2xl font-bold text-left text-slate-800 hover:text-blue-600 transition-all flex items-center justify-between"
+                >
+                  <span>Smartphones {b}</span>
+                  <ChevronRight className="w-4 h-4 text-slate-400" />
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 5. MODAL CARRITO / DRAWER */}
+      {activeModal === 'cart' && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-end">
+          <div className="bg-white w-full max-w-md h-full p-6 shadow-2xl flex flex-col justify-between text-left relative animate-in slide-in-from-right">
+            <div className="space-y-6 overflow-y-auto">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <h3 className="text-lg font-black text-[#0C1A38] flex items-center gap-2">
+                  <ShoppingBag className="w-5 h-5 text-blue-600" />
+                  <span>Tu Carrito de Compras ({cartCount})</span>
+                </h3>
+                <button onClick={() => setActiveModal(null)} className="p-2 text-slate-400 hover:text-slate-900">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {cartItems.length === 0 ? (
+                <div className="py-12 text-center space-y-3">
+                  <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto" />
+                  <p className="text-xs text-slate-500 font-medium">Tu carrito está vacío en este momento.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {cartItems.map((item, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-200 text-xs">
+                      <div>
+                        <p className="font-extrabold text-slate-900">{item.name}</p>
+                        <p className="text-blue-600 font-black">${item.price.toFixed(2)} USD x {item.qty}</p>
+                      </div>
+                      <span className="font-black text-slate-700">${(item.price * item.qty).toFixed(2)}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="pt-4 border-t border-slate-100 space-y-3">
+              <button 
+                onClick={() => {
+                  const msg = `Hola M Store! Deseo procesar mi pedido con ${cartCount} producto(s) por un total de mi carrito.`;
+                  window.open(`https://wa.me/584120000000?text=${encodeURIComponent(msg)}`, '_blank');
+                }}
+                className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3.5 rounded-2xl text-xs transition-colors flex items-center justify-center gap-2 shadow-lg"
+              >
+                <span>Finalizar Pedido por WhatsApp</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 6. MODAL MI CUENTA */}
+      {activeModal === 'user' && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative space-y-6 text-left border border-slate-200">
+            <button onClick={() => setActiveModal(null)} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-900">
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-xl font-black text-[#0C1A38] flex items-center gap-2">
+              <User className="w-6 h-6 text-blue-600" />
+              <span>Mi Cuenta M Store</span>
+            </h3>
+            <div className="space-y-4">
+              <input type="email" placeholder="Correo electrónico" className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs outline-none" />
+              <input type="password" placeholder="Contraseña" className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs outline-none" />
+              <button onClick={() => { setActiveModal(null); showToast('Sesión iniciada correctamente'); }} className="w-full bg-[#0055FF] text-white font-black py-3 rounded-2xl text-xs hover:bg-blue-700 transition-colors">
+                Iniciar Sesión / Registrarme
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 7. MODAL CONTACTO */}
+      {activeModal === 'contact' && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative space-y-6 text-left border border-slate-200">
+            <button onClick={() => setActiveModal(null)} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-900">
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-xl font-black text-[#0C1A38]">Atención M Store Venezuela</h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Somos tu tienda oficial de tecnología y teléfonos celulares con sede en Caracas y Lechería. Envíos gratis garantizados a nivel nacional.
+            </p>
+            <a 
+              href="https://wa.me/584120000000" 
+              target="_blank" 
+              rel="noreferrer" 
+              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3 rounded-2xl text-xs flex items-center justify-center gap-2"
+            >
+              <span>Escribir por WhatsApp Directo</span>
+            </a>
+          </div>
+        </div>
+      )}
 
     </div>
   );

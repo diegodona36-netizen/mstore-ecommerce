@@ -257,13 +257,13 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
           </button>
 
           <div className="flex items-center gap-6">
-            <span className="text-blue-600 font-black cursor-pointer">Inicio</span>
+            <span className="text-blue-600 font-black cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Inicio</span>
             <span className="hover:text-blue-600 cursor-pointer" onClick={onOpenCelularesCategory}>Teléfonos Celulares</span>
-            <span className="hover:text-blue-600 cursor-pointer text-red-600 font-black">Ofertas Principal</span>
-            <span className="hover:text-blue-600 cursor-pointer">Televisores</span>
-            <span className="hover:text-blue-600 cursor-pointer">Laptops</span>
-            <span className="hover:text-blue-600 cursor-pointer">Zona Gamer</span>
-            <span className="hover:text-blue-600 cursor-pointer text-blue-600">Club SoyTechno</span>
+            <span className="hover:text-blue-600 cursor-pointer text-red-600 font-black" onClick={onOpenCelularesCategory}>Ofertas M Store</span>
+            <span className="hover:text-blue-600 cursor-pointer" onClick={onOpenCelularesCategory}>Televisores 4K</span>
+            <span className="hover:text-blue-600 cursor-pointer" onClick={onOpenCelularesCategory}>Laptops & PC</span>
+            <span className="hover:text-blue-600 cursor-pointer" onClick={onOpenCelularesCategory}>Zona Gamer</span>
+            <span className="hover:text-blue-600 cursor-pointer text-blue-600 font-black" onClick={onOpenCelularesCategory}>Club M Store</span>
           </div>
         </div>
       </nav>

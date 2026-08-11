@@ -14,20 +14,32 @@ import { Footer } from './components/Footer';
 import { Toast } from './components/Toast';
 import { LandingPageTest } from './components/LandingPageTest';
 import { SoyTechnoExperiment } from './components/SoyTechnoExperiment';
+import { SoyTechnoHomePage } from './components/SoyTechnoHomePage';
 import { PRODUCTS as INITIAL_PRODUCTS } from './data/products';
 
 export function App() {
   const [isOldMode, setIsOldMode] = useState(() => window.location.hash === '#vieja' || window.location.hash === '#old');
   const [isSoyTechnoMode, setIsSoyTechnoMode] = useState(() => window.location.hash === '#soytechno');
+  const [isSoyTechnoHomeMode, setIsSoyTechnoHomeMode] = useState(() => window.location.hash === '#soytechno-home' || window.location.hash === '#soytechno-main');
 
   useEffect(() => {
     const handleHashChange = () => {
       setIsOldMode(window.location.hash === '#vieja' || window.location.hash === '#old');
       setIsSoyTechnoMode(window.location.hash === '#soytechno');
+      setIsSoyTechnoHomeMode(window.location.hash === '#soytechno-home' || window.location.hash === '#soytechno-main');
     };
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
+
+  if (isSoyTechnoHomeMode) {
+    return (
+      <SoyTechnoHomePage 
+        onBackToMain={() => { window.location.hash = ''; setIsSoyTechnoHomeMode(false); }} 
+        onOpenCelularesCategory={() => { window.location.hash = '#soytechno'; }}
+      />
+    );
+  }
 
   if (isSoyTechnoMode) {
     return <SoyTechnoExperiment onBackToMain={() => { window.location.hash = ''; setIsSoyTechnoMode(false); }} />;

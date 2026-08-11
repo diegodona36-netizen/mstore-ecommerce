@@ -1,10 +1,11 @@
 /* ==========================================================================
-   M STORE — LÓGICA DE CATÁLOGO Y COMPRA EN JAVASCRIPT (main.js)
+   M STORE — LÓGICA DE COMPRA Y NAVEGACIÓN EN JAVASCRIPT (main.js)
    ========================================================================== */
 
-// 1. CONFIGURACIÓN E INVENTARIO COMPLETO DE PRODUCTOS
-const WHATSAPP_PHONE = '584120000000'; // Reemplazar con el número oficial de M Store
+// Configuración del Número de Atención por WhatsApp de M Store
+const WHATSAPP_PHONE = '584120000000'; // Formato internacional sin símbolos: 58XXXXXXXXXX
 
+// Catálogo Digital de Productos (Smartphones y Tecnología de Alta Gama)
 const PRODUCTS_DATA = [
   {
     id: 'm1',
@@ -19,7 +20,7 @@ const PRODUCTS_DATA = [
   {
     id: 'm2',
     brand: 'Samsung',
-    name: 'Samsung Galaxy S25 Ultra 512GB / 12GB RAM',
+    name: 'Samsung Galaxy S25 Ultra 512GB / 12GB RAM Titanio',
     price: 910.00,
     rating: 4.9,
     reviews: 98,
@@ -88,17 +89,17 @@ const PRODUCTS_DATA = [
   }
 ];
 
-// Estado global de la aplicación
+// Estado Global de Filtrado
 let currentBrandFilter = 'todos';
 let searchQuery = '';
 
-// DOM Elements
+// Inicialización cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
   renderProducts();
   setupEventListeners();
 });
 
-// 2. RENDERIZADO DINÁMICO DE TARJETAS DE PRODUCTO
+// 1. FUNCION DE RENDERIZADO DINÁMICO DEL CATÁLOGO
 function renderProducts() {
   const gridContainer = document.getElementById('productsGrid');
   if (!gridContainer) return;
@@ -114,7 +115,7 @@ function renderProducts() {
       <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; background: #FFFFFF; border-radius: 24px; border: 1px solid #E2E8F0;">
         <i class="fa-solid fa-box-open" style="font-size: 2.5rem; color: #64748B; margin-bottom: 1rem;"></i>
         <h3 style="font-weight: 800; color: #0F172A;">No se encontraron productos</h3>
-        <p style="font-size: 0.85rem; color: #64748B;">Intenta seleccionar otra marca o limpiar el filtro de búsqueda.</p>
+        <p style="font-size: 0.85rem; color: #64748B;">Intenta seleccionar otra marca o borrar el filtro de búsqueda.</p>
       </div>
     `;
     return;
@@ -158,9 +159,9 @@ function renderProducts() {
   `).join('');
 }
 
-// 3. LÓGICA DE NAVEGACIÓN Y PESTAÑAS DE MARCA
+// 2. CONFIGURACIÓN DE LISTENERS (PESTAÑAS Y BÚSQUEDA)
 function setupEventListeners() {
-  // Pestañas de Marcas
+  // Pestañas de Marcas Interactivas
   const tabButtons = document.querySelectorAll('#brandTabs .tab-btn');
   tabButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -171,7 +172,7 @@ function setupEventListeners() {
     });
   });
 
-  // Buscador en tiempo real
+  // Buscador en Tiempo Real
   const searchInput = document.getElementById('searchInput');
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
@@ -180,25 +181,26 @@ function setupEventListeners() {
     });
   }
 
-  // Tarjetas de categorías
+  // Tarjetas de Categorías
   const categoryCards = document.querySelectorAll('.category-card');
   categoryCards.forEach(card => {
     card.addEventListener('click', () => {
-      const cat = card.getAttribute('data-category');
       const catalogEl = document.getElementById('catalogo');
       if (catalogEl) catalogEl.scrollIntoView({ behavior: 'smooth' });
     });
   });
 }
 
-// 4. INTEGRACIÓN WHATSAPP API PARA BOTONES "AGREGAR AL PEDIDO"
+// 3. INTEGRACIÓN WHATSAPP API EN BOTONES "AGREGAR AL PEDIDO"
 function sendWhatsAppOrder(productName, productPrice) {
-  const formattedPrice = `$${parseFloat(productPrice).toFixed(2)} USD`;
+  const formattedPrice = `$${parseFloat(productPrice).toFixed(2)}`;
+  
+  // Mensaje Exacto Requerido: "Hola M Store, me interesa adquirir el producto [Nombre] por [Precio]. ¿Está disponible?"
   const message = `Hola M Store, me interesa adquirir el producto ${productName} por ${formattedPrice}. ¿Está disponible?`;
   
   const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
   
-  // Incrementar contador de carrito visual para UX
+  // Incrementar Contador del Carrito Visual
   const cartBadge = document.getElementById('cartCount');
   if (cartBadge) {
     const current = parseInt(cartBadge.textContent || '0');

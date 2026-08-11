@@ -83,7 +83,7 @@ export function CleanBrightStore({ onBackToMain }) {
   }, [selectedBrand, searchQuery]);
 
   const handleWhatsAppOrder = (productName, productPrice) => {
-    const formattedPrice = `$${parseFloat(productPrice).toFixed(2)} USD`;
+    const formattedPrice = `$${parseFloat(productPrice).toFixed(2)}`;
     const message = `Hola M Store, me interesa adquirir el producto ${productName} por ${formattedPrice}. ¿Está disponible?`;
     const whatsappUrl = `https://wa.me/584120000000?text=${encodeURIComponent(message)}`;
     
@@ -122,18 +122,21 @@ export function CleanBrightStore({ onBackToMain }) {
         </div>
       </div>
 
-      {/* 2. MAIN HEADER */}
+      {/* 2. MAIN HEADER CON LOGO OFICIAL M STORE CIAN */}
       <header className="bg-white border-b border-[#E2E8F0] sticky top-0 z-40 shadow-sm px-4 sm:px-8 py-3.5">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
-          {/* LOGO */}
+          {/* LOGO OFICIAL CON ISOTIPO M CIAN */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => setSelectedBrand('todos')}>
-            <div className="w-10 h-10 rounded-xl bg-[#00B4D8] text-white font-black text-xl flex items-center justify-center shadow-[0_4px_12px_rgba(0,180,216,0.3)]">
-              M
+            <div className="w-11 h-11 flex items-center justify-center filter drop-shadow-[0_2px_8px_rgba(0,229,255,0.4)]">
+              <svg viewBox="0 0 100 100" className="w-full h-full" fill="none">
+                <path d="M15 80L35 30L50 60L65 30L85 80" stroke="#00E5FF" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M35 30L50 60L65 30" stroke="#00B4D8" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </div>
             <div>
-              <span className="text-xl font-black tracking-tight text-[#0F172A] font-space block leading-none">M STORE</span>
-              <span className="text-[10px] text-[#64748B] font-bold uppercase tracking-widest block mt-0.5">TECNOLOGÍA DE ALTA GAMA</span>
+              <span className="text-xl font-black tracking-widest text-[#0F172A] font-space block leading-none">STORE</span>
+              <span className="text-[9px] text-[#64748B] font-extrabold uppercase tracking-widest block mt-0.5">TIENDA DE TELEFONÍA Y ACCESORIOS</span>
             </div>
           </div>
 
@@ -198,7 +201,7 @@ export function CleanBrightStore({ onBackToMain }) {
           <div className="space-y-4 max-w-xl text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E0F7FA] text-[#00B4D8] text-xs font-black">
               <Zap className="w-3.5 h-3.5 fill-[#00B4D8]" />
-              <span>LO ÚLTIMO EN TECNOLOGÍA EN VENEZUELA</span>
+              <span>LO ÚLTIMO EN TELEFONÍA DE ALTA GAMA</span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl font-black text-[#0F172A] font-space leading-tight">
@@ -369,7 +372,7 @@ export function CleanBrightStore({ onBackToMain }) {
 
       {/* FLOATING WHATSAPP BUTTON (BOTTOM RIGHT) */}
       <a 
-        href="https://wa.me/584120000000?text=Hola%20M%20Store%2C%20quisiera%20recier%20atenci%C3%B3n%20personalizada" 
+        href="https://wa.me/584120000000?text=Hola%20M%20Store%2C%20quisiera%20recibir%20atenci%C3%B3n%20personalizada" 
         target="_blank" 
         rel="noreferrer"
         className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-[#25D366] text-white rounded-full shadow-[0_4px_20px_rgba(37,211,102,0.4)] flex items-center justify-center hover:scale-110 transition-transform"

@@ -1,172 +1,187 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>M Store — Catálogo Digital de Telefonía y Tecnología de Alta Gama</title>
-  <meta name="description" content="M Store Venezuela — Catálogo digital de teléfonos celulares, fundas, audífonos, smartwatches y tecnología con Envío Gratis a Nivel Nacional." />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M Store — Tienda de Telefonía y Accesorios de Alta Gama</title>
+  <meta name="description" content="M Store Venezuela: Catálogo digital de teléfonos celulares, fundas, audífonos, smartwatches y accesorios con Envío Gratis a nivel nacional.">
   
-  <!-- Google Fonts: Inter & Space Grotesk -->
+  <!-- Tipografías de Google: Inter & Space Grotesk -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@700;800;900&display=swap" rel="stylesheet">
   
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-
-  <!-- Estilos Personalizados -->
-  <link rel="stylesheet" href="styles.css" />
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Hoja de Estilos Clean & Bright -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- 1. TOP BAR -->
-  <div className="top-bar">
-    <div className="top-bar-container">
-      <div className="top-bar-left">
-        <i className="fa-solid fa-truck-fast text-cyan"></i>
-        <span><strong>Envío Gratis</strong> a nivel nacional | Delivery Express en Caracas</span>
+  <!-- ==========================================================================
+       1. TOP BAR (Franja Superior de Anuncios)
+       ========================================================================== -->
+  <div class="top-bar">
+    <div class="top-bar-container">
+      <div class="top-bar-left">
+        <i class="fa-solid fa-truck-fast text-cyan"></i>
+        <span><strong>Envío Gratis</strong> a nivel nacional | Delivery Express Caracas</span>
       </div>
-      <div className="top-bar-right">
-        <i className="fa-solid fa-shield-halved text-cyan"></i>
+      <div class="top-bar-right">
+        <i class="fa-solid fa-shield-halved text-cyan"></i>
         <span>Garantía Oficial M Store 1 Año</span>
-        <span className="divider">•</span>
-        <a href="https://wa.me/584120000000" target="_blank" className="top-link">
-          <i className="fa-brands fa-whatsapp text-emerald"></i> WhatsApp Directo
+        <span class="divider">•</span>
+        <a href="https://wa.me/584120000000" target="_blank" class="top-link">
+          <i class="fa-brands fa-whatsapp text-emerald"></i> Atención WhatsApp Directo
         </a>
       </div>
     </div>
   </div>
 
-  <!-- 2. HEADER PRINCIPAL -->
-  <header className="main-header">
-    <div className="header-container">
+  <!-- ==========================================================================
+       2. HEADER PRINCIPAL CON LOGOTIPO OFICIAL M STORE
+       ========================================================================== -->
+  <header class="main-header">
+    <div class="header-container">
       
-      <!-- Logo -->
-      <a href="#" className="brand-logo">
-        <div className="logo-badge">M</div>
-        <div className="logo-text">
-          <span className="brand-name">M STORE</span>
-          <span className="brand-tagline">TECNOLOGÍA DE ALTA GAMA</span>
+      <!-- Logotipo Oficial M Store con emblema M en Cian -->
+      <a href="#" class="brand-logo">
+        <div class="logo-icon-m">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 80L35 30L50 60L65 30L85 80" stroke="#00E5FF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M35 30L50 60L65 30" stroke="#00B4D8" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="brand-name">STORE</span>
+          <span class="brand-tagline">TIENDA DE TELEFONÍA Y ACCESORIOS</span>
         </div>
       </a>
 
-      <!-- Barra de Búsqueda Prominente -->
-      <div className="search-box">
+      <!-- Barra de Búsqueda Prominente en el Centro -->
+      <div class="search-box">
         <input type="text" id="searchInput" placeholder="Buscar iPhone, Samsung, Xiaomi, AirPods, Smartwatches..." />
-        <button id="searchBtn" type="button">
-          <i className="fa-solid fa-magnifying-glass"></i>
+        <button id="searchBtn" type="button" aria-label="Buscar">
+          <i class="fa-solid fa-magnifying-glass"></i>
         </button>
       </div>
 
-      <!-- Menú de Acciones Rápida -->
-      <div className="header-actions">
-        <a href="https://wa.me/584120000000" target="_blank" className="contact-btn">
-          <i className="fa-brands fa-whatsapp"></i>
+      <!-- Menú de Acciones -->
+      <div class="header-actions">
+        <a href="https://wa.me/584120000000" target="_blank" class="contact-btn">
+          <i class="fa-brands fa-whatsapp"></i>
           <span>Atención al Cliente</span>
         </a>
-        <div className="cart-widget" id="cartWidget">
-          <i className="fa-solid fa-bag-shopping"></i>
-          <span className="cart-badge" id="cartCount">0</span>
+        <div class="cart-widget" id="cartWidget" title="Ver pedido">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="cart-badge" id="cartCount">0</span>
         </div>
       </div>
 
     </div>
   </header>
 
-  <!-- 3. MENÚ NAVEGACIÓN EXTENSO -->
-  <nav className="category-nav">
-    <div className="nav-container">
-      <button className="category-mega-btn" id="megaMenuBtn">
-        <i className="fa-solid fa-bars"></i>
+  <!-- ==========================================================================
+       3. NAVEGACIÓN EXTENSA DE CATÁLOGO
+       ========================================================================== -->
+  <nav class="category-nav">
+    <div class="nav-container">
+      <button class="category-mega-btn" id="megaMenuBtn">
+        <i class="fa-solid fa-bars"></i>
         <span>Todas las Categorías</span>
       </button>
 
-      <ul className="nav-links">
-        <li><a href="#catalogo" className="active">Smartphones</a></li>
+      <ul class="nav-links">
+        <li><a href="#catalogo" class="active">Smartphones</a></li>
         <li><a href="#fundas">Fundas & Estuches</a></li>
         <li><a href="#auriculares">Auriculares & Sonido</a></li>
         <li><a href="#smartwatches">Smartwatches</a></li>
         <li><a href="#linea-blanca">Línea Blanca</a></li>
-        <li><a href="#ofertas" className="badge-link">🔥 Ofertas del Mes</a></li>
+        <li><a href="#ofertas" class="badge-link">🔥 Ofertas del Mes</a></li>
       </ul>
     </div>
   </nav>
 
-  <!-- 4. BANNER HERO DE IMPACTO CLEAN & BRIGHT -->
-  <section className="hero-section">
-    <div className="hero-container">
-      <div className="hero-content">
-        <div className="hero-pill">
-          <i className="fa-solid fa-bolt text-cyan"></i>
-          <span>LO ÚLTIMO EN TECNOLOGÍA EN VENEZUELA</span>
+  <!-- ==========================================================================
+       4. HERO SECTION CLEAN & BRIGHT (Fondo Blanco/Gris Suave, Acentos Turquesa)
+       ========================================================================== -->
+  <section class="hero-section">
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-pill">
+          <i class="fa-solid fa-bolt text-cyan"></i>
+          <span>LO ÚLTIMO EN TELEFONÍA DE ALTA GAMA</span>
         </div>
-        <h1 className="hero-title">
-          Tu Próximo Smartphone de Alta Gama al Mejor Precio
+        <h1 class="hero-title">
+          Tu Próximo Smartphone al Mejor Precio de Venezuela
         </h1>
-        <p className="hero-description">
-          Equipos 100% nuevos en caja sellada con Garantía Oficial M Store. Llévatelo hoy mismo con financiamiento en cuotas o contado directo.
+        <p class="hero-description">
+          Equipos 100% nuevos en caja sellada con Garantía Oficial M Store. Llévatelo hoy con financiamiento en cuotas o contado directo.
         </p>
 
-        <!-- Insignias de Crédito Cashea y Krece -->
-        <div className="credit-badges-row">
-          <div className="credit-badge cashea">
-            <i className="fa-solid fa-credit-card"></i>
+        <!-- Etiquetas de Crédito Cashea y Krece -->
+        <div class="credit-badges-row">
+          <div class="credit-badge cashea">
+            <i class="fa-solid fa-credit-card"></i>
             <span>Paga con <strong>Cashea</strong></span>
           </div>
-          <div className="credit-badge krece">
-            <i className="fa-solid fa-[#00E5FF] fa-wallet"></i>
+          <div class="credit-badge krece">
+            <i class="fa-solid fa-wallet"></i>
             <span>Aceptamos <strong>Krece</strong></span>
           </div>
-          <div className="credit-badge shipping">
-            <i className="fa-solid fa-truck"></i>
+          <div class="credit-badge shipping">
+            <i class="fa-solid fa-truck"></i>
             <span>Envío Gratis Nacional</span>
           </div>
         </div>
 
-        <div className="hero-buttons">
-          <a href="#catalogo" className="btn-primary">
-            Explorar Catálogo <i className="fa-solid fa-[#00E5FF] fa-arrow-right"></i>
+        <div class="hero-buttons">
+          <a href="#catalogo" class="btn-primary">
+            Explorar Catálogo <i class="fa-solid fa-arrow-right"></i>
           </a>
         </div>
       </div>
 
-      <div className="hero-image-wrapper">
-        <img src="https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=600&auto=format&fit=crop" alt="Smartphones M Store" className="hero-img" />
+      <div class="hero-image-wrapper">
+        <img src="https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=600&auto=format&fit=crop" alt="Smartphones M Store" class="hero-img">
       </div>
     </div>
   </section>
 
-  <!-- 5. GRID VISUAL DE CATEGORÍAS ROBUSTO -->
-  <section className="categories-section">
-    <div className="section-container">
-      <div className="section-header">
-        <h2 className="section-title">Categorías Destacadas</h2>
-        <p className="section-subtitle">Navega por nuestro inventario completo de productos</p>
+  <!-- ==========================================================================
+       5. CUADRÍCULA VISUAL DE CATEGORÍAS ROBUSTA
+       ========================================================================== -->
+  <section class="categories-section">
+    <div class="section-container">
+      <div class="section-header">
+        <h2 class="section-title">Categorías Destacadas</h2>
+        <p class="section-subtitle">Explora nuestro inventario completo de productos</p>
       </div>
 
-      <div className="categories-grid">
-        <div className="category-card" data-category="Smartphones">
-          <div className="cat-icon"><i className="fa-solid fa-mobile-screen-button"></i></div>
+      <div class="categories-grid">
+        <div class="category-card" data-category="Smartphones">
+          <div class="cat-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
           <h3>Smartphones</h3>
           <span>+130 Modelos</span>
         </div>
-        <div className="category-card" data-category="Fundas">
-          <div className="cat-icon"><i className="fa-solid fa-[#00E5FF] fa-[#00E5FF] fa-shield"></i></div>
+        <div class="category-card" data-category="Fundas">
+          <div class="cat-icon"><i class="fa-solid fa-shield-halved"></i></div>
           <h3>Fundas & Estuches</h3>
           <span>+90 Diseños</span>
         </div>
-        <div className="category-card" data-category="Auriculares">
-          <div className="cat-icon"><i className="fa-solid fa-headphones"></i></div>
+        <div class="category-card" data-category="Auriculares">
+          <div class="cat-icon"><i class="fa-solid fa-headphones"></i></div>
           <h3>Auriculares & Audio</h3>
           <span>+60 Dispositivos</span>
         </div>
-        <div className="category-card" data-category="Smartwatches">
-          <div className="cat-icon"><i className="fa-solid fa-clock"></i></div>
+        <div class="category-card" data-category="Smartwatches">
+          <div class="cat-icon"><i class="fa-solid fa-clock"></i></div>
           <h3>Smartwatches</h3>
           <span>+45 Relojes</span>
         </div>
-        <div className="category-card" data-category="Linea Blanca">
-          <div className="cat-icon"><i className="fa-solid fa-[#00E5FF] fa-plug"></i></div>
+        <div class="category-card" data-category="Linea Blanca">
+          <div class="cat-icon"><i class="fa-solid fa-plug"></i></div>
           <h3>Línea Blanca</h3>
           <span>+50 Electrodomésticos</span>
         </div>
@@ -174,51 +189,59 @@
     </div>
   </section>
 
-  <!-- 6. SECCIÓN DE PRODUCTOS DINÁMICA CON PESTAÑAS (APPLE, SAMSUNG, XIAOMI, TECNO...) -->
-  <section className="catalog-section" id="catalogo">
-    <div className="section-container">
+  <!-- ==========================================================================
+       6. SECCIÓN DE PRODUCTOS DINÁMICA CON PESTAÑAS (Apple, Samsung, Xiaomi...)
+       ========================================================================== -->
+  <section class="catalog-section" id="catalogo">
+    <div class="section-container">
       
-      <div className="catalog-header flex-header">
+      <div class="catalog-header flex-header">
         <div>
-          <h2 className="section-title">Catálogo de Productos</h2>
-          <p className="section-subtitle">Filtra tus marcas preferidas en tiempo real</p>
+          <h2 class="section-title">Catálogo de Productos</h2>
+          <p class="section-subtitle">Filtra tus marcas preferidas en tiempo real sin recargar la página</p>
         </div>
 
         <!-- Pestañas Interactivas de Marcas -->
-        <div className="brand-tabs" id="brandTabs">
-          <button className="tab-btn active" data-brand="todos">Todos</button>
-          <button className="tab-btn" data-brand="Apple">Apple</button>
-          <button className="tab-btn" data-brand="Samsung">Samsung</button>
-          <button className="tab-btn" data-brand="Xiaomi">Xiaomi</button>
-          <button className="tab-btn" data-brand="Tecno">Tecno</button>
-          <button className="tab-btn" data-brand="Infinix">Infinix</button>
+        <div class="brand-tabs" id="brandTabs">
+          <button class="tab-btn active" data-brand="todos">Todos</button>
+          <button class="tab-btn" data-brand="Apple">Apple</button>
+          <button class="tab-btn" data-brand="Samsung">Samsung</button>
+          <button class="tab-btn" data-brand="Xiaomi">Xiaomi</button>
+          <button class="tab-btn" data-brand="Tecno">Tecno</button>
+          <button class="tab-btn" data-brand="Infinix">Infinix</button>
         </div>
       </div>
 
-      <!-- Grilla Dinámica de Tarjetas de Producto -->
-      <div className="products-grid" id="productsGrid">
+      <!-- Grilla Dinámica de Tarjetas de Producto (Renderizado vía main.js) -->
+      <div class="products-grid" id="productsGrid">
         <!-- Generado dinámicamente vía main.js -->
       </div>
 
     </div>
   </section>
 
-  <!-- 7. FOOTER COMPLETO -->
-  <footer className="main-footer">
-    <div className="footer-container">
-      <div className="footer-col">
-        <div className="brand-logo mb-3">
-          <div className="logo-badge">M</div>
-          <div className="logo-text">
-            <span className="brand-name">M STORE</span>
+  <!-- ==========================================================================
+       7. PIE DE PÁGINA (FOOTER)
+       ========================================================================== -->
+  <footer class="main-footer">
+    <div class="footer-container">
+      <div class="footer-col">
+        <div class="brand-logo mb-3">
+          <div class="logo-icon-m sm">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 80L35 30L50 60L65 30L85 80" stroke="#00E5FF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <span class="brand-name text-white">M STORE</span>
           </div>
         </div>
-        <p className="footer-desc">
-          Tu tienda oficial de telefonía y accesorios de alta gama en Venezuela. Garantía directa, envíos nacionales y facilidades de pago.
+        <p class="footer-desc">
+          Tu tienda oficial de telefonía y accesorios de alta gama en Venezuela. Garantía directa, envíos nacionales gratuitos y facilidades de pago.
         </p>
       </div>
 
-      <div className="footer-col">
+      <div class="footer-col">
         <h4>Navegación</h4>
         <ul>
           <li><a href="#catalogo">Celulares</a></li>
@@ -228,27 +251,29 @@
         </ul>
       </div>
 
-      <div className="footer-col">
+      <div class="footer-col">
         <h4>Facilidades de Pago</h4>
-        <div className="footer-payment-badges">
-          <span className="pay-badge">Paga con Cashea</span>
-          <span className="pay-badge">Aceptamos Krece</span>
-          <span className="pay-badge">Zelle / Dólares</span>
-          <span className="pay-badge">Pago Móvil Bs</span>
+        <div class="footer-payment-badges">
+          <span class="pay-badge">Paga con Cashea</span>
+          <span class="pay-badge">Aceptamos Krece</span>
+          <span class="pay-badge">Zelle / Dólares</span>
+          <span class="pay-badge">Pago Móvil Bs</span>
         </div>
       </div>
     </div>
 
-    <div className="footer-bottom">
+    <div class="footer-bottom">
       <p>&copy; 2026 M Store Venezuela. Todos los derechos reservados.</p>
     </div>
   </footer>
 
-  <!-- 8. REQUERIMIENTOS DE CHATS Y WIDGETS -->
+  <!-- ==========================================================================
+       8. CHATS ADICIONALES Y WIDGETS
+       ========================================================================== -->
 
-  <!-- WhatsApp Flotante (Esquina Inferior Derecha) -->
-  <a href="https://wa.me/584120000000?text=Hola%20M%20Store%2C%20quisiera%20recibir%20atenci%C3%B3n%20personalizada" target="_blank" className="whatsapp-float" title="Contactar por WhatsApp">
-    <i className="fa-brands fa-whatsapp"></i>
+  <!-- WhatsApp Flotante (Fijo en la Esquina Inferior Derecha) -->
+  <a href="https://wa.me/584120000000?text=Hola%20M%20Store%2C%20quisiera%20recibir%20atenci%C3%B3n%20personalizada" target="_blank" class="whatsapp-float" title="Contactar por WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
   </a>
 
   <!-- 
@@ -264,7 +289,7 @@
   ========================================================================
   -->
 
-  <!-- Javascript Principal -->
+  <!-- Lógica JavaScript Principal -->
   <script src="main.js"></script>
 </body>
 </html>

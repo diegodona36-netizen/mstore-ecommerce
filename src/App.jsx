@@ -15,22 +15,29 @@ import { Toast } from './components/Toast';
 import { LandingPageTest } from './components/LandingPageTest';
 import { SoyTechnoExperiment } from './components/SoyTechnoExperiment';
 import { SoyTechnoHomePage } from './components/SoyTechnoHomePage';
+import { CleanBrightStore } from './components/CleanBrightStore';
 import { PRODUCTS as INITIAL_PRODUCTS } from './data/products';
 
 export function App() {
   const [isOldMode, setIsOldMode] = useState(() => window.location.hash === '#vieja' || window.location.hash === '#old');
   const [isSoyTechnoMode, setIsSoyTechnoMode] = useState(() => window.location.hash === '#soytechno');
   const [isSoyTechnoHomeMode, setIsSoyTechnoHomeMode] = useState(() => window.location.hash === '#soytechno-home' || window.location.hash === '#soytechno-main');
+  const [isCleanMode, setIsCleanMode] = useState(() => window.location.hash === '#clean' || window.location.hash === '#bright');
 
   useEffect(() => {
     const handleHashChange = () => {
       setIsOldMode(window.location.hash === '#vieja' || window.location.hash === '#old');
       setIsSoyTechnoMode(window.location.hash === '#soytechno');
       setIsSoyTechnoHomeMode(window.location.hash === '#soytechno-home' || window.location.hash === '#soytechno-main');
+      setIsCleanMode(window.location.hash === '#clean' || window.location.hash === '#bright');
     };
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
+
+  if (isCleanMode) {
+    return <CleanBrightStore onBackToMain={() => { window.location.hash = ''; setIsCleanMode(false); }} />;
+  }
 
   if (isSoyTechnoHomeMode) {
     return (

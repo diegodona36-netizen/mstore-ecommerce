@@ -105,7 +105,7 @@ export function CleanBrightStore({ onBackToMain }) {
       )}
 
       {/* 1. TOP BAR */}
-      <div className="bg-[#0F172A] text-white text-xs font-semibold py-2 px-4 sm:px-8 flex items-center justify-between border-b border-white/10">
+      <div className="bg-[#0B132B] text-white text-xs font-semibold py-2 px-4 sm:px-8 flex items-center justify-between border-b border-white/10">
         <div className="flex items-center gap-2">
           <Truck className="w-4 h-4 text-[#00B4D8]" />
           <span><strong>Envío Gratis</strong> a nivel nacional | Delivery Express Caracas</span>
@@ -122,22 +122,17 @@ export function CleanBrightStore({ onBackToMain }) {
         </div>
       </div>
 
-      {/* 2. MAIN HEADER CON LOGO OFICIAL M STORE CIAN */}
-      <header className="bg-white border-b border-[#E2E8F0] sticky top-0 z-40 shadow-sm px-4 sm:px-8 py-3.5">
+      {/* 2. MAIN HEADER OSCURO CON LOGO OFICIAL ORIGINAL M STORE */}
+      <header className="bg-[#0F172A] border-b border-white/10 sticky top-0 z-40 shadow-md px-4 sm:px-8 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
-          {/* LOGO OFICIAL CON ISOTIPO M CIAN */}
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setSelectedBrand('todos')}>
-            <div className="w-11 h-11 flex items-center justify-center filter drop-shadow-[0_2px_8px_rgba(0,229,255,0.4)]">
-              <svg viewBox="0 0 100 100" className="w-full h-full" fill="none">
-                <path d="M15 80L35 30L50 60L65 30L85 80" stroke="#00E5FF" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M35 30L50 60L65 30" stroke="#00B4D8" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <div>
-              <span className="text-xl font-black tracking-widest text-[#0F172A] font-space block leading-none">STORE</span>
-              <span className="text-[9px] text-[#64748B] font-extrabold uppercase tracking-widest block mt-0.5">TIENDA DE TELEFONÍA Y ACCESORIOS</span>
-            </div>
+          {/* LOGO OFICIAL ORIGINAL EN IMAGEN */}
+          <div className="flex items-center cursor-pointer" onClick={() => setSelectedBrand('todos')}>
+            <img 
+              src="/mstore-logo-official.jpg" 
+              alt="M Store — Tienda de Telefonía y Accesorios" 
+              className="h-12 w-auto object-contain filter drop-shadow-[0_2px_10px_rgba(0,229,255,0.3)]" 
+            />
           </div>
 
           {/* SEARCH BAR */}
@@ -147,7 +142,7 @@ export function CleanBrightStore({ onBackToMain }) {
               value={searchQuery} 
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar iPhone, Samsung, Xiaomi, AirPods, Smartwatches..." 
-              className="w-full bg-[#F8F9FA] border border-[#E2E8F0] focus:border-[#00B4D8] focus:bg-white rounded-full pl-5 pr-12 py-2.5 text-xs text-[#0F172A] placeholder-slate-400 outline-none transition-all"
+              className="w-full bg-white border border-transparent focus:border-[#00B4D8] rounded-full pl-5 pr-12 py-2.5 text-xs text-[#0F172A] placeholder-slate-400 outline-none transition-all shadow-inner"
             />
             <button className="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#00B4D8] hover:bg-[#0077B6] text-white flex items-center justify-center transition-colors">
               <Search className="w-4 h-4" />
@@ -155,18 +150,18 @@ export function CleanBrightStore({ onBackToMain }) {
           </div>
 
           {/* ACTIONS */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 text-white">
             <a 
               href="https://wa.me/584120000000" 
               target="_blank" 
               rel="noreferrer"
-              className="hidden sm:flex items-center gap-2 bg-emerald-50 text-emerald-600 border border-emerald-200 px-3.5 py-2 rounded-xl text-xs font-bold hover:bg-emerald-600 hover:text-white transition-all"
+              className="hidden sm:flex items-center gap-2 bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-3.5 py-2 rounded-xl text-xs font-bold hover:bg-emerald-500 hover:text-white transition-all"
             >
               <Phone className="w-4 h-4" />
               <span>Atención al Cliente</span>
             </a>
 
-            <div className="relative cursor-pointer p-2 text-[#0F172A]">
+            <div className="relative cursor-pointer p-2 text-white">
               <ShoppingBag className="w-6 h-6" />
               {cartCount > 0 && (
                 <span className="absolute top-0 right-0 bg-[#00B4D8] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center">

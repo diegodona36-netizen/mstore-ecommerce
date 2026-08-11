@@ -10,6 +10,7 @@ import { AdminPanelModal } from './components/AdminPanelModal';
 import { CategoryMegaMenu } from './components/CategoryMegaMenu';
 import { CartDrawer } from './components/CartDrawer';
 import { WhatsappButton } from './components/WhatsappButton';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { Footer } from './components/Footer';
 import { Toast } from './components/Toast';
 import { LandingPageTest } from './components/LandingPageTest';
@@ -317,6 +318,16 @@ export function App() {
         {toastData && (
           <Toast product={toastData.product} message={toastData.message} onClose={() => setToastData(null)} />
         )}
+        <MobileBottomNav
+          cartCount={cartTotalCount}
+          onOpenMegaMenu={() => setIsMegaMenuOpen(true)}
+          onOpenCart={() => setIsCartOpen(true)}
+          onScrollToHome={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          onScrollToLocation={() => {
+            const el = document.getElementById('ubicacion');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }}
+        />
         <WhatsappButton />
       </div>
     );

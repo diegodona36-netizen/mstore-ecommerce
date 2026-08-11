@@ -15,7 +15,7 @@ export const WhatsappButton = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end">
+    <div className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-40 flex flex-col items-end">
       
       {/* Floating Chat Box Popup */}
       {isOpen && (

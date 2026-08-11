@@ -37,20 +37,20 @@ export const Navbar = ({
             <Logo size="medium" />
           </a>
 
-          {/* 2. Menú de Categorías Button */}
+          {/* 2. Menú de Categorías Button (Solo Escritorio, en móvil está en el Bottom Nav) */}
           <button
             onClick={onToggleMegaMenu}
-            className={`flex items-center gap-2 px-3.5 md:px-4 py-2 rounded-xl text-xs font-bold font-space transition-all duration-300 shrink-0 border ${
+            className={`hidden md:flex items-center gap-2 px-3.5 md:px-4 py-2 rounded-xl text-xs font-bold font-space transition-all duration-300 shrink-0 border ${
               isMegaMenuOpen 
                 ? 'bg-[#00E5FF] text-black border-[#00E5FF] shadow-[0_0_25px_#00E5FF]' 
                 : 'bg-[#00E5FF]/10 border-[#00E5FF]/40 text-[#00E5FF] hover:bg-[#00E5FF] hover:text-black hover:shadow-[0_0_20px_#00E5FF]'
             }`}
           >
             <LayoutGrid className="w-4 h-4" />
-            <span className="hidden sm:inline">Menú de Categorías</span>
+            <span>Menú de Categorías</span>
           </button>
 
-          {/* 3. Integrated Live Search Bar */}
+          {/* 3. Integrated Live Search Bar (Escritorio) */}
           <form 
             onSubmit={handleSearchFormSubmit}
             className="flex-1 max-w-md relative hidden md:block"
@@ -76,6 +76,23 @@ export const Navbar = ({
             </div>
           </form>
 
+          {/* 3b. Buscador Compacto en Móvil */}
+          <form 
+            onSubmit={handleSearchFormSubmit}
+            className="flex-1 relative md:hidden max-w-[200px]"
+          >
+            <div className="relative flex items-center">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery || ''}
+                onChange={(e) => onSearchChange(e.target.value)}
+                placeholder="Buscar productos..."
+                className="w-full bg-white/[0.05] border border-white/15 focus:border-[#00E5FF] text-white text-[11px] rounded-full pl-8 pr-3 py-1.5 outline-none font-inter min-h-[34px]"
+              />
+            </div>
+          </form>
+
           {/* 4. Right Actions */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             
@@ -88,14 +105,14 @@ export const Navbar = ({
               Ofertas Cyber
             </a>
 
-            {/* Shopping Cart Button */}
+            {/* Shopping Cart Button (Escritorio - en Móvil está abajo en el Bottom Nav) */}
             <button
               onClick={onOpenCart}
-              className="relative flex items-center gap-2 bg-[#00E5FF]/10 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black border border-[#00E5FF]/40 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold font-space transition-all duration-300 group hover:shadow-[0_0_20px_#00E5FF]"
+              className="hidden md:flex relative items-center gap-2 bg-[#00E5FF]/10 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black border border-[#00E5FF]/40 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold font-space transition-all duration-300 group hover:shadow-[0_0_20px_#00E5FF]"
               aria-label="Ver Carrito de Compras"
             >
               <ShoppingBag className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
-              <span className="hidden sm:inline">Carrito</span>
+              <span>Carrito</span>
               {cartCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-[#00E5FF] text-black font-extrabold text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-[0_0_10px_#00E5FF] animate-bounce">
                   {cartCount}
@@ -106,7 +123,7 @@ export const Navbar = ({
             {/* Mobile Menu Toggle Icon */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden text-slate-300 hover:text-white p-2 rounded-xl bg-white/5 border border-white/10"
+              className="md:hidden text-slate-300 hover:text-white p-2 rounded-xl bg-white/5 border border-white/10 shrink-0 min-w-[36px] min-h-[36px] flex items-center justify-center"
               aria-label="Abrir Menú"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

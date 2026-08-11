@@ -1,29 +1,25 @@
 import React from 'react';
 
-export const Logo = ({ className = '', size = 'medium' }) => {
+export const Logo = ({ className = '', size = 'medium', variant = 'dark' }) => {
   const isSmall = size === 'small';
   const isLarge = size === 'large';
 
-  // Crisp dimensions for the dark background logo
   const heightClass = isSmall ? 'h-9 md:h-10' : isLarge ? 'h-16 md:h-18' : 'h-11 md:h-13';
+  const logoSrc = variant === 'light' ? '/logo-light.jpg' : '/logo-dark.jpg';
+  const fallbackSrc = variant === 'light' ? '/logo-exact.png' : '/logo-white.png';
 
   return (
     <div className={`flex items-center select-none group cursor-pointer ${className}`}>
-      
-      {/* 
-        Ultra-High Resolution Dark Background Official Logo Image (media__1786219486544.jpg)
-      */}
       <div className="relative flex items-center justify-center shrink-0">
         <img
-          src="/logo-white.png"
-          alt="M Store - Tienda de Telefonía, Línea Blanca y Tecnología"
-          className={`${heightClass} w-auto object-contain relative z-10 transition-transform duration-300 group-hover:scale-[1.03]`}
+          src={logoSrc}
+          alt="M Store - Tienda de Telefonía y Accesorios"
+          className={`${heightClass} w-auto object-contain rounded-lg transition-transform duration-300 group-hover:scale-[1.03] shadow-sm`}
           onError={(e) => {
-            e.currentTarget.src = "/logo-official.png";
+            e.currentTarget.src = fallbackSrc;
           }}
         />
       </div>
-
     </div>
   );
 };

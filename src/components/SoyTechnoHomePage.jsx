@@ -6,6 +6,7 @@ import {
   Tv, Smartphone, Laptop, Gamepad2, Refrigerator, Watch, Headphones, Zap, Printer, Tablet
 } from 'lucide-react';
 import { QuickViewModal } from './QuickViewModal';
+import { Logo } from './Logo';
 
 /* ────────────────────────── DATA DE LA HOME PAGE DE SOYTECHNO ────────────────────────── */
 
@@ -183,16 +184,9 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
       <header className="bg-[#0C1A38] text-white py-3.5 px-4 sm:px-8 shadow-xl border-b border-blue-900/40">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
-          {/* LOGO OFICIAL M STORE TRANSPARENTE */}
+          {/* LOGO OFICIAL M STORE */}
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <img 
-              src="/logo-white.png" 
-              alt="M Store - Tienda de Telefonía y Accesorios" 
-              className="h-10 md:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-              onError={(e) => {
-                e.currentTarget.src = "/logo-official.png";
-              }}
-            />
+            <Logo variant="dark" size="medium" />
           </div>
 
           {/* BUSCADOR CON BOTÓN CIRCULAR AZUL */}

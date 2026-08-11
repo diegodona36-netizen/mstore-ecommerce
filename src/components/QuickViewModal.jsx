@@ -3,6 +3,7 @@ import {
   X, Star, ShoppingBag, ShieldCheck, Check, Minus, Plus, 
   ChevronRight, MessageCircle, Eye, Share2
 } from 'lucide-react';
+import { Logo } from './Logo';
 
 export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
   const [selectedColor, setSelectedColor] = useState(product?.colors?.[0] || 'Blanco Marfil');
@@ -79,13 +80,15 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
         </button>
 
         {/* MIGAS DE PAN (BREADCRUMBS) */}
-        <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-400 pb-4 pr-10 overflow-x-auto">
+        <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400 pb-4 pr-10 overflow-x-auto">
+          <Logo variant="light" size="small" />
+          <ChevronRight className="w-3 h-3 text-slate-300 shrink-0" />
           <span className="hover:text-blue-600 cursor-pointer">Inicio</span>
-          <ChevronRight className="w-3 h-3 text-slate-300" />
+          <ChevronRight className="w-3 h-3 text-slate-300 shrink-0" />
           <span className="hover:text-blue-600 cursor-pointer uppercase">{product.category || 'Telefonía'}</span>
-          <ChevronRight className="w-3 h-3 text-slate-300" />
+          <ChevronRight className="w-3 h-3 text-slate-300 shrink-0" />
           <span className="hover:text-blue-600 cursor-pointer">{product.brand || 'M Store'}</span>
-          <ChevronRight className="w-3 h-3 text-slate-300" />
+          <ChevronRight className="w-3 h-3 text-slate-300 shrink-0" />
           <span className="text-slate-800 font-extrabold truncate max-w-[200px]">{product.name}</span>
         </div>
 

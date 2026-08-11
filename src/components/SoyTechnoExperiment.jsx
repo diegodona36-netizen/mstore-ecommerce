@@ -217,8 +217,8 @@ export function SoyTechnoExperiment({ onBackToMain }) {
         </div>
       </div>
 
-      {/* 2. HEADER PRINCIPAL AZUL MARINO DEEP NAVY CON LOGO OFICIAL TRANSPARENTE */}
-      <header className="bg-[#0C1A38] text-white py-3.5 px-4 sm:px-8 shadow-xl border-b border-blue-900/40">
+      {/* 2. HEADER PRINCIPAL CON FONDO M STORE OFICIAL Y LOGO */}
+      <header className="mstore-dark-header-bg text-white py-3.5 px-4 sm:px-8 shadow-2xl border-b border-cyan-500/20">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
           {/* LOGO OFICIAL M STORE */}

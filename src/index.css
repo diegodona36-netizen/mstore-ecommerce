@@ -41,6 +41,12 @@ body {
   background-attachment: fixed;
 }
 
+/* Textura de Fondo Oficial M Store (Matte Dark Carbon + Cian Vignette) */
+.mstore-dark-header-bg {
+  background: radial-gradient(circle at 50% 0%, #161a26 0%, #0b0d12 100%);
+  background-color: #0b0d12;
+}
+
 /* Custom Typography Classes */
 .font-space {
   font-family: var(--font-heading);

@@ -158,22 +158,22 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
         </div>
       )}
 
-      {/* 1. BARRA SUPERIOR CIAN NEÓN PROMO & CASHEA M STORE */}
-      <div className="bg-[#00E5FF] text-slate-950 font-extrabold text-xs py-2 px-4 sm:px-8 flex items-center justify-between shadow-sm border-b border-cyan-400/40">
+      {/* 1. BARRA SUPERIOR AMARILLA OFICIAL CASHEA (#FFE600) M STORE */}
+      <div className="bg-[#FFE600] text-black font-black text-xs py-2 px-4 sm:px-8 flex items-center justify-between shadow-sm border-b border-amber-400">
         <button 
           onClick={onBackToMain}
-          className="flex items-center gap-1.5 bg-slate-950/10 hover:bg-slate-950/20 text-slate-950 px-3.5 py-1 rounded-full text-[11px] font-black transition-all shrink-0"
+          className="flex items-center gap-1.5 bg-black/10 hover:bg-black/20 text-black px-3.5 py-1 rounded-full text-[11px] font-black transition-all shrink-0"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Volver a M Store Principal</span>
         </button>
 
-        <div className="flex items-center gap-2 font-black text-[11px] sm:text-xs tracking-tight text-slate-950">
-          <span className="bg-slate-950 text-[#00E5FF] px-2.5 py-0.5 rounded text-[10px] uppercase font-mono font-black">M STORE</span>
-          <span>Compra en cuotas lo que necesitas hoy con Cashea | Envío Gratis en Venezuela</span>
+        <div className="flex items-center gap-2 text-[11px] sm:text-xs tracking-tight">
+          <span className="bg-black text-[#FFE600] px-2.5 py-0.5 rounded text-[10px] uppercase font-mono font-black">CASHEA</span>
+          <span>⚡ COMPRA HOY Y PAGA EN CUOTAS CON CASHEA SIN INTERÉS • ENVÍOS GRATIS A NIVEL NACIONAL</span>
         </div>
 
-        <div className="hidden md:flex items-center gap-4 text-[11px] font-black text-slate-950">
+        <div className="hidden md:flex items-center gap-4 text-[11px] font-black">
           <span>📍 Caracas & Lechería</span>
           <span>•</span>
           <a href="https://wa.me/584120000000" target="_blank" rel="noreferrer" className="hover:underline">💬 Atención 24/7</a>
@@ -196,8 +196,8 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="¿Qué buscas hoy? (Televisores, Celulares, Laptops, Audífonos...)"
-                className="w-full bg-white text-slate-900 rounded-full pl-5 pr-14 py-2.5 text-xs placeholder-slate-400 outline-none shadow-inner border border-slate-200"
+                placeholder="¿Qué buscas hoy? (iPhone 16, Galaxy S25, Smart TV 4K, Cashea...)"
+                className="w-full bg-slate-900/90 text-white rounded-full pl-5 pr-14 py-2.5 text-xs placeholder-slate-400 outline-none border border-slate-700 focus:border-cyan-400 transition-colors shadow-inner"
               />
               <button className="absolute right-1 w-9 h-9 rounded-full bg-[#0055FF] hover:bg-blue-700 text-white flex items-center justify-center shadow-md transition-all">
                 <Search className="w-4 h-4" />
@@ -208,9 +208,9 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
           {/* MENÚ DERECHA */}
           <div className="flex items-center gap-5 text-xs font-semibold">
             <div className="hidden lg:flex items-center gap-2">
-              <Truck className="w-5 h-5 text-blue-400" />
+              <Truck className="w-5 h-5 text-cyan-400" />
               <div className="text-left text-[11px] leading-tight">
-                <span className="block font-bold">Envíos GRATIS</span>
+                <span className="block font-bold text-white">Envíos GRATIS</span>
                 <span className="text-slate-400 text-[10px]">a Nivel Nacional</span>
               </div>
             </div>
@@ -219,17 +219,17 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
               href="https://wa.me/584120000000" 
               target="_blank" 
               rel="noreferrer"
-              className="flex items-center gap-2 hover:text-blue-300 transition-colors"
+              className="flex items-center gap-2 hover:text-cyan-300 transition-colors"
             >
               <Phone className="w-5 h-5 text-emerald-400" />
               <div className="text-left text-[11px] leading-tight hidden sm:block">
-                <span className="block font-bold">Contáctanos por</span>
+                <span className="block font-bold text-white">Contáctanos por</span>
                 <span className="text-emerald-400 font-extrabold">WHATSAPP</span>
               </div>
             </a>
 
             <div className="flex items-center gap-3">
-              <button className="p-2 text-white hover:text-blue-300">
+              <button className="p-2 text-white hover:text-cyan-300">
                 <User className="w-5 h-5" />
               </button>
               <div className="relative cursor-pointer" onClick={() => { setCartCount(c => c + 1); showToast('Carrito actualizado'); }}>
@@ -247,38 +247,39 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
       </header>
 
       {/* 3. SUB-NAVBAR CATEGORÍAS */}
-      <nav className="bg-white border-b border-slate-200 px-4 sm:px-8 py-2.5 shadow-sm hidden md:block">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-6 text-xs font-bold text-slate-700">
+      <nav className="bg-slate-900 text-white border-b border-slate-800 px-4 sm:px-8 py-2.5 shadow-sm hidden md:block">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-6 text-xs font-bold">
           <button onClick={() => setIsCategoriesDrawerOpen(true)} className="bg-[#0055FF] text-white px-5 py-2 rounded-full font-extrabold flex items-center gap-2 hover:bg-blue-700 transition-colors shadow-sm">
             <span>≡ Categorías</span>
           </button>
 
           <div className="flex items-center gap-6">
-            <span className="text-blue-600 font-black cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Inicio</span>
-            <span className="hover:text-blue-600 cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Teléfonos Celulares</span>
-            <span className="hover:text-blue-600 cursor-pointer text-red-600 font-black" onClick={() => setIsCategoriesDrawerOpen(true)}>Ofertas M Store</span>
-            <span className="hover:text-blue-600 cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Televisores 4K</span>
-            <span className="hover:text-blue-600 cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Laptops & PC</span>
-            <span className="hover:text-blue-600 cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Zona Gamer</span>
-            <span className="hover:text-blue-600 cursor-pointer text-blue-600 font-black" onClick={() => setIsCategoriesDrawerOpen(true)}>Club M Store</span>
+            <span className="text-[#00E5FF] font-black cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Inicio</span>
+            <span className="hover:text-cyan-300 cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Teléfonos Celulares</span>
+            <span className="bg-[#FFE600] text-black px-2.5 py-0.5 rounded-full font-black text-[10px] uppercase cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Cashea Financiación</span>
+            <span className="hover:text-cyan-300 cursor-pointer text-red-400 font-black" onClick={() => setIsCategoriesDrawerOpen(true)}>Ofertas M Store</span>
+            <span className="hover:text-cyan-300 cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Televisores 4K</span>
+            <span className="hover:text-cyan-300 cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Laptops & PC</span>
+            <span className="hover:text-cyan-300 cursor-pointer" onClick={() => setIsCategoriesDrawerOpen(true)}>Zona Gamer</span>
+            <span className="hover:text-cyan-300 cursor-pointer text-cyan-300 font-black" onClick={() => setIsCategoriesDrawerOpen(true)}>Club M Store</span>
           </div>
         </div>
       </nav>
 
-      {/* 4. HERO BANNER CAROUSEL EN LA HOME PRINCIPAL */}
+      {/* 4. HERO BANNER CAROUSEL CON FINANCIAMIENTO CASHEA */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 mt-6">
-        <div className={`relative rounded-3xl overflow-hidden bg-gradient-to-r ${HERO_SLIDES[currentSlide].bgGradient} text-white p-8 sm:p-12 shadow-2xl transition-all duration-700 flex flex-col md:flex-row items-center justify-between gap-8 border border-white/10`}>
+        <div className="relative rounded-3xl overflow-hidden mstore-dark-header-bg text-white p-8 sm:p-12 shadow-2xl border border-cyan-500/30 flex flex-col md:flex-row items-center justify-between gap-8">
           
           <div className="space-y-4 max-w-xl text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-amber-300 text-xs font-black uppercase tracking-wider">
-              <Zap className="w-4 h-4 fill-amber-300" />
-              <span>{HERO_SLIDES[currentSlide].badge}</span>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFE600] text-black text-xs font-black uppercase tracking-wider shadow-md">
+              <Zap className="w-4 h-4 fill-black" />
+              <span>PAGA EN CUOTAS CON CASHEA EN M STORE</span>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl font-black tracking-tight leading-tight uppercase font-space">
+            <h1 className="text-2xl sm:text-4xl font-black tracking-tight leading-tight uppercase font-space text-white">
               {HERO_SLIDES[currentSlide].title}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-200 font-medium">
+            <p className="text-xs sm:text-sm text-slate-300 font-medium">
               {HERO_SLIDES[currentSlide].subtitle}
             </p>
 
@@ -290,16 +291,26 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
                 <span>{HERO_SLIDES[currentSlide].buttonText}</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
+
+              <button 
+                onClick={() => setIsCategoriesDrawerOpen(true)}
+                className="bg-white/10 hover:bg-white/20 text-white px-5 py-3 rounded-2xl font-bold text-xs transition-all border border-white/20"
+              >
+                Ver Categorías
+              </button>
             </div>
           </div>
 
-          <div className="w-full md:w-80 h-64 sm:h-72 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 relative group shrink-0">
+          <div className="w-full md:w-80 h-64 sm:h-72 rounded-2xl overflow-hidden shadow-2xl border-2 border-cyan-500/30 relative group shrink-0 bg-slate-900">
             <img 
               src={HERO_SLIDES[currentSlide].img} 
               alt="M Store Promo" 
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            <div className="absolute bottom-3 left-3 right-3 bg-[#FFE600] text-black text-[11px] font-black p-2 rounded-xl text-center shadow-lg">
+              Inicial + 3 cuotas sin interés
+            </div>
           </div>
 
         </div>
@@ -310,13 +321,39 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
             <button
               key={idx}
               onClick={() => setCurrentSlide(idx)}
-              className={`h-2 rounded-full transition-all ${currentSlide === idx ? 'w-8 bg-[#0055FF]' : 'w-2 bg-slate-300'}`}
+              className={`h-2 rounded-full transition-all ${currentSlide === idx ? 'w-8 bg-[#00E5FF]' : 'w-2 bg-slate-300'}`}
             />
           ))}
         </div>
       </section>
 
-      {/* 5. NAVEGACIÓN DE CATEGORÍAS RÁPIDAS */}
+      {/* 5. SECCIÓN DESTACADA BANNER CASHEA AMARILLO (#FFE600) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 mt-10">
+        <div className="bg-[#FFE600] rounded-3xl p-6 sm:p-8 text-black shadow-xl border border-amber-400 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-2 text-left max-w-xl">
+            <div className="inline-block bg-black text-[#FFE600] font-black text-[10px] px-3 py-1 rounded-full uppercase tracking-wider">
+              M STORE ES ALIANZA CASHEA EN VENEZUELA
+            </div>
+            <h2 className="text-xl sm:text-3xl font-black font-space tracking-tight">
+              Llévatelo hoy pagando solo la inicial
+            </h2>
+            <p className="text-xs sm:text-sm font-bold text-slate-900 leading-relaxed">
+              Disfruta de la libertad de renovar tu smartphone o equipo de tecnología. Eliges tu producto en M Store, pagas la inicial en caja o transferencias, y el resto lo pagas en 3 cuotas fijas cada 14 días.
+            </p>
+          </div>
+
+          <div className="bg-black text-white p-5 rounded-2xl shadow-2xl border border-amber-300/40 text-center shrink-0 min-w-[260px]">
+            <span className="text-[10px] font-mono text-[#FFE600] uppercase font-black block">EJEMPLO DE CUOTAS CASHEA</span>
+            <div className="text-2xl font-black text-[#FFE600] my-1">$100 USD</div>
+            <div className="text-xs font-bold space-y-1 text-slate-300">
+              <p>• Inicial: <span className="text-white">$40.00 USD</span></p>
+              <p>• 3 cuotas de: <span className="text-[#FFE600]">$20.00 USD</span></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. NAVEGACIÓN DE CATEGORÍAS RÁPIDAS */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 mt-10">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {HOME_CATEGORIES.map((cat) => {
@@ -340,12 +377,12 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
         </div>
       </section>
 
-      {/* 6. GRID DE PRODUCTOS DESTACADOS MULTICATEGORÍA */}
+      {/* 7. GRID DE PRODUCTOS DESTACADOS MULTICATEGORÍA CON CASHEA */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 mt-12">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <span className="text-xs font-extrabold text-blue-600 uppercase tracking-widest block">CATÁLOGO EXCLUSIVO</span>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 font-space tracking-tight">Productos Destacados M Store</h2>
+            <span className="text-xs font-extrabold text-blue-600 uppercase tracking-widest block">CATÁLOGO EXCLUSIVO M STORE</span>
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 font-space tracking-tight">Productos Destacados con Cashea</h2>
           </div>
 
           <div className="flex items-center gap-2 bg-white p-1 rounded-2xl border border-slate-200 shadow-sm">
@@ -368,6 +405,7 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
           {HOME_PRODUCTS.map((p) => {
             const finalPrice = currency === 'USD' ? `$${p.price.toFixed(2)}` : `${(p.price * rateVES).toLocaleString('es-VE')} Bs`;
             const oldPriceText = p.oldPrice ? (currency === 'USD' ? `$${p.oldPrice.toFixed(2)}` : `${(p.oldPrice * rateVES).toLocaleString('es-VE')} Bs`) : null;
+            const casheaInicial = currency === 'USD' ? `$${(p.price * 0.4).toFixed(2)}` : `${((p.price * 0.4) * rateVES).toLocaleString('es-VE', { maximumFractionDigits: 0 })} Bs`;
 
             return (
               <div 
@@ -405,6 +443,15 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
                     {oldPriceText && (
                       <span className="text-xs text-slate-400 line-through font-mono ml-auto">{oldPriceText}</span>
                     )}
+                  </div>
+
+                  {/* CASHEA FINANCIAMIENTO INSIGNIA AMARILLA (#FFE600) */}
+                  <div className="bg-[#FFF9C4] border border-amber-300 rounded-2xl p-2.5 flex items-center justify-between text-[11px] font-black text-slate-900 shadow-sm">
+                    <div className="flex items-center gap-1.5">
+                      <span className="bg-[#FFE600] text-black px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider border border-amber-400">CASHEA</span>
+                      <span>Inicial: {casheaInicial}</span>
+                    </div>
+                    <span className="text-[10px] text-amber-900 font-bold">+ 3 cuotas</span>
                   </div>
                 </div>
 

@@ -611,150 +611,154 @@ export const LandingPageTest = ({
         </div>
       </section>
 
-      {/* CINTA DE MARCAS OFICIALES — CARRUSEL MINIMALISTA EN 1 FILA */}
-      <section className="max-w-7xl mx-auto px-4 md:px-8 mt-6" aria-label="Marcas Oficiales">
-        <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
-          {officialBrands.map((b, idx) => (
-            <button 
-              key={idx}
-              onClick={() => handleCategorySelectFromMenu(b.filterId, b.name)}
-              aria-label={`Filtrar productos de ${b.name}`}
-              className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-[#00E5FF]/5 border border-[#00E5FF]/30 hover:border-[#00E5FF] hover:bg-[#00E5FF]/15 hover:shadow-[0_0_20px_rgba(0,229,255,0.25)] focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none transition-all group shrink-0 active:scale-95 min-h-[44px]"
-            >
-              <span className="w-2 h-2 rounded-full bg-[#00E5FF] shadow-[0_0_8px_#00E5FF] shrink-0 group-hover:scale-125 transition-transform"></span>
-              <span className="text-xs font-extrabold font-space text-white group-hover:text-[#00E5FF] tracking-wider whitespace-nowrap">{b.logo}</span>
-              <span className="text-[10px] text-slate-400 font-inter whitespace-nowrap">({b.desc})</span>
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* CATÁLOGO PRINCIPAL DE PRODUCTOS */}
-      <main id="catalogo-productos" className="max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-10">
-
-        {/* CATALOG HEADER */}
-        <div className="space-y-4 pb-4 border-b border-white/10">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00E5FF]/10 text-[#00E5FF] text-xs font-extrabold font-space uppercase mb-1">
-                <LayoutGrid className="w-3.5 h-3.5" />
-                <span>Catálogo M Store</span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold font-space text-white">
-                {selectedCategoryName}
-              </h2>
-              <p className="text-xs text-slate-400 mt-0.5">{filteredProducts.length} productos disponibles</p>
-            </div>
-          </div>
-
-          {/* CATEGORY QUICK FILTER PILLS */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 text-xs font-space">
-            {[
-              { id: 'todos',        name: 'Todos los Productos', Icon: LayoutGrid },
-              { id: 'televisores',  name: 'Televisores',    Icon: Tv },
-              { id: 'computadoras', name: 'Computadoras',   Icon: Laptop },
-              { id: 'aires',        name: 'Aires A/C',      Icon: Wind },
-              { id: 'telefonos',    name: 'Teléfonos',      Icon: Smartphone },
-              { id: 'neveras',      name: 'Neveras',        Icon: Refrigerator },
-              { id: 'lavadoras',    name: 'Lavadoras',      Icon: WashingMachine },
-              { id: 'audio',        name: 'Audio',          Icon: Headphones },
-              ...customCategories.map(c => ({ id: c.id, name: c.name, Icon: LayoutGrid }))
-            ].map(({ id, name, Icon }) => (
-              <button
-                key={id}
-                onClick={() => handleCategorySelectFromMenu(id, name)}
-                aria-label={`Filtrar por ${name}`}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold font-space transition-all border shrink-0 min-h-[44px] focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none ${
-                  activeFilterId === id
-                    ? 'bg-[#00E5FF] text-black border-[#00E5FF] shadow-[0_0_15px_#00E5FF]'
-                    : 'bg-white/5 border-white/10 text-slate-200 hover:border-[#00E5FF]/40 hover:text-white'
-                }`}
+      {/* CONTENEDOR CENTRAL BLANCO (ESTILO TIENDA E-COMMERCE ESTÁNDAR COMPACTA) */}
+      <div className="bg-white text-slate-900 py-10 border-t border-b border-slate-200 space-y-12 font-inter">
+        
+        {/* CINTA DE MARCAS OFICIALES — CARRUSEL MINIMALISTA EN 1 FILA */}
+        <section className="max-w-7xl mx-auto px-4 md:px-8" aria-label="Marcas Oficiales">
+          <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
+            {officialBrands.map((b, idx) => (
+              <button 
+                key={idx}
+                onClick={() => handleCategorySelectFromMenu(b.filterId, b.name)}
+                aria-label={`Filtrar productos de ${b.name}`}
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-[#F8FAFC] border-2 border-slate-200 hover:border-[#00E5FF] hover:bg-[#00E5FF]/10 shadow-sm focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none transition-all group shrink-0 active:scale-95 min-h-[44px]"
               >
-                <Icon className="w-3.5 h-3.5 shrink-0" />
-                <span>{name}</span>
+                <span className="w-2 h-2 rounded-full bg-[#0066FF] shadow-[0_0_8px_#0066FF] shrink-0 group-hover:scale-125 transition-transform"></span>
+                <span className="text-xs font-extrabold font-space text-slate-900 group-hover:text-[#0066FF] tracking-wider whitespace-nowrap">{b.logo}</span>
+                <span className="text-[10px] text-slate-500 font-inter whitespace-nowrap">({b.desc})</span>
               </button>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* PRODUCTS GRID (DESIGNED FOR HUNDREDS OF ITEMS) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {visibleProducts.map((p) => (
-            <div
-              key={p.id}
-              className="glass-card rounded-2xl p-4 border border-white/10 hover:border-[#00E5FF]/60 transition-all flex flex-col justify-between space-y-3 group hover:shadow-[0_10px_30px_rgba(0,229,255,0.2)] cursor-pointer"
-              onClick={() => setQuickViewProduct(p)}
-              role="button"
-              aria-label={`Ver detalles de ${p.name}`}
-              tabIndex={0}
-              onKeyDown={(e) => e.key === 'Enter' && setQuickViewProduct(p)}
-            >
-              {/* IMAGE AREA (Crisp White Studio Frame) */}
-              <div className="w-full h-48 rounded-xl bg-white p-3 flex items-center justify-center relative overflow-hidden border border-slate-200 group-hover:border-[#00E5FF] transition-all shadow-sm">
-                {/* Quick view hover badge */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 rounded-xl z-10">
-                  <span className="bg-[#00E5FF] text-black text-[10px] font-extrabold font-space px-3 py-1.5 rounded-full shadow-[0_0_15px_#00E5FF]">
-                    VER DETALLES →
-                  </span>
+        {/* CATÁLOGO PRINCIPAL DE PRODUCTOS */}
+        <main id="catalogo-productos" className="max-w-7xl mx-auto px-4 md:px-8 space-y-8">
+
+          {/* CATALOG HEADER */}
+          <div className="space-y-4 pb-4 border-b border-slate-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#00E5FF]/15 text-[#0066FF] border border-[#00E5FF]/40 text-xs font-extrabold font-space uppercase mb-1">
+                  <LayoutGrid className="w-3.5 h-3.5" />
+                  <span>Catálogo M Store</span>
                 </div>
-
-                <img src={p.image} alt={p.name} className="w-full h-full object-contain group-hover:scale-105 transition-transform" />
-              </div>
-
-              {/* PRODUCT INFO */}
-              <div className="space-y-1 text-left">
-                <div className="flex items-center gap-1 text-amber-400 text-[11px] font-space font-bold">
-                  <span>★ {p.rating || '5.0'}</span>
-                  <span className="text-slate-300">(142 reseñas)</span>
-                </div>
-                <h3 className="text-xs font-bold font-space text-slate-100 line-clamp-2 min-h-[32px]">{p.name}</h3>
-                <div className="flex items-baseline gap-1.5 pt-1">
-                  <span className="text-lg font-black text-white font-inter tracking-tight">
-                    ${p.price.toFixed ? p.price.toFixed(2) : p.price}
-                  </span>
-                  <span className="text-xs font-extrabold text-[#00E5FF] font-inter">USD</span>
-                  {p.originalPrice && (
-                    <span className="text-xs text-slate-400 line-through font-inter ml-1">
-                      ${p.originalPrice.toFixed ? p.originalPrice.toFixed(2) : p.originalPrice}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* ACTION BUTTON — solo Carrito */}
-              <div className="pt-1">
-                <button
-                  onClick={(e) => { e.stopPropagation(); handleAddToCart(p); }}
-                  aria-label={`Añadir ${p.name} al carrito`}
-                  className="w-full btn-cyan-glow py-2.5 rounded-xl text-xs font-extrabold font-space text-black active:scale-95 focus-visible:ring-2 focus-visible:ring-white shadow-[0_0_15px_rgba(0,229,255,0.4)] min-h-[44px]"
-                >
-                  Añadir al Carrito
-                </button>
+                <h2 className="text-2xl sm:text-3xl font-extrabold font-space text-slate-900">
+                  {selectedCategoryName}
+                </h2>
+                <p className="text-xs text-slate-600 mt-0.5 font-inter">{filteredProducts.length} productos disponibles con envío inmediato</p>
               </div>
             </div>
-          ))}
-        </div>
 
-        {/* PAGINATION / LOAD MORE PRODUCTS */}
-
-        {visibleProducts.length < filteredProducts.length && (
-          <div className="text-center pt-6">
-            <button
-              onClick={() => setVisibleCount(prev => prev + 8)}
-              aria-label="Cargar más productos del catálogo"
-              className="px-8 py-3.5 rounded-2xl bg-white/5 border border-[#00E5FF]/40 text-[#00E5FF] font-extrabold text-xs font-space hover:bg-[#00E5FF] hover:text-black focus-visible:ring-2 focus-visible:ring-[#00E5FF] transition-all shadow-[0_0_20px_rgba(0,229,255,0.3)] active:scale-95 min-h-[44px]"
-            >
-              Cargar Más Productos del Catálogo &darr;
-            </button>
+            {/* CATEGORY QUICK FILTER PILLS */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 text-xs font-space">
+              {[
+                { id: 'todos',        name: 'Todos los Productos', Icon: LayoutGrid },
+                { id: 'televisores',  name: 'Televisores',    Icon: Tv },
+                { id: 'computadoras', name: 'Computadoras',   Icon: Laptop },
+                { id: 'aires',        name: 'Aires A/C',      Icon: Wind },
+                { id: 'telefonos',    name: 'Teléfonos',      Icon: Smartphone },
+                { id: 'neveras',      name: 'Neveras',        Icon: Refrigerator },
+                { id: 'lavadoras',    name: 'Lavadoras',      Icon: WashingMachine },
+                { id: 'audio',        name: 'Audio',          Icon: Headphones },
+                ...customCategories.map(c => ({ id: c.id, name: c.name, Icon: LayoutGrid }))
+              ].map(({ id, name, Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => handleCategorySelectFromMenu(id, name)}
+                  aria-label={`Filtrar por ${name}`}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-extrabold font-space transition-all border shrink-0 min-h-[44px] focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none ${
+                    activeFilterId === id
+                      ? 'bg-[#0066FF] text-white border-[#0066FF] shadow-md'
+                      : 'bg-[#F8FAFC] border border-slate-200 text-slate-800 hover:border-[#00E5FF] hover:text-[#0066FF] shadow-sm'
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5 shrink-0" />
+                  <span>{name}</span>
+                </button>
+              ))}
+            </div>
           </div>
-        )}
 
-      </main>
+          {/* PRODUCTS GRID (DISEÑADO EN TARJETAS BLANCAS LIMPIAS) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {visibleProducts.map((p) => (
+              <div
+                key={p.id}
+                className="bg-white rounded-2xl p-4 border-2 border-slate-200 hover:border-[#00E5FF] transition-all flex flex-col justify-between space-y-3 group hover:shadow-[0_12px_30px_rgba(0,229,255,0.2)] cursor-pointer"
+                onClick={() => setQuickViewProduct(p)}
+                role="button"
+                aria-label={`Ver detalles de ${p.name}`}
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && setQuickViewProduct(p)}
+              >
+                {/* IMAGE AREA (Crisp White Studio Frame) */}
+                <div className="w-full h-48 rounded-xl bg-[#F8FAFC] p-3 flex items-center justify-center relative overflow-hidden border border-slate-100 group-hover:border-[#00E5FF] transition-all shadow-inner">
+                  {/* Quick view hover badge */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-xl z-10">
+                    <span className="bg-[#00E5FF] text-black text-[10px] font-extrabold font-space px-3 py-1.5 rounded-full shadow-[0_0_15px_#00E5FF] uppercase">
+                      VER DETALLES →
+                    </span>
+                  </div>
 
-      {/* SECCIÓN TIENDA FÍSICA CON MAPA */}
-      <LocationSection />
+                  <img src={p.image} alt={p.name} className="w-full h-full object-contain group-hover:scale-105 transition-transform filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.1)]" />
+                </div>
 
-      {/* FOOTER LIMPIO SIN MÉTODOS DE PAGO Y SIN BOTÓN PÚBLICO DE ADMIN */}
+                {/* PRODUCT INFO */}
+                <div className="space-y-1 text-left">
+                  <div className="flex items-center gap-1 text-amber-500 text-[11px] font-space font-bold">
+                    <span>★ {p.rating || '5.0'}</span>
+                    <span className="text-slate-500">(142 reseñas)</span>
+                  </div>
+                  <h3 className="text-xs font-extrabold font-space text-slate-900 group-hover:text-[#0066FF] line-clamp-2 min-h-[32px] transition-colors">{p.name}</h3>
+                  <div className="flex items-baseline gap-1.5 pt-1">
+                    <span className="text-lg font-black text-slate-900 font-inter tracking-tight">
+                      ${p.price.toFixed ? p.price.toFixed(2) : p.price}
+                    </span>
+                    <span className="text-xs font-extrabold text-[#0066FF] font-inter">USD</span>
+                    {p.originalPrice && (
+                      <span className="text-xs text-slate-400 line-through font-inter ml-1">
+                        ${p.originalPrice.toFixed ? p.originalPrice.toFixed(2) : p.originalPrice}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* ACTION BUTTON — solo Carrito */}
+                <div className="pt-1">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleAddToCart(p); }}
+                    aria-label={`Añadir ${p.name} al carrito`}
+                    className="w-full btn-cyan-glow py-2.5 rounded-xl text-xs font-extrabold font-space text-black active:scale-95 focus-visible:ring-2 focus-visible:ring-black shadow-[0_0_15px_rgba(0,229,255,0.4)] min-h-[44px] uppercase tracking-wider"
+                  >
+                    Añadir al Carrito
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* PAGINATION / LOAD MORE PRODUCTS */}
+          {visibleProducts.length < filteredProducts.length && (
+            <div className="text-center pt-6">
+              <button
+                onClick={() => setVisibleCount(prev => prev + 8)}
+                aria-label="Cargar más productos del catálogo"
+                className="px-8 py-3.5 rounded-2xl bg-white border-2 border-slate-200 text-[#0066FF] font-extrabold text-xs font-space hover:bg-[#00E5FF] hover:text-black hover:border-[#00E5FF] focus-visible:ring-2 focus-visible:ring-[#00E5FF] transition-all shadow-md active:scale-95 min-h-[44px]"
+              >
+                Cargar Más Productos del Catálogo &darr;
+              </button>
+            </div>
+          )}
+
+        </main>
+
+        {/* SECCIÓN TIENDA FÍSICA CON MAPA EN FONDO CLARO SEAMLESS */}
+        <LocationSection isLightBg={true} />
+
+      </div>
+
+      {/* FOOTER LIMPIO EN NEGRO EN EL PIE DE PÁGINA */}
       <Footer />
 
       {/* DRAWER DE CARRITO CON CHECKOUT DIRECTO A WHATSAPP EN USD ($) */}

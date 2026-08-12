@@ -5,11 +5,13 @@ import { Logo } from './Logo';
 export const Navbar = ({ 
   cartCount, 
   onOpenCart, 
+  onOpenMegaMenu,
   onToggleMegaMenu, 
   isMegaMenuOpen,
   searchQuery,
   onSearchChange,
-  onSearchSubmit
+  onSearchSubmit,
+  onNavigateHome
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -32,14 +34,17 @@ export const Navbar = ({
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-3.5">
         <div className="flex items-center justify-between gap-3 md:gap-5">
           
-          {/* 1. Brand Logo */}
-          <a href="#" className="flex items-center shrink-0">
+          {/* 1. Brand Logo (Navega a Inicio) */}
+          <div 
+            onClick={() => onNavigateHome && onNavigateHome()} 
+            className="flex items-center shrink-0 cursor-pointer"
+          >
             <Logo size="medium" />
-          </a>
+          </div>
 
-          {/* 2. Menú de Categorías Button (Solo Escritorio, en móvil está en el Bottom Nav) */}
+          {/* 2. Menú de Categorías Button */}
           <button
-            onClick={onToggleMegaMenu}
+            onClick={onOpenMegaMenu || onToggleMegaMenu}
             className={`hidden md:flex items-center gap-2 px-3.5 md:px-4 py-2 rounded-xl text-xs font-bold font-space transition-all duration-300 shrink-0 border ${
               isMegaMenuOpen 
                 ? 'bg-[#00E5FF] text-black border-[#00E5FF] shadow-[0_0_25px_#00E5FF]' 

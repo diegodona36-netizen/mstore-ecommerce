@@ -10,17 +10,42 @@ import { CartDrawer } from './components/CartDrawer';
 import { CategoryMegaMenu } from './components/CategoryMegaMenu';
 import { QuickViewModal } from './components/QuickViewModal';
 import { WhatsappButton } from './components/WhatsappButton';
+import { CategoryShowcaseSection } from './components/CategoryShowcaseSection';
 import { INITIAL_PRODUCTS } from './data/products';
+import { ArrowLeft, ChevronRight, Home } from 'lucide-react';
 
 export function App() {
   const [products] = useState(INITIAL_PRODUCTS);
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
+  
+  // VIEW MODE ROUTING: 'home' | 'catalog'
+  const [viewMode, setViewMode] = useState('home');
   const [activeCategory, setActiveCategory] = useState('todos');
   const [searchQuery, setSearchQuery] = useState('');
   const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [wishlist, setWishlist] = useState([]);
   const [customCategories] = useState([]);
+
+  const handleToggleWishlist = (productId) => {
+    setWishlist(prev => 
+      prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]
+    );
+  };
+
+  // Handler to open catalog view cleanly with specific category
+  const navigateToCatalog = (categoryFilterId = 'todos') => {
+    setActiveCategory(categoryFilterId);
+    setViewMode('catalog');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Handler to return home
+  const navigateToHome = () => {
+    setViewMode('home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Add to cart logic
   const handleAddToCart = (product) => {
@@ -56,82 +81,159 @@ export function App() {
   const cartTotalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-[#0A0908] text-white selection:bg-[#00E5FF] selection:text-black font-inter">
+    <div className="min-h-screen bg-[#0A0908] text-white selection:bg-[#00E5FF] selection:text-black font-inter flex flex-col justify-between">
       
-      {/* 1. TOP HEADER & NAVIGATION (DARK CYBER) */}
-      <Navbar 
-        onOpenCart={() => setIsCartOpen(true)}
-        onOpenMegaMenu={() => setIsMegaMenuOpen(true)}
-        cartCount={cartTotalCount}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        products={products}
-        onQuickView={(p) => setQuickViewProduct(p)}
-      />
+      <div>
+        {/* 1. TOP HEADER & NAVIGATION (DARK CYBER) */}
+        <Navbar 
+          onOpenCart={() => setIsCartOpen(true)}
+          onOpenMegaMenu={() => setIsMegaMenuOpen(true)}
+          cartCount={cartTotalCount}
+          searchQuery={searchQuery}
+          onSearchChange={(q) => {
+            setSearchQuery(q);
+            if (q && viewMode !== 'catalog') setViewMode('catalog');
+          }}
+          products={products}
+          onQuickView={(p) => setQuickViewProduct(p)}
+          onNavigateHome={navigateToHome}
+        />
 
-      <CategoryMegaMenu 
-        isOpen={isMegaMenuOpen}
-        onClose={() => setIsMegaMenuOpen(false)}
-        onSelectCategory={(catId) => {
-          setActiveCategory(catId);
-          setIsMegaMenuOpen(false);
-          const catalogEl = document.getElementById('bento') || document.getElementById('catalogo');
-          if (catalogEl) catalogEl.scrollIntoView({ behavior: 'smooth' });
-        }}
-        customCategories={customCategories}
-      />
+        <CategoryMegaMenu 
+          isOpen={isMegaMenuOpen}
+          onClose={() => setIsMegaMenuOpen(false)}
+          onSelectCategory={(catId) => {
+            navigateToCatalog(catId);
+            setIsMegaMenuOpen(false);
+          }}
+          customCategories={customCategories}
+        />
 
-      {/* 2. HERO BANNER PRINCIPAL (DARK CYBER) */}
-      <Hero 
-        onExploreClick={() => {
-          const el = document.getElementById('bento');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }}
-        onQuickView={(p) => setQuickViewProduct(p)}
-      />
-
-      {/* 3. SECCIONES CENTRALES ELEGANTES CYBER MATTE (ENMARCADAS SIN BLANCO EXCESIVO) */}
-      <main className="space-y-12 py-10 bg-[#0A0908]">
-        
-        {/* 3.1 Bento Grid Categorías */}
-        <div id="bento" className="max-w-7xl mx-auto px-4 md:px-8">
-          <BentoGrid 
-            isLightBg={false}
-            onSelectCategory={(catId) => {
-              setActiveCategory(catId);
-              const catalogEl = document.getElementById('catalogo');
-              if (catalogEl) catalogEl.scrollIntoView({ behavior: 'smooth' });
-            }} 
-          />
-        </div>
-
-        {/* 3.2 Carrusel & Catálogo de Productos */}
-        <div id="catalogo" className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="glass-card rounded-3xl p-4 sm:p-8 border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.8)]">
-            <ProductCarousel
-              products={products}
-              activeCategory={activeCategory}
-              onCategoryChange={setActiveCategory}
-              onAddToCart={handleAddToCart}
-              onQuickView={(product) => setQuickViewProduct(product)}
-              searchQuery={searchQuery}
-              customCategories={customCategories}
-              isLightBg={false}
+        {/* ========================================================================= */}
+        {/* VISTA 1: HOMEPAGE VIEW (DESPEJADA, SIN CATALOGO COMPLETO NI SCROLL INFINITO) */}
+        {/* ========================================================================= */}
+        {viewMode === 'home' && (
+          <div className="animate-fadeIn">
+            {/* 2. HERO BANNER PRINCIPAL E-COMMERCE */}
+            <Hero 
+              onCategorySelect={(catId) => navigateToCatalog(catId)}
+              onExploreClick={() => navigateToCatalog('todos')}
+              onQuickViewHero={(p) => setQuickViewProduct(p)}
             />
+
+            {/* 3. SECCIONES CENTRALES HOMEPAGE */}
+            <main className="space-y-12 py-8 bg-[#0A0908]">
+              
+              {/* 3.1 Bento Grid Categorías Innovadoras */}
+              <div id="bento" className="max-w-7xl mx-auto px-4 md:px-8">
+                <BentoGrid 
+                  isLightBg={false}
+                  onSelectCategory={(catId) => navigateToCatalog(catId)} 
+                />
+              </div>
+
+              {/* 3.2 SECCIONES DE EXHIBICIÓN DE PRODUCTOS (3 BLOQUES LIMPIOS CON 'VER TODO >') */}
+              <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-12">
+                
+                {/* Categoría 1: Smartphones Insignia */}
+                <CategoryShowcaseSection 
+                  title="Smartphones Insignia 2026"
+                  categoryFilterId="smartphones"
+                  products={products}
+                  onSelectCategory={(catId) => navigateToCatalog(catId)}
+                  onAddToCart={handleAddToCart}
+                  onQuickView={(p) => setQuickViewProduct(p)}
+                  wishlist={wishlist}
+                  onToggleWishlist={handleToggleWishlist}
+                />
+
+                {/* Categoría 2: Televisores & Smart TVs */}
+                <CategoryShowcaseSection 
+                  title="Televisores & Smart TVs 4K"
+                  categoryFilterId="linea-blanca"
+                  products={products}
+                  onSelectCategory={(catId) => navigateToCatalog(catId)}
+                  onAddToCart={handleAddToCart}
+                  onQuickView={(p) => setQuickViewProduct(p)}
+                  wishlist={wishlist}
+                  onToggleWishlist={handleToggleWishlist}
+                />
+
+                {/* Categoría 3: Audio High-End */}
+                <CategoryShowcaseSection 
+                  title="Audio High-End & Cancelling"
+                  categoryFilterId="audio"
+                  products={products}
+                  onSelectCategory={(catId) => navigateToCatalog(catId)}
+                  onAddToCart={handleAddToCart}
+                  onQuickView={(p) => setQuickViewProduct(p)}
+                  wishlist={wishlist}
+                  onToggleWishlist={handleToggleWishlist}
+                />
+
+              </div>
+
+              {/* 3.3 Módulo de Beneficios & Garantía M Store */}
+              <div className="max-w-7xl mx-auto px-4 md:px-8 pt-4">
+                <BenefitsBanner isLightBg={false} />
+              </div>
+
+              {/* 3.4 Sección Tienda Física & Mapa */}
+              <div className="max-w-7xl mx-auto px-4 md:px-8">
+                <LocationSection isLightBg={false} />
+              </div>
+
+            </main>
           </div>
-        </div>
+        )}
 
-        {/* 3.3 Módulo de Beneficios & Garantía M Store */}
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <BenefitsBanner isLightBg={false} />
-        </div>
+        {/* ========================================================================= */}
+        {/* VISTA 2: CATALOG VIEW (DISEÑO 3 COLUMNAS: MINI SIDEBAR, FILTROS Y GRID) */}
+        {/* ========================================================================= */}
+        {viewMode === 'catalog' && (
+          <div className="animate-fadeIn py-6 font-space">
+            
+            {/* Breadcrumb Header Nav Bar */}
+            <div className="max-w-7xl mx-auto px-4 md:px-8 pb-4 mb-4 border-b border-white/10 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs text-slate-300">
+                <button 
+                  onClick={navigateToHome} 
+                  className="flex items-center gap-1 hover:text-[#00E5FF] transition-colors font-bold"
+                >
+                  <Home className="w-3.5 h-3.5" />
+                  <span>Inicio</span>
+                </button>
+                <ChevronRight className="w-3 h-3 text-slate-500" />
+                <span className="text-[#00E5FF] font-bold uppercase tracking-wider">Catálogo M Store</span>
+              </div>
 
-        {/* 3.4 Sección Tienda Física & Mapa Google Maps */}
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <LocationSection isLightBg={false} />
-        </div>
+              <button
+                onClick={navigateToHome}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs transition-all border border-white/10 active:scale-95"
+              >
+                <ArrowLeft className="w-4 h-4 text-[#00E5FF]" />
+                <span>Volver a Inicio</span>
+              </button>
+            </div>
 
-      </main>
+            {/* Componente Catálogo Completo 3 Columnas */}
+            <div className="max-w-7xl mx-auto px-4 md:px-8">
+              <div className="glass-card rounded-3xl p-4 sm:p-8 border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+                <ProductCarousel
+                  products={products}
+                  activeCategory={activeCategory}
+                  onCategoryChange={setActiveCategory}
+                  onAddToCart={handleAddToCart}
+                  onQuickView={(product) => setQuickViewProduct(product)}
+                  searchQuery={searchQuery}
+                  customCategories={customCategories}
+                  isLightBg={false}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* 4. FOOTER (DARK CYBER) */}
       <Footer />
@@ -154,7 +256,6 @@ export function App() {
       />
 
       <WhatsappButton />
-
     </div>
   );
 }

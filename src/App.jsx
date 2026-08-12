@@ -262,7 +262,6 @@ export function App() {
         />
         <main>
           <Hero onExploreClick={handleExploreClick} onQuickViewHero={() => setQuickViewProduct(products[0])} />
-          <BentoGrid onSelectCategory={handleSelectCategoryFromBento} />
           <ProductCarousel
             products={products}
             activeCategory={activeCategory}
@@ -333,16 +332,14 @@ export function App() {
     );
   }
 
-  // DEFAULT MAIN PRODUCTION PAGE (NEW IMPROVED M STORE)
+  // DEFAULT MAIN PRODUCTION PAGE (M STORE HOMEPAGE SOYTECHNO CLONE)
   return (
-    <LandingPageTest 
-      customCategories={customCategories}
-      adminProducts={products}
-      onAddProduct={handleAddProductFromAdmin}
-      onUpdateProduct={handleUpdateProductFromAdmin}
-      onRemoveProduct={handleRemoveProductFromAdmin}
-      onAddCategory={handleAddCategory}
-      onRemoveCategory={handleRemoveCategory}
+    <SoyTechnoHomePage 
+      onBackToMain={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      onOpenCelularesCategory={() => {
+        const catalogEl = document.getElementById('catalogo') || document.querySelector('section');
+        if (catalogEl) catalogEl.scrollIntoView({ behavior: 'smooth' });
+      }}
     />
   );
 }

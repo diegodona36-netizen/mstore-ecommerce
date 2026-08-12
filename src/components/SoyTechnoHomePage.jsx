@@ -246,21 +246,15 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
         </div>
       </header>
 
-      {/* 3. SUB-NAVBAR CATEGORÍAS OSCURO (#0F131F) */}
+      {/* 3. SUB-NAVBAR CON BOTÓN PRINCIPAL DE CATEGORÍAS */}
       <nav className="bg-[#0F131F] text-white border-b border-slate-800 px-4 sm:px-8 py-2 shadow-sm hidden md:block">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-6 text-xs font-bold">
-          <button onClick={() => setIsCategoriesDrawerOpen(true)} className="bg-[#0055FF] hover:bg-blue-600 text-white px-5 py-2 rounded-full font-extrabold flex items-center gap-2 transition-all shadow-md">
+          <button onClick={() => setIsCategoriesDrawerOpen(true)} className="bg-slate-900 hover:bg-slate-800 text-white border border-slate-700 px-6 py-2 rounded-full font-extrabold flex items-center gap-2 transition-all shadow-md">
             <span>≡ Categorías</span>
           </button>
 
-          <div className="flex items-center gap-6 text-slate-200">
-            <span className="text-[#00E5FF] font-black cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Inicio</span>
-            <span className="hover:text-cyan-300 cursor-pointer transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Teléfonos Celulares</span>
-            <span className="hover:text-red-400 cursor-pointer text-red-400 font-extrabold transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Ofertas M Store</span>
-            <span className="hover:text-cyan-300 cursor-pointer transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Televisores 4K</span>
-            <span className="hover:text-cyan-300 cursor-pointer transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Laptops & PC</span>
-            <span className="hover:text-cyan-300 cursor-pointer transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Zona Gamer</span>
-            <span className="text-cyan-300 font-extrabold cursor-pointer hover:underline" onClick={() => setIsCategoriesDrawerOpen(true)}>Club M Store</span>
+          <div className="flex items-center gap-6 text-slate-300 text-[11px] font-extrabold uppercase tracking-wider">
+            <span>📞 Atención inmediata 24/7 en Venezuela</span>
           </div>
         </div>
       </nav>
@@ -435,7 +429,7 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
                       const msg = `Hola M Store, me interesa adquirir el producto ${p.name} por $${p.price.toFixed(2)}. ¿Está disponible?`;
                       window.open(`https://wa.me/584120000000?text=${encodeURIComponent(msg)}`, '_blank');
                     }}
-                    className="w-full bg-[#0055FF] hover:bg-blue-700 text-white font-black py-3 rounded-2xl text-xs transition-colors flex items-center justify-center gap-1 shadow-md active:scale-95"
+                    className="w-full bg-slate-900 hover:bg-slate-800 text-white font-black py-3 rounded-2xl text-xs transition-colors flex items-center justify-center gap-1 shadow-md active:scale-95"
                   >
                     <span>Agregar al carrito</span>
                   </button>

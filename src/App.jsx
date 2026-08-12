@@ -9,7 +9,7 @@ import { Footer } from './components/Footer';
 import { CartDrawer } from './components/CartDrawer';
 import { CategoryMegaMenu } from './components/CategoryMegaMenu';
 import { QuickViewModal } from './components/QuickViewModal';
-import { FloatingWhatsApp } from './components/FloatingWhatsApp';
+import { WhatsappButton } from './components/WhatsappButton';
 import { INITIAL_PRODUCTS } from './data/products';
 
 export function App() {
@@ -153,7 +153,7 @@ export function App() {
         onRemoveItem={handleRemoveItem}
       />
 
-      <FloatingWhatsApp />
+      <WhatsappButton />
 
     </div>
   );

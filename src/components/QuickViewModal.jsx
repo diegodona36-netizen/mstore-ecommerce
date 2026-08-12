@@ -116,27 +116,18 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-0 items-stretch">
               
               {/* COLUMNA IZQUIERDA: GALERÍA DE IMÁGENES CON SIDEBAR OSCURO PLANO SIN MARGENES EXTERNOS */}
-              <div className="md:col-span-6 flex flex-col-reverse sm:flex-row items-stretch bg-slate-50 border-r border-slate-200">
+              <div className="md:col-span-6 flex items-stretch p-0 m-0 bg-slate-50 border-r border-slate-200">
                 
-                {/* Tira de Miniaturas:
-                    - Cero márgenes externos (m-0)
-                    - Ocupa alto completo (h-full / self-stretch)
-                    - Conecta plano con el header arriba (rounded-none rounded-bl-xl)
-                    - Sin barra de scroll visible (scrollbar-none / scrollbar-hide)
-                    - Estado activo sutil (border-slate-900 ring-2 ring-slate-900/20) sin tapar foto
-                */}
-                <div 
-                  className="bg-[#0A0908] p-3 flex sm:flex-col gap-3 shrink-0 overflow-x-auto sm:overflow-y-auto max-w-full sm:w-20 h-full self-stretch border-r border-white/10 rounded-none rounded-bl-xl scrollbar-none"
-                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                >
+                {/* Tira de Miniaturas (Left Column) */}
+                <div className="flex flex-col w-24 h-full m-0 p-0 bg-slate-900 rounded-none rounded-bl-xl overflow-y-auto scrollbar-hide">
                   {thumbnails.map((imgUrl, idx) => (
                     <button
                       key={idx}
                       onClick={() => setActiveThumbIdx(idx)}
-                      className={`w-14 h-14 rounded-xl overflow-hidden p-1 transition-all bg-slate-900/60 flex items-center justify-center shrink-0 border-2 ${
+                      className={`w-16 h-16 rounded-xl overflow-hidden p-1.5 my-2 mx-auto transition-all bg-slate-800/80 flex items-center justify-center shrink-0 border-2 ${
                         activeThumbIdx === idx
                           ? 'border-white ring-2 ring-white/30 scale-105 shadow-md'
-                          : 'border-slate-800 hover:border-slate-600 opacity-75 hover:opacity-100'
+                          : 'border-slate-700 hover:border-slate-500 opacity-75 hover:opacity-100'
                       }`}
                     >
                       <img src={imgUrl} alt="" className="h-full w-full object-contain" />

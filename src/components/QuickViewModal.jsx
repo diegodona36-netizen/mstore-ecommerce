@@ -161,7 +161,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                 
                 {/* Tira de Miniaturas - scrollbar oculto, scroll táctil preservado */}
                 <div
-                  className="bg-[#0A0908] p-3 rounded-2xl flex sm:flex-col gap-2.5 shrink-0 overflow-x-auto sm:overflow-y-auto max-w-full sm:max-h-[340px] pb-1 sm:pb-0 shadow-inner"
+                  className="bg-[#0A0908] p-3 rounded-2xl flex sm:flex-col gap-2.5 shrink-0 overflow-x-auto sm:overflow-y-auto max-w-full sm:max-h-[340px] pb-1 sm:pb-0 shadow-inner no-scrollbar"
                   style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
                 {thumbnails.map((imgUrl, idx) => (

@@ -870,17 +870,6 @@ export const LandingPageTest = ({
                 ))}
               </div>
             </div>
-                    activeFilterId === id
-                      ? 'bg-[#0066FF] text-white border-[#0066FF] shadow-md'
-                      : 'bg-[#F8FAFC] border border-slate-200 text-slate-800 hover:border-[#00E5FF] hover:text-[#0066FF] shadow-sm'
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5 shrink-0" />
-                  <span>{name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
 
           {/* PRODUCTS GRID (DISEÑADO EN TARJETAS BLANCAS LIMPIAS) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

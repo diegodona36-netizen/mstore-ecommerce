@@ -10,7 +10,7 @@ export const ProductCarousel = ({
   onQuickView,
   searchQuery = '',
   customCategories = [],
-  isLightBg = true
+  isLightBg = false
 }) => {
   const [selectedBrand, setSelectedBrand] = useState('todas');
   const [sortBy, setSortBy] = useState('destacados');
@@ -80,7 +80,7 @@ export const ProductCarousel = ({
   }
 
   return (
-    <section id="catalogo" className="py-8 px-4 md:px-8 max-w-7xl mx-auto space-y-8 scroll-mt-24">
+    <section id="catalogo" className="py-6 px-4 md:px-8 max-w-7xl mx-auto space-y-8 scroll-mt-24">
       
       {/* Header Title */}
       <div className={`flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b ${
@@ -90,7 +90,7 @@ export const ProductCarousel = ({
           <div className={`inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-extrabold font-space uppercase mb-2 ${
             isLightBg 
               ? 'bg-[#00E5FF]/15 text-[#0066FF] border border-[#00E5FF]/40' 
-              : 'bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30'
+              : 'bg-[#00E5FF]/15 text-[#00E5FF] border border-[#00E5FF]/40'
           }`}>
             <Sparkles className="w-3.5 h-3.5" />
             <span>Catálogo Oficial M Store</span>
@@ -98,10 +98,10 @@ export const ProductCarousel = ({
           <h2 className={`text-3xl sm:text-4xl font-extrabold font-space tracking-tight ${
             isLightBg ? 'text-slate-900' : 'text-white'
           }`}>
-            Tecnología & <span className="text-[#0066FF]">Electrodomésticos</span>
+            Tecnología & <span className="gradient-text-cyan">Electrodomésticos</span>
           </h2>
           <p className={`text-xs sm:text-sm font-inter mt-1 ${
-            isLightBg ? 'text-slate-600' : 'text-slate-400'
+            isLightBg ? 'text-slate-600' : 'text-slate-300'
           }`}>
             Explora la más alta calidad importada con garantía oficial de 1 año y envío exprés a todo el país.
           </p>
@@ -110,14 +110,14 @@ export const ProductCarousel = ({
         {/* Sort Dropdown */}
         <div className="flex items-center gap-2 self-start md:self-auto">
           <SlidersHorizontal className={`w-4 h-4 ${isLightBg ? 'text-[#0066FF]' : 'text-[#00E5FF]'}`} />
-          <span className={`text-xs font-space font-extrabold ${isLightBg ? 'text-slate-800' : 'text-slate-300'}`}>Ordenar por:</span>
+          <span className={`text-xs font-space font-extrabold ${isLightBg ? 'text-slate-800' : 'text-slate-200'}`}>Ordenar por:</span>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             className={`text-xs rounded-xl px-3 py-2 outline-none font-space font-extrabold transition-all ${
               isLightBg 
                 ? 'bg-white border-2 border-slate-300 text-slate-900 shadow-sm focus:border-[#0066FF]' 
-                : 'bg-[#141824] border border-white/15 text-white focus:border-[#00E5FF]'
+                : 'bg-[#141824] border border-white/20 text-white focus:border-[#00E5FF]'
             }`}
           >
             <option value="destacados">Destacados M Store</option>
@@ -136,10 +136,10 @@ export const ProductCarousel = ({
             onClick={() => setSelectedBrand(tab.id)}
             className={`px-5 py-2.5 rounded-2xl text-xs font-extrabold font-space whitespace-nowrap transition-all duration-300 border ${
               selectedBrand === tab.id
-                ? 'bg-[#0066FF] text-white border-[#0066FF] shadow-md scale-105'
+                ? 'bg-[#00E5FF] text-black border-[#00E5FF] shadow-[0_0_20px_#00E5FF] scale-105'
                 : isLightBg 
                   ? 'bg-slate-100 border-2 border-slate-200 text-slate-900 hover:bg-slate-200 hover:border-slate-300 shadow-sm'
-                  : 'bg-white/5 border-white/10 text-slate-300 hover:text-white hover:bg-white/10'
+                  : 'bg-[#1E293B] border border-slate-700 text-white hover:text-[#00E5FF] hover:border-[#00E5FF]'
             }`}
           >
             {tab.label}
@@ -155,10 +155,10 @@ export const ProductCarousel = ({
             onClick={() => onCategoryChange(cat.id)}
             className={`px-4 py-2 rounded-xl text-xs font-extrabold font-space whitespace-nowrap transition-all border ${
               activeCategory === cat.id
-                ? 'bg-[#00E5FF]/20 text-[#0066FF] border-2 border-[#00E5FF]/60 shadow-sm'
+                ? 'bg-[#00E5FF]/20 text-[#00E5FF] border-2 border-[#00E5FF]/60 shadow-sm'
                 : isLightBg 
                   ? 'bg-white border border-slate-200 text-slate-700 hover:text-slate-900 hover:border-slate-400'
-                  : 'bg-white/[0.02] border border-white/5 text-slate-400 hover:text-slate-200'
+                  : 'bg-[#0F172A] border border-slate-800 text-slate-300 hover:text-white hover:border-slate-600'
             }`}
           >
             {cat.label}
@@ -169,7 +169,7 @@ export const ProductCarousel = ({
       {/* Product Grid */}
       {filtered.length === 0 ? (
         <div className={`rounded-3xl p-12 text-center space-y-3 ${
-          isLightBg ? 'bg-white border-2 border-slate-200 shadow-sm text-slate-700' : 'glass-card text-slate-400'
+          isLightBg ? 'bg-white border-2 border-slate-200 shadow-sm text-slate-700' : 'glass-card text-slate-300'
         }`}>
           <p className={`text-base font-space font-extrabold ${isLightBg ? 'text-slate-900' : 'text-white'}`}>No se encontraron productos con estos criterios.</p>
           <p className="text-xs font-inter">Prueba seleccionando otra marca o limpiando la búsqueda.</p>

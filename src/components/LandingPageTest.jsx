@@ -594,8 +594,8 @@ export const LandingPageTest = ({
         </div>
       </section>
 
-      {/* CONTENEDOR CENTRAL BLANCO (ESTILO TIENDA E-COMMERCE COMPLETA M STORE) */}
-      <div className="bg-white text-slate-900 py-10 border-t border-b border-slate-200 space-y-12 font-inter">
+      {/* CONTENEDORES CENTRALES ELEGANTES CYBER MATTE (ENMARCADOS SIN BLANCO EXCESIVO) */}
+      <div className="bg-[#0A0908] text-white py-10 space-y-12 font-inter">
         
         {/* CINTA DE MARCAS OFICIALES — CARRUSEL MINIMALISTA EN 1 FILA */}
         <section className="max-w-7xl mx-auto px-4 md:px-8" aria-label="Marcas Oficiales">
@@ -822,42 +822,54 @@ export const LandingPageTest = ({
           </div>
         </section>
 
-        {/* CATÁLOGO PRINCIPAL DE PRODUCTOS */}
-        <main id="catalogo-productos" className="max-w-7xl mx-auto px-4 md:px-8 space-y-8">
+        {/* CATÁLOGO PRINCIPAL DE PRODUCTOS (ENMARCADO EN TARJETA CYBER MATTE) */}
+        <main id="catalogo-productos" className="max-w-7xl mx-auto px-4 md:px-8">
+          <div className="glass-card rounded-3xl p-6 sm:p-10 border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.8)] space-y-8">
 
-          {/* CATALOG HEADER */}
-          <div className="space-y-4 pb-4 border-b border-slate-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#00E5FF]/15 text-[#0066FF] border border-[#00E5FF]/40 text-xs font-extrabold font-space uppercase mb-1">
-                  <LayoutGrid className="w-3.5 h-3.5" />
-                  <span>Catálogo M Store</span>
+            {/* CATALOG HEADER */}
+            <div className="space-y-4 pb-4 border-b border-white/10">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#00E5FF]/15 text-[#00E5FF] border border-[#00E5FF]/40 text-xs font-extrabold font-space uppercase mb-1">
+                    <LayoutGrid className="w-3.5 h-3.5" />
+                    <span>Catálogo M Store</span>
+                  </div>
+                  <h2 className="text-2xl sm:text-4xl font-extrabold font-space text-white">
+                    {selectedCategoryName}
+                  </h2>
+                  <p className="text-xs text-slate-300 mt-0.5 font-inter">{filteredProducts.length} productos disponibles con envío inmediato</p>
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-extrabold font-space text-slate-900">
-                  {selectedCategoryName}
-                </h2>
-                <p className="text-xs text-slate-600 mt-0.5 font-inter">{filteredProducts.length} productos disponibles con envío inmediato</p>
+              </div>
+
+              {/* CATEGORY QUICK FILTER PILLS */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-2 text-xs font-space">
+                {[
+                  { id: 'todos',        name: 'Todos los Productos', Icon: LayoutGrid },
+                  { id: 'televisores',  name: 'Televisores',    Icon: Tv },
+                  { id: 'computadoras', name: 'Computadoras',   Icon: Laptop },
+                  { id: 'aires',        name: 'Aires A/C',      Icon: Wind },
+                  { id: 'telefonos',    name: 'Teléfonos',      Icon: Smartphone },
+                  { id: 'neveras',      name: 'Neveras',        Icon: Refrigerator },
+                  { id: 'lavadoras',    name: 'Lavadoras',      Icon: WashingMachine },
+                  { id: 'audio',        name: 'Audio',          Icon: Headphones },
+                  ...customCategories.map(c => ({ id: c.id, name: c.name, Icon: LayoutGrid }))
+                ].map(({ id, name, Icon }) => (
+                  <button
+                    key={id}
+                    onClick={() => handleCategorySelectFromMenu(id, name)}
+                    aria-label={`Filtrar por ${name}`}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-extrabold font-space transition-all border shrink-0 min-h-[44px] focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none ${
+                      selectedCategory === id
+                        ? 'bg-[#00E5FF] text-black border-[#00E5FF] shadow-[0_0_15px_#00E5FF]'
+                        : 'bg-white/5 text-slate-200 border-white/10 hover:border-[#00E5FF] hover:text-[#00E5FF]'
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    <span>{name}</span>
+                  </button>
+                ))}
               </div>
             </div>
-
-            {/* CATEGORY QUICK FILTER PILLS */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-2 text-xs font-space">
-              {[
-                { id: 'todos',        name: 'Todos los Productos', Icon: LayoutGrid },
-                { id: 'televisores',  name: 'Televisores',    Icon: Tv },
-                { id: 'computadoras', name: 'Computadoras',   Icon: Laptop },
-                { id: 'aires',        name: 'Aires A/C',      Icon: Wind },
-                { id: 'telefonos',    name: 'Teléfonos',      Icon: Smartphone },
-                { id: 'neveras',      name: 'Neveras',        Icon: Refrigerator },
-                { id: 'lavadoras',    name: 'Lavadoras',      Icon: WashingMachine },
-                { id: 'audio',        name: 'Audio',          Icon: Headphones },
-                ...customCategories.map(c => ({ id: c.id, name: c.name, Icon: LayoutGrid }))
-              ].map(({ id, name, Icon }) => (
-                <button
-                  key={id}
-                  onClick={() => handleCategorySelectFromMenu(id, name)}
-                  aria-label={`Filtrar por ${name}`}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-extrabold font-space transition-all border shrink-0 min-h-[44px] focus-visible:ring-2 focus-visible:ring-[#00E5FF] focus-visible:outline-none ${
                     activeFilterId === id
                       ? 'bg-[#0066FF] text-white border-[#0066FF] shadow-md'
                       : 'bg-[#F8FAFC] border border-slate-200 text-slate-800 hover:border-[#00E5FF] hover:text-[#0066FF] shadow-sm'
@@ -939,12 +951,15 @@ export const LandingPageTest = ({
                 Cargar Más Productos del Catálogo &darr;
               </button>
             </div>
-          )}
+            )}
 
+          </div>
         </main>
 
-        {/* SECCIÓN TIENDA FÍSICA CON MAPA EN FONDO CLARO SEAMLESS */}
-        <LocationSection isLightBg={true} />
+        {/* SECCIÓN TIENDA FÍSICA Y MAPA (ENMARCADA EN CYBER MATTE) */}
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <LocationSection isLightBg={false} />
+        </div>
 
       </div>
 

@@ -81,10 +81,10 @@ export function App() {
   const cartTotalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-[#0A0908] text-white selection:bg-[#00E5FF] selection:text-black font-inter flex flex-col justify-between">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 selection:bg-[#00E5FF] selection:text-black font-inter flex flex-col justify-between">
       
       <div>
-        {/* 1. TOP HEADER & NAVIGATION (DARK CYBER) */}
+        {/* 1. TOP HEADER & NAVIGATION (STRICT DARK CYBER) */}
         <Navbar 
           onOpenCart={() => setIsCartOpen(true)}
           onOpenMegaMenu={() => setIsMegaMenuOpen(true)}
@@ -110,30 +110,30 @@ export function App() {
         />
 
         {/* ========================================================================= */}
-        {/* VISTA 1: HOMEPAGE VIEW (DESPEJADA, SIN CATALOGO COMPLETO NI SCROLL INFINITO) */}
+        {/* VISTA 1: HOMEPAGE VIEW (DISEÑO HÍBRIDO: HERO OSCURO + MAIN CLARO ELEGANTE) */}
         {/* ========================================================================= */}
         {viewMode === 'home' && (
           <div className="animate-fadeIn">
-            {/* 2. HERO BANNER PRINCIPAL E-COMMERCE */}
+            {/* 2. HERO BANNER PRINCIPAL (DESPLIEGUE VISUAL IMPACTANTE) */}
             <Hero 
               onCategorySelect={(catId) => navigateToCatalog(catId)}
               onExploreClick={() => navigateToCatalog('todos')}
               onQuickViewHero={(p) => setQuickViewProduct(p)}
             />
 
-            {/* 3. SECCIONES CENTRALES HOMEPAGE */}
-            <main className="space-y-12 py-8 bg-[#0A0908]">
+            {/* 3. SECCIONES CENTRALES HOMEPAGE (FONDO GRIS CLARO bg-slate-50 / bg-[#F8FAFC]) */}
+            <main className="space-y-14 py-10 bg-[#F8FAFC]">
               
               {/* 3.1 Bento Grid Categorías Innovadoras */}
               <div id="bento" className="max-w-7xl mx-auto px-4 md:px-8">
                 <BentoGrid 
-                  isLightBg={false}
+                  isLightBg={true}
                   onSelectCategory={(catId) => navigateToCatalog(catId)} 
                 />
               </div>
 
-              {/* 3.2 SECCIONES DE EXHIBICIÓN DE PRODUCTOS (3 BLOQUES LIMPIOS CON 'VER TODO >') */}
-              <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-12">
+              {/* 3.2 SECCIONES DE EXHIBICIÓN DE PRODUCTOS (FONDO CLARO CON BOTONES CIAN) */}
+              <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-14">
                 
                 {/* Categoría 1: Smartphones Insignia */}
                 <CategoryShowcaseSection 
@@ -145,6 +145,7 @@ export function App() {
                   onQuickView={(p) => setQuickViewProduct(p)}
                   wishlist={wishlist}
                   onToggleWishlist={handleToggleWishlist}
+                  isLightBg={true}
                 />
 
                 {/* Categoría 2: Televisores & Smart TVs */}
@@ -157,6 +158,7 @@ export function App() {
                   onQuickView={(p) => setQuickViewProduct(p)}
                   wishlist={wishlist}
                   onToggleWishlist={handleToggleWishlist}
+                  isLightBg={true}
                 />
 
                 {/* Categoría 3: Audio High-End */}
@@ -169,18 +171,19 @@ export function App() {
                   onQuickView={(p) => setQuickViewProduct(p)}
                   wishlist={wishlist}
                   onToggleWishlist={handleToggleWishlist}
+                  isLightBg={true}
                 />
 
               </div>
 
               {/* 3.3 Módulo de Beneficios & Garantía M Store */}
               <div className="max-w-7xl mx-auto px-4 md:px-8 pt-4">
-                <BenefitsBanner isLightBg={false} />
+                <BenefitsBanner isLightBg={true} />
               </div>
 
               {/* 3.4 Sección Tienda Física & Mapa */}
               <div className="max-w-7xl mx-auto px-4 md:px-8">
-                <LocationSection isLightBg={false} />
+                <LocationSection isLightBg={true} />
               </div>
 
             </main>
@@ -188,37 +191,37 @@ export function App() {
         )}
 
         {/* ========================================================================= */}
-        {/* VISTA 2: CATALOG VIEW (DISEÑO 3 COLUMNAS: MINI SIDEBAR, FILTROS Y GRID) */}
+        {/* VISTA 2: CATALOG VIEW (CATÁLOGO EN VISTA CLARA CON SIDEBAR Y GRID COMPACTO) */}
         {/* ========================================================================= */}
         {viewMode === 'catalog' && (
-          <div className="animate-fadeIn py-6 font-space">
+          <div className="animate-fadeIn py-8 bg-[#F8FAFC] min-h-screen font-space">
             
             {/* Breadcrumb Header Nav Bar */}
-            <div className="max-w-7xl mx-auto px-4 md:px-8 pb-4 mb-4 border-b border-white/10 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs text-slate-300">
+            <div className="max-w-7xl mx-auto px-4 md:px-8 pb-4 mb-6 border-b border-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs text-slate-600 font-bold">
                 <button 
                   onClick={navigateToHome} 
-                  className="flex items-center gap-1 hover:text-[#00E5FF] transition-colors font-bold"
+                  className="flex items-center gap-1 hover:text-[#0066FF] transition-colors"
                 >
-                  <Home className="w-3.5 h-3.5" />
+                  <Home className="w-3.5 h-3.5 text-[#0066FF]" />
                   <span>Inicio</span>
                 </button>
-                <ChevronRight className="w-3 h-3 text-slate-500" />
-                <span className="text-[#00E5FF] font-bold uppercase tracking-wider">Catálogo M Store</span>
+                <ChevronRight className="w-3 h-3 text-slate-400" />
+                <span className="text-slate-900 font-extrabold uppercase tracking-wider">Catálogo M Store</span>
               </div>
 
               <button
                 onClick={navigateToHome}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs transition-all border border-white/10 active:scale-95"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-800 font-extrabold text-xs transition-all border border-slate-200 shadow-sm active:scale-95"
               >
-                <ArrowLeft className="w-4 h-4 text-[#00E5FF]" />
+                <ArrowLeft className="w-4 h-4 text-[#0066FF]" />
                 <span>Volver a Inicio</span>
               </button>
             </div>
 
-            {/* Componente Catálogo Completo 3 Columnas */}
+            {/* Componente Catálogo Completo 3 Columnas en Vista Clara */}
             <div className="max-w-7xl mx-auto px-4 md:px-8">
-              <div className="glass-card rounded-3xl p-4 sm:p-8 border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+              <div className="bg-white rounded-3xl p-4 sm:p-8 border border-slate-200/90 shadow-md">
                 <ProductCarousel
                   products={products}
                   activeCategory={activeCategory}
@@ -227,7 +230,7 @@ export function App() {
                   onQuickView={(product) => setQuickViewProduct(product)}
                   searchQuery={searchQuery}
                   customCategories={customCategories}
-                  isLightBg={false}
+                  isLightBg={true}
                 />
               </div>
             </div>
@@ -235,7 +238,7 @@ export function App() {
         )}
       </div>
 
-      {/* 4. FOOTER (DARK CYBER) */}
+      {/* 4. FOOTER (STRICT DARK CYBER) */}
       <Footer />
 
       {/* MODALES Y ELEMENTOS FLOTANTES */}

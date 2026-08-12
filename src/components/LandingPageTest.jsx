@@ -40,6 +40,7 @@ export const LandingPageTest = ({
   // Cart & Checkout Drawer States
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [compareTab, setCompareTab] = useState('phones');
 
   // Secret Hash Listener for #admin
   useEffect(() => {

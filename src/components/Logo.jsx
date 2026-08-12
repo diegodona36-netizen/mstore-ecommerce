@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Logo = ({ className = '', size = 'medium', variant = 'dark' }) => {
+export const Logo = ({ className = '', size = 'medium' }) => {
   const heightClass = size === 'small' 
     ? 'h-8 sm:h-9' 
     : size === 'large' 
@@ -8,11 +8,11 @@ export const Logo = ({ className = '', size = 'medium', variant = 'dark' }) => {
       : 'h-10 sm:h-11 md:h-12';
 
   return (
-    <div className={`flex items-center select-none group cursor-pointer ${className}`}>
+    <div className={`inline-flex items-center select-none cursor-pointer ${className}`}>
       <img
         src="/mstore_official_logo.jpg"
         alt="M Store - Tienda de Telefonía y Accesorios"
-        className={`${heightClass} w-auto object-contain transition-transform duration-300 group-hover:scale-105 filter drop-shadow-[0_0_12px_rgba(0,229,255,0.3)] rounded-lg`}
+        className={`${heightClass} w-auto object-contain rounded-lg`}
       />
     </div>
   );

@@ -91,23 +91,6 @@ export function App() {
     };
   }, []);
 
-  if (isCleanMode) {
-    return <CleanBrightStore onBackToMain={() => { window.location.hash = ''; setIsCleanMode(false); }} />;
-  }
-
-  if (isSoyTechnoMode) {
-    return <SoyTechnoExperiment onBackToMain={() => { window.location.hash = ''; setIsSoyTechnoMode(false); }} />;
-  }
-
-  if (isSoyTechnoHomeMode) {
-    return (
-      <SoyTechnoHomePage 
-        onBackToMain={() => { window.location.hash = ''; setIsSoyTechnoHomeMode(false); }} 
-        onOpenCelularesCategory={() => { window.location.hash = '#soytechno'; setIsSoyTechnoMode(true); }}
-      />
-    );
-  }
-
   const handleAddProductFromAdmin = (newProd) => {
     setProducts(prev => [newProd, ...prev]);
 

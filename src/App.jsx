@@ -214,21 +214,23 @@ export function App() {
         onQuickView={(p) => setQuickViewProduct(p)}
       />
 
-      {/* 3. CONTENEDOR CENTRAL BLANCO (LO BLANCO EN EL MEDIO) */}
-      <div className="bg-white text-slate-900 border-t border-b border-slate-200 font-inter">
-        
-        {/* Bento Grid Categorías Vanguardia */}
+      {/* 3. SECCIONES CENTRALES BALANCEADAS (ZEBRA-STRIPING) */}
+      
+      {/* 3.1 Bento Grid Categorías (SECCIÓN OSCURA CYBER MATTE) */}
+      <div id="bento" className="bg-[#0A0E17] text-white border-t border-b border-white/10 font-inter py-10">
         <BentoGrid 
-          isLightBg={true}
+          isLightBg={false}
           onSelectCategory={(catId) => {
             setActiveCategory(catId);
             const catalogEl = document.getElementById('catalogo');
             if (catalogEl) catalogEl.scrollIntoView({ behavior: 'smooth' });
           }} 
         />
+      </div>
 
-        {/* Carrusel & Catálogo de Productos en Fondo Blanco */}
-        <div id="catalogo" className="max-w-7xl mx-auto px-4 md:px-8 py-8">
+      {/* 3.2 Carrusel & Catálogo de Productos (SECCIÓN BLANCO ESTUDIO LIMPIO) */}
+      <div id="catalogo" className="bg-white text-slate-900 border-b border-slate-200 font-inter py-10">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
           <ProductCarousel
             products={products}
             activeCategory={activeCategory}
@@ -240,15 +242,18 @@ export function App() {
             isLightBg={true}
           />
         </div>
+      </div>
 
-        {/* Módulo de Beneficios & Garantía M Store */}
-        <div className="max-w-7xl mx-auto px-4 md:px-8 pb-12">
-          <BenefitsBanner isLightBg={true} />
+      {/* 3.3 Módulo de Beneficios & Garantía M Store (SECCIÓN OSCURA CYBER MATTE) */}
+      <div className="bg-[#0B0F19] text-white border-b border-white/10 font-inter py-10">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <BenefitsBanner isLightBg={false} />
         </div>
+      </div>
 
-        {/* Sección Tienda Física & Mapa Google Maps */}
+      {/* 3.4 Sección Tienda Física & Mapa Google Maps (SECCIÓN BLANCA ESTUDIO LIMPIO) */}
+      <div className="bg-white text-slate-900 border-b border-slate-200 font-inter py-10">
         <LocationSection isLightBg={true} />
-
       </div>
 
       {/* 4. FOOTER (DARK CYBER) */}

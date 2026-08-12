@@ -615,206 +615,210 @@ export const LandingPageTest = ({
           </div>
         </section>
 
-        {/* CALCULADORA DE FINANCIAMIENTO & CUOTAS */}
-        <section className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="bg-[#F8FAFC] rounded-3xl p-6 sm:p-8 border-2 border-slate-200 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            
-            <div className="lg:col-span-6 space-y-3">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00E5FF]/15 text-[#0066FF] border border-[#00E5FF]/40 text-xs font-extrabold font-space uppercase">
-                <Calculator className="w-4 h-4" />
-                <span>Simulador de Cuotas & Financiamiento</span>
-              </div>
-              <h3 className="text-2xl sm:text-3xl font-extrabold font-space text-slate-900">
-                Calcula tu Compra en <span className="text-[#0066FF]">Cómodas Cuotas</span>
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-600 font-inter">
-                Ajusta el monto total de tu equipo y selecciona el plazo deseado para consultar la cuota estimada al mes sin papeleos molestos.
-              </p>
-
-              {/* Slider de Monto */}
-              <div className="space-y-2 pt-2">
-                <div className="flex justify-between text-xs font-bold font-space text-slate-800">
-                  <span>Monto Total del Producto:</span>
-                  <span className="text-base text-[#0066FF] font-black">${calcAmount} USD</span>
+        {/* CALCULADORA DE FINANCIAMIENTO & CUOTAS (SECCIÓN OSCURA CYBER MATTE DE ALTO IMPACTO) */}
+        <section className="bg-[#0B0E17] py-12 border-t border-b border-white/10 text-white">
+          <div className="max-w-7xl mx-auto px-4 md:px-8">
+            <div className="glass-card rounded-3xl p-6 sm:p-10 border border-[#00E5FF]/30 shadow-[0_0_40px_rgba(0,229,255,0.15)] grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              
+              <div className="lg:col-span-6 space-y-4 text-left">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#00E5FF]/15 text-[#00E5FF] border border-[#00E5FF]/40 text-xs font-extrabold font-space uppercase tracking-wider">
+                  <Calculator className="w-4 h-4" />
+                  <span>Simulador de Cuotas & Financiamiento</span>
                 </div>
-                <input 
-                  type="range" 
-                  min="200" 
-                  max="3000" 
-                  step="50" 
-                  value={calcAmount} 
-                  onChange={(e) => setCalcAmount(Number(e.target.value))}
-                  className="w-full accent-[#0066FF] cursor-pointer h-2 bg-slate-200 rounded-lg"
-                />
-                <div className="flex justify-between text-[10px] text-slate-400 font-inter">
-                  <span>$200 USD</span>
-                  <span>$1,500 USD</span>
-                  <span>$3,000 USD</span>
+                <h3 className="text-2xl sm:text-4xl font-extrabold font-space text-white">
+                  Calcula tu Compra en <span className="gradient-text-cyan">Cómodas Cuotas</span>
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 font-inter leading-relaxed">
+                  Ajusta el monto total de tu equipo y selecciona el plazo deseado para consultar la cuota estimada al mes sin papeleos molestos.
+                </p>
+
+                {/* Slider de Monto */}
+                <div className="space-y-2 pt-2">
+                  <div className="flex justify-between text-xs font-extrabold font-space text-slate-200">
+                    <span>Monto Total del Producto:</span>
+                    <span className="text-lg text-[#00E5FF] font-black">${calcAmount} USD</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="200" 
+                    max="3000" 
+                    step="50" 
+                    value={calcAmount} 
+                    onChange={(e) => setCalcAmount(Number(e.target.value))}
+                    className="w-full accent-[#00E5FF] cursor-pointer h-2 bg-slate-800 rounded-lg"
+                  />
+                  <div className="flex justify-between text-[10px] text-slate-400 font-inter">
+                    <span>$200 USD</span>
+                    <span>$1,500 USD</span>
+                    <span>$3,000 USD</span>
+                  </div>
+                </div>
+
+                {/* Plazos de Meses */}
+                <div className="flex items-center gap-3 pt-2">
+                  <span className="text-xs font-extrabold font-space text-slate-300">Plazo:</span>
+                  {[3, 6, 12].map((m) => (
+                    <button
+                      key={m}
+                      onClick={() => setCalcMonths(m)}
+                      className={`px-4 py-2 rounded-xl text-xs font-extrabold font-space transition-all border ${
+                        calcMonths === m
+                          ? 'bg-[#00E5FF] text-black border-[#00E5FF] shadow-[0_0_15px_#00E5FF]'
+                          : 'bg-white/5 border-white/10 text-slate-300 hover:border-[#00E5FF]'
+                      }`}
+                    >
+                      {m} Meses
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              {/* Plazos de Meses */}
-              <div className="flex items-center gap-3 pt-2">
-                <span className="text-xs font-bold font-space text-slate-800">Plazo:</span>
-                {[3, 6, 12].map((m) => (
-                  <button
-                    key={m}
-                    onClick={() => setCalcMonths(m)}
-                    className={`px-4 py-2 rounded-xl text-xs font-extrabold font-space transition-all border ${
-                      calcMonths === m
-                        ? 'bg-[#0066FF] text-white border-[#0066FF] shadow-sm'
-                        : 'bg-white border-slate-200 text-slate-700 hover:border-[#00E5FF]'
-                    }`}
-                  >
-                    {m} Meses
-                  </button>
-                ))}
+              {/* Resultado de Cuota Estándar */}
+              <div className="lg:col-span-6 bg-black/60 backdrop-blur-xl rounded-3xl p-8 border border-[#00E5FF]/40 flex flex-col justify-between items-center text-center space-y-5 shadow-[0_0_30px_rgba(0,229,255,0.2)]">
+                <div>
+                  <span className="text-xs font-extrabold text-[#00E5FF] uppercase tracking-widest font-space">Cuota Estimada al Mes</span>
+                  <div className="text-4xl sm:text-6xl font-black font-inter text-white tracking-tight mt-2">
+                    ${Math.round(calcAmount / calcMonths)} <span className="text-sm font-extrabold text-[#00E5FF]">USD/mes</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 font-inter mt-1">Plan a {calcMonths} meses por un valor total de ${calcAmount} USD</p>
+                </div>
+
+                <a
+                  href={`https://wa.me/584120000000?text=Hola%20M%20Store!%20Me%20interesa%20un%20financiamiento%20para%20un%20equipo%20de%20$${calcAmount}%20USD%20en%20cuotas%20de%20$${Math.round(calcAmount / calcMonths)}/mes.`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full btn-cyan-glow py-3.5 rounded-2xl text-black font-extrabold text-xs font-space uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_0_20px_#00E5FF] hover:scale-105 active:scale-95 transition-all"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  <span>Solicitar Cuota por WhatsApp &rarr;</span>
+                </a>
               </div>
+
             </div>
-
-            {/* Resultado de Cuota Estándar */}
-            <div className="lg:col-span-6 bg-white rounded-2xl p-6 border-2 border-slate-200 flex flex-col justify-between items-center text-center space-y-4 shadow-sm">
-              <div>
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-space">Cuota Estimada al Mes</span>
-                <div className="text-4xl sm:text-5xl font-black font-inter text-slate-900 tracking-tight mt-1">
-                  ${Math.round(calcAmount / calcMonths)} <span className="text-sm font-bold text-[#0066FF]">USD/mes</span>
-                </div>
-                <p className="text-[11px] text-slate-500 font-inter mt-1">Plan a {calcMonths} meses por un valor total de ${calcAmount} USD</p>
-              </div>
-
-              <a
-                href={`https://wa.me/584120000000?text=Hola%20M%20Store!%20Me%20interesa%20un%20financiamiento%20para%20un%20equipo%20de%20$${calcAmount}%20USD%20en%20cuotas%20de%20$${Math.round(calcAmount / calcMonths)}/mes.`}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full btn-cyan-glow py-3 rounded-xl text-black font-extrabold text-xs font-space uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:scale-105 active:scale-95 transition-all"
-              >
-                <MessageSquare className="w-4 h-4" />
-                <span>Solicitar Cuota por WhatsApp &rarr;</span>
-              </a>
-            </div>
-
           </div>
         </section>
 
-        {/* COMPARADOR TÉCNICO DE FLAGSHIPS */}
-        <section className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="bg-[#F8FAFC] rounded-3xl p-6 sm:p-8 border-2 border-slate-200 shadow-sm space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00E5FF]/15 text-[#0066FF] border border-[#00E5FF]/40 text-xs font-extrabold font-space uppercase mb-1">
-                  <Sparkles className="w-4 h-4" />
-                  <span>Comparador Técnico de Gama Alta</span>
+        {/* COMPARADOR TÉCNICO DE FLAGSHIPS (SECCIÓN OSCURA CYBER MATTE) */}
+        <section className="bg-[#080C14] py-12 border-b border-white/10 text-white">
+          <div className="max-w-7xl mx-auto px-4 md:px-8">
+            <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/10 shadow-2xl space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#00E5FF]/15 text-[#00E5FF] border border-[#00E5FF]/40 text-xs font-extrabold font-space uppercase mb-1">
+                    <Sparkles className="w-4 h-4" />
+                    <span>Comparador Técnico de Gama Alta</span>
+                  </div>
+                  <h3 className="text-xl sm:text-3xl font-extrabold font-space text-white">
+                    Compara los Flagships del Momento
+                  </h3>
                 </div>
-                <h3 className="text-xl sm:text-2xl font-extrabold font-space text-slate-900">
-                  Compara los Flagships del Momento
-                </h3>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setCompareTab('phones')}
+                    className={`px-4 py-2 rounded-xl text-xs font-extrabold font-space border transition-all ${
+                      compareTab === 'phones'
+                        ? 'bg-[#00E5FF] text-black border-[#00E5FF] shadow-[0_0_15px_#00E5FF]'
+                        : 'bg-white/5 text-slate-300 border-white/10 hover:border-[#00E5FF]'
+                    }`}
+                  >
+                    Smartphones Pro
+                  </button>
+                  <button
+                    onClick={() => setCompareTab('tvs')}
+                    className={`px-4 py-2 rounded-xl text-xs font-extrabold font-space border transition-all ${
+                      compareTab === 'tvs'
+                        ? 'bg-[#00E5FF] text-black border-[#00E5FF] shadow-[0_0_15px_#00E5FF]'
+                        : 'bg-white/5 text-slate-300 border-white/10 hover:border-[#00E5FF]'
+                    }`}
+                  >
+                    Smart TVs 4K
+                  </button>
+                </div>
               </div>
 
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setCompareTab('phones')}
-                  className={`px-4 py-2 rounded-xl text-xs font-extrabold font-space border transition-all ${
-                    compareTab === 'phones'
-                      ? 'bg-[#0066FF] text-white border-[#0066FF]'
-                      : 'bg-white text-slate-700 border-slate-200'
-                  }`}
-                >
-                  Smartphones Pro
-                </button>
-                <button
-                  onClick={() => setCompareTab('tvs')}
-                  className={`px-4 py-2 rounded-xl text-xs font-extrabold font-space border transition-all ${
-                    compareTab === 'tvs'
-                      ? 'bg-[#0066FF] text-white border-[#0066FF]'
-                      : 'bg-white text-slate-700 border-slate-200'
-                  }`}
-                >
-                  Smart TVs 4K
-                </button>
-              </div>
+              {compareTab === 'phones' ? (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-inter text-xs">
+                  {[
+                    {
+                      name: ' iPhone 16 Pro Max',
+                      badge: 'Apple Titanio',
+                      screen: '6.9" Super Retina XDR 120Hz',
+                      chip: 'Procesador A18 Pro 3nm',
+                      camera: '48MP Fusion + 5x Telefoto',
+                      battery: 'Hasta 33h de Video',
+                      price: '$1,299.00 USD'
+                    },
+                    {
+                      name: 'Samsung Galaxy S24 Ultra',
+                      badge: 'Galaxy AI',
+                      screen: '6.8" Dynamic AMOLED 2X',
+                      chip: 'Snapdragon 8 Gen 3',
+                      camera: '200MP + 50MP Periscopio',
+                      battery: '5,000 mAh Carga 45W',
+                      price: '$1,199.00 USD'
+                    },
+                    {
+                      name: 'Xiaomi 14 Ultra Leica',
+                      badge: 'Camara Leica 1"',
+                      screen: '6.73" LTPO OLED 3000 nits',
+                      chip: 'Snapdragon 8 Gen 3',
+                      camera: 'Cuádruple 50MP Leica 1"',
+                      battery: '5,000 mAh Carga 90W',
+                      price: '$1,099.00 USD'
+                    }
+                  ].map((item, i) => (
+                    <div key={i} className="bg-black/50 rounded-2xl p-5 border border-white/10 space-y-3 hover:border-[#00E5FF] transition-all shadow-md">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase tracking-wider bg-[#00E5FF]/15 text-[#00E5FF] border border-[#00E5FF]/30 px-2.5 py-1 rounded-full font-space">{item.badge}</span>
+                        <span className="font-extrabold text-[#00E5FF] text-sm font-space">{item.price}</span>
+                      </div>
+                      <h4 className="font-black text-sm text-white font-space">{item.name}</h4>
+                      <ul className="space-y-2 text-slate-300 pt-2 border-t border-white/10">
+                        <li>📱 <strong>Pantalla:</strong> {item.screen}</li>
+                        <li>⚡ <strong>Chipset:</strong> {item.chip}</li>
+                        <li>📸 <strong>Cámara:</strong> {item.camera}</li>
+                        <li>🔋 <strong>Batería:</strong> {item.battery}</li>
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-inter text-xs">
+                  {[
+                    {
+                      name: 'Smart TV 75" Neo QLED 4K Samsung',
+                      badge: 'Samsung OLED',
+                      screen: '75 Pulgadas Neo QLED 4K 120Hz',
+                      chip: 'Procesador NQ4 AI Gen2',
+                      sound: 'Dolby Atmos 60W',
+                      price: '$1,499.00 USD'
+                    },
+                    {
+                      name: 'Smart TV 55" Google TV Síragon',
+                      badge: 'Síragon Official',
+                      screen: '55 Pulgadas 4K UHD Direct LED',
+                      chip: 'Google TV AI OS',
+                      sound: 'Dolby Audio Surround',
+                      price: '$499.00 USD'
+                    }
+                  ].map((item, i) => (
+                    <div key={i} className="bg-black/50 rounded-2xl p-5 border border-white/10 space-y-3 hover:border-[#00E5FF] transition-all shadow-md">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase tracking-wider bg-[#00E5FF]/15 text-[#00E5FF] border border-[#00E5FF]/30 px-2.5 py-1 rounded-full font-space">{item.badge}</span>
+                        <span className="font-extrabold text-[#00E5FF] text-sm font-space">{item.price}</span>
+                      </div>
+                      <h4 className="font-black text-sm text-white font-space">{item.name}</h4>
+                      <ul className="space-y-2 text-slate-300 pt-2 border-t border-white/10">
+                        <li>📺 <strong>Panel:</strong> {item.screen}</li>
+                        <li>🧠 <strong>Sistema:</strong> {item.chip}</li>
+                        <li>🔊 <strong>Sonido:</strong> {item.sound}</li>
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-
-            {compareTab === 'phones' ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-inter text-xs">
-                {[
-                  {
-                    name: ' iPhone 16 Pro Max',
-                    badge: 'Apple Titanio',
-                    screen: '6.9" Super Retina XDR 120Hz',
-                    chip: 'Procesador A18 Pro 3nm',
-                    camera: '48MP Fusion + 5x Telefoto',
-                    battery: 'Hasta 33h de Video',
-                    price: '$1,299.00 USD'
-                  },
-                  {
-                    name: 'Samsung Galaxy S24 Ultra',
-                    badge: 'Galaxy AI',
-                    screen: '6.8" Dynamic AMOLED 2X',
-                    chip: 'Snapdragon 8 Gen 3',
-                    camera: '200MP + 50MP Periscopio',
-                    battery: '5,000 mAh Carga 45W',
-                    price: '$1,199.00 USD'
-                  },
-                  {
-                    name: 'Xiaomi 14 Ultra Leica',
-                    badge: 'Camara Leica 1"',
-                    screen: '6.73" LTPO OLED 3000 nits',
-                    chip: 'Snapdragon 8 Gen 3',
-                    camera: 'Cuádruple 50MP Leica 1"',
-                    battery: '5,000 mAh Carga 90W',
-                    price: '$1,099.00 USD'
-                  }
-                ].map((item, i) => (
-                  <div key={i} className="bg-white rounded-2xl p-5 border border-slate-200 space-y-3 hover:border-[#00E5FF] transition-all shadow-sm">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase tracking-wider bg-[#00E5FF]/15 text-[#0066FF] px-2.5 py-1 rounded-full font-space">{item.badge}</span>
-                      <span className="font-extrabold text-slate-900 text-sm font-space">{item.price}</span>
-                    </div>
-                    <h4 className="font-black text-sm text-slate-900 font-space">{item.name}</h4>
-                    <ul className="space-y-2 text-slate-600 pt-2 border-t border-slate-200">
-                      <li>📱 <strong>Pantalla:</strong> {item.screen}</li>
-                      <li>⚡ <strong>Chipset:</strong> {item.chip}</li>
-                      <li>📸 <strong>Cámara:</strong> {item.camera}</li>
-                      <li>🔋 <strong>Batería:</strong> {item.battery}</li>
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-inter text-xs">
-                {[
-                  {
-                    name: 'Smart TV 75" Neo QLED 4K Samsung',
-                    badge: 'Samsung OLED',
-                    screen: '75 Pulgadas Neo QLED 4K 120Hz',
-                    chip: 'Procesador NQ4 AI Gen2',
-                    sound: 'Dolby Atmos 60W',
-                    price: '$1,499.00 USD'
-                  },
-                  {
-                    name: 'Smart TV 55" Google TV Síragon',
-                    badge: 'Síragon Official',
-                    screen: '55 Pulgadas 4K UHD Direct LED',
-                    chip: 'Google TV AI OS',
-                    sound: 'Dolby Audio Surround',
-                    price: '$499.00 USD'
-                  }
-                ].map((item, i) => (
-                  <div key={i} className="bg-white rounded-2xl p-5 border border-slate-200 space-y-3 hover:border-[#00E5FF] transition-all shadow-sm">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase tracking-wider bg-[#00E5FF]/15 text-[#0066FF] px-2.5 py-1 rounded-full font-space">{item.badge}</span>
-                      <span className="font-extrabold text-slate-900 text-sm font-space">{item.price}</span>
-                    </div>
-                    <h4 className="font-black text-sm text-slate-900 font-space">{item.name}</h4>
-                    <ul className="space-y-2 text-slate-600 pt-2 border-slate-200 border-t">
-                      <li>📺 <strong>Panel:</strong> {item.screen}</li>
-                      <li>🧠 <strong>Sistema:</strong> {item.chip}</li>
-                      <li>🔊 <strong>Sonido:</strong> {item.sound}</li>
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         </section>
 

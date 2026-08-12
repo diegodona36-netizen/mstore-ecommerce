@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Search, LayoutGrid, Sparkles, Home, Store, Layers } from 'lucide-react';
+import { ShoppingBag, Search, LayoutGrid } from 'lucide-react';
 import { Logo } from './Logo';
 
 export const Navbar = ({ 
@@ -107,36 +107,8 @@ export const Navbar = ({
             </div>
           </form>
 
-          {/* 4. APP STORE STYLE DESKTOP NAVIGATION BAR */}
-          <div className="hidden md:flex items-center gap-1.5 lg:gap-3 shrink-0 font-space text-xs">
-            
-            {/* Inicio Link */}
-            <button
-              onClick={() => onNavigateHome && onNavigateHome()}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl font-extrabold text-slate-300 hover:text-white hover:bg-white/5 transition-all"
-            >
-              <Home className="w-3.5 h-3.5 text-[#00E5FF]" />
-              <span>Inicio</span>
-            </button>
-
-            {/* Catálogo Link */}
-            <button
-              onClick={() => onNavigateCatalog && onNavigateCatalog('todos')}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl font-extrabold text-slate-300 hover:text-[#00E5FF] hover:bg-[#00E5FF]/10 transition-all"
-            >
-              <Layers className="w-3.5 h-3.5 text-[#00E5FF]" />
-              <span>Catálogo</span>
-            </button>
-
-            {/* Ofertas Cyber */}
-            <button
-              onClick={() => onNavigateCatalog && onNavigateCatalog('todos')}
-              className="hidden lg:flex items-center gap-1.5 px-3 py-2 rounded-xl font-extrabold text-[#00E5FF] hover:bg-[#00E5FF]/15 transition-all"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Ofertas Cyber</span>
-            </button>
-
+          {/* 4. DESKTOP ACTIONS: solo Carrito */}
+          <div className="hidden md:flex items-center gap-2 shrink-0 font-space text-xs">
             {/* Shopping Cart Button */}
             <button
               onClick={onOpenCart}

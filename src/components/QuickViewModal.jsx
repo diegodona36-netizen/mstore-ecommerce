@@ -151,49 +151,53 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
           </button>
         </div>
 
-        {/* 2. CUERPO DEL MODAL (GRID PRINCIPAL CON COLUMNA DE MINIATURAS EN FONDO OSCURO) */}
-        <div className="p-5 sm:p-8 bg-white">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
-            
-            {/* COLUMNA IZQUIERDA: GALERÍA DE IMÁGENES */}
-            <div className="lg:col-span-6 flex flex-col-reverse sm:flex-row gap-4 items-center sm:items-start">
+        {/* 2. CUERPO DEL MODAL - RESPONSIVO: desktop 2 columnas, móvil 1 columna scroll natural */}
+        <div className="overflow-y-auto max-h-[75vh] md:max-h-none md:overflow-visible">
+          <div className="p-5 sm:p-8 bg-white">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
               
-              {/* Tira de Miniaturas Conectada al Header (Fondo Oscuro bg-[#0A0908]) */}
-              <div className="bg-[#0A0908] p-3 rounded-2xl border border-white/10 flex sm:flex-col gap-2.5 shrink-0 overflow-x-auto max-w-full pb-1 sm:pb-0 shadow-inner">
+              {/* COLUMNA IZQUIERDA: GALERÍA DE IMÁGENES */}
+              <div className="lg:col-span-6 flex flex-col-reverse sm:flex-row gap-4 items-center sm:items-start">
+                
+                {/* Tira de Miniaturas - scrollbar oculto, scroll táctil preservado */}
+                <div
+                  className="bg-[#0A0908] p-3 rounded-2xl flex sm:flex-col gap-2.5 shrink-0 overflow-x-auto sm:overflow-y-auto max-w-full sm:max-h-[340px] pb-1 sm:pb-0 shadow-inner"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
                 {thumbnails.map((imgUrl, idx) => (
                   <button
                     key={idx}
                     onClick={() => setActiveThumbIdx(idx)}
-                    className={`w-14 h-14 rounded-xl overflow-hidden p-1.5 border-2 transition-all bg-[#0D131F] flex items-center justify-center shrink-0 ${
+                    className={`w-14 h-14 rounded-xl overflow-hidden p-1 border-2 transition-all bg-[#0D131F] flex items-center justify-center shrink-0 ${
                       activeThumbIdx === idx
-                        ? 'border-[#00E5FF] scale-105 shadow-[0_0_15px_rgba(0,229,255,0.4)]'
-                        : 'border-white/10 hover:border-slate-400 opacity-75 hover:opacity-100'
+                        ? 'border-[#00E5FF] opacity-100'
+                        : 'border-white/10 hover:border-slate-500 opacity-60 hover:opacity-90'
                     }`}
                   >
                     <img src={imgUrl} alt="" className="h-full w-full object-contain" />
                   </button>
                 ))}
+                </div>
+
+                {/* Cuadro Principal de Imagen (Fondo Claro bg-slate-50) */}
+                <div className="relative flex-1 w-full h-72 sm:h-96 rounded-2xl bg-slate-50 p-6 flex items-center justify-center border border-slate-200 overflow-hidden shadow-inner">
+                  
+                  {/* ETIQUETA 'NUEVO' PÍLDORA FLOTANTE */}
+                  <span className="absolute top-3 right-3 z-10 px-3 py-1 rounded-full bg-emerald-500 text-white font-extrabold text-[10px] uppercase tracking-wider shadow-md">
+                    NUEVO
+                  </span>
+
+                  <img
+                    src={thumbnails[activeThumbIdx]}
+                    alt={product.name}
+                    className="h-full max-h-[90%] object-contain filter drop-shadow-md transition-transform duration-300 hover:scale-105"
+                  />
+                </div>
+
               </div>
 
-              {/* Cuadro Principal de Imagen (Fondo Claro bg-slate-50) */}
-              <div className="relative flex-1 w-full h-72 sm:h-96 rounded-2xl bg-slate-50 p-6 flex items-center justify-center border border-slate-200 overflow-hidden shadow-inner">
-                
-                {/* ETIQUETA 'NUEVO' PÍLDORA FLOTANTE CORREGIDA */}
-                <span className="absolute top-3 right-3 z-10 px-3 py-1 rounded-full bg-emerald-500 text-white font-extrabold text-[10px] uppercase tracking-wider shadow-md">
-                  NUEVO
-                </span>
-
-                <img
-                  src={thumbnails[activeThumbIdx]}
-                  alt={product.name}
-                  className="h-full max-h-[90%] object-contain filter drop-shadow-md transition-transform duration-300 hover:scale-105"
-                />
-              </div>
-
-            </div>
-
-            {/* COLUMNA DERECHA: INFORMACIÓN, HARDWARE Y ACCIONES DE COMPRA (Fondo Claro bg-white) */}
-            <div className="lg:col-span-6 flex flex-col text-left space-y-4">
+              {/* COLUMNA DERECHA */}
+              <div className="lg:col-span-6 flex flex-col text-left space-y-4">
               
               {/* TÍTULO DEL PRODUCTO */}
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 leading-snug tracking-tight">
@@ -252,12 +256,12 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                 </div>
               </div>
 
-              {/* SELECTOR DE MEMORIA RAM (NUEVO PÍLDORAS HARDWARE) */}
+              {/* SELECTOR DE MEMORIA RAM */}
               <div className="space-y-1.5 pt-1">
                 <label className="text-xs font-extrabold text-slate-700 flex items-center gap-1.5 uppercase tracking-wider">
-                  <Cpu className="w-3.5 h-3.5 text-[#0066FF]" />
+                  <Cpu className="w-3.5 h-3.5 text-slate-500" />
                   <span>Memoria RAM:</span>
-                  <span className="text-[#0066FF] font-black">{selectedRam}</span>
+                  <span className="text-slate-900 font-black">{selectedRam}</span>
                 </label>
                 <div className="flex items-center gap-2">
                   {ramOptions.map((ram) => (
@@ -266,8 +270,8 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                       onClick={() => setSelectedRam(ram)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all border ${
                         selectedRam === ram
-                          ? 'bg-[#00E5FF] text-black border-[#00E5FF] shadow-[0_0_10px_#00E5FF]'
-                          : 'bg-slate-100 text-slate-700 border-slate-200 hover:border-slate-400'
+                          ? 'bg-slate-900 text-white border-slate-900'
+                          : 'bg-slate-100 text-slate-600 border-slate-200 hover:border-slate-400 hover:bg-slate-200'
                       }`}
                     >
                       {ram}
@@ -276,12 +280,12 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                 </div>
               </div>
 
-              {/* SELECTOR DE ALMACENAMIENTO (NUEVO PÍLDORAS HARDWARE) */}
+              {/* SELECTOR DE ALMACENAMIENTO */}
               <div className="space-y-1.5 pt-1">
                 <label className="text-xs font-extrabold text-slate-700 flex items-center gap-1.5 uppercase tracking-wider">
-                  <HardDrive className="w-3.5 h-3.5 text-[#0066FF]" />
-                  <span>Capacidad de Almacenamiento:</span>
-                  <span className="text-[#0066FF] font-black">{selectedStorage}</span>
+                  <HardDrive className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Almacenamiento:</span>
+                  <span className="text-slate-900 font-black">{selectedStorage}</span>
                 </label>
                 <div className="flex items-center gap-2 flex-wrap">
                   {storageOptions.map((size) => (
@@ -290,8 +294,8 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                       onClick={() => setSelectedStorage(size)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all border ${
                         selectedStorage === size
-                          ? 'bg-[#00E5FF] text-black border-[#00E5FF] shadow-[0_0_10px_#00E5FF]'
-                          : 'bg-slate-100 text-slate-700 border-slate-200 hover:border-slate-400'
+                          ? 'bg-slate-900 text-white border-slate-900'
+                          : 'bg-slate-100 text-slate-600 border-slate-200 hover:border-slate-400 hover:bg-slate-200'
                       }`}
                     >
                       {size}
@@ -320,14 +324,14 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                 </div>
               </div>
 
-              {/* BOTONES PRINCIPALES DE ACCIÓN */}
+              {/* BOTONES PRINCIPALES DE ACCIÓN - colores premium oscuros */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
                 <button
                   onClick={handleAdd}
                   className={`py-3.5 px-4 rounded-2xl text-xs font-black flex items-center justify-center gap-2 transition-all duration-300 shadow-md active:scale-95 ${
                     added
-                      ? 'bg-blue-800 text-white'
-                      : 'bg-[#00E5FF] hover:bg-cyan-300 text-black shadow-[0_0_15px_rgba(0,229,255,0.4)] font-space'
+                      ? 'bg-emerald-700 text-white'
+                      : 'bg-slate-900 hover:bg-slate-700 text-white'
                   }`}
                 >
                   {added ? (
@@ -345,7 +349,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
 
                 <button
                   onClick={handleWhatsAppCheckout}
-                  className="py-3.5 px-4 rounded-2xl text-xs font-black flex items-center justify-center gap-2 bg-[#25D366] hover:bg-emerald-600 text-white shadow-md transition-all active:scale-95 font-space"
+                  className="py-3.5 px-4 rounded-2xl text-xs font-black flex items-center justify-center gap-2 bg-[#25D366] hover:bg-emerald-600 text-white shadow-md transition-all active:scale-95"
                 >
                   <MessageCircle className="w-4 h-4 fill-white" />
                   <span>Comprar Ahora</span>
@@ -389,7 +393,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
             </div>
 
           </div>
-        </div>
+        </div>{/* end scroll wrapper */}
 
       </div>
     </div>

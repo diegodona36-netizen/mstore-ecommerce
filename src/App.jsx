@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
-import { BentoGrid } from './components/BentoGrid';
 import { ProductCarousel } from './components/ProductCarousel';
 import { BenefitsBanner } from './components/BenefitsBanner';
 import { LocationSection } from './components/LocationSection';
@@ -126,13 +125,7 @@ export function App() {
             {/* 3. SECCIONES CENTRALES HOMEPAGE */}
             <main className="space-y-14 py-10 bg-[#F8FAFC]">
               
-              {/* 3.1 Bento Grid Categorías Innovadoras */}
-              <div id="bento" className="max-w-7xl mx-auto px-4 md:px-8">
-                <BentoGrid 
-                  isLightBg={true}
-                  onSelectCategory={(catId) => navigateToCatalog(catId)} 
-                />
-              </div>
+
 
               {/* 3.2 SECCIONES DE EXHIBICIÓN DE PRODUCTOS */}
               <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-14">

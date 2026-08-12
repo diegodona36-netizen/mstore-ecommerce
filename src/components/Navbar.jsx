@@ -37,20 +37,20 @@ export const Navbar = ({
             <Logo size="medium" />
           </a>
 
-          {/* 2. Menú de Categorías Button */}
+          {/* 2. Menú de Categorías Button (Solo Escritorio, en móvil está en el Bottom Nav) */}
           <button
             onClick={onToggleMegaMenu}
-            className={`flex items-center gap-2 px-3.5 md:px-4 py-2 rounded-xl text-xs font-bold font-space transition-all duration-300 shrink-0 border ${
+            className={`hidden md:flex items-center gap-2 px-3.5 md:px-4 py-2 rounded-xl text-xs font-bold font-space transition-all duration-300 shrink-0 border ${
               isMegaMenuOpen 
                 ? 'bg-[#00E5FF] text-black border-[#00E5FF] shadow-[0_0_25px_#00E5FF]' 
                 : 'bg-[#00E5FF]/10 border-[#00E5FF]/40 text-[#00E5FF] hover:bg-[#00E5FF] hover:text-black hover:shadow-[0_0_20px_#00E5FF]'
             }`}
           >
             <LayoutGrid className="w-4 h-4" />
-            <span className="hidden sm:inline">Menú de Categorías</span>
+            <span>Menú de Categorías</span>
           </button>
 
-          {/* 3. Integrated Live Search Bar */}
+          {/* 3. Integrated Live Search Bar (Escritorio) */}
           <form 
             onSubmit={handleSearchFormSubmit}
             className="flex-1 max-w-md relative hidden md:block"
@@ -76,8 +76,34 @@ export const Navbar = ({
             </div>
           </form>
 
+          {/* 3b. Buscador Amplio en Móvil (Ocupa todo el espacio restable) */}
+          <form 
+            onSubmit={handleSearchFormSubmit}
+            className="flex-1 relative md:hidden ml-1 sm:ml-2"
+          >
+            <div className="relative flex items-center">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery || ''}
+                onChange={(e) => onSearchChange(e.target.value)}
+                placeholder="Buscar productos..."
+                className="w-full bg-white/[0.06] border border-white/15 focus:border-[#00E5FF] focus:bg-black/60 text-white text-xs rounded-full pl-9 pr-3 py-2 outline-none font-inter min-h-[38px] placeholder:text-slate-400"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => onSearchChange('')}
+                  className="absolute right-3 text-slate-400 hover:text-white text-xs"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          </form>
+
           {/* 4. Right Actions */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="hidden md:flex items-center gap-2 sm:gap-3 shrink-0">
             
             {/* Quick Link Cyber */}
             <a
@@ -95,21 +121,12 @@ export const Navbar = ({
               aria-label="Ver Carrito de Compras"
             >
               <ShoppingBag className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
-              <span className="hidden sm:inline">Carrito</span>
+              <span>Carrito</span>
               {cartCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-[#00E5FF] text-black font-extrabold text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-[0_0_10px_#00E5FF] animate-bounce">
                   {cartCount}
                 </span>
               )}
-            </button>
-
-            {/* Mobile Menu Toggle Icon */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden text-slate-300 hover:text-white p-2 rounded-xl bg-white/5 border border-white/10"
-              aria-label="Abrir Menú"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
 

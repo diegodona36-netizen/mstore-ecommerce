@@ -40,10 +40,11 @@ export const Hero = ({ onExploreClick, onQuickViewHero }) => {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-wrap items-center gap-4 pt-2 w-full sm:w-auto">
+            {/* CTA Buttons - 1 Primary CTA + 1 Secondary link on Mobile */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 w-full">
               <button
                 onClick={onExploreClick}
-                className="btn-cyan-glow px-8 py-3.5 rounded-xl text-sm font-bold font-space text-black flex items-center justify-center gap-2 w-full sm:w-auto group shadow-[0_0_20px_#00E5FF]"
+                className="btn-cyan-glow px-8 py-3.5 rounded-xl text-sm font-extrabold font-space text-black flex items-center justify-center gap-2 w-full sm:w-auto group shadow-[0_0_25px_#00E5FF] hover:scale-105 active:scale-95 transition-all"
               >
                 <span>Explorar Catálogo</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -51,7 +52,7 @@ export const Hero = ({ onExploreClick, onQuickViewHero }) => {
 
               <a
                 href="#catalogo"
-                className="px-6 py-3.5 rounded-xl text-sm font-bold font-space text-white bg-white/5 border border-white/15 hover:border-[#00E5FF]/50 hover:bg-[#00E5FF]/10 transition-all flex items-center justify-center gap-2 w-full sm:w-auto"
+                className="px-5 py-2.5 sm:py-3.5 rounded-xl text-xs sm:text-sm font-semibold font-space text-slate-300 hover:text-[#00E5FF] transition-all flex items-center justify-center gap-1.5 w-full sm:w-auto"
               >
                 <span>Ver Ofertas Cyber</span>
                 <ChevronRight className="w-4 h-4 text-slate-400" />

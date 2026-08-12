@@ -212,6 +212,8 @@ export const PRODUCTS = [
   }
 ];
 
+export const INITIAL_PRODUCTS = PRODUCTS;
+
 export const CATEGORIES = [
   { id: 'todos', label: 'Todos los Productos' },
   { id: 'smartphones', label: 'Smartphones Insignia' },

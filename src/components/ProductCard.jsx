@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Star, Eye, Plus, Check } from 'lucide-react';
 
-export const ProductCard = ({ product, onAddToCart, onQuickView }) => {
+export const ProductCard = ({ product, onAddToCart, onQuickView, isLightBg = true }) => {
   const [added, setAdded] = useState(false);
 
   const handleAdd = (e) => {
@@ -14,13 +14,21 @@ export const ProductCard = ({ product, onAddToCart, onQuickView }) => {
   return (
     <div 
       onClick={() => onQuickView(product)}
-      className="glass-card rounded-3xl p-5 relative flex flex-col justify-between group cursor-pointer border border-white/10 hover:border-[#00E5FF]/50 transition-all duration-300 h-full"
+      className={`rounded-3xl p-5 relative flex flex-col justify-between group cursor-pointer transition-all duration-300 h-full ${
+        isLightBg 
+          ? 'bg-white border-2 border-slate-200 shadow-sm hover:border-[#00E5FF] hover:shadow-md text-slate-900' 
+          : 'glass-card border border-white/10 hover:border-[#00E5FF]/50 text-white'
+      }`}
     >
       
       {/* Top Tag Badge & Quick View Eye Icon */}
       <div className="flex items-center justify-between z-10 mb-3">
         {product.tag ? (
-          <span className="text-[10px] font-bold tracking-wider uppercase bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30 px-3 py-1 rounded-full font-space">
+          <span className={`text-[10px] font-extrabold tracking-wider uppercase px-3 py-1 rounded-full font-space ${
+            isLightBg 
+              ? 'bg-[#00E5FF]/15 text-[#0066FF] border border-[#00E5FF]/40' 
+              : 'bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30'
+          }`}>
             {product.tag}
           </span>
         ) : <div></div>}
@@ -29,76 +37,73 @@ export const ProductCard = ({ product, onAddToCart, onQuickView }) => {
             e.stopPropagation();
             onQuickView(product);
           }}
-          className="p-2 rounded-full bg-white/5 hover:bg-[#00E5FF]/20 text-slate-300 hover:text-[#00E5FF] transition-all opacity-0 group-hover:opacity-100"
+          className={`p-2 rounded-full transition-all opacity-0 group-hover:opacity-100 ${
+            isLightBg 
+              ? 'bg-slate-100 hover:bg-[#00E5FF]/20 text-slate-700 hover:text-[#0066FF]' 
+              : 'bg-white/5 hover:bg-[#00E5FF]/20 text-slate-300 hover:text-[#00E5FF]'
+          }`}
           title="Vista Rápida"
         >
           <Eye className="w-4 h-4" />
         </button>
       </div>
 
-      {/* Product Image Container (IVOO High Contrast Light Frame) */}
-      <div className="relative h-48 md:h-56 w-full flex items-center justify-center my-2 overflow-hidden rounded-2xl bg-[#F4F5F7] p-4 shadow-inner">
+      {/* Product Image Container */}
+      <div className="relative h-48 md:h-56 w-full flex items-center justify-center my-2 overflow-hidden rounded-2xl bg-[#F8FAFC] p-4 shadow-inner border border-slate-100">
         <img
           src={product.image}
           alt={product.name}
-          className="h-full object-contain transform group-hover:scale-110 transition-transform duration-500 filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.15)]"
+          className="h-full object-contain transform group-hover:scale-110 transition-transform duration-500 filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.1)]"
         />
       </div>
 
       {/* Rating & Reviews */}
       <div className="flex items-center gap-1.5 mt-3 mb-1">
-        <div className="flex text-[#00E5FF]">
-          {[...Array(5)].map((_, i) => (
-            <Star key={i} className="w-3.5 h-3.5 fill-[#00E5FF]" />
-          ))}
+        <div className="flex text-amber-500">
+          <Star className="w-3.5 h-3.5 fill-current" />
         </div>
-        <span className="text-xs font-bold text-white font-space">{product.rating}</span>
-        <span className="text-[11px] text-slate-400">({product.reviewsCount})</span>
+        <span className={`text-xs font-bold font-space ${isLightBg ? 'text-slate-900' : 'text-slate-200'}`}>
+          {product.rating || '5.0'}
+        </span>
+        <span className={`text-[11px] font-inter ${isLightBg ? 'text-slate-500' : 'text-slate-400'}`}>
+          ({product.reviewsCount || 128})
+        </span>
       </div>
 
-      {/* Product Name */}
-      <h3 className="text-base font-bold font-space text-white group-hover:text-[#00E5FF] transition-colors line-clamp-1">
+      {/* Title */}
+      <h3 className={`text-sm font-extrabold font-space line-clamp-2 min-h-[40px] group-hover:text-[#0066FF] transition-colors ${
+        isLightBg ? 'text-slate-900' : 'text-white'
+      }`}>
         {product.name}
       </h3>
 
-      {/* Description Snippet */}
-      <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
-        {product.description}
-      </p>
-
-      {/* Pricing & Add Button Footer */}
-      <div className="flex items-center justify-between mt-5 pt-3 border-t border-white/10">
+      {/* Price & Add to Cart Button */}
+      <div className="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between gap-2">
         <div>
-          <div className="text-lg font-extrabold font-space text-white tracking-tight">
-            ${product.price.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          <div className="text-[10px] text-slate-500 font-inter uppercase tracking-wider font-bold">Precio M Store</div>
+          <div className="flex items-baseline gap-1">
+            <span className={`text-lg font-black font-inter tracking-tight ${isLightBg ? 'text-slate-900' : 'text-white'}`}>
+              ${product.price ? (product.price.toFixed ? product.price.toFixed(2) : product.price) : '0.00'}
+            </span>
+            <span className="text-xs font-extrabold text-[#0066FF] font-inter">USD</span>
           </div>
-          {product.originalPrice && (
-            <div className="text-xs text-slate-400 line-through">
-              ${product.originalPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-            </div>
+          {product.oldPrice && (
+            <span className="text-xs text-slate-400 line-through font-inter">
+              ${product.oldPrice}
+            </span>
           )}
         </div>
 
-        {/* Action Button */}
         <button
           onClick={handleAdd}
-          className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 ${
+          className={`p-3 rounded-2xl font-bold transition-all transform active:scale-95 flex items-center justify-center ${
             added 
-              ? 'bg-emerald-500 text-black shadow-[0_0_15px_#10B981]' 
-              : 'bg-[#00E5FF]/15 border border-[#00E5FF]/40 text-[#00E5FF] hover:bg-[#00E5FF] hover:text-black hover:shadow-[0_0_20px_#00E5FF]'
+              ? 'bg-emerald-500 text-white shadow-[0_0_15px_#10B981]' 
+              : 'btn-cyan-glow text-black shadow-[0_0_15px_rgba(0,229,255,0.4)]'
           }`}
+          title="Agregar al Carrito"
         >
-          {added ? (
-            <>
-              <Check className="w-4 h-4" />
-              <span>Añadido</span>
-            </>
-          ) : (
-            <>
-              <Plus className="w-4 h-4" />
-              <span>Agregar</span>
-            </>
-          )}
+          {added ? <Check className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
         </button>
       </div>
 

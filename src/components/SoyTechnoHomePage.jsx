@@ -121,7 +121,7 @@ const ALLIED_BRANDS = ['SAMSUNG', 'APPLE', 'XIAOMI', 'HONOR', 'TECNO', 'VIVO', '
 export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
-  const [currency, setCurrency] = useState('USD');
+  const [currency] = useState('USD');
   const [cartCount, setCartCount] = useState(0);
   const [toastMsg, setToastMsg] = useState(null);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
@@ -139,12 +139,6 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
   const showToast = (msg) => {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(null), 3000);
-  };
-
-  const handleWhatsApp = (product) => {
-    const priceText = currency === 'USD' ? `$${product.price.toFixed(2)} USD` : `${(product.price * rateVES).toLocaleString('es-VE')} Bs`;
-    const msg = `Hola M Store! Deseo información sobre el producto de la portada de SoyTechno: *${product.name}* (${priceText}). ¿Tienen envío gratis?`;
-    window.open(`https://wa.me/584120000000?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
   return (

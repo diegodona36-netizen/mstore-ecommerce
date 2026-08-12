@@ -1,12 +1,12 @@
 import React from 'react';
 
-export const Logo = ({ className = '', size = 'medium', variant = 'light' }) => {
+export const Logo = ({ className = '', size = 'medium', variant = 'dark' }) => {
   const isSmall = size === 'small';
   const isLarge = size === 'large';
 
   const heightClass = isSmall ? 'h-9 md:h-10' : isLarge ? 'h-14 md:h-16' : 'h-11 md:h-13';
-  const logoSrc = variant === 'dark' ? '/logo-dark.jpg' : '/logo-white-bg.png';
-  const fallbackSrc = variant === 'dark' ? '/logo-white.png' : '/logo-light.jpg';
+  const logoSrc = variant === 'light' ? '/logo-white-bg.png' : '/logo-dark.jpg';
+  const fallbackSrc = variant === 'light' ? '/logo-light.jpg' : '/logo-white.png';
 
   return (
     <div className={`flex items-center select-none group cursor-pointer ${className}`}>

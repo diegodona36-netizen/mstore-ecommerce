@@ -158,38 +158,38 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
         </div>
       )}
 
-      {/* 1. BARRA SUPERIOR AMARILLA CASHEA (ÚNICO LUGAR DE CASHEA INFORMATIVO) */}
-      <div className="bg-[#FFE600] text-black font-black text-xs py-2 px-4 sm:px-8 flex items-center justify-between shadow-sm border-b border-amber-300">
+      {/* 1. BARRA SUPERIOR ELEGANTE CASHEA Y PROMO */}
+      <div className="bg-[#080A0E] text-slate-300 font-bold text-xs py-2 px-4 sm:px-8 flex items-center justify-between border-b border-slate-800">
         <button 
           onClick={onBackToMain}
-          className="flex items-center gap-1.5 bg-black/10 hover:bg-black/20 text-black px-3.5 py-1 rounded-full text-[11px] font-black transition-all shrink-0"
+          className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-full text-[11px] font-black transition-all shrink-0 border border-white/10"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Volver a M Store Principal</span>
         </button>
 
         <div className="flex items-center gap-2 text-[11px] sm:text-xs tracking-tight">
-          <span className="bg-black text-[#FFE600] px-2.5 py-0.5 rounded text-[10px] uppercase font-mono font-black">CASHEA</span>
-          <span>⚡ COMPRA HOY Y PAGA EN CUOTAS CON CASHEA SIN INTERÉS • ENVÍOS GRATIS A TODO EL PAÍS</span>
+          <span className="bg-[#FFE600] text-black px-2.5 py-0.5 rounded text-[10px] uppercase font-mono font-black shadow-sm">CASHEA</span>
+          <span className="text-white font-extrabold">⚡ Compra hoy en cuotas sin interés con Cashea • Envíos gratis a todo el país</span>
         </div>
 
-        <div className="hidden md:flex items-center gap-4 text-[11px] font-black text-slate-900">
+        <div className="hidden md:flex items-center gap-4 text-[11px] font-semibold text-slate-400">
           <span>📍 Caracas & Lechería</span>
           <span>•</span>
-          <a href="https://wa.me/584120000000" target="_blank" rel="noreferrer" className="hover:underline">💬 Atención 24/7</a>
+          <a href="https://wa.me/584120000000" target="_blank" rel="noreferrer" className="hover:text-emerald-400 transition-colors">💬 Atención 24/7</a>
         </div>
       </div>
 
-      {/* 2. HEADER PRINCIPAL CLEAN & BRIGHT (BLANCO PURO #FFFFFF - SIN RECUADRO EN LOGO) */}
-      <header className="bg-white text-slate-900 py-3.5 px-4 sm:px-8 shadow-sm border-b border-slate-200">
+      {/* 2. HEADER PRINCIPAL OSCURO (MATTE CARBON mstore-dark-header-bg - LOGO FLUIDO SEAMLESS) */}
+      <header className="mstore-dark-header-bg text-white py-4 px-4 sm:px-8 shadow-xl border-b border-cyan-500/20">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
-          {/* LOGO OFICIAL M STORE SOBRE FONDO BLANCO PURO */}
+          {/* LOGO OFICIAL M STORE OSCURO FLUIDO */}
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <Logo variant="light" size="medium" />
+            <Logo variant="dark" size="medium" />
           </div>
 
-          {/* BUSCADOR AMPLIO Y PROMINENTE */}
+          {/* BUSCADOR AMPLIO Y PROMINENTE EN HEADER OSCURO */}
           <div className="flex-1 max-w-xl relative hidden md:block">
             <div className="relative flex items-center">
               <input 
@@ -197,7 +197,7 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="¿Qué buscas hoy? (iPhone 16, Galaxy S25, Smart TV 4K, Laptops...)"
-                className="w-full bg-[#F8F9FA] text-slate-900 rounded-full pl-5 pr-14 py-2.5 text-xs placeholder-slate-400 outline-none border border-slate-300 focus:border-[#0055FF] transition-all shadow-inner"
+                className="w-full bg-[#121624] text-white rounded-full pl-5 pr-14 py-2.5 text-xs placeholder-slate-400 outline-none border border-slate-700/80 focus:border-[#00E5FF] transition-all shadow-inner"
               />
               <button className="absolute right-1 w-9 h-9 rounded-full bg-[#0055FF] hover:bg-blue-600 text-white flex items-center justify-center shadow-md transition-all">
                 <Search className="w-4 h-4" />
@@ -208,10 +208,10 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
           {/* ACCESOS DIRECTOS (MI CUENTA, CARRITO, WHATSAPP) */}
           <div className="flex items-center gap-5 text-xs font-semibold">
             <div className="hidden lg:flex items-center gap-2">
-              <Truck className="w-5 h-5 text-blue-600" />
+              <Truck className="w-5 h-5 text-[#00E5FF]" />
               <div className="text-left text-[11px] leading-tight">
-                <span className="block font-bold text-slate-900">Envíos GRATIS</span>
-                <span className="text-slate-500 text-[10px]">a Nivel Nacional</span>
+                <span className="block font-bold text-white">Envíos GRATIS</span>
+                <span className="text-slate-400 text-[10px]">a Nivel Nacional</span>
               </div>
             </div>
 
@@ -221,19 +221,19 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
               rel="noreferrer"
               className="flex items-center gap-2 hover:opacity-90 transition-opacity"
             >
-              <Phone className="w-5 h-5 text-emerald-600" />
+              <Phone className="w-5 h-5 text-emerald-400" />
               <div className="text-left text-[11px] leading-tight hidden sm:block">
-                <span className="block font-bold text-slate-800">Contáctanos por</span>
-                <span className="text-emerald-600 font-extrabold">WHATSAPP</span>
+                <span className="block font-bold text-slate-300">Contáctanos por</span>
+                <span className="text-emerald-400 font-extrabold">WHATSAPP</span>
               </div>
             </a>
 
             <div className="flex items-center gap-3">
-              <button className="p-2 text-slate-700 hover:text-blue-600 transition-colors">
+              <button className="p-2 text-slate-300 hover:text-white transition-colors">
                 <User className="w-5 h-5" />
               </button>
               <div className="relative cursor-pointer" onClick={() => { setCartCount(c => c + 1); showToast('Carrito actualizado'); }}>
-                <ShoppingBag className="w-6 h-6 text-slate-900" />
+                <ShoppingBag className="w-6 h-6 text-white" />
                 {cartCount > 0 && (
                   <span className="absolute -top-1.5 -right-2 bg-[#0055FF] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow">
                     {cartCount}
@@ -246,21 +246,21 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
         </div>
       </header>
 
-      {/* 3. SUB-NAVBAR CATEGORÍAS EN FONDO GRIS CLARO (#F8F9FA) */}
-      <nav className="bg-[#F8F9FA] text-slate-800 border-b border-slate-200 px-4 sm:px-8 py-2 shadow-sm hidden md:block">
+      {/* 3. SUB-NAVBAR CATEGORÍAS OSCURO (#0F131F) */}
+      <nav className="bg-[#0F131F] text-white border-b border-slate-800 px-4 sm:px-8 py-2 shadow-sm hidden md:block">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-6 text-xs font-bold">
-          <button onClick={() => setIsCategoriesDrawerOpen(true)} className="bg-[#0055FF] hover:bg-blue-700 text-white px-5 py-2 rounded-full font-extrabold flex items-center gap-2 transition-all shadow-sm">
+          <button onClick={() => setIsCategoriesDrawerOpen(true)} className="bg-[#0055FF] hover:bg-blue-600 text-white px-5 py-2 rounded-full font-extrabold flex items-center gap-2 transition-all shadow-md">
             <span>≡ Categorías</span>
           </button>
 
-          <div className="flex items-center gap-6 text-slate-700">
-            <span className="text-blue-600 font-black cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Inicio</span>
-            <span className="hover:text-blue-600 cursor-pointer transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Teléfonos Celulares</span>
-            <span className="hover:text-red-600 cursor-pointer text-red-600 font-black transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Ofertas M Store</span>
-            <span className="hover:text-blue-600 cursor-pointer transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Televisores 4K</span>
-            <span className="hover:text-blue-600 cursor-pointer transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Laptops & PC</span>
-            <span className="hover:text-blue-600 cursor-pointer transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Zona Gamer</span>
-            <span className="text-blue-600 font-black cursor-pointer hover:underline" onClick={() => setIsCategoriesDrawerOpen(true)}>Club M Store</span>
+          <div className="flex items-center gap-6 text-slate-200">
+            <span className="text-[#00E5FF] font-black cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Inicio</span>
+            <span className="hover:text-cyan-300 cursor-pointer transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Teléfonos Celulares</span>
+            <span className="hover:text-red-400 cursor-pointer text-red-400 font-extrabold transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Ofertas M Store</span>
+            <span className="hover:text-cyan-300 cursor-pointer transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Televisores 4K</span>
+            <span className="hover:text-cyan-300 cursor-pointer transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Laptops & PC</span>
+            <span className="hover:text-cyan-300 cursor-pointer transition-colors" onClick={() => setIsCategoriesDrawerOpen(true)}>Zona Gamer</span>
+            <span className="text-cyan-300 font-extrabold cursor-pointer hover:underline" onClick={() => setIsCategoriesDrawerOpen(true)}>Club M Store</span>
           </div>
         </div>
       </nav>

@@ -318,24 +318,6 @@ export const LandingPageTest = ({
             </span>
           </div>
           <div className="flex items-center gap-3 text-[#00E5FF] font-semibold">
-            <a 
-              href="#clean" 
-              className="bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 hover:bg-cyan-500 hover:text-black px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-all flex items-center gap-1"
-            >
-              <span>✨ Clean & Bright</span>
-            </a>
-            <a 
-              href="#soytechno-home" 
-              className="bg-yellow-500/20 border border-yellow-400/40 text-yellow-300 hover:bg-yellow-500 hover:text-black px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-all flex items-center gap-1"
-            >
-              <span>🏠 SoyTechno Home</span>
-            </a>
-            <a 
-              href="#soytechno" 
-              className="bg-blue-600/20 border border-blue-500/40 text-blue-400 hover:bg-blue-600 hover:text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-all flex items-center gap-1"
-            >
-              <span>📱 SoyTechno Celulares</span>
-            </a>
             <span>💬 Atención Personalizada por WhatsApp</span>
           </div>
         </div>

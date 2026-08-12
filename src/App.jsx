@@ -11,6 +11,7 @@ import { CategoryMegaMenu } from './components/CategoryMegaMenu';
 import { QuickViewModal } from './components/QuickViewModal';
 import { WhatsappButton } from './components/WhatsappButton';
 import { CategoryShowcaseSection } from './components/CategoryShowcaseSection';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { INITIAL_PRODUCTS } from './data/products';
 import { ArrowLeft, ChevronRight, Home } from 'lucide-react';
 
@@ -81,10 +82,10 @@ export function App() {
   const cartTotalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 selection:bg-[#00E5FF] selection:text-black font-inter flex flex-col justify-between">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 selection:bg-[#00E5FF] selection:text-black font-inter flex flex-col justify-between pb-16 md:pb-0">
       
       <div>
-        {/* 1. TOP HEADER & NAVIGATION (STRICT DARK CYBER) */}
+        {/* 1. TOP HEADER & NAVIGATION (STRICT DARK CYBER + APP STORE DESKTOP NAV) */}
         <Navbar 
           onOpenCart={() => setIsCartOpen(true)}
           onOpenMegaMenu={() => setIsMegaMenuOpen(true)}
@@ -97,6 +98,7 @@ export function App() {
           products={products}
           onQuickView={(p) => setQuickViewProduct(p)}
           onNavigateHome={navigateToHome}
+          onNavigateCatalog={navigateToCatalog}
         />
 
         <CategoryMegaMenu 
@@ -121,7 +123,7 @@ export function App() {
               onQuickViewHero={(p) => setQuickViewProduct(p)}
             />
 
-            {/* 3. SECCIONES CENTRALES HOMEPAGE (FONDO GRIS CLARO bg-slate-50 / bg-[#F8FAFC]) */}
+            {/* 3. SECCIONES CENTRALES HOMEPAGE */}
             <main className="space-y-14 py-10 bg-[#F8FAFC]">
               
               {/* 3.1 Bento Grid Categorías Innovadoras */}
@@ -132,7 +134,7 @@ export function App() {
                 />
               </div>
 
-              {/* 3.2 SECCIONES DE EXHIBICIÓN DE PRODUCTOS (FONDO CLARO CON BOTONES CIAN) */}
+              {/* 3.2 SECCIONES DE EXHIBICIÓN DE PRODUCTOS */}
               <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-14">
                 
                 {/* Categoría 1: Smartphones Insignia */}
@@ -259,6 +261,21 @@ export function App() {
       />
 
       <WhatsappButton />
+
+      {/* 5. NAVEGACIÓN BOTTOM MÓVIL (SOLO MÓVIL block md:hidden) */}
+      <MobileBottomNav 
+        cartCount={cartTotalCount}
+        onOpenMegaMenu={() => setIsMegaMenuOpen(true)}
+        onOpenCart={() => setIsCartOpen(true)}
+        onScrollToHome={navigateToHome}
+        onScrollToLocation={() => {
+          navigateToHome();
+          setTimeout(() => {
+            const locEl = document.getElementById('ubicacion');
+            if (locEl) locEl.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
+        }}
+      />
     </div>
   );
 }

@@ -1,12 +1,49 @@
 import React, { useState } from 'react';
 import { 
   X, Star, ShoppingBag, ShieldCheck, Check, Minus, Plus, 
-  ChevronRight, MessageCircle, Eye, Share2
+  ChevronRight, MessageCircle, Eye, Share2, Cpu, HardDrive
 } from 'lucide-react';
 import { Logo } from './Logo';
 
+// Dictionary of human-readable color names for e-commerce
+const COLOR_NAME_MAP = {
+  '#3A3B3C': 'Titanio Negro',
+  '#E3E4E5': 'Titanio Blanco',
+  '#2B3844': 'Titanio Azul',
+  '#C5A059': 'Titanio Natural',
+  '#1D1E22': 'Negro Medianoche',
+  '#F1F0EA': 'Blanco Crema',
+  '#4A5061': 'Gris Violeta',
+  '#94806A': 'Amarillo Ámbar',
+  '#0A0A0A': 'Negro Azabache',
+  '#00E5FF': 'Cian Cyber',
+  '#E5E5E5': 'Plata Estelar',
+  '#121212': 'Negro Profundo',
+  '#C0C0C0': 'Plata Titanio',
+  '#F5F5DC': 'Blanco Marfil',
+  '#475569': 'Gris Grafito',
+  '#0F172A': 'Azabache Deep'
+};
+
+const formatColorLabel = (colVal) => {
+  if (!colVal) return 'Titanio Negro';
+  if (typeof colVal === 'object') {
+    if (colVal.name && !colVal.name.startsWith('#')) return colVal.name;
+    if (colVal.hex && COLOR_NAME_MAP[colVal.hex.toUpperCase()]) return COLOR_NAME_MAP[colVal.hex.toUpperCase()];
+    return 'Negro Elegante';
+  }
+  if (typeof colVal === 'string') {
+    const upper = colVal.toUpperCase();
+    if (COLOR_NAME_MAP[upper]) return COLOR_NAME_MAP[upper];
+    if (!colVal.startsWith('#')) return colVal;
+  }
+  return 'Titanio Negro';
+};
+
 export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
-  const [selectedColor, setSelectedColor] = useState(product?.colors?.[0] || 'Blanco Marfil');
+  const [selectedColor, setSelectedColor] = useState(product?.colors?.[0] || '#3A3B3C');
+  const [selectedRam, setSelectedRam] = useState(product?.specs?.ram || '12GB');
+  const [selectedStorage, setSelectedStorage] = useState(product?.specs?.storage || '256GB');
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [activeThumbIdx, setActiveThumbIdx] = useState(0);
@@ -23,13 +60,23 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
   ];
 
   const colorsList = product.colors || [
-    { name: 'Blanco Marfil', hex: '#F5F5DC' },
-    { name: 'Gris Grafito', hex: '#475569' },
-    { name: 'Negro Azabache', hex: '#0F172A' }
+    '#3A3B3C',
+    '#E3E4E5',
+    '#2B3844',
+    '#C5A059'
   ];
 
+  const ramOptions = ['8GB', '12GB', '16GB'];
+  const storageOptions = ['128GB', '256GB', '512GB', '1TB'];
+
   const handleAdd = () => {
-    onAddToCart({ ...product, selectedColor, quantity });
+    onAddToCart({ 
+      ...product, 
+      selectedColor: formatColorLabel(selectedColor), 
+      selectedRam,
+      selectedStorage,
+      quantity 
+    });
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   };
@@ -38,7 +85,9 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
     const subtotal = product.price * quantity;
     let message = `*PEDIDO DIRECTO M STORE*\n\n`;
     message += `*Producto:* ${product.name}\n`;
-    message += `*Color:* ${typeof selectedColor === 'object' ? selectedColor.name : selectedColor}\n`;
+    message += `*Color:* ${formatColorLabel(selectedColor)}\n`;
+    message += `*Memoria RAM:* ${selectedRam}\n`;
+    message += `*Almacenamiento:* ${selectedStorage}\n`;
     message += `*Cantidad:* ${quantity}\n`;
     message += `*Precio Unitario:* $${product.price.toFixed(2)}\n`;
     message += `*TOTAL:* $${subtotal.toFixed(2)} USD (${(subtotal * rateVES).toLocaleString('es-VE')} Bs)\n\n`;
@@ -109,7 +158,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
             {/* COLUMNA IZQUIERDA: GALERÍA DE IMÁGENES */}
             <div className="lg:col-span-6 flex flex-col-reverse sm:flex-row gap-4 items-center sm:items-start">
               
-              {/* Tira de Miniaturas con Fondo Oscuro Principal (Left Sidebar bg-[#0A0908]) */}
+              {/* Tira de Miniaturas Conectada al Header (Fondo Oscuro bg-[#0A0908]) */}
               <div className="bg-[#0A0908] p-3 rounded-2xl border border-white/10 flex sm:flex-col gap-2.5 shrink-0 overflow-x-auto max-w-full pb-1 sm:pb-0 shadow-inner">
                 {thumbnails.map((imgUrl, idx) => (
                   <button
@@ -128,9 +177,12 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
 
               {/* Cuadro Principal de Imagen (Fondo Claro bg-slate-50) */}
               <div className="relative flex-1 w-full h-72 sm:h-96 rounded-2xl bg-slate-50 p-6 flex items-center justify-center border border-slate-200 overflow-hidden shadow-inner">
-                <span className="absolute top-3 right-3 bg-emerald-500 text-white font-black text-[10px] px-2.5 py-1 rounded-md uppercase tracking-wider shadow-sm">
+                
+                {/* ETIQUETA 'NUEVO' PÍLDORA FLOTANTE CORREGIDA */}
+                <span className="absolute top-3 right-3 z-10 px-3 py-1 rounded-full bg-emerald-500 text-white font-extrabold text-[10px] uppercase tracking-wider shadow-md">
                   NUEVO
                 </span>
+
                 <img
                   src={thumbnails[activeThumbIdx]}
                   alt={product.name}
@@ -140,7 +192,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
 
             </div>
 
-            {/* COLUMNA DERECHA: INFORMACIÓN Y ACCIONES DE COMPRA (Fondo Claro bg-white) */}
+            {/* COLUMNA DERECHA: INFORMACIÓN, HARDWARE Y ACCIONES DE COMPRA (Fondo Claro bg-white) */}
             <div className="lg:col-span-6 flex flex-col text-left space-y-4">
               
               {/* TÍTULO DEL PRODUCTO */}
@@ -148,11 +200,12 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                 {product.name}
               </h2>
 
-              {/* PRECIOS Y FINANCIAMIENTO CASHEA */}
+              {/* PRECIOS Y FINANCIAMIENTO CASHEA (PRECIO EN TEXT-SLATE-900 NEGRO GRANDE) */}
               <div className="space-y-2 pt-1">
                 <div className="flex items-baseline gap-3 flex-wrap">
-                  <span className="text-2xl sm:text-3xl font-black text-[#0055FF] tracking-tight">
-                    ${product.price.toFixed(2)} USD
+                  <span className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                    ${product.price.toFixed(2)}{' '}
+                    <span className="text-base text-[#0066FF] font-extrabold">USD</span>
                   </span>
                   {displayOldPrice && (
                     <span className="text-sm font-bold text-red-500 line-through font-mono">
@@ -174,22 +227,22 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                 </div>
               </div>
 
-              {/* SELECTOR DE COLOR */}
+              {/* SELECTOR DE COLOR CON NOMBRES COMERCIALES LEGIBLES */}
               <div className="space-y-2 pt-2">
                 <label className="text-xs font-extrabold text-slate-700 block uppercase tracking-wider">
-                  Color Seleccionado: <span className="text-blue-600">{typeof selectedColor === 'object' ? selectedColor.name : selectedColor}</span>
+                  Color Seleccionado: <span className="text-[#0066FF] font-black">{formatColorLabel(selectedColor)}</span>
                 </label>
                 <div className="flex items-center gap-3">
                   {colorsList.map((col, idx) => {
-                    const hex = typeof col === 'object' ? col.hex : (idx === 0 ? '#F5F5DC' : idx === 1 ? '#475569' : '#0F172A');
-                    const name = typeof col === 'object' ? col.name : col;
-                    const isSel = (typeof selectedColor === 'object' ? selectedColor.name : selectedColor) === name;
+                    const hex = typeof col === 'object' ? (col.hex || '#3A3B3C') : col;
+                    const name = formatColorLabel(col);
+                    const isSel = formatColorLabel(selectedColor) === name;
                     return (
                       <button
                         key={idx}
                         onClick={() => setSelectedColor(col)}
                         className={`w-7 h-7 rounded-full border-2 transition-all shadow-sm ${
-                          isSel ? 'border-blue-600 scale-125 ring-2 ring-blue-400/40' : 'border-slate-300 hover:scale-110'
+                          isSel ? 'border-[#0066FF] scale-125 ring-2 ring-[#00E5FF]' : 'border-slate-300 hover:scale-110'
                         }`}
                         style={{ backgroundColor: hex }}
                         title={name}
@@ -199,9 +252,57 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                 </div>
               </div>
 
+              {/* SELECTOR DE MEMORIA RAM (NUEVO PÍLDORAS HARDWARE) */}
+              <div className="space-y-1.5 pt-1">
+                <label className="text-xs font-extrabold text-slate-700 flex items-center gap-1.5 uppercase tracking-wider">
+                  <Cpu className="w-3.5 h-3.5 text-[#0066FF]" />
+                  <span>Memoria RAM:</span>
+                  <span className="text-[#0066FF] font-black">{selectedRam}</span>
+                </label>
+                <div className="flex items-center gap-2">
+                  {ramOptions.map((ram) => (
+                    <button
+                      key={ram}
+                      onClick={() => setSelectedRam(ram)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all border ${
+                        selectedRam === ram
+                          ? 'bg-[#00E5FF] text-black border-[#00E5FF] shadow-[0_0_10px_#00E5FF]'
+                          : 'bg-slate-100 text-slate-700 border-slate-200 hover:border-slate-400'
+                      }`}
+                    >
+                      {ram}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* SELECTOR DE ALMACENAMIENTO (NUEVO PÍLDORAS HARDWARE) */}
+              <div className="space-y-1.5 pt-1">
+                <label className="text-xs font-extrabold text-slate-700 flex items-center gap-1.5 uppercase tracking-wider">
+                  <HardDrive className="w-3.5 h-3.5 text-[#0066FF]" />
+                  <span>Capacidad de Almacenamiento:</span>
+                  <span className="text-[#0066FF] font-black">{selectedStorage}</span>
+                </label>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {storageOptions.map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedStorage(size)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all border ${
+                        selectedStorage === size
+                          ? 'bg-[#00E5FF] text-black border-[#00E5FF] shadow-[0_0_10px_#00E5FF]'
+                          : 'bg-slate-100 text-slate-700 border-slate-200 hover:border-slate-400'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* SELECTOR DE CANTIDAD */}
-              <div className="flex items-center gap-3 pt-2">
-                <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">Cantidad:</span>
+              <div className="flex items-center gap-3 pt-1">
+                <span className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">Cantidad:</span>
                 <div className="flex items-center bg-slate-100 border border-slate-200 rounded-xl px-2 py-1 font-extrabold text-sm">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -226,7 +327,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                   className={`py-3.5 px-4 rounded-2xl text-xs font-black flex items-center justify-center gap-2 transition-all duration-300 shadow-md active:scale-95 ${
                     added
                       ? 'bg-blue-800 text-white'
-                      : 'bg-[#00E5FF] hover:bg-cyan-300 text-black shadow-[0_0_15px_rgba(0,229,255,0.4)]'
+                      : 'bg-[#00E5FF] hover:bg-cyan-300 text-black shadow-[0_0_15px_rgba(0,229,255,0.4)] font-space'
                   }`}
                 >
                   {added ? (
@@ -236,7 +337,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                     </>
                   ) : (
                     <>
-                      <ShoppingBag className="w-4 h-4" />
+                      <ShoppingBag className="w-4 h-4 text-black" />
                       <span>Añadir Al Carrito</span>
                     </>
                   )}
@@ -244,7 +345,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
 
                 <button
                   onClick={handleWhatsAppCheckout}
-                  className="py-3.5 px-4 rounded-2xl text-xs font-black flex items-center justify-center gap-2 bg-[#25D366] hover:bg-emerald-600 text-white shadow-md transition-all active:scale-95"
+                  className="py-3.5 px-4 rounded-2xl text-xs font-black flex items-center justify-center gap-2 bg-[#25D366] hover:bg-emerald-600 text-white shadow-md transition-all active:scale-95 font-space"
                 >
                   <MessageCircle className="w-4 h-4 fill-white" />
                   <span>Comprar Ahora</span>

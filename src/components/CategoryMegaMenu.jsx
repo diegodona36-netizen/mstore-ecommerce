@@ -39,6 +39,8 @@ export const CategoryMegaMenu = ({ isOpen, onClose, onSelectCategory, customCate
   ];
 
   const menuNavLinks = [
+    { name: 'Tienda Electrónica', href: '#catalogo' },
+    { name: 'Ofertas Cyber', href: '#catalogo' },
     { name: 'Ubicaciones & Tienda Física', href: '#ubicacion' },
     { name: 'Métodos de Pago & Cuotas', href: '#beneficios' },
     { name: 'Atención VIP por WhatsApp', href: 'https://wa.me/584120000000' }

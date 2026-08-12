@@ -293,9 +293,14 @@ export function SoyTechnoExperiment({ onBackToMain }) {
       {/* 3. BARRA BLANCA DE CATEGORÍAS & MENÚS INTERACTIVOS */}
       <nav className="bg-white border-b border-slate-200 px-4 sm:px-8 py-2.5 shadow-sm hidden md:block">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-6 text-xs font-bold text-slate-700">
-          <div className="flex items-center gap-6 text-slate-500 text-[11px] font-extrabold uppercase tracking-wider">
-            <span>📞 Atención 24/7 en Venezuela</span>
-          </div>
+          
+          <button 
+            onClick={() => setActiveModal('categories')}
+            className="bg-[#0055FF] text-white px-5 py-2 rounded-full font-extrabold flex items-center gap-2 hover:bg-blue-700 transition-colors shadow-sm active:scale-95"
+          >
+            <span>≡ Categorías</span>
+          </button>
+
           <div className="flex items-center gap-6">
             <span 
               className={`hover:text-blue-600 cursor-pointer ${activeTab === 'catalogo' && selectedBrand === 'todos' ? 'text-blue-600 font-black' : ''}`} 

@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { 
   X, Tv, Smartphone, Headphones, Zap, LayoutGrid,
   Wind, Refrigerator, WashingMachine, Laptop, UtensilsCrossed, Watch,
-  ChevronRight, ChevronDown, Sparkles, Home, MapPin, MessageSquare, Gamepad2, Monitor, Printer, Tablet, Wifi, Calculator
+  ChevronRight, ChevronDown, Sparkles, Home, MapPin, MessageSquare, Gamepad2, Monitor, Printer, Tablet, Wifi, PhoneCall
 } from 'lucide-react';
 
 export const CategoryMegaMenu = ({ isOpen, onClose, onSelectCategory, customCategories = [] }) => {
-  const [activeTab, setActiveTab] = useState('categorias');
+  const [activeTab, setActiveTab] = useState('categorias'); // 'categorias' | 'menu'
   const [expandedCatId, setExpandedCatId] = useState(null);
 
   // ESC key listener
@@ -22,163 +22,40 @@ export const CategoryMegaMenu = ({ isOpen, onClose, onSelectCategory, customCate
 
   if (!isOpen) return null;
 
-  // Complete SoyTechno Category Taxonomy
+  // Exact SoyTechno Clean Categories Taxonomy (Icon Left, Text Center, Chevron Right)
   const soyTechnoCategories = [
-    {
-      id: 'telefonos',
-      name: 'Teléfonos Celulares',
-      Icon: Smartphone,
-      filterId: 'smartphones',
-      badge: 'Pro 2026',
-      subs: [
-        { name: 'Zona Apple (iPhone 16 Pro Max / 15 / 14)', filterId: 'apple' },
-        { name: 'Zona Samsung Galaxy (S24 Ultra & AI)', filterId: 'samsung' },
-        { name: 'Zona Xiaomi & POCO (14 Ultra & Leica)', filterId: 'xiaomi' },
-        { name: 'Honor, Tecno & Infinix', filterId: 'smartphones' },
-        { name: 'Ver Todos los Celulares', filterId: 'smartphones' }
-      ]
-    },
-    {
-      id: 'televisores',
-      name: 'Televisores & Smart TVs',
-      Icon: Tv,
-      filterId: 'linea-blanca',
-      badge: 'OLED 4K',
-      subs: [
-        { name: 'Zona Síragon Smart TVs 4K', filterId: 'siragon' },
-        { name: 'Samsung Neo QLED & OLED 4K', filterId: 'samsung' },
-        { name: 'Pantallas Gigantes 75"+', filterId: 'linea-blanca' },
-        { name: 'Ver Todos los Televisores', filterId: 'linea-blanca' }
-      ]
-    },
-    {
-      id: 'laptops',
-      name: 'Laptops & MacBooks',
-      Icon: Laptop,
-      filterId: 'accesorios',
-      badge: 'M3 Max',
-      subs: [
-        { name: 'MacBook Air & MacBook Pro', filterId: 'apple' },
-        { name: 'Laptops Gamer & Alto Rendimiento', filterId: 'accesorios' },
-        { name: 'Equipos All-In-One & Escritorio', filterId: 'accesorios' }
-      ]
-    },
-    {
-      id: 'gamer',
-      name: 'Zona Gamer & Consolas',
-      Icon: Gamepad2,
-      filterId: 'accesorios',
-      badge: 'PS5 Pro',
-      subs: [
-        { name: 'PlayStation 5 & Mandos DualSense', filterId: 'accesorios' },
-        { name: 'Nintendo Switch OLED & Juegos', filterId: 'accesorios' },
-        { name: 'Accesorios Gamer & Headsets', filterId: 'audio' }
-      ]
-    },
-    {
-      id: 'computacion',
-      name: 'Equipos de Computación',
-      Icon: Monitor,
-      filterId: 'accesorios',
-      subs: [
-        { name: 'Monitores 4K 144Hz & Curvos', filterId: 'accesorios' },
-        { name: 'Teclados Mecánicos & Mouses RGB', filterId: 'accesorios' }
-      ]
-    },
-    {
-      id: 'accesorios-pc',
-      name: 'Accesorios de Computación',
-      Icon: Zap,
-      filterId: 'accesorios',
-      subs: [
-        { name: 'Cables HDMI 2.1 & Adaptares Type-C', filterId: 'accesorios' },
-        { name: 'Cargadores Rápidos GaN & MagSafe', filterId: 'accesorios' }
-      ]
-    },
-    {
-      id: 'impresoras',
-      name: 'Impresoras & Tintas',
-      Icon: Printer,
-      filterId: 'accesorios',
-      subs: [
-        { name: 'Impresoras Multifuncionales EcoTank', filterId: 'accesorios' },
-        { name: 'Tintas Continuas & Consumibles', filterId: 'accesorios' }
-      ]
-    },
-    {
-      id: 'tablets',
-      name: 'Tablets & iPads',
-      Icon: Tablet,
-      filterId: 'smartphones',
-      badge: 'M4',
-      subs: [
-        { name: 'iPad Pro M4 & iPad Air', filterId: 'apple' },
-        { name: 'Samsung Galaxy Tab S9', filterId: 'samsung' },
-        { name: 'Xiaomi Pad 6', filterId: 'xiaomi' }
-      ]
-    },
-    {
-      id: 'relojes',
-      name: 'Relojes Inteligentes',
-      Icon: Watch,
-      filterId: 'wearables',
-      badge: 'Biométrico',
-      subs: [
-        { name: 'Apple Watch Ultra 2 & Series 10', filterId: 'apple' },
-        { name: 'Galaxy Watch 7 Titanio', filterId: 'samsung' }
-      ]
-    },
-    {
-      id: 'audio',
-      name: 'Audífonos & Sonido Hi-Fi',
-      Icon: Headphones,
-      filterId: 'audio',
-      badge: 'Dolby',
-      subs: [
-        { name: 'AirPods Max & AirPods Pro 2', filterId: 'apple' },
-        { name: 'Barras de Sonido & Dolby Atmos', filterId: 'audio' },
-        { name: 'Parlantes Bluetooth Potentes', filterId: 'audio' }
-      ]
-    },
-    {
-      id: 'linea-blanca',
-      name: 'Hogar & Línea Blanca',
-      Icon: Refrigerator,
-      filterId: 'linea-blanca',
-      badge: 'Inverter',
-      subs: [
-        { name: 'Neveras Multi-Door Inverter', filterId: 'linea-blanca' },
-        { name: 'Lavadoras Carga Frontal', filterId: 'linea-blanca' },
-        { name: 'Aires Acondicionados Split', filterId: 'linea-blanca' },
-        { name: 'Freidoras de Aire Smart AirFryer', filterId: 'linea-blanca' }
-      ]
-    },
-    {
-      id: 'redes',
-      name: 'Redes & Conectividad',
-      Icon: Wifi,
-      filterId: 'accesorios',
-      subs: [
-        { name: 'Routers Wi-Fi 6 & MESH', filterId: 'accesorios' },
-        { name: 'Repetidores de Señal & Antenas', filterId: 'accesorios' }
-      ]
-    }
+    { id: 'smartphones', name: 'Teléfonos Celulares', Icon: Smartphone, filterId: 'smartphones' },
+    { id: 'linea-blanca', name: 'Televisores', Icon: Tv, filterId: 'linea-blanca' },
+    { id: 'laptops', name: 'Laptops', Icon: Laptop, filterId: 'accesorios' },
+    { id: 'gamer', name: 'Zona Gamer', Icon: Gamepad2, filterId: 'accesorios' },
+    { id: 'computacion', name: 'Equipos de Computación', Icon: Monitor, filterId: 'accesorios' },
+    { id: 'accesorios-pc', name: 'Accesorios de Computación', Icon: Zap, filterId: 'accesorios' },
+    { id: 'impresoras', name: 'Impresoras', Icon: Printer, filterId: 'accesorios' },
+    { id: 'tablets', name: 'Tablets', Icon: Tablet, filterId: 'smartphones' },
+    { id: 'wearables', name: 'Relojes Inteligentes', Icon: Watch, filterId: 'wearables' },
+    { id: 'audio', name: 'Audífonos y Sonido', Icon: Headphones, filterId: 'audio' },
+    { id: 'streaming', name: 'Dispositivos Streaming', Icon: Tv, filterId: 'linea-blanca' },
+    { id: 'redes', name: 'Redes y Conectividad', Icon: Wifi, filterId: 'accesorios' }
   ];
 
-  const handleCategorySelect = (filterId, catName) => {
+  const menuNavLinks = [
+    { name: 'Tienda Electrónica', href: '#catalogo' },
+    { name: 'Ofertas Cyber', href: '#catalogo' },
+    { name: 'Ubicaciones & Tienda Física', href: '#ubicacion' },
+    { name: 'Métodos de Pago & Cuotas', href: '#beneficios' },
+    { name: 'Atención VIP por WhatsApp', href: 'https://wa.me/584120000000' }
+  ];
+
+  const handleCategoryClick = (filterId, catName) => {
     onSelectCategory(filterId, catName);
     onClose();
-  };
-
-  const toggleExpand = (id) => {
-    setExpandedCatId(prev => (prev === id ? null : id));
   };
 
   return (
     <div 
       role="dialog"
       aria-modal="true"
-      aria-label="Menú de Categorías M Store Estilo SoyTechno"
+      aria-label="Menú Móvil Off-canvas Drawer M Store"
       className="fixed inset-0 z-[60] flex"
     >
       {/* Backdrop */}
@@ -187,108 +64,101 @@ export const CategoryMegaMenu = ({ isOpen, onClose, onSelectCategory, customCate
         className="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity animate-fadeIn"
       />
 
-      {/* Drawer Lateral Desplazable Estilo SoyTechno */}
+      {/* Panel Lateral Desplazable Off-canvas Drawer */}
       <div className="relative z-10 w-full max-w-sm sm:max-w-md bg-[#0A0908] border-r border-[#00E5FF]/40 shadow-[0_0_50px_rgba(0,229,255,0.3)] flex flex-col h-full overflow-hidden animate-slideInLeft font-space">
         
-        {/* Top Header Button "Todas las Categorías" */}
-        <div className="p-4 bg-black/80 border-b border-white/10 shrink-0 space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#00E5FF] shadow-[0_0_10px_#00E5FF] animate-pulse" />
-              <span className="text-xs font-black uppercase tracking-wider text-white">M Store Menú</span>
-            </div>
-            <button 
-              onClick={onClose}
-              aria-label="Cerrar Menú"
-              className="p-2 rounded-full bg-white/10 hover:bg-[#00E5FF] text-slate-300 hover:text-black transition-all min-w-[36px] min-h-[36px] flex items-center justify-center"
-            >
-              <X className="w-4 h-4" />
-            </button>
+        {/* Header con botón cerrar */}
+        <div className="p-4 bg-black/90 border-b border-white/10 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#00E5FF] shadow-[0_0_10px_#00E5FF] animate-pulse" />
+            <span className="text-xs font-black uppercase tracking-wider text-white">M Store Navegación</span>
           </div>
-
-          <div className="w-full bg-[#0066FF] hover:bg-[#0052CC] text-white p-3.5 rounded-2xl flex items-center justify-between shadow-[0_0_20px_rgba(0,102,255,0.4)] cursor-pointer transition-all group">
-            <div className="flex items-center gap-3">
-              <LayoutGrid className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
-              <span className="text-sm font-extrabold tracking-tight">Todas las Categorías</span>
-            </div>
-            <span className="text-[10px] bg-white/20 text-white px-2 py-0.5 rounded-full font-mono font-bold">12 Secciones</span>
-          </div>
+          <button 
+            onClick={onClose}
+            aria-label="Cerrar Menú"
+            className="p-2 rounded-full bg-white/10 hover:bg-[#00E5FF] text-slate-300 hover:text-black transition-all min-w-[36px] min-h-[36px] flex items-center justify-center"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
-        {/* Categories Scrollable Drawer Body */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-800">
-          {soyTechnoCategories.map((cat) => {
-            const isExpanded = expandedCatId === cat.id;
-            const { Icon } = cat;
+        {/* Sistema de Pestañas Superiores ('Categorías' y 'Menú') con subrayado azul indicador */}
+        <div className="grid grid-cols-2 border-b border-white/10 bg-black/40 shrink-0">
+          <button
+            onClick={() => setActiveTab('categorias')}
+            className={`py-3.5 text-xs font-extrabold uppercase tracking-wider transition-all relative ${
+              activeTab === 'categorias' 
+                ? 'text-[#00E5FF] bg-[#00E5FF]/10 font-black' 
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <span>Categorías</span>
+            {activeTab === 'categorias' && (
+              <span className="absolute bottom-0 left-0 right-0 h-1 bg-[#00E5FF] shadow-[0_0_12px_#00E5FF]" />
+            )}
+          </button>
 
-            return (
-              <div key={cat.id} className="rounded-2xl border border-white/5 bg-white/[0.02] overflow-hidden transition-all duration-300 hover:border-[#00E5FF]/40">
-                <div 
-                  onClick={() => handleCategorySelect(cat.filterId, cat.name)}
-                  className="p-3.5 flex items-center justify-between cursor-pointer hover:bg-white/[0.06] transition-colors group"
+          <button
+            onClick={() => setActiveTab('menu')}
+            className={`py-3.5 text-xs font-extrabold uppercase tracking-wider transition-all relative ${
+              activeTab === 'menu' 
+                ? 'text-[#00E5FF] bg-[#00E5FF]/10 font-black' 
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <span>Menú</span>
+            {activeTab === 'menu' && (
+              <span className="absolute bottom-0 left-0 right-0 h-1 bg-[#00E5FF] shadow-[0_0_12px_#00E5FF]" />
+            )}
+          </button>
+        </div>
+
+        {/* Body Contenido por Pestaña */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-1 scrollbar-thin scrollbar-thumb-slate-800">
+          {activeTab === 'categorias' ? (
+            /* Lista de filas limpias: Ícono minimalista izquierda, texto centro, chevron (>) derecha */
+            soyTechnoCategories.map((cat) => {
+              const { Icon } = cat;
+              return (
+                <div
+                  key={cat.id}
+                  onClick={() => handleCategoryClick(cat.filterId, cat.name)}
+                  className="w-full flex items-center justify-between p-3.5 rounded-2xl border border-white/5 hover:border-[#00E5FF]/50 bg-white/[0.02] hover:bg-white/[0.06] cursor-pointer transition-all duration-300 group"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-white/5 group-hover:bg-[#00E5FF]/20 group-hover:text-[#00E5FF] text-slate-300 flex items-center justify-center transition-all shrink-0 border border-white/10">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-8 h-8 rounded-xl bg-white/5 group-hover:bg-[#00E5FF]/20 group-hover:text-[#00E5FF] text-slate-300 flex items-center justify-center transition-all shrink-0 border border-white/10">
                       <Icon className="w-4 h-4" />
                     </div>
-                    <div>
-                      <h4 className="text-xs font-extrabold text-white group-hover:text-[#00E5FF] transition-colors flex items-center gap-2">
-                        {cat.name}
-                        {cat.badge && (
-                          <span className="text-[9px] bg-[#00E5FF]/15 text-[#00E5FF] px-1.5 py-0.5 rounded font-mono font-bold border border-[#00E5FF]/30">
-                            {cat.badge}
-                          </span>
-                        )}
-                      </h4>
-                      <p className="text-[10px] text-slate-400 font-inter leading-none mt-1">Explorar catálogo directo</p>
-                    </div>
+                    <span className="text-xs font-extrabold text-white group-hover:text-[#00E5FF] transition-colors">
+                      {cat.name}
+                    </span>
                   </div>
 
-                  <div className="flex items-center gap-1">
-                    {cat.subs && cat.subs.length > 0 && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleExpand(cat.id);
-                        }}
-                        className="p-1.5 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
-                        aria-label="Ver Subcategorías"
-                      >
-                        {isExpanded ? <ChevronDown className="w-4 h-4 text-[#00E5FF]" /> : <ChevronRight className="w-4 h-4" />}
-                      </button>
-                    )}
-                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-[#00E5FF] group-hover:translate-x-1 transition-all" />
                 </div>
-
-                {/* Subcategories Accordion */}
-                {isExpanded && cat.subs && (
-                  <div className="bg-black/50 border-t border-white/10 px-4 py-2 space-y-1 font-inter text-xs">
-                    {cat.subs.map((sub, sIdx) => (
-                      <button
-                        key={sIdx}
-                        onClick={() => handleCategorySelect(sub.filterId, sub.name)}
-                        className="w-full text-left py-2 px-3 rounded-xl text-slate-300 hover:text-[#00E5FF] hover:bg-white/5 transition-all flex items-center justify-between group/sub"
-                      >
-                        <span>{sub.name}</span>
-                        <ChevronRight className="w-3.5 h-3.5 opacity-0 group-hover/sub:opacity-100 text-[#00E5FF] transition-opacity" />
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+              );
+            })
+          ) : (
+            /* Pestaña Menú Principal */
+            <div className="space-y-2 pt-2">
+              {menuNavLinks.map((link, idx) => (
+                <a
+                  key={idx}
+                  href={link.href}
+                  onClick={onClose}
+                  className="w-full flex items-center justify-between p-3.5 rounded-2xl border border-white/5 hover:border-[#00E5FF]/40 bg-white/[0.02] hover:bg-white/[0.06] text-xs font-extrabold text-slate-200 hover:text-[#00E5FF] transition-all"
+                >
+                  <span>{link.name}</span>
+                  <ChevronRight className="w-4 h-4 text-slate-500" />
+                </a>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Footer Drawer Info */}
-        <div className="p-4 border-t border-white/10 bg-black/60 shrink-0 space-y-2">
-          <div className="flex items-center justify-between text-[11px] text-slate-300">
-            <span className="flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-[#00E5FF]" />
-              <span>Garantía Oficial M Store 1 Año</span>
-            </span>
-            <span className="text-[#00E5FF] font-bold">100% WhatsApp</span>
-          </div>
+        {/* Drawer Footer */}
+        <div className="p-4 border-t border-white/10 bg-black/80 shrink-0 text-center">
+          <p className="text-[10px] text-slate-400 font-inter">Garantía Oficial M Store 1 Año | Atención VIP WhatsApp</p>
         </div>
 
       </div>

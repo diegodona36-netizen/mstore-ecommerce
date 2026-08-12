@@ -14,6 +14,7 @@ import { Footer } from './Footer';
 import { SupportChatWidget } from './SupportChatWidget';
 import { LocationSection } from './LocationSection';
 import { MobileBottomNav } from './MobileBottomNav';
+import { SoyTechnoFilterSidebar } from './SoyTechnoFilterSidebar';
 
 export const LandingPageTest = ({ 
   customCategories = [],
@@ -871,8 +872,20 @@ export const LandingPageTest = ({
               </div>
             </div>
 
-          {/* PRODUCTS GRID (DISEÑADO EN TARJETAS BLANCAS LIMPIAS) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* GRID DE DOS COLUMNAS: SIDEBAR SOYTECHNO + PRODUCTOS */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            {/* SIDEBAR DE FILTROS + NAVEGACIÓN VERTICAL RÁPIDA (MINI SIDEBAR) */}
+            <div className="hidden lg:block lg:col-span-4 xl:col-span-3 sticky top-28">
+              <SoyTechnoFilterSidebar 
+                activeCategory={selectedCategory}
+                onSelectCategory={(catId) => handleCategorySelectFromMenu(catId, catId)}
+              />
+            </div>
+
+            {/* PRODUCTOS (Lg: col-span-8, Xl: col-span-9) */}
+            <div className="lg:col-span-8 xl:col-span-9">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {visibleProducts.map((p) => (
               <div
                 key={p.id}
@@ -924,9 +937,8 @@ export const LandingPageTest = ({
                   >
                     Añadir al Carrito
                   </button>
-                </div>
               </div>
-            ))}
+            </div>
           </div>
 
           {/* PAGINATION / LOAD MORE PRODUCTS */}

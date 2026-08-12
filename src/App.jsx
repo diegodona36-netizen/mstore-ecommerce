@@ -237,12 +237,13 @@ export function App() {
             onQuickView={(product) => setQuickViewProduct(product)}
             searchQuery={searchQuery}
             customCategories={customCategories}
+            isLightBg={true}
           />
         </div>
 
         {/* Módulo de Beneficios & Garantía M Store */}
         <div className="max-w-7xl mx-auto px-4 md:px-8 pb-12">
-          <BenefitsBanner />
+          <BenefitsBanner isLightBg={true} />
         </div>
 
         {/* Sección Tienda Física & Mapa Google Maps */}

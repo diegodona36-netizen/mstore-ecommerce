@@ -82,9 +82,15 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
 
   const hasExplicitVariants = Array.isArray(product.variants) && product.variants.length > 0;
 
-  // 1. ALL AVAILABLE COLORS
+  // 1. ALL AVAILABLE COLORS (WITH CUSTOM HEX SUPPORT)
   const colorsList = hasExplicitVariants
-    ? Array.from(new Set(product.variants.map(v => v.color).filter(Boolean)))
+    ? Array.from(
+        new Map(
+          product.variants
+            .filter(v => v.color)
+            .map(v => [v.color, { name: v.color, hex: v.colorHex || getColorHexFromName(v.color) }])
+        ).values()
+      )
     : parseOptions(product.colors, [
         { name: 'Negro Titanio', hex: '#1E293B' },
         { name: 'Plata Natural', hex: '#E2E8F0' },
@@ -361,15 +367,15 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                       <span className="text-xs font-black text-slate-800">Color:</span>
                       <span className="text-xs font-bold text-slate-500">{currentColorDisplayName}</span>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 flex-wrap">
                       {colorsList.map((col, idx) => {
-                        const hex = getColorHexFromName(col);
+                        const hex = typeof col === 'object' && col.hex ? col.hex : getColorHexFromName(col);
                         const name = getColorDisplayName(col);
                         const isSel = currentColorDisplayName === name;
                         return (
                           <button
                             key={idx}
-                            onClick={() => handleColorSelect(col)}
+                            onClick={() => handleColorSelect(name)}
                             className={`w-7 h-7 rounded-full border-2 transition-all shadow-sm relative ${
                               isSel 
                                 ? 'border-blue-600 scale-125 ring-2 ring-blue-600/30' 
@@ -378,7 +384,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                             style={{ backgroundColor: hex }}
                             title={name}
                           >
-                            {hex === '#FFFFFF' && (
+                            {hex?.toUpperCase() === '#FFFFFF' && (
                               <span className="absolute inset-0 rounded-full border border-slate-200" />
                             )}
                           </button>

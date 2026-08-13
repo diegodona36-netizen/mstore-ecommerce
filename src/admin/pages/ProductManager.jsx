@@ -26,32 +26,57 @@ import {
   Layers3,
   ChevronDown,
   ChevronUp,
-  AlertTriangle
+  AlertTriangle,
+  Pipette
 } from 'lucide-react';
 import { CATEGORIES } from '../../data/products';
 
-// PREDEFINED SUGGESTIONS FOR CONSUMER ELECTRONICS
-export const COLOR_SUGGESTIONS = [
-  'Negro Mate',
-  'Negro Titanio',
-  'Titanio Desierto',
-  'Titanio Natural',
-  'Blanco Puro',
-  'Blanco Estrella',
-  'Gris Grafito',
-  'Gris Espacial',
-  'Azul Titanio',
-  'Azul Medianoche',
-  'Azul Cielo',
-  'Oro Champán',
-  'Verde Esmeralda',
-  'Verde Oliva',
-  'Rojo Carmesí',
-  'Plata',
-  'Rosa Gold',
-  'Morado Lavanda',
-  'Naranja Cósmico'
-];
+// PREDEFINED COLOR PRESETS WITH HEX CODES
+export const COLOR_PRESETS = {
+  'Negro Mate': '#121212',
+  'Negro Titanio': '#1E293B',
+  'Titanio Desierto': '#C2B280',
+  'Titanio Natural': '#948B7D',
+  'Blanco Puro': '#FFFFFF',
+  'Blanco Estrella': '#F8FAFC',
+  'Gris Grafito': '#475569',
+  'Gris Espacial': '#374151',
+  'Azul Titanio': '#1E3A8A',
+  'Azul Medianoche': '#0F172A',
+  'Azul Cielo': '#93C5FD',
+  'Oro Champán': '#D97706',
+  'Verde Esmeralda': '#059669',
+  'Verde Oliva': '#556B2F',
+  'Rojo Carmesí': '#DC2626',
+  'Plata': '#E2E8F0',
+  'Rosa Gold': '#F472B6',
+  'Morado Lavanda': '#D8B4FE',
+  'Naranja Cósmico': '#F97316'
+};
+
+export const COLOR_SUGGESTIONS = Object.keys(COLOR_PRESETS);
+
+export const getSuggestedHex = (colorName) => {
+  if (!colorName) return '#121212';
+  if (COLOR_PRESETS[colorName]) return COLOR_PRESETS[colorName];
+  const name = String(colorName).toLowerCase();
+  if (name.includes('desierto') || name.includes('desert') || name.includes('arena')) return '#C2B280';
+  if (name.includes('negro') || name.includes('black') || name.includes('oscuro')) return '#121212';
+  if (name.includes('blanco') || name.includes('white') || name.includes('estrella') || name.includes('puro')) return '#FFFFFF';
+  if (name.includes('medianoche') || name.includes('midnight')) return '#0F172A';
+  if (name.includes('titanio') || name.includes('natural')) return '#948B7D';
+  if (name.includes('grafito') || name.includes('gris') || name.includes('espacial')) return '#475569';
+  if (name.includes('plata') || name.includes('silver')) return '#E2E8F0';
+  if (name.includes('morado') || name.includes('purple') || name.includes('lila') || name.includes('lavanda')) return '#D8B4FE';
+  if (name.includes('azul') || name.includes('blue') || name.includes('celeste') || name.includes('cielo')) return '#93C5FD';
+  if (name.includes('oro') || name.includes('gold') || name.includes('champan') || name.includes('champán')) return '#D97706';
+  if (name.includes('oliva') || name.includes('verde') || name.includes('green') || name.includes('esmeralda')) return '#059669';
+  if (name.includes('rojo') || name.includes('red') || name.includes('rubi')) return '#DC2626';
+  if (name.includes('rosa') || name.includes('pink') || name.includes('rose')) return '#F472B6';
+  if (name.includes('naranja') || name.includes('orange')) return '#F97316';
+  if (name.includes('amarillo') || name.includes('yellow')) return '#EAB308';
+  return '#334155';
+};
 
 export const PREDEFINED_RAMS = [
   'No Aplica',
@@ -186,6 +211,7 @@ export default function ProductManager() {
         {
           id: `var_${Date.now()}_1`,
           color: 'Negro Mate',
+          colorHex: '#121212',
           ram: '12GB',
           storage: '256GB',
           price: '',
@@ -206,15 +232,19 @@ export default function ProductManager() {
     // Parse existing variants or construct from legacy data
     let existingVariants = [];
     if (Array.isArray(product.variants) && product.variants.length > 0) {
-      existingVariants = product.variants.map((v, i) => ({
-        id: v.id || `var_${Date.now()}_${i}`,
-        color: v.color || (typeof v.colors === 'string' ? v.colors : 'Negro Mate'),
-        ram: v.ram || '8GB',
-        storage: v.storage || (typeof v.size === 'string' ? v.size : '256GB'),
-        price: v.price !== undefined ? v.price : (product.price || ''),
-        stock: v.stock !== undefined && v.stock !== null ? v.stock : '',
-        hasCashea: v.hasCashea !== undefined ? v.hasCashea : (product.hasCashea !== false)
-      }));
+      existingVariants = product.variants.map((v, i) => {
+        const cName = v.color || (typeof v.colors === 'string' ? v.colors : 'Negro Mate');
+        return {
+          id: v.id || `var_${Date.now()}_${i}`,
+          color: cName,
+          colorHex: v.colorHex || getSuggestedHex(cName),
+          ram: v.ram || '8GB',
+          storage: v.storage || (typeof v.size === 'string' ? v.size : '256GB'),
+          price: v.price !== undefined ? v.price : (product.price || ''),
+          stock: v.stock !== undefined && v.stock !== null ? v.stock : '',
+          hasCashea: v.hasCashea !== undefined ? v.hasCashea : (product.hasCashea !== false)
+        };
+      });
     } else if (Array.isArray(product.storageOptions) && product.storageOptions.length > 0) {
       // Convert legacy storageOptions into explicit variant items
       existingVariants = product.storageOptions.map((st, i) => {
@@ -228,6 +258,7 @@ export default function ProductManager() {
         return {
           id: `var_${Date.now()}_${i}`,
           color: color || 'Negro Mate',
+          colorHex: getSuggestedHex(color || 'Negro Mate'),
           ram: ram || '8GB',
           storage: size || '256GB',
           price: price || product.price || '',
@@ -240,6 +271,7 @@ export default function ProductManager() {
         {
           id: `var_${Date.now()}_1`,
           color: 'Negro Mate',
+          colorHex: '#121212',
           ram: '12GB',
           storage: '256GB',
           price: product.price || '',
@@ -272,6 +304,7 @@ export default function ProductManager() {
     const newVariant = {
       id: `var_${Date.now()}_${formData.variants.length + 1}`,
       color: lastVar?.color || 'Negro Mate',
+      colorHex: lastVar?.colorHex || getSuggestedHex(lastVar?.color || 'Negro Mate'),
       ram: lastVar?.ram || '8GB',
       storage: lastVar?.storage || '256GB',
       price: lastVar?.price || '',
@@ -341,12 +374,16 @@ export default function ProductManager() {
         finalImageUrl = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80';
       }
 
-      // Clean and normalize variants (Stock is optional: null if not provided)
+      // Clean and normalize variants with custom color hex
       const cleanVariants = formData.variants.map((v, i) => {
         const rawStock = v.stock !== '' && v.stock !== undefined && v.stock !== null ? parseInt(v.stock) : null;
+        const colorName = (v.color || 'Negro').trim();
+        const colorHex = v.colorHex || getSuggestedHex(colorName);
+
         return {
           id: v.id || `var_${Date.now()}_${i}`,
-          color: (v.color || 'Negro').trim(),
+          color: colorName,
+          colorHex: colorHex,
           ram: v.ram === 'No Aplica' ? '' : (v.ram || '').trim(),
           storage: v.storage === 'No Aplica / Estándar' ? '' : (v.storage || '').trim(),
           price: parseFloat(v.price) || 0,
@@ -356,7 +393,9 @@ export default function ProductManager() {
       });
 
       // Extract unique lists for backwards compatibility with storefront filters
-      const uniqueColors = Array.from(new Set(cleanVariants.map(v => v.color).filter(Boolean)));
+      const uniqueColors = Array.from(
+        new Map(cleanVariants.map(v => [v.color, { name: v.color, hex: v.colorHex }])).values()
+      );
       const uniqueRams = Array.from(new Set(cleanVariants.map(v => v.ram).filter(Boolean)));
       const uniqueStorages = Array.from(new Set(cleanVariants.map(v => v.storage).filter(Boolean)));
 
@@ -719,12 +758,16 @@ export default function ProductManager() {
                                       const hasStockVal = v.stock !== null && v.stock !== undefined && v.stock !== '';
                                       const vStock = hasStockVal ? parseInt(v.stock) : null;
                                       const vPrice = parseFloat(v.price) || parseFloat(p.price) || 0;
+                                      const vColorHex = v.colorHex || getSuggestedHex(v.color);
                                       return (
                                         <tr key={v.id || vIdx} className="hover:bg-slate-50/50">
                                           <td className="py-2 px-3 font-bold text-slate-400">{vIdx + 1}</td>
-                                          <td className="py-2 px-3 font-bold text-slate-900 flex items-center gap-1.5">
-                                            <span className="w-2.5 h-2.5 rounded-full bg-slate-700 inline-block" />
-                                            {v.color || 'Negro'}
+                                          <td className="py-2 px-3 font-bold text-slate-900 flex items-center gap-2">
+                                            <span 
+                                              className="w-3.5 h-3.5 rounded-full border border-slate-300 shadow-xs inline-block shrink-0" 
+                                              style={{ backgroundColor: vColorHex }}
+                                            />
+                                            <span>{v.color || 'Negro'}</span>
                                           </td>
                                           <td className="py-2 px-3 text-slate-700 font-semibold">{v.ram || '—'}</td>
                                           <td className="py-2 px-3 font-black text-slate-900">{v.storage || '—'}</td>
@@ -877,7 +920,7 @@ export default function ProductManager() {
 
               {/* ------------------------------------------------------------- */}
               {/* SECTION: GESTOR DE VARIANTES DINÁMICAS (DYNAMIC REPEATER)      */}
-              {/* Flexible Color Variables + Optional Stock                     */}
+              {/* Rich Custom Color Swatch + Optional Stock                     */}
               {/* ------------------------------------------------------------- */}
               <div className="bg-slate-50/70 border border-slate-200 rounded-3xl p-4 sm:p-6 space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 pb-3">
@@ -889,7 +932,7 @@ export default function ProductManager() {
                       </h3>
                     </div>
                     <p className="text-[11px] text-slate-500 mt-0.5">
-                      Escribe o selecciona cualquier color, RAM, almacenamiento y precio individual.
+                      Configura el tono visual exacto, RAM, almacenamiento, precio individual y stock de cada variante.
                     </p>
                   </div>
 
@@ -900,140 +943,184 @@ export default function ProductManager() {
 
                 {/* Dynamic Variants List */}
                 <div className="space-y-4">
-                  {formData.variants.map((variant, idx) => (
-                    <div 
-                      key={variant.id || idx}
-                      className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs transition-all hover:border-slate-300 relative space-y-4"
-                    >
-                      {/* Card Header: Title & Delete button */}
-                      <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-                        <div className="flex items-center gap-2">
-                          <span className="w-6 h-6 rounded-lg bg-slate-900 text-white font-black text-xs flex items-center justify-center">
-                            {idx + 1}
-                          </span>
-                          <span className="font-extrabold text-xs text-slate-900">
-                            {variant.color || 'Color'} {variant.ram && variant.ram !== 'No Aplica' ? `• ${variant.ram}` : ''} {variant.storage && variant.storage !== 'No Aplica / Estándar' ? `• ${variant.storage}` : ''}
-                          </span>
-                          {variant.price && (
-                            <span className="text-xs font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
-                              ${parseFloat(variant.price).toFixed(2)} USD
+                  {formData.variants.map((variant, idx) => {
+                    const currentHex = variant.colorHex || getSuggestedHex(variant.color);
+
+                    return (
+                      <div 
+                        key={variant.id || idx}
+                        className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs transition-all hover:border-slate-300 relative space-y-4"
+                      >
+                        {/* Card Header: Title & Delete button */}
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                          <div className="flex items-center gap-2.5">
+                            <span className="w-6 h-6 rounded-lg bg-slate-900 text-white font-black text-xs flex items-center justify-center">
+                              {idx + 1}
                             </span>
-                          )}
-                        </div>
+                            <span 
+                              className="w-4 h-4 rounded-full border border-slate-300 shadow-xs inline-block shrink-0" 
+                              style={{ backgroundColor: currentHex }}
+                            />
+                            <span className="font-extrabold text-xs text-slate-900">
+                              {variant.color || 'Color'} {variant.ram && variant.ram !== 'No Aplica' ? `• ${variant.ram}` : ''} {variant.storage && variant.storage !== 'No Aplica / Estándar' ? `• ${variant.storage}` : ''}
+                            </span>
+                            {variant.price && (
+                              <span className="text-xs font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
+                                ${parseFloat(variant.price).toFixed(2)} USD
+                              </span>
+                            )}
+                          </div>
 
-                        <button
-                          type="button"
-                          onClick={() => removeVariantBlock(idx)}
-                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-1 text-xs font-bold"
-                          title="Eliminar este modelo"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                          <span className="hidden sm:inline">Eliminar</span>
-                        </button>
-                      </div>
-
-                      {/* Card Inputs Grid */}
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        {/* 1. Flexible Color Input (Autocomplete Suggestions + Custom Text) */}
-                        <div>
-                          <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
-                            Color del Equipo *
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            list="admin-color-suggestions"
-                            value={variant.color}
-                            onChange={(e) => updateVariantField(idx, 'color', e.target.value)}
-                            placeholder="ej. Titanio Desierto, Negro..."
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
-                          />
-                        </div>
-
-                        {/* 2. RAM Dropdown */}
-                        <div>
-                          <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
-                            Memoria RAM *
-                          </label>
-                          <select
-                            value={variant.ram || '8GB'}
-                            onChange={(e) => updateVariantField(idx, 'ram', e.target.value)}
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all cursor-pointer"
+                          <button
+                            type="button"
+                            onClick={() => removeVariantBlock(idx)}
+                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-1 text-xs font-bold"
+                            title="Eliminar este modelo"
                           >
-                            {PREDEFINED_RAMS.map(r => (
-                              <option key={r} value={r}>{r}</option>
-                            ))}
-                          </select>
+                            <Trash2 className="w-4 h-4" />
+                            <span className="hidden sm:inline">Eliminar</span>
+                          </button>
                         </div>
 
-                        {/* 3. Storage Dropdown */}
-                        <div>
-                          <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
-                            Almacenamiento *
-                          </label>
-                          <select
-                            value={variant.storage || '256GB'}
-                            onChange={(e) => updateVariantField(idx, 'storage', e.target.value)}
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all cursor-pointer"
-                          >
-                            {PREDEFINED_STORAGES.map(s => (
-                              <option key={s} value={s}>{s}</option>
-                            ))}
-                          </select>
-                        </div>
+                        {/* Card Inputs Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                          {/* 1. Custom Color Picker + Autocomplete Name */}
+                          <div>
+                            <div className="flex items-center justify-between mb-1">
+                              <label className="block text-[11px] font-extrabold text-slate-700">
+                                Color & Muestra *
+                              </label>
+                              <span className="text-[10px] text-slate-400 font-bold font-mono">
+                                {currentHex}
+                              </span>
+                            </div>
 
-                        {/* 4. Variant Selling Price Input (Required) */}
-                        <div>
-                          <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
-                            Precio de Venta ($ USD) *
-                          </label>
-                          <div className="relative">
-                            <DollarSign className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                            <div className="flex items-center gap-2">
+                              {/* Visual Color Swatch / HTML5 Color Picker */}
+                              <label 
+                                className="relative w-8 h-8 rounded-xl border border-slate-300 shadow-xs cursor-pointer overflow-hidden shrink-0 flex items-center justify-center transition-transform hover:scale-105"
+                                style={{ backgroundColor: currentHex }}
+                                title="Haz clic aquí para seleccionar el tono visual exacto"
+                              >
+                                <input
+                                  type="color"
+                                  value={currentHex}
+                                  onChange={(e) => updateVariantField(idx, 'colorHex', e.target.value)}
+                                  className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
+                                />
+                                <Pipette className="w-3.5 h-3.5 text-white filter drop-shadow opacity-75 pointer-events-none" />
+                              </label>
+
+                              {/* Color Name Input with Suggestions */}
+                              <input
+                                type="text"
+                                required
+                                list="admin-color-suggestions"
+                                value={variant.color}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  const autoHex = getSuggestedHex(val);
+                                  setFormData(prev => {
+                                    const updated = [...prev.variants];
+                                    updated[idx] = { 
+                                      ...updated[idx], 
+                                      color: val,
+                                      colorHex: autoHex || updated[idx].colorHex
+                                    };
+                                    return { ...prev, variants: updated };
+                                  });
+                                }}
+                                placeholder="ej. Titanio Desierto, Azul..."
+                                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                              />
+                            </div>
+                          </div>
+
+                          {/* 2. RAM Dropdown */}
+                          <div>
+                            <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
+                              Memoria RAM *
+                            </label>
+                            <select
+                              value={variant.ram || '8GB'}
+                              onChange={(e) => updateVariantField(idx, 'ram', e.target.value)}
+                              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all cursor-pointer"
+                            >
+                              {PREDEFINED_RAMS.map(r => (
+                                <option key={r} value={r}>{r}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          {/* 3. Storage Dropdown */}
+                          <div>
+                            <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
+                              Almacenamiento *
+                            </label>
+                            <select
+                              value={variant.storage || '256GB'}
+                              onChange={(e) => updateVariantField(idx, 'storage', e.target.value)}
+                              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all cursor-pointer"
+                            >
+                              {PREDEFINED_STORAGES.map(s => (
+                                <option key={s} value={s}>{s}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          {/* 4. Variant Selling Price Input (Required) */}
+                          <div>
+                            <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
+                              Precio de Venta ($ USD) *
+                            </label>
+                            <div className="relative">
+                              <DollarSign className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                              <input
+                                type="number"
+                                step="0.01"
+                                min="0.01"
+                                required
+                                value={variant.price}
+                                onChange={(e) => updateVariantField(idx, 'price', e.target.value)}
+                                placeholder="ej. 999.00"
+                                className="w-full pl-7 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-blue-700 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                              />
+                            </div>
+                          </div>
+
+                          {/* 5. Stock Units (OPTIONAL: Leave empty for Unlimited) */}
+                          <div>
+                            <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
+                              Stock Disponible <span className="text-[10px] text-slate-400 font-normal">(Opcional)</span>
+                            </label>
                             <input
                               type="number"
-                              step="0.01"
-                              min="0.01"
-                              required
-                              value={variant.price}
-                              onChange={(e) => updateVariantField(idx, 'price', e.target.value)}
-                              placeholder="ej. 999.00"
-                              className="w-full pl-7 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-blue-700 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                              min="0"
+                              value={variant.stock}
+                              onChange={(e) => updateVariantField(idx, 'stock', e.target.value)}
+                              placeholder="Opcional (Ilimitado)"
+                              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
                             />
                           </div>
-                        </div>
 
-                        {/* 5. Stock Units (OPTIONAL: Leave empty for Unlimited) */}
-                        <div>
-                          <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
-                            Stock Disponible <span className="text-[10px] text-slate-400 font-normal">(Opcional)</span>
-                          </label>
-                          <input
-                            type="number"
-                            min="0"
-                            value={variant.stock}
-                            onChange={(e) => updateVariantField(idx, 'stock', e.target.value)}
-                            placeholder="Opcional (Ilimitado)"
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
-                          />
-                        </div>
-
-                        {/* 6. Cashea Toggle */}
-                        <div className="flex flex-col justify-end">
-                          <label className="flex items-center gap-2 p-2 bg-amber-50/60 border border-amber-200 rounded-xl cursor-pointer hover:bg-amber-50 transition-colors">
-                            <input
-                              type="checkbox"
-                              checked={variant.hasCashea}
-                              onChange={(e) => updateVariantField(idx, 'hasCashea', e.target.checked)}
-                              className="w-4 h-4 text-amber-500 rounded border-amber-300 focus:ring-amber-400 cursor-pointer"
-                            />
-                            <span className="text-[11px] font-extrabold text-amber-950 select-none">
-                              Aplica Cashea
-                            </span>
-                          </label>
+                          {/* 6. Cashea Toggle */}
+                          <div className="flex flex-col justify-end">
+                            <label className="flex items-center gap-2 p-2 bg-amber-50/60 border border-amber-200 rounded-xl cursor-pointer hover:bg-amber-50 transition-colors">
+                              <input
+                                type="checkbox"
+                                checked={variant.hasCashea}
+                                onChange={(e) => updateVariantField(idx, 'hasCashea', e.target.checked)}
+                                className="w-4 h-4 text-amber-500 rounded border-amber-300 focus:ring-amber-400 cursor-pointer"
+                              />
+                              <span className="text-[11px] font-extrabold text-amber-950 select-none">
+                                Aplica Cashea
+                              </span>
+                            </label>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* MAIN ACTION BUTTON: + Agregar Modelo/Variante */}

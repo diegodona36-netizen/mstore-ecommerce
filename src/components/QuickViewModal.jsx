@@ -58,37 +58,60 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
     return fallback;
   };
 
-  const colorsList = parseOptions(product.colors, [
-    { name: 'Negro Titanio', hex: '#1E293B' },
-    { name: 'Plata Natural', hex: '#E2E8F0' },
-    { name: 'Oro Champán', hex: '#FDE68A' }
-  ]);
+  const hasExplicitVariants = Array.isArray(product.variants) && product.variants.length > 0;
+
+  // Extract available options from variants or fallback
+  const colorsList = hasExplicitVariants
+    ? Array.from(new Set(product.variants.map(v => v.color).filter(Boolean)))
+    : parseOptions(product.colors, [
+        { name: 'Negro Titanio', hex: '#1E293B' },
+        { name: 'Plata Natural', hex: '#E2E8F0' },
+        { name: 'Oro Champán', hex: '#FDE68A' }
+      ]);
 
   const defaultRamFallback = (product.category === 'smartphones' || product.category === 'computacion') ? ['8GB', '12GB', '16GB'] : [];
   const defaultStorageFallback = (product.category === 'smartphones' || product.category === 'computacion') ? ['128GB', '256GB', '512GB', '1TB'] : [];
 
-  const ramOptions = parseOptions(product.ramOptions, defaultRamFallback);
-  const rawStorageOptions = parseOptions(product.storageOptions, defaultStorageFallback);
+  const ramOptions = hasExplicitVariants
+    ? Array.from(new Set(product.variants.map(v => v.ram).filter(Boolean)))
+    : parseOptions(product.ramOptions, defaultRamFallback);
 
-  const normalizedStorageOptions = rawStorageOptions.map(st => {
-    if (typeof st === 'object' && st !== null) {
-      return { size: st.size || '', price: parseFloat(st.price) || parseFloat(product.price) || 0 };
-    }
-    return { size: String(st), price: parseFloat(product.price) || 0 };
-  });
+  const rawStorageOptions = hasExplicitVariants
+    ? Array.from(new Set(product.variants.map(v => v.storage).filter(Boolean)))
+    : parseOptions(product.storageOptions, defaultStorageFallback);
 
   const [selectedColor, setSelectedColor] = useState(colorsList[0] || 'Negro');
   const [selectedRam, setSelectedRam] = useState(ramOptions[0] || '');
-  const [selectedStorage, setSelectedStorage] = useState(normalizedStorageOptions[0]?.size || '');
-
-  // Calculate current price dynamically based on chosen storage
-  const activeStorageObj = normalizedStorageOptions.find(s => s.size === selectedStorage) || normalizedStorageOptions[0];
-  const currentPrice = activeStorageObj ? activeStorageObj.price : (parseFloat(product.price) || 0);
+  const [selectedStorage, setSelectedStorage] = useState(rawStorageOptions[0] || '');
 
   const currentColorDisplayName = getColorDisplayName(selectedColor);
 
+  // Find exact matched variant
+  const matchedVariant = hasExplicitVariants
+    ? (product.variants.find(v => 
+        (v.color === currentColorDisplayName || v.color === selectedColor) && 
+        (!v.storage || v.storage === selectedStorage) &&
+        (!v.ram || v.ram === selectedRam)
+      ) || product.variants.find(v => (!v.storage || v.storage === selectedStorage)) || product.variants[0])
+    : null;
+
+  const currentPrice = matchedVariant 
+    ? (parseFloat(matchedVariant.price) || parseFloat(product.price) || 0)
+    : (parseFloat(product.price) || 0);
+
+  const isVariantCasheaActive = matchedVariant 
+    ? (matchedVariant.hasCashea !== false && product.hasCashea !== false)
+    : (product.hasCashea !== false);
+
   const handleAdd = () => {
-    onAddToCart({ ...product, price: currentPrice, selectedColor, selectedRam, selectedStorage, quantity });
+    onAddToCart({ 
+      ...product, 
+      price: currentPrice, 
+      selectedColor: currentColorDisplayName, 
+      selectedRam, 
+      selectedStorage, 
+      quantity 
+    });
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   };
@@ -103,7 +126,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
     message += `*Cantidad:* ${quantity}\n`;
     message += `*Precio Unitario:* $${currentPrice.toFixed(2)}\n`;
     message += `*TOTAL:* $${subtotal.toFixed(2)} USD (${(subtotal * rateVES).toLocaleString('es-VE')} Bs)\n\n`;
-    if (product.hasCashea !== false) {
+    if (isVariantCasheaActive) {
       const initPct = product.casheaInitialPercent || 40;
       const installments = product.casheaInstallments || 3;
       const initPay = subtotal * (initPct / 100);
@@ -292,28 +315,33 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                 )}
 
                 {/* SELECTOR DE ALMACENAMIENTO */}
-                {normalizedStorageOptions.length > 0 && (
+                {rawStorageOptions.length > 0 && (
                   <div className="space-y-2 pt-1">
                     <label className="text-xs font-extrabold text-slate-700 block uppercase tracking-wider">
                       Almacenamiento: <span className="text-slate-900 font-black">{selectedStorage}</span>
                     </label>
                     <div className="flex items-center gap-2 flex-wrap">
-                      {normalizedStorageOptions.map((stObj) => {
-                        const isSelected = selectedStorage === stObj.size;
+                      {rawStorageOptions.map((st) => {
+                        const isSelected = selectedStorage === st;
+                        const varForStorage = hasExplicitVariants 
+                          ? product.variants.find(v => v.storage === st && (v.color === currentColorDisplayName || v.color === selectedColor))
+                          : null;
+                        const vPrice = varForStorage ? varForStorage.price : null;
+
                         return (
                           <button
-                            key={stObj.size}
-                            onClick={() => setSelectedStorage(stObj.size)}
+                            key={st}
+                            onClick={() => setSelectedStorage(st)}
                             className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all border flex items-center gap-1.5 ${
                               isSelected
                                 ? 'bg-black text-white border-slate-900 shadow-sm'
                                 : 'bg-white text-slate-700 border-slate-300 hover:border-slate-500'
                             }`}
                           >
-                            <span>{stObj.size}</span>
-                            {stObj.price && stObj.price !== product.price && (
+                            <span>{st}</span>
+                            {vPrice && vPrice !== product.price && (
                               <span className={`text-[10px] ${isSelected ? 'text-amber-300' : 'text-slate-500 font-medium'}`}>
-                                (${stObj.price})
+                                (${vPrice})
                               </span>
                             )}
                           </button>

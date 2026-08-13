@@ -85,7 +85,7 @@ export function App() {
   const cartTotalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9] text-slate-900 selection:bg-blue-600 selection:text-white font-sans flex flex-col justify-between pb-24 md:pb-0">
+    <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white font-sans flex flex-col justify-between pb-24 md:pb-0">
       
       <div>
         {/* 1. TOP HEADER & NAVIGATION */}
@@ -126,7 +126,7 @@ export function App() {
             />
 
             {/* 3. SECCIONES CENTRALES HOMEPAGE */}
-            <main className="space-y-12 py-8 bg-[#F4F6F9]">
+            <main className="space-y-12 py-8 bg-slate-50">
               
               {/* 3.2 SECCIONES DE EXHIBICIÓN DE PRODUCTOS (3 BLOQUES LIMPIOS CON 'VER TODO >') */}
               <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-12">
@@ -193,7 +193,7 @@ export function App() {
           <div className="animate-fadeIn py-6 font-sans">
             
             {/* Breadcrumb Header Nav Bar */}
-            <div className="max-w-7xl mx-auto px-4 md:px-8 pb-4 mb-4 border-b border-slate-200 flex items-center justify-between">
+            <div className="max-w-[1400px] mx-auto px-4 md:px-8 pb-4 mb-4 border-b border-slate-200 flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs text-slate-600">
                 <button 
                   onClick={navigateToHome} 
@@ -216,19 +216,17 @@ export function App() {
             </div>
 
             {/* Componente Catálogo Completo 3 Columnas */}
-            <div className="max-w-7xl mx-auto px-4 md:px-8">
-              <div className="bg-white rounded-3xl p-4 sm:p-8 border border-slate-200 shadow-lg">
-                <ProductCarousel
-                  products={products}
-                  activeCategory={activeCategory}
-                  onCategoryChange={setActiveCategory}
-                  onAddToCart={handleAddToCart}
-                  onQuickView={(product) => setQuickViewProduct(product)}
-                  searchQuery={searchQuery}
-                  customCategories={customCategories}
-                  isLightBg={true}
-                />
-              </div>
+            <div className="max-w-[1400px] mx-auto px-4 md:px-8 w-full">
+              <ProductCarousel
+                products={products}
+                activeCategory={activeCategory}
+                onCategoryChange={setActiveCategory}
+                onAddToCart={handleAddToCart}
+                onQuickView={(product) => setQuickViewProduct(product)}
+                searchQuery={searchQuery}
+                customCategories={customCategories}
+                isLightBg={true}
+              />
             </div>
           </div>
         )}

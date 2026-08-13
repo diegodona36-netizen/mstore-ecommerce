@@ -209,10 +209,10 @@ export const ProductCarousel = ({
       {showMobileFilterModal && (
         <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center p-0 sm:p-4 font-space">
           <div onClick={() => setShowMobileFilterModal(false)} className="fixed inset-0 bg-black/80 backdrop-blur-md" />
-          <div className="relative z-10 w-full max-w-lg bg-[#0A0908] border border-[#00E5FF]/40 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-4">
-              <h3 className="text-base font-extrabold text-white">Filtros de Catálogo M Store</h3>
-              <button onClick={() => setShowMobileFilterModal(false)} className="p-2 text-slate-300 hover:text-white">
+          <div className="relative z-10 w-full max-w-lg bg-white border border-slate-200 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-4">
+              <h3 className="text-base font-extrabold text-slate-900">Filtros de Catálogo M Store</h3>
+              <button onClick={() => setShowMobileFilterModal(false)} className="p-2 text-slate-500 hover:text-slate-900">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -232,7 +232,7 @@ export const ProductCarousel = ({
               priceRange={priceRange}
               onPriceChange={(newRange) => setPriceRange(newRange)}
               onApplyFilter={() => setShowMobileFilterModal(false)}
-              isLightBg={false}
+              isLightBg={true}
             />
           </div>
         </div>

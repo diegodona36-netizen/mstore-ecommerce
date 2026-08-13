@@ -16,8 +16,8 @@ export const ProductCard = ({ product, onAddToCart, onQuickView, isLightBg = tru
       onClick={() => onQuickView(product)}
       className={`rounded-3xl p-5 relative flex flex-col justify-between group cursor-pointer transition-all duration-300 h-full ${
         isLightBg 
-          ? 'bg-white border-2 border-slate-200 shadow-sm hover:border-[#00E5FF] hover:shadow-md text-slate-900' 
-          : 'glass-card border border-white/10 hover:border-[#00E5FF]/50 text-white'
+          ? 'bg-white border-2 border-slate-200 shadow-sm hover:border-slate-300 hover:shadow-md text-slate-900' 
+          : 'glass-card border border-white/10 hover:border-slate-600 text-white'
       }`}
     >
       
@@ -26,8 +26,8 @@ export const ProductCard = ({ product, onAddToCart, onQuickView, isLightBg = tru
         {product.tag ? (
           <span className={`text-[10px] font-extrabold tracking-wider uppercase px-3 py-1 rounded-full font-space ${
             isLightBg 
-              ? 'bg-[#00E5FF]/15 text-[#0066FF] border border-[#00E5FF]/40' 
-              : 'bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30'
+              ? 'bg-slate-100 text-slate-800' 
+              : 'bg-slate-800 text-slate-200'
           }`}>
             {product.tag}
           </span>
@@ -39,8 +39,8 @@ export const ProductCard = ({ product, onAddToCart, onQuickView, isLightBg = tru
           }}
           className={`p-2 rounded-full transition-all opacity-0 group-hover:opacity-100 ${
             isLightBg 
-              ? 'bg-slate-100 hover:bg-[#00E5FF]/20 text-slate-700 hover:text-[#0066FF]' 
-              : 'bg-white/5 hover:bg-[#00E5FF]/20 text-slate-300 hover:text-[#00E5FF]'
+              ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900' 
+              : 'bg-white/5 hover:bg-slate-700 text-slate-300 hover:text-white'
           }`}
           title="Vista Rápida"
         >
@@ -71,7 +71,7 @@ export const ProductCard = ({ product, onAddToCart, onQuickView, isLightBg = tru
       </div>
 
       {/* Title */}
-      <h3 className={`text-sm font-extrabold font-space line-clamp-2 min-h-[40px] group-hover:text-[#0066FF] transition-colors ${
+      <h3 className={`text-sm font-extrabold font-space line-clamp-2 min-h-[40px] group-hover:text-slate-600 transition-colors ${
         isLightBg ? 'text-slate-900' : 'text-white'
       }`}>
         {product.name}
@@ -85,7 +85,7 @@ export const ProductCard = ({ product, onAddToCart, onQuickView, isLightBg = tru
             <span className={`text-lg font-black font-inter tracking-tight ${isLightBg ? 'text-slate-900' : 'text-white'}`}>
               ${product.price ? (product.price.toFixed ? product.price.toFixed(2) : product.price) : '0.00'}
             </span>
-            <span className="text-xs font-extrabold text-[#0066FF] font-inter">USD</span>
+            <span className="text-xs font-extrabold text-slate-900 font-inter">USD</span>
           </div>
           {product.oldPrice && (
             <span className="text-xs text-slate-400 line-through font-inter">

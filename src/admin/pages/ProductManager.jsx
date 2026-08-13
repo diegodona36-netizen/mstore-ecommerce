@@ -22,7 +22,8 @@ import {
   Upload, 
   Check, 
   DollarSign,
-  Link as LinkIcon
+  Calculator,
+  Percent
 } from 'lucide-react';
 import { CATEGORIES } from '../../data/products';
 
@@ -85,6 +86,9 @@ export default function ProductManager() {
     tag: '',
     description: '',
     inStock: true,
+    hasCashea: true,
+    casheaInitialPercent: 40,
+    casheaInstallments: 3,
     image: ''
   });
   const [selectedFile, setSelectedFile] = useState(null);
@@ -120,6 +124,9 @@ export default function ProductManager() {
       tag: '',
       description: '',
       inStock: true,
+      hasCashea: true,
+      casheaInitialPercent: 40,
+      casheaInstallments: 3,
       image: ''
     });
     setSelectedFile(null);
@@ -137,6 +144,9 @@ export default function ProductManager() {
       tag: product.tag || '',
       description: product.description || '',
       inStock: product.inStock !== false,
+      hasCashea: product.hasCashea !== false,
+      casheaInitialPercent: product.casheaInitialPercent || 40,
+      casheaInstallments: product.casheaInstallments || 3,
       image: product.image || ''
     });
     setSelectedFile(null);
@@ -177,6 +187,9 @@ export default function ProductManager() {
         tag: formData.tag.trim(),
         description: formData.description.trim(),
         inStock: formData.inStock,
+        hasCashea: formData.hasCashea,
+        casheaInitialPercent: parseInt(formData.casheaInitialPercent) || 40,
+        casheaInstallments: parseInt(formData.casheaInstallments) || 3,
         image: finalImageUrl,
         rating: editingProduct?.rating || 5.0,
         reviewsCount: editingProduct?.reviewsCount || 1,
@@ -214,6 +227,13 @@ export default function ProductManager() {
     }
   };
 
+  // Calculations
+  const numericPrice = parseFloat(formData.price) || 0;
+  const initialPercent = parseInt(formData.casheaInitialPercent) || 40;
+  const installmentsCount = parseInt(formData.casheaInstallments) || 3;
+  const casheaInitialAmount = numericPrice * (initialPercent / 100);
+  const casheaInstallmentAmount = (numericPrice * (1 - initialPercent / 100)) / installmentsCount;
+
   // Filtering
   const filteredProducts = products.filter((p) => {
     const matchesSearch = p.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -228,7 +248,7 @@ export default function ProductManager() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900">Catálogo de Productos</h1>
-          <p className="text-slate-500 text-sm mt-1">Crea, edita y administra los productos visibles en la tienda.</p>
+          <p className="text-slate-500 text-sm mt-1">Crea, edita y administra los productos y financiamiento Cashea.</p>
         </div>
 
         <button
@@ -285,7 +305,7 @@ export default function ProductManager() {
             </div>
             <h3 className="text-base font-bold text-slate-800">No hay productos registrados en la base de datos</h3>
             <p className="text-slate-500 text-sm mt-1 max-w-sm">
-              {searchQuery ? 'No se encontraron resultados para tu búsqueda.' : 'La tienda muestra los productos de muestra iniciales. Comienza creando tu primer producto con el botón "Nuevo Producto".'}
+              {searchQuery ? 'No se encontraron resultados para tu búsqueda.' : 'Comienza creando tu primer producto con el botón "Nuevo Producto".'}
             </p>
           </div>
         ) : (
@@ -295,91 +315,107 @@ export default function ProductManager() {
                 <tr className="border-b border-slate-200 bg-slate-50/75 text-slate-500 text-xs font-extrabold uppercase tracking-wider">
                   <th className="py-3.5 px-4">Producto</th>
                   <th className="py-3.5 px-4">Categoría</th>
-                  <th className="py-3.5 px-4">Precio</th>
-                  <th className="py-3.5 px-4">Etiqueta</th>
+                  <th className="py-3.5 px-4">Precio Contado</th>
+                  <th className="py-3.5 px-4">Plan Cashea</th>
                   <th className="py-3.5 px-4">Estado</th>
                   <th className="py-3.5 px-4 text-right">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-sm">
-                {filteredProducts.map((p) => (
-                  <tr key={p.id} className="hover:bg-slate-50/50 transition-colors">
-                    {/* Image & Name */}
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex-shrink-0 overflow-hidden p-1 flex items-center justify-center">
-                          <img
-                            src={p.image}
-                            alt={p.name}
-                            className="w-full h-full object-contain"
-                          />
+                {filteredProducts.map((p) => {
+                  const pPrice = parseFloat(p.price) || 0;
+                  const pInitPct = p.casheaInitialPercent || 40;
+                  const pInstallments = p.casheaInstallments || 3;
+                  const pInitial = pPrice * (pInitPct / 100);
+                  const pInstallment = (pPrice * (1 - pInitPct / 100)) / pInstallments;
+
+                  return (
+                    <tr key={p.id} className="hover:bg-slate-50/50 transition-colors">
+                      {/* Image & Name */}
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex-shrink-0 overflow-hidden p-1 flex items-center justify-center">
+                            <img
+                              src={p.image}
+                              alt={p.name}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                          <div>
+                            <div className="font-bold text-slate-900 line-clamp-1">{p.name}</div>
+                            <div className="text-xs text-slate-400 line-clamp-1">{p.description || 'Sin descripción'}</div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="font-bold text-slate-900 line-clamp-1">{p.name}</div>
-                          <div className="text-xs text-slate-400 line-clamp-1">{p.description || 'Sin descripción'}</div>
-                        </div>
-                      </div>
-                    </td>
+                      </td>
 
-                    {/* Category */}
-                    <td className="py-3 px-4">
-                      <span className="capitalize px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700">
-                        {p.category}
-                      </span>
-                    </td>
-
-                    {/* Price */}
-                    <td className="py-3 px-4">
-                      <div className="font-black text-slate-900">${p.price?.toFixed ? p.price.toFixed(2) : p.price} USD</div>
-                      {p.originalPrice && (
-                        <div className="text-xs text-slate-400 line-through">${p.originalPrice}</div>
-                      )}
-                    </td>
-
-                    {/* Tag */}
-                    <td className="py-3 px-4">
-                      {p.tag ? (
-                        <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                          {p.tag}
+                      {/* Category */}
+                      <td className="py-3 px-4">
+                        <span className="capitalize px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700">
+                          {p.category}
                         </span>
-                      ) : (
-                        <span className="text-slate-300 text-xs">—</span>
-                      )}
-                    </td>
+                      </td>
 
-                    {/* Stock */}
-                    <td className="py-3 px-4">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
-                        p.inStock 
-                          ? 'bg-emerald-50 text-emerald-700' 
-                          : 'bg-red-50 text-red-600'
-                      }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${p.inStock ? 'bg-emerald-500' : 'bg-red-500'}`} />
-                        {p.inStock ? 'En Stock' : 'Agotado'}
-                      </span>
-                    </td>
+                      {/* Price */}
+                      <td className="py-3 px-4">
+                        <div className="font-black text-slate-900">${pPrice.toFixed(2)} USD</div>
+                        {p.originalPrice && (
+                          <div className="text-xs text-slate-400 line-through">${p.originalPrice}</div>
+                        )}
+                      </td>
 
-                    {/* Actions */}
-                    <td className="py-3 px-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => openEditModal(p)}
-                          className="p-2 rounded-xl text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                          title="Editar Producto"
-                        >
-                          <Edit3 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(p)}
-                          className="p-2 rounded-xl text-slate-600 hover:text-red-600 hover:bg-red-50 transition-colors"
-                          title="Eliminar Producto"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      {/* Cashea Plan Preview */}
+                      <td className="py-3 px-4">
+                        {p.hasCashea !== false ? (
+                          <div className="space-y-1">
+                            <div className="inline-flex items-center gap-1 bg-[#FFE600] text-black px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border border-amber-400">
+                              CASHEA
+                            </div>
+                            <div className="text-xs font-bold text-slate-800">
+                              Inicial: <span className="text-amber-600">${pInitial.toFixed(2)}</span>
+                            </div>
+                            <div className="text-[11px] text-slate-500 font-medium">
+                              {pInstallments} cuotas de ${pInstallment.toFixed(2)}
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-slate-400 text-xs italic">Solo Contado</span>
+                        )}
+                      </td>
+
+                      {/* Stock */}
+                      <td className="py-3 px-4">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
+                          p.inStock 
+                            ? 'bg-emerald-50 text-emerald-700' 
+                            : 'bg-red-50 text-red-600'
+                        }`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${p.inStock ? 'bg-emerald-500' : 'bg-red-500'}`} />
+                          {p.inStock ? 'En Stock' : 'Agotado'}
+                        </span>
+                      </td>
+
+                      {/* Actions */}
+                      <td className="py-3 px-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => openEditModal(p)}
+                            className="p-2 rounded-xl text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                            title="Editar Producto"
+                          >
+                            <Edit3 className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(p)}
+                            className="p-2 rounded-xl text-slate-600 hover:text-red-600 hover:bg-red-50 transition-colors"
+                            title="Eliminar Producto"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -498,7 +534,7 @@ export default function ProductManager() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
-                    Precio de Venta ($ USD) *
+                    Precio de Contado ($ USD) *
                   </label>
                   <div className="relative">
                     <DollarSign className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -530,6 +566,83 @@ export default function ProductManager() {
                     />
                   </div>
                 </div>
+              </div>
+
+              {/* CASHEA FINANCING CALCULATOR BOX */}
+              <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="bg-[#FFE600] text-black px-2 py-0.5 rounded font-black text-[10px] uppercase tracking-wider border border-amber-400 shadow-sm">
+                      CASHEA
+                    </span>
+                    <span className="text-xs font-bold text-slate-900">Configuración de Financiamiento Cashea</span>
+                  </div>
+
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.hasCashea}
+                      onChange={(e) => setFormData({ ...formData, hasCashea: e.target.checked })}
+                      className="w-4 h-4 text-amber-500 rounded border-amber-300 focus:ring-amber-400 cursor-pointer"
+                    />
+                    <span className="text-xs font-bold text-slate-700">Activo con Cashea</span>
+                  </label>
+                </div>
+
+                {formData.hasCashea && (
+                  <>
+                    <div className="grid grid-cols-2 gap-3 pt-2">
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                          % Inicial Solicitada
+                        </label>
+                        <select
+                          value={formData.casheaInitialPercent}
+                          onChange={(e) => setFormData({ ...formData, casheaInitialPercent: e.target.value })}
+                          className="w-full px-3 py-1.5 bg-white border border-amber-200 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-amber-400"
+                        >
+                          <option value="40">40% Inicial (Nivel 1 y 2)</option>
+                          <option value="50">50% Inicial (Nivel 3)</option>
+                          <option value="60">60% Inicial</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                          Número de Cuotas
+                        </label>
+                        <select
+                          value={formData.casheaInstallments}
+                          onChange={(e) => setFormData({ ...formData, casheaInstallments: e.target.value })}
+                          className="w-full px-3 py-1.5 bg-white border border-amber-200 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-amber-400"
+                        >
+                          <option value="3">3 Cuotas (Estándar)</option>
+                          <option value="6">6 Cuotas (Línea Extendida)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Live Calculation Display */}
+                    {numericPrice > 0 && (
+                      <div className="bg-white/80 rounded-xl p-3 border border-amber-200/60 flex items-center justify-between text-xs">
+                        <div>
+                          <span className="text-slate-500 block text-[10px] uppercase font-bold">Pago Inicial del Cliente:</span>
+                          <span className="font-extrabold text-amber-700 text-sm">
+                            ${casheaInitialAmount.toFixed(2)} USD
+                          </span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-slate-500 block text-[10px] uppercase font-bold">
+                            {installmentsCount} Cuotas c/ 14 días de:
+                          </span>
+                          <span className="font-extrabold text-slate-900 text-sm">
+                            ${casheaInstallmentAmount.toFixed(2)} USD c/u
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
 
               {/* Description */}

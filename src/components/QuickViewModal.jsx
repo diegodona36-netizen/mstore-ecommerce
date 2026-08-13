@@ -195,14 +195,18 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                     </span>
                   </div>
 
-                  {/* Insignia Cashea */}
-                  <div className="bg-amber-50 border border-amber-300 rounded-xl p-2.5 flex items-center justify-between text-xs font-black text-slate-900 shadow-sm">
-                    <div className="flex items-center gap-2">
-                      <span className="bg-[#FFE600] text-black px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border border-amber-400">CASHEA</span>
-                      <span>Inicial: ${(product.price * 0.4).toFixed(2)} USD</span>
+                  {/* Insignia Cashea Dinámica */}
+                  {product.hasCashea !== false && product.price > 0 && (
+                    <div className="bg-amber-50 border border-amber-300 rounded-xl p-2.5 flex items-center justify-between text-xs font-black text-slate-900 shadow-sm">
+                      <div className="flex items-center gap-2">
+                        <span className="bg-[#FFE600] text-black px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border border-amber-400">CASHEA</span>
+                        <span>Inicial: ${((parseFloat(product.price) || 0) * ((product.casheaInitialPercent || 40) / 100)).toFixed(2)} USD</span>
+                      </div>
+                      <span className="text-[11px] text-amber-900 font-bold">
+                        + {product.casheaInstallments || 3} cuotas de ${(((parseFloat(product.price) || 0) * (1 - (product.casheaInitialPercent || 40) / 100)) / (product.casheaInstallments || 3)).toFixed(2)}
+                      </span>
                     </div>
-                    <span className="text-[11px] text-amber-900 font-bold">+ 3 cuotas sin interés</span>
-                  </div>
+                  )}
                 </div>
 
                 {/* SELECTOR DE COLOR (NOMBRE REAL EN LUGAR DE CÓDIGO HEX) */}

@@ -68,8 +68,25 @@ export const ProductCard = ({ product, onAddToCart, onQuickView, isLightBg = tru
         {product.name}
       </h3>
 
+      {/* CASHEA FINANCING BADGE */}
+      {product.hasCashea !== false && product.price > 0 && (
+        <div className="my-2 px-2.5 py-1.5 rounded-xl bg-amber-50/90 border border-amber-200 flex items-center justify-between text-[11px]">
+          <div className="flex items-center gap-1.5">
+            <span className="bg-[#FFE600] text-black px-1.5 py-0.5 rounded font-black text-[9px] uppercase tracking-wider border border-amber-300 shadow-xs">
+              CASHEA
+            </span>
+            <span className="font-extrabold text-amber-950">
+              Inicial: ${((parseFloat(product.price) || 0) * ((product.casheaInitialPercent || 40) / 100)).toFixed(0)}
+            </span>
+          </div>
+          <span className="font-extrabold text-slate-700">
+            +{product.casheaInstallments || 3}x ${(((parseFloat(product.price) || 0) * (1 - (product.casheaInitialPercent || 40) / 100)) / (product.casheaInstallments || 3)).toFixed(0)}
+          </span>
+        </div>
+      )}
+
       {/* Price & Add to Cart Button */}
-      <div className="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between gap-2">
+      <div className="mt-2 pt-2.5 border-t border-slate-200 flex items-center justify-between gap-2">
         <div>
           <div className="text-[10px] text-slate-500 font-inter uppercase tracking-wider font-bold">Compra Por</div>
           <div className="flex items-baseline gap-1">

@@ -5,14 +5,9 @@
 @tailwind utilities;
 
 :root {
-  --bg-dark: #0A0908;
-  --bg-dark-secondary: #111015;
-  --cyan-neon: #00E5FF;
-  --cyan-glow: rgba(0, 229, 255, 0.4);
-  --cyan-border: rgba(0, 229, 255, 0.25);
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-bg-hover: rgba(255, 255, 255, 0.06);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --bg-main: #FFFFFF;
+  --bg-secondary: #F8FAFC;
+  --text-main: #0F172A;
   --font-heading: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
 }
@@ -25,26 +20,14 @@
 
 html {
   scroll-behavior: smooth;
-  color-scheme: dark;
 }
 
 body {
-  background-color: var(--bg-dark);
-  color: #FFFFFF;
+  background-color: var(--bg-secondary);
+  color: var(--text-main);
   font-family: var(--font-body);
   overflow-x: hidden;
   min-height: 100vh;
-  background-image: 
-    radial-gradient(circle at 15% 20%, rgba(0, 229, 255, 0.08) 0%, transparent 45%),
-    radial-gradient(circle at 85% 60%, rgba(8, 145, 178, 0.07) 0%, transparent 50%),
-    radial-gradient(circle at 50% 90%, rgba(0, 229, 255, 0.05) 0%, transparent 40%);
-  background-attachment: fixed;
-}
-
-/* Textura de Fondo Oficial M Store (Matte Dark Carbon + Cian Vignette) */
-.mstore-dark-header-bg {
-  background: radial-gradient(circle at 50% 0%, #161a26 0%, #0b0d12 100%);
-  background-color: #0b0d12;
 }
 
 /* Custom Typography Classes */
@@ -56,90 +39,7 @@ body {
   font-family: var(--font-body);
 }
 
-/* Glassmorphism utility classes */
-.glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.glass-card:hover {
-  background: var(--glass-bg-hover);
-  border-color: var(--cyan-border);
-  box-shadow: 0 25px 60px rgba(0, 229, 255, 0.12), inset 0 1px 0 rgba(0, 229, 255, 0.3);
-  transform: translateY(-4px);
-}
-
-.glass-nav {
-  background: rgba(10, 9, 8, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-}
-
-.glass-modal {
-  background: rgba(15, 14, 20, 0.88);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(0, 229, 255, 0.2);
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 229, 255, 0.15);
-}
-
-/* Minimalist Premium E-Commerce Buttons & Typography */
-.btn-cyan-glow,
-.btn-slate-dark {
-  background-color: #0F172A;
-  color: #FFFFFF;
-  font-weight: 800;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
-  border-radius: 0.75rem;
-}
-
-.btn-cyan-glow:hover,
-.btn-slate-dark:hover {
-  background-color: #1E293B;
-  color: #FFFFFF;
-}
-
-.text-cyan-glow,
-.gradient-text-cyan {
-  color: #0F172A;
-  text-shadow: none;
-  background: none;
-  -webkit-text-fill-color: initial;
-}
-
 /* Animations */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-12px) rotate(1deg);
-  }
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 35px rgba(0, 229, 255, 0.7);
-  }
-}
-
-.animate-pulse-glow {
-  animation: pulseGlow 3s infinite;
-}
-
 @keyframes slideInLeft {
   from {
     transform: translateX(-100%);
@@ -153,6 +53,15 @@ body {
   animation: slideInLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -160,15 +69,14 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0A0908;
+  background: #F1F5F9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1F2937;
+  background: #CBD5E1;
   border-radius: 4px;
-  border: 2px solid #0A0908;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--cyan-neon);
+  background: #94A3B8;
 }

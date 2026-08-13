@@ -163,31 +163,31 @@ export const AdminPanelModal = ({
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto animate-fadeIn font-sans">
       {/* Backdrop */}
       <div 
         onClick={onClose} 
-        className="fixed inset-0 bg-black/85 backdrop-blur-md transition-opacity"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
       ></div>
 
       {/* Modal Content */}
-      <div className="relative z-10 w-full max-w-2xl glass-modal rounded-3xl p-6 sm:p-8 border border-[#00E5FF]/40 shadow-[0_20px_60px_rgba(0,0,0,0.9)]">
+      <div className="relative z-10 w-full max-w-2xl bg-white rounded-2xl p-6 sm:p-8 shadow-2xl">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-6">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30">
+            <div className="p-2.5 rounded-xl bg-slate-100 text-slate-700">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-xl font-bold font-space text-white">Panel Administrador - M Store</h3>
-              <p className="text-xs text-slate-400">Acceso exclusivo para empleados de la empresa</p>
+              <h3 className="text-xl font-bold text-slate-900">Panel Administrador - M Store</h3>
+              <p className="text-xs text-slate-500">Acceso exclusivo para empleados de la empresa</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-all"
+            className="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition-all"
           >
             <X className="w-5 h-5" />
           </button>
@@ -196,13 +196,13 @@ export const AdminPanelModal = ({
         {/* 1. PIN Security Form */}
         {!isAuthenticated ? (
           <form onSubmit={handlePinSubmit} className="space-y-5 py-6 text-center">
-            <div className="w-16 h-16 mx-auto rounded-full bg-[#00E5FF]/10 border border-[#00E5FF]/40 flex items-center justify-center text-[#00E5FF] mb-2">
+            <div className="w-16 h-16 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-900 mb-2">
               <Lock className="w-8 h-8" />
             </div>
 
             <div>
-              <h4 className="text-lg font-bold font-space text-white">Ingresa el PIN de Seguridad</h4>
-              <p className="text-xs text-slate-400 mt-1">Clave para empleados: <strong className="text-[#00E5FF]">1234</strong></p>
+              <h4 className="text-lg font-bold text-slate-900">Ingresa el PIN de Seguridad</h4>
+              <p className="text-xs text-slate-500 mt-1">Clave para empleados: <strong className="text-slate-900">1234</strong></p>
             </div>
 
             <div className="max-w-xs mx-auto space-y-3">
@@ -212,19 +212,19 @@ export const AdminPanelModal = ({
                 value={pinInput}
                 onChange={(e) => setPinInput(e.target.value)}
                 placeholder="• • • •"
-                className="w-full text-center text-2xl font-bold tracking-[0.5em] bg-white/5 border border-white/20 focus:border-[#00E5FF] focus:shadow-[0_0_15px_rgba(0,229,255,0.4)] rounded-2xl py-3 text-white outline-none font-space"
+                className="w-full text-center text-2xl font-bold tracking-[0.5em] bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-xl py-3 text-slate-900 outline-none"
                 autoFocus
               />
 
               {pinError && (
-                <p className="text-xs text-red-400 font-semibold animate-shake">
+                <p className="text-xs text-red-500 font-semibold animate-shake">
                   ❌ PIN Incorrecto. Intenta con "1234".
                 </p>
               )}
 
               <button
                 type="submit"
-                className="w-full btn-cyan-glow py-3 rounded-xl font-bold text-xs font-space text-black uppercase tracking-wider"
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors shadow-sm"
               >
                 Ingresar al Panel
               </button>
@@ -235,13 +235,13 @@ export const AdminPanelModal = ({
           <div className="space-y-6">
             
             {/* Tab Navigation */}
-            <div className="flex items-center gap-1.5 p-1.5 bg-white/5 border border-white/10 rounded-2xl">
+            <div className="flex items-center gap-1.5 p-1.5 bg-slate-50 border border-slate-200 rounded-xl">
               <button
                 onClick={() => setActiveTab('producto')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold font-space transition-all ${
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold transition-all ${
                   activeTab === 'producto' 
-                    ? 'bg-[#00E5FF] text-black shadow-[0_0_15px_#00E5FF]' 
-                    : 'text-slate-300 hover:text-white hover:bg-white/5'
+                    ? 'bg-slate-900 text-white shadow-sm' 
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
                 <Plus className="w-4 h-4" />
@@ -250,10 +250,10 @@ export const AdminPanelModal = ({
               
               <button
                 onClick={() => setActiveTab('categorias')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold font-space transition-all ${
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold transition-all ${
                   activeTab === 'categorias' 
-                    ? 'bg-[#00E5FF] text-black shadow-[0_0_15px_#00E5FF]' 
-                    : 'text-slate-300 hover:text-white hover:bg-white/5'
+                    ? 'bg-slate-900 text-white shadow-sm' 
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
                 <FolderPlus className="w-4 h-4" />
@@ -262,10 +262,10 @@ export const AdminPanelModal = ({
 
               <button
                 onClick={() => setActiveTab('inventario')}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold font-space transition-all ${
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold transition-all ${
                   activeTab === 'inventario' 
-                    ? 'bg-[#00E5FF] text-black shadow-[0_0_15px_#00E5FF]' 
-                    : 'text-slate-300 hover:text-white hover:bg-white/5'
+                    ? 'bg-slate-900 text-white shadow-sm' 
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
                 <Package className="w-4 h-4" />
@@ -278,7 +278,7 @@ export const AdminPanelModal = ({
               <form onSubmit={handleProductSubmit} className="space-y-4 text-left">
                 
                 {editingId && (
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 text-[#00E5FF] text-xs font-bold font-space">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-100 border border-slate-200 text-slate-800 text-xs font-bold">
                     <span className="flex items-center gap-2">
                       <Edit className="w-4 h-4" />
                       Editando: {name}
@@ -286,7 +286,7 @@ export const AdminPanelModal = ({
                     <button 
                       type="button" 
                       onClick={handleCancelEdit}
-                      className="text-xs text-slate-300 hover:text-white underline"
+                      className="text-xs text-slate-500 hover:text-slate-900 underline"
                     >
                       Cancelar Edición
                     </button>
@@ -294,8 +294,8 @@ export const AdminPanelModal = ({
                 )}
 
                 {successMsg && (
-                  <div className="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-2 animate-fadeIn">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                  <div className="p-3.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2 animate-fadeIn">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
                     <span>{successMsg}</span>
                   </div>
                 )}
@@ -303,24 +303,24 @@ export const AdminPanelModal = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Name */}
                   <div className="space-y-1">
-                    <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider font-space">Nombre del Producto *</label>
+                    <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">Nombre del Producto *</label>
                     <input
                       type="text"
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Ej: Smart TV Síragon 55 4K"
-                      className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] rounded-xl px-3.5 py-2.5 text-xs text-white outline-none"
+                      className="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 rounded-lg px-3.5 py-2.5 text-xs text-slate-900 outline-none"
                     />
                   </div>
 
                   {/* Category Selection — Synchronized with Catálogo Main */}
                   <div className="space-y-1">
-                    <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider font-space">Categoría Principal *</label>
+                    <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">Categoría Principal *</label>
                     <select
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
-                      className="w-full bg-[#141824] border border-white/15 focus:border-[#00E5FF] rounded-xl px-3.5 py-2.5 text-xs text-white outline-none font-space"
+                      className="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 rounded-lg px-3.5 py-2.5 text-xs text-slate-900 outline-none"
                     >
                       <option value="televisores">📺 Televisores</option>
                       <option value="computadoras">💻 Computadoras</option>
@@ -339,19 +339,19 @@ export const AdminPanelModal = ({
                 {/* Subcategory & Tag Input */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider font-space">Subcategoría / Etiqueta</label>
+                    <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">Subcategoría / Etiqueta</label>
                     <input
                       type="text"
                       value={subcategory}
                       onChange={(e) => setSubcategory(e.target.value)}
                       placeholder="Ej: Smart TV 4K / Inverter AI"
-                      className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] rounded-xl px-3.5 py-2.5 text-xs text-white outline-none"
+                      className="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 rounded-lg px-3.5 py-2.5 text-xs text-slate-900 outline-none"
                     />
                   </div>
 
                   {/* Price */}
                   <div className="space-y-1">
-                    <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider font-space">Precio Oferta ($USD) *</label>
+                    <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">Precio Oferta ($USD) *</label>
                     <input
                       type="number"
                       step="0.01"
@@ -359,32 +359,32 @@ export const AdminPanelModal = ({
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
                       placeholder="499.00"
-                      className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] rounded-xl px-3.5 py-2.5 text-xs text-white outline-none"
+                      className="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 rounded-lg px-3.5 py-2.5 text-xs text-slate-900 outline-none"
                     />
                   </div>
                 </div>
 
                 {/* Description */}
                 <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider font-space">Descripción corta</label>
+                  <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">Descripción corta</label>
                   <textarea
                     rows={2}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Descripción rápida del producto..."
-                    className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] rounded-xl px-3.5 py-2 text-xs text-white outline-none font-inter"
+                    className="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 rounded-lg px-3.5 py-2 text-xs text-slate-900 outline-none"
                   />
                 </div>
 
                 {/* File Upload Selector (.JPG / .PNG / .WebP) */}
                 <div className="space-y-2 pt-1">
-                  <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider font-space flex items-center justify-between">
+                  <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider flex items-center justify-between">
                     <span>Imagen del Producto *</span>
-                    <span className="text-[10px] text-slate-400 font-normal">Formatos: .jpg, .jpeg, .png, .webp</span>
+                    <span className="text-[10px] text-slate-500 font-normal">Formatos: .jpg, .jpeg, .png, .webp</span>
                   </label>
 
                   <div className="flex flex-col sm:flex-row items-center gap-3">
-                    <label className="w-full sm:w-auto shrink-0 cursor-pointer flex items-center justify-center gap-2 bg-[#00E5FF]/10 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black border border-[#00E5FF]/40 px-4 py-2.5 rounded-xl text-xs font-bold font-space transition-all">
+                    <label className="w-full sm:w-auto shrink-0 cursor-pointer flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-lg text-xs font-bold transition-all">
                       <Upload className="w-4 h-4" />
                       <span>Examinar Imagen</span>
                       <input 
@@ -395,30 +395,30 @@ export const AdminPanelModal = ({
                       />
                     </label>
 
-                    <span className="text-xs text-slate-400 font-space">o pega una URL:</span>
+                    <span className="text-xs text-slate-500">o pega una URL:</span>
 
                     <input
                       type="url"
                       value={imageUrl}
                       onChange={handleUrlChange}
                       placeholder="https://ejemplo.com/imagen.jpg"
-                      className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] rounded-xl px-3.5 py-2.5 text-xs text-white outline-none"
+                      className="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 rounded-lg px-3.5 py-2.5 text-xs text-slate-900 outline-none"
                     />
                   </div>
 
                   {previewImage && (
-                    <div className="mt-2 p-2 bg-white/5 rounded-2xl border border-white/10 flex items-center gap-3">
-                      <div className="w-14 h-14 rounded-xl bg-white p-1 overflow-hidden shrink-0">
+                    <div className="mt-2 p-2 bg-slate-50 rounded-lg border border-slate-200 flex items-center gap-3">
+                      <div className="w-14 h-14 rounded-md bg-white p-1 overflow-hidden shrink-0 border border-slate-100">
                         <img src={previewImage} alt="Vista previa" className="w-full h-full object-contain" />
                       </div>
-                      <span className="text-xs text-emerald-400 font-semibold">✓ Imagen lista</span>
+                      <span className="text-xs text-emerald-600 font-semibold">✓ Imagen lista</span>
                     </div>
                   )}
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full btn-cyan-glow py-3 rounded-xl font-bold text-xs font-space text-black uppercase tracking-wider mt-4"
+                  className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider mt-4 shadow-sm transition-colors"
                 >
                   {editingId ? 'Guardar Cambios del Producto' : 'Guardar Producto en la Tienda'}
                 </button>
@@ -430,15 +430,15 @@ export const AdminPanelModal = ({
               <div className="space-y-5 text-left">
                 
                 {catSuccessMsg && (
-                  <div className="p-3 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-2 animate-fadeIn">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                  <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2 animate-fadeIn">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
                     <span>{catSuccessMsg}</span>
                   </div>
                 )}
 
-                <form onSubmit={handleCategorySubmit} className="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-3">
-                  <h4 className="text-xs font-bold font-space text-[#00E5FF] flex items-center gap-2">
-                    <FolderPlus className="w-4 h-4" />
+                <form onSubmit={handleCategorySubmit} className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                  <h4 className="text-xs font-bold text-slate-900 flex items-center gap-2">
+                    <FolderPlus className="w-4 h-4 text-slate-500" />
                     Crear Nueva Categoría Principal
                   </h4>
 
@@ -449,12 +449,12 @@ export const AdminPanelModal = ({
                       value={newCatName}
                       onChange={(e) => setNewCatName(e.target.value)}
                       placeholder="Nombre de Categoría (ej: Consolas & Gaming)"
-                      className="bg-black/40 border border-white/15 focus:border-[#00E5FF] rounded-xl px-3.5 py-2 text-xs text-white outline-none"
+                      className="bg-white border border-slate-200 focus:border-slate-900 rounded-lg px-3.5 py-2 text-xs text-slate-900 outline-none"
                     />
 
                     <button
                       type="submit"
-                      className="btn-cyan-glow py-2 px-4 rounded-xl font-bold text-xs font-space text-black flex items-center justify-center gap-2"
+                      className="bg-slate-900 hover:bg-slate-800 text-white py-2 px-4 rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-colors"
                     >
                       <Plus className="w-4 h-4" />
                       Crear Categoría
@@ -463,8 +463,8 @@ export const AdminPanelModal = ({
                 </form>
 
                 <div className="space-y-2">
-                  <h4 className="text-xs font-bold font-space text-slate-300 flex items-center gap-2">
-                    <Layers className="w-4 h-4 text-[#00E5FF]" />
+                  <h4 className="text-xs font-bold text-slate-700 flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-slate-500" />
                     Categorías Activas en la Tienda
                   </h4>
 
@@ -481,17 +481,17 @@ export const AdminPanelModal = ({
                     ].map((catItem) => (
                       <div 
                         key={catItem.id}
-                        className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-space text-slate-200"
+                        className="flex items-center justify-between p-2.5 rounded-lg bg-white border border-slate-200 text-xs text-slate-700 font-medium shadow-sm"
                       >
                         <span className="flex items-center gap-2">
-                          <Tag className="w-3.5 h-3.5 text-[#00E5FF]" />
+                          <Tag className="w-3.5 h-3.5 text-slate-400" />
                           {catItem.name}
                         </span>
                         {categories.some(c => c.id === catItem.id) && (
                           <button
                             type="button"
                             onClick={() => onRemoveCategory && onRemoveCategory(catItem.id)}
-                            className="p-1 text-slate-400 hover:text-red-400 transition-colors"
+                            className="p-1 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 hover:bg-red-50 rounded"
                             title="Eliminar categoría personalizada"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -517,32 +517,32 @@ export const AdminPanelModal = ({
                     value={inventorySearch}
                     onChange={(e) => setInventorySearch(e.target.value)}
                     placeholder="Filtrar productos por nombre o categoría..."
-                    className="w-full bg-white/5 border border-white/15 focus:border-[#00E5FF] text-white text-xs rounded-xl pl-10 pr-4 py-2.5 outline-none font-inter"
+                    className="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 text-slate-900 text-xs rounded-lg pl-10 pr-4 py-2.5 outline-none"
                   />
                 </div>
 
                 {/* Product List */}
                 <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
                   {filteredProducts.length === 0 ? (
-                    <div className="p-8 text-center text-slate-400 text-xs font-space">
+                    <div className="p-8 text-center text-slate-500 text-xs">
                       No se encontraron productos en el inventario.
                     </div>
                   ) : (
                     filteredProducts.map((p) => (
                       <div 
                         key={p.id}
-                        className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-[#00E5FF]/30 transition-all gap-3"
+                        className="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-200 hover:border-slate-300 transition-all gap-3 shadow-sm"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-xl bg-white p-1 shrink-0 overflow-hidden">
+                          <div className="w-12 h-12 rounded-lg bg-slate-50 p-1 shrink-0 overflow-hidden border border-slate-100">
                             <img src={p.image} alt={p.name} className="w-full h-full object-contain" />
                           </div>
                           <div>
-                            <h5 className="text-xs font-bold font-space text-white line-clamp-1">{p.name}</h5>
-                            <p className="text-[10px] text-slate-400 uppercase font-space">
+                            <h5 className="text-xs font-bold text-slate-900 line-clamp-1">{p.name}</h5>
+                            <p className="text-[10px] text-slate-500 uppercase font-medium">
                               {p.category} {p.subcategory && `• ${p.subcategory}`}
                             </p>
-                            <span className="text-xs font-bold text-[#00E5FF] font-space">${p.price}</span>
+                            <span className="text-xs font-bold text-slate-900">${p.price}</span>
                           </div>
                         </div>
 
@@ -550,7 +550,7 @@ export const AdminPanelModal = ({
                           {/* BOTÓN EDITAR */}
                           <button
                             onClick={() => handleStartEdit(p)}
-                            className="p-2 rounded-xl bg-[#00E5FF]/10 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black border border-[#00E5FF]/30 transition-all flex items-center gap-1 text-xs font-bold font-space"
+                            className="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 transition-all flex items-center gap-1 text-xs font-bold"
                             title="Editar producto"
                           >
                             <Edit className="w-3.5 h-3.5" />
@@ -560,7 +560,7 @@ export const AdminPanelModal = ({
                           {/* BOTÓN ELIMINAR */}
                           <button
                             onClick={() => onRemoveProduct && onRemoveProduct(p.id)}
-                            className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/30 transition-all"
+                            className="p-2 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 border border-red-100 transition-all"
                             title="Eliminar producto del catálogo"
                           >
                             <Trash2 className="w-3.5 h-3.5" />

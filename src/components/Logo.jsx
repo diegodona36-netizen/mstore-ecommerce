@@ -12,7 +12,7 @@ export const Logo = ({ className = '', size = 'medium', variant = 'dark' }) => {
       <img
         src="/mstore_official_logo.jpg"
         alt="M Store - Tienda de Telefonía y Accesorios"
-        className={`${heightClass} w-auto object-contain transition-transform duration-300 group-hover:scale-105 filter drop-shadow-[0_0_12px_rgba(0,229,255,0.3)] rounded-lg`}
+        className={`${heightClass} w-auto object-contain transition-transform duration-300 group-hover:scale-105 rounded-lg`}
       />
     </div>
   );

@@ -30,7 +30,7 @@ export const Navbar = ({
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#0A0908]/95 backdrop-blur-xl border-b border-[#00E5FF]/30 transition-all duration-300">
+    <header className="sticky top-0 z-50 w-full bg-white border-b border-slate-200 shadow-sm transition-all duration-300 font-sans">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-3.5">
         <div className="flex items-center justify-between gap-3 md:gap-5">
           
@@ -45,10 +45,10 @@ export const Navbar = ({
           {/* 2. Menú de Categorías Button */}
           <button
             onClick={onOpenMegaMenu || onToggleMegaMenu}
-            className={`hidden md:flex items-center gap-2 px-3.5 md:px-4 py-2 rounded-xl text-xs font-bold font-space transition-all duration-300 shrink-0 border ${
+            className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all duration-300 shrink-0 border ${
               isMegaMenuOpen 
-                ? 'bg-[#00E5FF] text-black border-[#00E5FF] shadow-[0_0_25px_#00E5FF]' 
-                : 'bg-[#00E5FF]/10 border-[#00E5FF]/40 text-[#00E5FF] hover:bg-[#00E5FF] hover:text-black hover:shadow-[0_0_20px_#00E5FF]'
+                ? 'bg-slate-900 text-white border-slate-900 shadow-md' 
+                : 'bg-slate-900 text-white hover:bg-slate-800 border-slate-900 shadow-sm'
             }`}
           >
             <LayoutGrid className="w-4 h-4" />
@@ -61,21 +61,21 @@ export const Navbar = ({
             className="flex-1 max-w-md relative hidden md:block"
           >
             <div className="relative flex items-center">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none transition-colors group-focus-within:text-[#00E5FF]" />
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none transition-colors" />
               <input
                 type="text"
                 value={searchQuery || ''}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Buscar en M Store (ej: iPhone, Smart TV 4K, AirPods)..."
-                className="w-full bg-white/[0.05] border border-white/15 focus:border-[#00E5FF] focus:bg-black/60 focus:shadow-[0_0_15px_rgba(0,229,255,0.3)] text-white text-xs rounded-xl pl-10 pr-4 py-2.5 outline-none transition-all placeholder:text-slate-500 font-inter"
+                className="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 text-slate-900 text-xs rounded-lg pl-10 pr-4 py-2.5 outline-none transition-all placeholder:text-slate-500"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => onSearchChange('')}
-                  className="absolute right-3 text-slate-400 hover:text-white text-xs"
+                  className="absolute right-3 text-slate-400 hover:text-slate-600 text-xs p-1"
                 >
-                  ✕
+                  <X className="w-4 h-4" />
                 </button>
               )}
             </div>
@@ -93,15 +93,15 @@ export const Navbar = ({
                 value={searchQuery || ''}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Buscar productos..."
-                className="w-full bg-white/[0.06] border border-white/15 focus:border-[#00E5FF] focus:bg-black/60 text-white text-xs rounded-full pl-9 pr-3 py-2 outline-none font-inter min-h-[38px] placeholder:text-slate-400"
+                className="w-full bg-slate-50 border border-slate-200 focus:border-slate-900 text-slate-900 text-xs rounded-full pl-9 pr-3 py-2 outline-none min-h-[38px] placeholder:text-slate-400"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => onSearchChange('')}
-                  className="absolute right-3 text-slate-400 hover:text-white text-xs"
+                  className="absolute right-3 text-slate-400 hover:text-slate-600 text-xs p-1"
                 >
-                  ✕
+                  <X className="w-3.5 h-3.5" />
                 </button>
               )}
             </div>
@@ -113,13 +113,13 @@ export const Navbar = ({
             {/* Shopping Cart Button */}
             <button
               onClick={onOpenCart}
-              className="relative flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold transition-all duration-300 group shadow-sm active:scale-95"
+              className="relative flex items-center gap-2 bg-slate-50 hover:bg-slate-100 text-slate-900 border border-slate-200 px-4 py-2 rounded-lg text-xs font-bold transition-all duration-300 group shadow-sm active:scale-95"
               aria-label="Ver Carrito de Compras"
             >
-              <ShoppingCart className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 text-white" />
+              <ShoppingCart className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 text-slate-700" />
               <span>Carrito</span>
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-emerald-500 text-white font-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-md animate-bounce">
+                <span className="absolute -top-2 -right-2 bg-slate-900 text-white font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-md">
                   {cartCount}
                 </span>
               )}
@@ -130,7 +130,7 @@ export const Navbar = ({
 
         {/* Mobile Search & Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden mt-3 pt-3 border-t border-white/10 flex flex-col gap-3 animate-fadeIn">
+          <div className="md:hidden mt-3 pt-3 border-t border-slate-200 flex flex-col gap-3 animate-fadeIn">
             {/* Mobile Search */}
             <form onSubmit={handleSearchFormSubmit} className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
@@ -139,7 +139,7 @@ export const Navbar = ({
                 value={searchQuery || ''}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Buscar productos..."
-                className="w-full bg-white/10 border border-white/20 text-white text-xs rounded-xl pl-10 pr-4 py-2.5 outline-none font-inter"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-lg pl-10 pr-4 py-2.5 outline-none"
               />
             </form>
 
@@ -148,7 +148,7 @@ export const Navbar = ({
                 setMobileMenuOpen(false);
                 onToggleMegaMenu();
               }}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-black bg-[#00E5FF] transition-all font-space shadow-[0_0_15px_#00E5FF]"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold text-white bg-slate-900 transition-all shadow-sm"
             >
               <LayoutGrid className="w-4 h-4" />
               Ver Menú Completo de Categorías

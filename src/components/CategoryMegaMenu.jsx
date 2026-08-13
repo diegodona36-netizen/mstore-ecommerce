@@ -7,7 +7,6 @@ import {
 
 export const CategoryMegaMenu = ({ isOpen, onClose, onSelectCategory, customCategories = [] }) => {
   const [activeTab, setActiveTab] = useState('categorias'); // 'categorias' | 'menu'
-  const [expandedCatId, setExpandedCatId] = useState(null);
 
   // ESC key listener
   useEffect(() => {
@@ -54,100 +53,100 @@ export const CategoryMegaMenu = ({ isOpen, onClose, onSelectCategory, customCate
       role="dialog"
       aria-modal="true"
       aria-label="Menú Móvil Off-canvas Drawer M Store"
-      className="fixed inset-0 z-[60] flex"
+      className="fixed inset-0 z-[60] flex font-sans"
     >
       {/* Backdrop */}
       <div 
         onClick={onClose} 
-        className="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity animate-fadeIn"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity animate-fadeIn"
       />
 
       {/* Panel Lateral Desplazable Off-canvas Drawer */}
-      <div className="relative z-10 w-full max-w-sm sm:max-w-md bg-[#0A0908] border-r border-[#00E5FF]/40 shadow-[0_0_50px_rgba(0,229,255,0.3)] flex flex-col h-full overflow-hidden animate-slideInLeft font-space">
+      <div className="relative z-10 w-full max-w-sm sm:max-w-md bg-white shadow-2xl flex flex-col h-full overflow-hidden animate-slideInLeft border-r border-slate-200">
         
         {/* Header con botón cerrar */}
-        <div className="p-4 bg-black/90 border-b border-white/10 flex items-center justify-between shrink-0">
+        <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#00E5FF] shadow-[0_0_10px_#00E5FF] animate-pulse" />
-            <span className="text-xs font-black uppercase tracking-wider text-white">M Store Navegación</span>
+            <LayoutGrid className="w-5 h-5 text-slate-700" />
+            <span className="text-sm font-black uppercase tracking-wider text-slate-900">Menú M Store</span>
           </div>
           <button 
             onClick={onClose}
             aria-label="Cerrar Menú"
-            className="p-2 rounded-full bg-white/10 hover:bg-[#00E5FF] text-slate-300 hover:text-black transition-all min-w-[36px] min-h-[36px] flex items-center justify-center"
+            className="p-2 rounded-lg hover:bg-slate-200 text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Sistema de Pestañas Superiores ('Categorías' y 'Menú') con subrayado azul indicador */}
-        <div className="grid grid-cols-2 border-b border-white/10 bg-black/40 shrink-0">
+        {/* Sistema de Pestañas Superiores */}
+        <div className="grid grid-cols-2 border-b border-slate-200 bg-white shrink-0">
           <button
             onClick={() => setActiveTab('categorias')}
-            className={`py-3.5 text-xs font-extrabold uppercase tracking-wider transition-all relative ${
+            className={`py-3.5 text-xs font-bold uppercase tracking-wider transition-all relative ${
               activeTab === 'categorias' 
-                ? 'text-[#00E5FF] bg-[#00E5FF]/10 font-black' 
-                : 'text-slate-400 hover:text-white'
+                ? 'text-slate-900 bg-slate-50' 
+                : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
             }`}
           >
             <span>Categorías</span>
             {activeTab === 'categorias' && (
-              <span className="absolute bottom-0 left-0 right-0 h-1 bg-[#00E5FF] shadow-[0_0_12px_#00E5FF]" />
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-900" />
             )}
           </button>
 
           <button
             onClick={() => setActiveTab('menu')}
-            className={`py-3.5 text-xs font-extrabold uppercase tracking-wider transition-all relative ${
+            className={`py-3.5 text-xs font-bold uppercase tracking-wider transition-all relative ${
               activeTab === 'menu' 
-                ? 'text-[#00E5FF] bg-[#00E5FF]/10 font-black' 
-                : 'text-slate-400 hover:text-white'
+                ? 'text-slate-900 bg-slate-50' 
+                : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
             }`}
           >
             <span>Menú</span>
             {activeTab === 'menu' && (
-              <span className="absolute bottom-0 left-0 right-0 h-1 bg-[#00E5FF] shadow-[0_0_12px_#00E5FF]" />
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-900" />
             )}
           </button>
         </div>
 
         {/* Body Contenido por Pestaña */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-1 scrollbar-thin scrollbar-thumb-slate-800">
+        <div className="flex-1 overflow-y-auto bg-white">
           {activeTab === 'categorias' ? (
-            /* Lista de filas limpias: Ícono minimalista izquierda, texto centro, chevron (>) derecha */
-            soyTechnoCategories.map((cat) => {
-              const { Icon } = cat;
-              return (
-                <div
-                  key={cat.id}
-                  onClick={() => handleCategoryClick(cat.filterId, cat.name)}
-                  className="w-full flex items-center justify-between p-3.5 rounded-2xl border border-white/5 hover:border-[#00E5FF]/50 bg-white/[0.02] hover:bg-white/[0.06] cursor-pointer transition-all duration-300 group"
-                >
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-8 h-8 rounded-xl bg-white/5 group-hover:bg-[#00E5FF]/20 group-hover:text-[#00E5FF] text-slate-300 flex items-center justify-center transition-all shrink-0 border border-white/10">
-                      <Icon className="w-4 h-4" />
+            /* Lista Clásica E-commerce */
+            <div className="flex flex-col">
+              {soyTechnoCategories.map((cat) => {
+                const { Icon } = cat;
+                return (
+                  <div
+                    key={cat.id}
+                    onClick={() => handleCategoryClick(cat.filterId, cat.name)}
+                    className="w-full flex items-center justify-between p-4 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors group"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <Icon className="w-5 h-5 text-slate-500 group-hover:text-slate-900 transition-colors" />
+                      <span className="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">
+                        {cat.name}
+                      </span>
                     </div>
-                    <span className="text-xs font-extrabold text-white group-hover:text-[#00E5FF] transition-colors">
-                      {cat.name}
-                    </span>
-                  </div>
 
-                  <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-[#00E5FF] group-hover:translate-x-1 transition-all" />
-                </div>
-              );
-            })
+                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-700 transition-colors" />
+                  </div>
+                );
+              })}
+            </div>
           ) : (
             /* Pestaña Menú Principal */
-            <div className="space-y-2 pt-2">
+            <div className="flex flex-col">
               {menuNavLinks.map((link, idx) => (
                 <a
                   key={idx}
                   href={link.href}
                   onClick={onClose}
-                  className="w-full flex items-center justify-between p-3.5 rounded-2xl border border-white/5 hover:border-[#00E5FF]/40 bg-white/[0.02] hover:bg-white/[0.06] text-xs font-extrabold text-slate-200 hover:text-[#00E5FF] transition-all"
+                  className="w-full flex items-center justify-between p-4 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors group text-sm font-bold text-slate-700 hover:text-slate-900"
                 >
                   <span>{link.name}</span>
-                  <ChevronRight className="w-4 h-4 text-slate-500" />
+                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-700" />
                 </a>
               ))}
             </div>
@@ -155,8 +154,8 @@ export const CategoryMegaMenu = ({ isOpen, onClose, onSelectCategory, customCate
         </div>
 
         {/* Drawer Footer */}
-        <div className="p-4 border-t border-white/10 bg-black/80 shrink-0 text-center">
-          <p className="text-[10px] text-slate-400 font-inter">Garantía Oficial M Store 1 Año | Atención VIP WhatsApp</p>
+        <div className="p-4 bg-slate-50 border-t border-slate-200 shrink-0 text-center">
+          <p className="text-xs text-slate-500 font-medium">Garantía Oficial M Store 1 Año | Atención VIP WhatsApp</p>
         </div>
 
       </div>

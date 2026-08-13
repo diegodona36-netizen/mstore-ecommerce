@@ -10,8 +10,7 @@ import {
   orderBy, 
   query 
 } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { db, storage } from '../../lib/firebase';
+import { db } from '../../lib/firebase';
 import { 
   Plus, 
   Trash2, 
@@ -22,12 +21,49 @@ import {
   X, 
   Upload, 
   Check, 
-  ExternalLink,
   DollarSign,
-  Tag,
-  Layers
+  Link as LinkIcon
 } from 'lucide-react';
 import { CATEGORIES } from '../../data/products';
+
+// Client-side image compressor (fits within Firestore document limits easily)
+const compressImage = (file, maxWidth = 800, maxHeight = 800, quality = 0.8) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        resolve(dataUrl);
+      };
+      img.onerror = (err) => reject(err);
+    };
+    reader.onerror = (err) => reject(err);
+  });
+};
 
 export default function ProductManager() {
   const [products, setProducts] = useState([]);
@@ -49,8 +85,7 @@ export default function ProductManager() {
     tag: '',
     description: '',
     inStock: true,
-    image: '',
-    storagePath: ''
+    image: ''
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
@@ -85,8 +120,7 @@ export default function ProductManager() {
       tag: '',
       description: '',
       inStock: true,
-      image: '',
-      storagePath: ''
+      image: ''
     });
     setSelectedFile(null);
     setPreviewUrl('');
@@ -103,19 +137,19 @@ export default function ProductManager() {
       tag: product.tag || '',
       description: product.description || '',
       inStock: product.inStock !== false,
-      image: product.image || '',
-      storagePath: product.storagePath || ''
+      image: product.image || ''
     });
     setSelectedFile(null);
     setPreviewUrl(product.image || '');
     setIsModalOpen(true);
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
+      const compressed = await compressImage(file);
+      setPreviewUrl(compressed);
     }
   };
 
@@ -128,26 +162,7 @@ export default function ProductManager() {
 
     setIsSubmitting(true);
     try {
-      let finalImageUrl = formData.image;
-      let finalStoragePath = formData.storagePath;
-
-      // 1. If new file uploaded to Storage
-      if (selectedFile) {
-        const fileRef = ref(storage, `products/${Date.now()}_${selectedFile.name}`);
-        await uploadBytes(fileRef, selectedFile);
-        finalImageUrl = await getDownloadURL(fileRef);
-        finalStoragePath = fileRef.fullPath;
-
-        // If editing and had previous storage image, delete old image
-        if (editingProduct && editingProduct.storagePath) {
-          try {
-            const oldRef = ref(storage, editingProduct.storagePath);
-            await deleteObject(oldRef);
-          } catch (e) {
-            console.warn("Could not delete old image:", e);
-          }
-        }
-      }
+      let finalImageUrl = previewUrl || formData.image;
 
       // Default placeholder if none provided
       if (!finalImageUrl) {
@@ -163,7 +178,6 @@ export default function ProductManager() {
         description: formData.description.trim(),
         inStock: formData.inStock,
         image: finalImageUrl,
-        storagePath: finalStoragePath || null,
         rating: editingProduct?.rating || 5.0,
         reviewsCount: editingProduct?.reviewsCount || 1,
         updatedAt: serverTimestamp()
@@ -182,7 +196,7 @@ export default function ProductManager() {
       fetchProducts();
     } catch (error) {
       console.error("Error saving product:", error);
-      alert("Hubo un error al guardar el producto. Revisa la consola y los permisos de Firebase.");
+      alert("Hubo un error al guardar el producto. Revisa la consola.");
     } finally {
       setIsSubmitting(false);
     }
@@ -192,14 +206,6 @@ export default function ProductManager() {
     if (!confirm(`¿Eliminar definitivamente "${product.name}"?`)) return;
 
     try {
-      if (product.storagePath) {
-        try {
-          const storageRef = ref(storage, product.storagePath);
-          await deleteObject(storageRef);
-        } catch (err) {
-          console.warn("Could not delete storage image:", err);
-        }
-      }
       await deleteDoc(doc(db, 'products', product.id));
       fetchProducts();
     } catch (error) {
@@ -277,9 +283,9 @@ export default function ProductManager() {
             <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 mb-4">
               <Package className="w-8 h-8" />
             </div>
-            <h3 className="text-base font-bold text-slate-800">No hay productos registrados</h3>
+            <h3 className="text-base font-bold text-slate-800">No hay productos registrados en la base de datos</h3>
             <p className="text-slate-500 text-sm mt-1 max-w-sm">
-              {searchQuery ? 'No se encontraron resultados para tu búsqueda.' : 'Comienza creando tu primer producto con el botón "Nuevo Producto".'}
+              {searchQuery ? 'No se encontraron resultados para tu búsqueda.' : 'La tienda muestra los productos de muestra iniciales. Comienza creando tu primer producto con el botón "Nuevo Producto".'}
             </p>
           </div>
         ) : (
@@ -404,27 +410,37 @@ export default function ProductManager() {
                 </label>
                 <div className="flex items-center gap-4">
                   <div className="w-24 h-24 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden relative group">
-                    {previewUrl ? (
-                      <img src={previewUrl} alt="Preview" className="w-full h-full object-contain p-2" />
+                    {previewUrl || formData.image ? (
+                      <img src={previewUrl || formData.image} alt="Preview" className="w-full h-full object-contain p-2" />
                     ) : (
                       <Package className="w-8 h-8 text-slate-300" />
                     )}
                   </div>
 
                   <div className="flex-1 space-y-2">
-                    <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition-colors">
-                      <Upload className="w-4 h-4" />
-                      <span>Subir Foto desde el equipo</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        className="hidden"
-                      />
-                    </label>
-                    <p className="text-[11px] text-slate-400">
-                      Recomendado: Fondo blanco o transparente, PNG/JPG de hasta 5MB.
-                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition-colors">
+                        <Upload className="w-4 h-4" />
+                        <span>Subir Foto del equipo</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+
+                    <input
+                      type="url"
+                      value={formData.image}
+                      onChange={(e) => {
+                        setFormData({ ...formData, image: e.target.value });
+                        setPreviewUrl(e.target.value);
+                      }}
+                      placeholder="O pega aquí una URL de imagen (https://...)"
+                      className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-blue-600"
+                    />
                   </div>
                 </div>
               </div>

@@ -1,14 +1,63 @@
 import React, { useState, useEffect } from 'react';
-import { collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, orderBy, query } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { db, storage } from '../../lib/firebase';
-import { Plus, Trash2, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { 
+  collection, 
+  addDoc, 
+  getDocs, 
+  deleteDoc, 
+  doc, 
+  serverTimestamp, 
+  orderBy, 
+  query 
+} from 'firebase/firestore';
+import { db } from '../../lib/firebase';
+import { Plus, Trash2, Image as ImageIcon, Loader2, Link as LinkIcon, Upload } from 'lucide-react';
+
+// Client-side image compressor to avoid needing Firebase Storage paid plans
+const compressImage = (file, maxWidth = 1600, maxHeight = 700, quality = 0.8) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Compress as WebP / JPEG
+        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        resolve(dataUrl);
+      };
+      img.onerror = (err) => reject(err);
+    };
+    reader.onerror = (err) => reject(err);
+  });
+};
 
 export default function BannerManager() {
   const [banners, setBanners] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [urlInput, setUrlInput] = useState('');
+  const [showUrlModal, setShowUrlModal] = useState(false);
 
   useEffect(() => {
     fetchBanners();
@@ -36,17 +85,12 @@ export default function BannerManager() {
 
     setIsUploading(true);
     try {
-      // 1. Upload to Storage
-      const storageRef = ref(storage, `banners/${Date.now()}_${file.name}`);
-      await uploadBytes(storageRef, file);
-      
-      // 2. Get URL
-      const downloadURL = await getDownloadURL(storageRef);
+      // 1. Compress image in browser
+      const compressedDataUrl = await compressImage(file, 1600, 700, 0.82);
 
-      // 3. Save to Firestore
+      // 2. Save directly to Firestore (Free, no Storage plan required)
       await addDoc(collection(db, 'banners'), {
-        imageUrl: downloadURL,
-        storagePath: storageRef.fullPath,
+        imageUrl: compressedDataUrl,
         isActive: true,
         createdAt: serverTimestamp()
       });
@@ -55,7 +99,29 @@ export default function BannerManager() {
       fetchBanners();
     } catch (error) {
       console.error("Error uploading banner:", error);
-      alert("Error al subir la imagen. Verifica el modo de prueba en Firebase.");
+      alert("Error al procesar la imagen. Intenta de nuevo.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleAddByUrl = async (e) => {
+    e.preventDefault();
+    if (!urlInput.trim()) return;
+
+    setIsUploading(true);
+    try {
+      await addDoc(collection(db, 'banners'), {
+        imageUrl: urlInput.trim(),
+        isActive: true,
+        createdAt: serverTimestamp()
+      });
+      setUrlInput('');
+      setShowUrlModal(false);
+      fetchBanners();
+    } catch (error) {
+      console.error("Error saving banner URL:", error);
+      alert("Error al guardar el banner.");
     } finally {
       setIsUploading(false);
     }
@@ -65,17 +131,11 @@ export default function BannerManager() {
     if (!confirm('¿Estás seguro de que deseas eliminar este banner?')) return;
 
     try {
-      // 1. Delete from Storage
-      const storageRef = ref(storage, banner.storagePath);
-      await deleteObject(storageRef);
-
-      // 2. Delete from Firestore
       await deleteDoc(doc(db, 'banners', banner.id));
-
-      // Refresh list
       fetchBanners();
     } catch (error) {
       console.error("Error deleting banner:", error);
+      alert("Error al eliminar el banner.");
     }
   };
 
@@ -88,37 +148,84 @@ export default function BannerManager() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
+    <div className="max-w-5xl mx-auto space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900">Gestor de Banners</h1>
-          <p className="text-slate-500 mt-1">Controla las imágenes del slider principal de la tienda.</p>
+          <p className="text-slate-500 mt-1 text-sm">Controla las imágenes del slider principal de la tienda.</p>
         </div>
         
-        <label className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-colors">
-          {isUploading ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Plus className="w-4 h-4" />
-          )}
-          {isUploading ? 'Subiendo...' : 'Nuevo Banner'}
-          <input 
-            type="file" 
-            accept="image/*" 
-            className="hidden" 
-            onChange={handleFileUpload}
-            disabled={isUploading}
-          />
-        </label>
+        <div className="flex items-center gap-3">
+          {/* Add by URL */}
+          <button
+            onClick={() => setShowUrlModal(true)}
+            className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs flex items-center gap-2 transition-colors"
+          >
+            <LinkIcon className="w-4 h-4" />
+            <span>Por Enlace URL</span>
+          </button>
+
+          {/* Upload File */}
+          <label className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all shadow-md shadow-blue-600/20 active:scale-95">
+            {isUploading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Upload className="w-4 h-4" />
+            )}
+            <span>{isUploading ? 'Procesando...' : 'Subir Foto'}</span>
+            <input 
+              type="file" 
+              accept="image/*" 
+              className="hidden" 
+              onChange={handleFileUpload}
+              disabled={isUploading}
+            />
+          </label>
+        </div>
       </div>
+
+      {/* URL Modal */}
+      {showUrlModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200 space-y-4">
+            <h3 className="text-lg font-extrabold text-slate-900">Añadir Banner por URL</h3>
+            <form onSubmit={handleAddByUrl} className="space-y-4">
+              <input
+                type="url"
+                required
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                placeholder="https://ejemplo.com/banner.jpg"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-600"
+              />
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowUrlModal(false)}
+                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={isUploading}
+                  className="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700"
+                >
+                  {isUploading ? 'Guardando...' : 'Añadir Banner'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6 bg-slate-50">
           {banners.length === 0 ? (
             <div className="col-span-full py-12 text-center flex flex-col items-center justify-center border-2 border-dashed border-slate-300 rounded-2xl bg-white">
               <ImageIcon className="w-12 h-12 text-slate-300 mb-3" />
-              <p className="text-slate-500 font-medium">No hay banners activos.</p>
-              <p className="text-slate-400 text-sm mt-1">Sube una imagen para mostrarla en el inicio.</p>
+              <p className="text-slate-500 font-medium">No hay banners activos en la base de datos.</p>
+              <p className="text-slate-400 text-xs mt-1">La tienda está mostrando los banners de muestra. Sube uno nuevo para personalizarla.</p>
             </div>
           ) : (
             banners.map((banner) => (

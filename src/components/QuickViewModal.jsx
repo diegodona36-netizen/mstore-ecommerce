@@ -6,9 +6,6 @@ import {
 import { Logo } from './Logo';
 
 export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
-  const [selectedColor, setSelectedColor] = useState(product?.colors?.[0] || 'Blanco Marfil');
-  const [selectedRam, setSelectedRam] = useState(product?.ram || '8GB');
-  const [selectedStorage, setSelectedStorage] = useState(product?.storage || '256GB');
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [activeThumbIdx, setActiveThumbIdx] = useState(0);

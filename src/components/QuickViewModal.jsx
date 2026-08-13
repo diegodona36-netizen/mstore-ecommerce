@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   X, ShoppingCart, ShieldCheck, Check, Minus, Plus, 
-  ChevronRight, MessageCircle, Eye
+  ChevronRight, ChevronDown, MessageCircle, Eye
 } from 'lucide-react';
 import { Logo } from './Logo';
 
@@ -30,7 +30,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
   };
 
   const getColorDisplayName = (col) => {
-    if (!col) return 'Negro Oscuro';
+    if (!col) return 'Negro';
     if (typeof col === 'object') {
       if (col.name && !col.name.startsWith('#')) return col.name;
       if (col.hex && colorNameMap[col.hex.toUpperCase()]) return colorNameMap[col.hex.toUpperCase()];
@@ -40,9 +40,24 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
       if (!col.startsWith('#')) return col;
       if (colorNameMap[col.toUpperCase()]) return colorNameMap[col.toUpperCase()];
       if (colorNameMap[col]) return colorNameMap[col];
-      return 'Negro Oscuro';
+      return col;
     }
-    return 'Negro Oscuro';
+    return 'Negro';
+  };
+
+  const getColorHexFromName = (color) => {
+    if (typeof color === 'object' && color.hex) return color.hex;
+    const name = String(typeof color === 'object' ? color.name : color).toLowerCase();
+    if (name.includes('negro') || name.includes('black') || name.includes('oscuro')) return '#121212';
+    if (name.includes('blanco') || name.includes('white') || name.includes('puro')) return '#FFFFFF';
+    if (name.includes('titanio') || name.includes('gris') || name.includes('gray')) return '#948B7D';
+    if (name.includes('morado') || name.includes('purple') || name.includes('lila') || name.includes('violeta')) return '#D8B4FE';
+    if (name.includes('azul') || name.includes('blue') || name.includes('celeste') || name.includes('cyan')) return '#93C5FD';
+    if (name.includes('oro') || name.includes('gold') || name.includes('champan') || name.includes('champán')) return '#D97706';
+    if (name.includes('verde') || name.includes('green') || name.includes('esmeralda')) return '#059669';
+    if (name.includes('rojo') || name.includes('red') || name.includes('rubi')) return '#DC2626';
+    if (name.includes('rosa') || name.includes('pink')) return '#F472B6';
+    return '#334155';
   };
 
   // Multi-angle product gallery
@@ -138,20 +153,18 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
     window.open(`https://wa.me/584120000000?text=${encodeURIComponent(message)}`, '_blank');
   };
 
-  const displayOldPrice = product.oldPrice ? product.oldPrice : (currentPrice * 1.25);
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-md animate-fadeIn font-sans">
       {/* Backdrop overlay */}
       <div className="absolute inset-0" onClick={onClose}></div>
 
-      {/* Modern E-Commerce Clean 2-Column Product Detail Modal */}
+      {/* Modern E-Commerce Clean 2-Column Product Detail Modal (SoyTecno Style) */}
       <div className="relative z-10 bg-white w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl border border-slate-200 my-auto text-slate-900">
         
-        {/* 1. HEADER DEL MODAL (TOP BAR OSCURO SLATE-950 HORIZONTAL DE LADO A LADO) */}
+        {/* 1. HEADER DEL MODAL (TOP BAR OSCURO SLATE-950) */}
         <div className="bg-black px-5 sm:px-8 py-4 border-b border-white/10 flex items-center justify-between relative z-20 w-full shrink-0">
           
-          {/* Logo y Migas de Pan (Breadcrumbs) */}
+          {/* Logo y Migas de Pan */}
           <div className="flex items-center gap-2 sm:gap-3 text-xs font-bold text-slate-300 overflow-x-auto pr-4 scrollbar-none" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div className="shrink-0">
               <Logo variant="dark" size="small" />
@@ -159,40 +172,37 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
 
             <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
             <span className="hover:text-white cursor-pointer shrink-0">Inicio</span>
-            
+
             <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-            <span className="hover:text-white cursor-pointer uppercase shrink-0">{product.category || 'Telefonía'}</span>
-            
+            <span className="hover:text-white cursor-pointer capitalize shrink-0">{product.category}</span>
+
             <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-            <span className="hover:text-white cursor-pointer shrink-0">{product.brand || 'M Store'}</span>
-            
-            <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-            <span className="text-white font-extrabold truncate max-w-[180px] sm:max-w-[280px]">{product.name}</span>
+            <span className="text-white font-extrabold truncate max-w-[120px] sm:max-w-[200px]">{product.name}</span>
           </div>
 
-          {/* Botón de Cerrar 'X' */}
+          {/* Botón Cerrar */}
           <button
             onClick={onClose}
-            className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors border border-white/10 shrink-0 ml-2 shadow-sm"
-            aria-label="Cerrar ventana"
+            className="text-slate-400 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all duration-200 shrink-0"
+            aria-label="Cerrar modal"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* 2. CUERPO DEL MODAL (GRID LIMPIO DE 2 COLUMNAS SIN PARCHES OSCUROS LATERALES) */}
-        <div className="overflow-y-auto max-h-[80vh] md:max-h-none md:overflow-visible bg-white">
+        {/* 2. CUERPO DEL MODAL (GRID LIMPIO DE 2 COLUMNAS) */}
+        <div className="overflow-y-auto max-h-[82vh] md:max-h-none md:overflow-visible bg-white">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-0 items-stretch">
             
-            {/* COLUMNA IZQUIERDA: GALERÍA DE PRODUCTO (IMAGEN PRINCIPAL Y MINIATURAS HORIZONTALES EN bg-slate-50) */}
+            {/* COLUMNA IZQUIERDA: GALERÍA DE PRODUCTO */}
             <div className="p-6 sm:p-8 bg-slate-50 border-r border-slate-200 flex flex-col justify-between items-center relative min-h-[360px] sm:min-h-[440px]">
               
               {/* Badge "NUEVO" Flotante */}
               <span className="absolute top-4 right-4 z-10 rounded-full px-3 py-1 text-[10px] font-extrabold bg-slate-900 text-white shadow-sm uppercase tracking-wider">
-                NUEVO
+                {product.tag || 'NUEVO'}
               </span>
 
-              {/* Imagen Principal del Producto (Centrada) */}
+              {/* Imagen Principal del Producto */}
               <div className="flex-1 flex items-center justify-center w-full my-auto py-4">
                 <img
                   src={thumbnails[activeThumbIdx]}
@@ -201,7 +211,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                 />
               </div>
 
-              {/* Tira de Miniaturas Horizontal Limpia sobre Fondo Claro (Debajo de la foto) */}
+              {/* Tira de Miniaturas Horizontal */}
               <div className="flex items-center justify-center gap-3 pt-4 w-full border-t border-slate-200/80">
                 {thumbnails.map((imgUrl, idx) => (
                   <button
@@ -209,7 +219,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                     onClick={() => setActiveThumbIdx(idx)}
                     className={`w-14 h-14 rounded-xl overflow-hidden p-1.5 transition-all flex items-center justify-center shrink-0 border-2 ${
                       activeThumbIdx === idx
-                        ? 'border-slate-900 bg-white scale-105 shadow-md ring-2 ring-slate-900/10'
+                        ? 'border-blue-600 bg-white scale-105 shadow-md ring-2 ring-blue-600/20'
                         : 'border-slate-200 bg-white hover:border-slate-400 opacity-80 hover:opacity-100'
                     }`}
                   >
@@ -220,7 +230,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
 
             </div>
 
-            {/* COLUMNA DERECHA: BUY BOX E INFORMACIÓN DE COMPRA */}
+            {/* COLUMNA DERECHA: BUY BOX ESTILO SOYTECNO */}
             <div className="p-6 sm:p-8 flex flex-col justify-between text-left space-y-5 bg-white">
               
               <div className="space-y-4">
@@ -229,26 +239,24 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                   {product.name}
                 </h2>
 
-                {/* PRECIOS Y FINANCIAMIENTO (PRECIO GRANDE EN TEXT-SLATE-900) */}
-                <div className="space-y-2 pt-1">
-                  <div className="flex items-baseline gap-3 flex-wrap">
-                    <span className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-                      ${currentPrice.toFixed(2)}{' '}
-                      <span className="text-sm font-extrabold text-slate-700">USD</span>
-                    </span>
-                    {displayOldPrice && (
-                      <span className="text-sm font-bold text-red-500 line-through font-mono">
-                        ${displayOldPrice.toFixed(2)} USD
-                      </span>
-                    )}
-                    <span className="text-xs font-bold text-slate-500">
-                      (~{(currentPrice * rateVES).toLocaleString('es-VE', { maximumFractionDigits: 0 })} Bs)
-                    </span>
+                {/* Currency Badge estilo SoyTecno */}
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700">
+                  <span>USD Dólares</span>
+                  <span className="text-sm">🇺🇸</span>
+                </div>
+
+                {/* PRECIO DESTACADO EN AZUL ELÉCTRICO */}
+                <div className="space-y-1 pt-1">
+                  <div className="text-3xl sm:text-4xl font-black text-blue-600 tracking-tight font-sans">
+                    ${currentPrice.toFixed(2)} USD
+                  </div>
+                  <div className="text-xs font-bold text-slate-500">
+                    (~{(currentPrice * rateVES).toLocaleString('es-VE', { maximumFractionDigits: 0 })} Bs)
                   </div>
 
                   {/* Insignia Cashea Dinámica */}
-                  {product.hasCashea !== false && currentPrice > 0 && (
-                    <div className="bg-amber-50 border border-amber-300 rounded-xl p-2.5 flex items-center justify-between text-xs font-black text-slate-900 shadow-sm">
+                  {isVariantCasheaActive && currentPrice > 0 && (
+                    <div className="mt-2 bg-amber-50 border border-amber-300 rounded-xl p-2.5 flex items-center justify-between text-xs font-black text-slate-900 shadow-sm">
                       <div className="flex items-center gap-2">
                         <span className="bg-[#FFE600] text-black px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border border-amber-400">CASHEA</span>
                         <span>Inicial: ${(currentPrice * ((product.casheaInitialPercent || 40) / 100)).toFixed(2)} USD</span>
@@ -260,89 +268,32 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                   )}
                 </div>
 
-                {/* SELECTOR DE COLOR */}
+                {/* SELECTOR DE COLOR (CÍRCULOS VISUALES SOYTECNO) */}
                 {colorsList.length > 0 && (
                   <div className="space-y-2 pt-2">
-                    <label className="text-xs font-extrabold text-slate-700 block uppercase tracking-wider">
-                      COLOR SELECCIONADO: <span className="text-slate-900 font-black">{currentColorDisplayName}</span>
-                    </label>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-black text-slate-800">Color:</span>
+                      <span className="text-xs font-bold text-slate-500">{currentColorDisplayName}</span>
+                    </div>
                     <div className="flex items-center gap-3">
                       {colorsList.map((col, idx) => {
-                        const hex = typeof col === 'object' ? col.hex : (idx === 0 ? '#1E293B' : idx === 1 ? '#475569' : '#0F172A');
+                        const hex = getColorHexFromName(col);
                         const name = getColorDisplayName(col);
                         const isSel = currentColorDisplayName === name;
                         return (
                           <button
                             key={idx}
                             onClick={() => setSelectedColor(col)}
-                            className={`w-7 h-7 rounded-full border-2 transition-all shadow-sm ${
-                              isSel ? 'border-slate-900 scale-125 ring-2 ring-slate-900/30' : 'border-slate-300 hover:scale-110'
+                            className={`w-7 h-7 rounded-full border-2 transition-all shadow-sm relative ${
+                              isSel 
+                                ? 'border-blue-600 scale-125 ring-2 ring-blue-600/30' 
+                                : 'border-slate-300 hover:scale-110 hover:border-slate-400'
                             }`}
-                            style={{ backgroundColor: hex || '#1E293B' }}
+                            style={{ backgroundColor: hex }}
                             title={name}
-                          />
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* SELECTOR DE MEMORIA RAM */}
-                {ramOptions.length > 0 && (
-                  <div className="space-y-2 pt-1">
-                    <label className="text-xs font-extrabold text-slate-700 block uppercase tracking-wider">
-                      Memoria RAM: <span className="text-slate-900 font-black">{selectedRam}</span>
-                    </label>
-                    <div className="flex items-center gap-2">
-                      {ramOptions.map((ramOption) => {
-                        const isSelected = selectedRam === ramOption;
-                        return (
-                          <button
-                            key={ramOption}
-                            onClick={() => setSelectedRam(ramOption)}
-                            className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all border ${
-                              isSelected
-                                ? 'bg-black text-white border-slate-900 shadow-sm'
-                                : 'bg-white text-slate-700 border-slate-300 hover:border-slate-500'
-                            }`}
                           >
-                            {ramOption}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* SELECTOR DE ALMACENAMIENTO */}
-                {rawStorageOptions.length > 0 && (
-                  <div className="space-y-2 pt-1">
-                    <label className="text-xs font-extrabold text-slate-700 block uppercase tracking-wider">
-                      Almacenamiento: <span className="text-slate-900 font-black">{selectedStorage}</span>
-                    </label>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {rawStorageOptions.map((st) => {
-                        const isSelected = selectedStorage === st;
-                        const varForStorage = hasExplicitVariants 
-                          ? product.variants.find(v => v.storage === st && (v.color === currentColorDisplayName || v.color === selectedColor))
-                          : null;
-                        const vPrice = varForStorage ? varForStorage.price : null;
-
-                        return (
-                          <button
-                            key={st}
-                            onClick={() => setSelectedStorage(st)}
-                            className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all border flex items-center gap-1.5 ${
-                              isSelected
-                                ? 'bg-black text-white border-slate-900 shadow-sm'
-                                : 'bg-white text-slate-700 border-slate-300 hover:border-slate-500'
-                            }`}
-                          >
-                            <span>{st}</span>
-                            {vPrice && vPrice !== product.price && (
-                              <span className={`text-[10px] ${isSelected ? 'text-amber-300' : 'text-slate-500 font-medium'}`}>
-                                (${vPrice})
-                              </span>
+                            {hex === '#FFFFFF' && (
+                              <span className="absolute inset-0 rounded-full border border-slate-200" />
                             )}
                           </button>
                         );
@@ -351,72 +302,116 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                   </div>
                 )}
 
-                {/* SELECTOR DE CANTIDAD */}
-                <div className="flex items-center gap-3 pt-2">
-                  <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">Cantidad:</span>
-                  <div className="flex items-center bg-slate-100 border border-slate-200 rounded-xl px-2 py-1 font-extrabold text-sm">
+                {/* SELECTOR DE MEMORIA RAM (DROPDOWN SOYTECNO) */}
+                {ramOptions.length > 0 && (
+                  <div className="space-y-1.5 pt-1">
+                    <label className="text-xs font-black text-slate-800 block">
+                      Memoria RAM:
+                    </label>
+                    <div className="relative">
+                      <select
+                        value={selectedRam}
+                        onChange={(e) => setSelectedRam(e.target.value)}
+                        className="w-full appearance-none px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all cursor-pointer shadow-xs pr-10"
+                      >
+                        {ramOptions.map((ram) => (
+                          <option key={ram} value={ram}>
+                            {ram}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+                  </div>
+                )}
+
+                {/* SELECTOR DE ALMACENAMIENTO (DROPDOWN SOYTECNO) */}
+                {rawStorageOptions.length > 0 && (
+                  <div className="space-y-1.5 pt-1">
+                    <label className="text-xs font-black text-slate-800 block">
+                      Capacidad de almacenamiento:
+                    </label>
+                    <div className="relative">
+                      <select
+                        value={selectedStorage}
+                        onChange={(e) => setSelectedStorage(e.target.value)}
+                        className="w-full appearance-none px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all cursor-pointer shadow-xs pr-10"
+                      >
+                        {rawStorageOptions.map((st) => {
+                          const varForStorage = hasExplicitVariants 
+                            ? product.variants.find(v => v.storage === st && (v.color === currentColorDisplayName || v.color === selectedColor))
+                            : null;
+                          const vPrice = varForStorage ? varForStorage.price : null;
+
+                          return (
+                            <option key={st} value={st}>
+                              {st} {vPrice && vPrice !== product.price ? `— ($${parseFloat(vPrice).toFixed(2)} USD)` : ''}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+                  </div>
+                )}
+
+                {/* BARRA DE ACCIÓN SOYTECNO: CANTIDAD + AÑADIR AL CARRITO + COMPRAR AHORA */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-3">
+                  {/* Quantity Counter */}
+                  <div className="flex items-center border border-slate-200 rounded-xl bg-slate-50 overflow-hidden font-extrabold text-sm h-11 self-center sm:self-auto shrink-0">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="p-1 hover:bg-slate-200 rounded-lg text-slate-700 transition-colors"
+                      className="px-3.5 h-full hover:bg-slate-200 text-slate-700 transition-colors"
+                      title="Disminuir"
                     >
-                      <Minus className="w-4 h-4" />
+                      -
                     </button>
-                    <span className="w-8 text-center text-slate-900">{quantity}</span>
+                    <span className="w-8 text-center text-slate-900 font-black">{quantity}</span>
                     <button
                       onClick={() => setQuantity(quantity + 1)}
-                      className="p-1 hover:bg-slate-200 rounded-lg text-slate-700 transition-colors"
+                      className="px-3.5 h-full hover:bg-slate-200 text-slate-700 transition-colors"
+                      title="Aumentar"
                     >
-                      <Plus className="w-4 h-4" />
+                      +
                     </button>
                   </div>
-                </div>
 
-                {/* BOTONES PRINCIPALES DE ACCIÓN (BG-SLATE-900 OSCURO) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
+                  {/* Botón 1: Añadir Al Carrito (Azul Eléctrico) */}
                   <button
                     onClick={handleAdd}
-                    className={`py-3.5 px-4 rounded-2xl text-xs font-black flex items-center justify-center gap-2 transition-all duration-300 shadow-md active:scale-95 text-white ${
-                      added
-                        ? 'bg-neutral-900'
-                        : 'bg-black hover:bg-neutral-900'
+                    className={`flex-1 h-11 px-4 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 text-white shadow-md active:scale-95 ${
+                      added ? 'bg-emerald-600' : 'bg-blue-600 hover:bg-blue-700'
                     }`}
                   >
                     {added ? (
                       <>
-                        <Check className="w-4 h-4 text-emerald-400" />
-                        <span>¡Agregado al Carrito!</span>
+                        <Check className="w-4 h-4" />
+                        <span>¡Agregado!</span>
                       </>
                     ) : (
                       <>
                         <ShoppingCart className="w-4 h-4" />
-                        <span>Añadir al Carrito</span>
+                        <span>Añadir Al Carrito</span>
                       </>
                     )}
                   </button>
 
+                  {/* Botón 2: Comprar Ahora (Verde WhatsApp) */}
                   <button
                     onClick={handleWhatsAppCheckout}
-                    className="py-3.5 px-4 rounded-2xl text-xs font-black flex items-center justify-center gap-2 bg-white text-slate-900 border-2 border-slate-900 hover:bg-slate-50 shadow-sm transition-all active:scale-95"
+                    className="flex-1 h-11 px-4 rounded-xl font-black text-xs sm:text-sm bg-emerald-600 hover:bg-emerald-700 text-white transition-all flex items-center justify-center gap-2 shadow-md active:scale-95"
                   >
-                    <MessageCircle className="w-4 h-4 text-slate-900" />
-                    <span>Compra Rápida</span>
+                    <MessageCircle className="w-4 h-4 fill-white" />
+                    <span>Comprar Ahora</span>
                   </button>
                 </div>
-              </div>
 
-              {/* FOOTER DEL MODAL */}
-              <div className="space-y-3 pt-4 border-t border-slate-100">
-                {/* BANDEROLA DE PERSONAS VIENDO ESTE PRODUCTO EN VIVO */}
-                <div className="bg-slate-100 border border-slate-200 rounded-xl p-3 flex items-center gap-2.5 text-xs text-slate-800 font-extrabold shadow-sm">
-                  <Eye className="w-4 h-4 text-slate-700 animate-pulse shrink-0" />
-                  <span>378 personas están viendo este producto en este momento</span>
+                {/* Trust Footer */}
+                <div className="pt-2 flex items-center justify-center gap-2 text-[11px] text-slate-500 border-t border-slate-100">
+                  <ShieldCheck className="w-4 h-4 text-blue-600" />
+                  <span>Garantía Oficial M Store • Envío Asegurado a Nivel Nacional</span>
                 </div>
 
-                {/* GARANTÍA M STORE */}
-                <div className="flex items-center gap-2 text-[11px] text-slate-500">
-                  <ShieldCheck className="w-4 h-4 text-slate-700 shrink-0" />
-                  <span>Garantía Oficial M Store + Envío Exprés Asegurado a Nivel Nacional</span>
-                </div>
               </div>
 
             </div>

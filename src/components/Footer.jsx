@@ -149,8 +149,16 @@ export const Footer = () => {
 
         {/* Bottom Rights */}
         <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3 flex-wrap justify-center sm:justify-start">
             <span>© 2026 M Store. Todos los derechos reservados.</span>
+            <span>•</span>
+            <a 
+              href="#faq" 
+              onClick={(e) => { e.preventDefault(); alert("La sección de Preguntas Frecuentes detalladas estará disponible próximamente en una página dedicada."); }}
+              className="text-slate-400 hover:text-white transition-colors cursor-pointer"
+            >
+              Preguntas Frecuentes
+            </a>
             <span>•</span>
             <a 
               href="/admin/login" 

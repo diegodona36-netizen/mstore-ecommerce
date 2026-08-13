@@ -3,7 +3,6 @@ import { Navbar } from './components/Navbar';
 import { TopAnnouncementBar } from './components/TopAnnouncementBar';
 import { Hero } from './components/Hero';
 import { SocialProofBar } from './components/SocialProofBar';
-import { ValuePropositionSection } from './components/ValuePropositionSection';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { ProductCarousel } from './components/ProductCarousel';
 import { BenefitsBanner } from './components/BenefitsBanner';
@@ -16,7 +15,6 @@ import { WhatsappButton } from './components/WhatsappButton';
 import { CategoryShowcaseSection } from './components/CategoryShowcaseSection';
 import { CategoryBubbles } from './components/CategoryBubbles';
 import { FlashDealsSection } from './components/FlashDealsSection';
-import { FAQSection } from './components/FAQSection';
 import { INITIAL_PRODUCTS } from './data/products';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { Toast } from './components/Toast';
@@ -209,16 +207,10 @@ export function App() {
                 />
               </div>
 
-              {/* 6. PILARES DE VALOR Y GARANTÍAS */}
-              <ValuePropositionSection onNavigateCatalog={() => navigateToCatalog('todos')} />
-
-              {/* 7. TESTIMONIOS VERIFICADOS */}
+              {/* 6. TESTIMONIOS VERIFICADOS */}
               <TestimonialsSection />
 
-              {/* 8. PREGUNTAS FRECUENTES INTERACTIVAS */}
-              <FAQSection />
-
-              {/* 9. TIENDA FÍSICA & UBICACIÓN */}
+              {/* 7. TIENDA FÍSICA & UBICACIÓN */}
               <div className="max-w-7xl mx-auto px-4 md:px-8 pt-12">
                 <LocationSection isLightBg={true} />
               </div>

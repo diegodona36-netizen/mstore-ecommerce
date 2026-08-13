@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Star, ShoppingCart, Eye, ChevronRight, Check, Sparkles, Flame, Zap } from 'lucide-react';
+import { Star, ShoppingCart, Eye, ChevronRight, Check } from 'lucide-react';
 
 export const CategoryShowcaseCard = ({ 
   product, 
@@ -36,18 +36,16 @@ export const CategoryShowcaseCard = ({
       onClick={handleCardClick}
       className="group relative bg-white rounded-3xl p-4 border border-slate-200 hover:border-slate-300 transition-all duration-300 hover:shadow-xl flex flex-col justify-between h-full cursor-pointer select-none"
     >
-      {/* Top Image Container */}
-      <div className="relative w-full rounded-2xl bg-[#F8FAFC] p-3 overflow-hidden flex items-center justify-center h-44 sm:h-48 border border-slate-100 mb-3">
-        
-        {/* Badges: Cashea & Tag */}
-        <div className="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1 items-start">
+      {/* 1. TOP DEDICATED BADGES & ACTIONS ROW (NO OVERLAPS) */}
+      <div className="flex items-center justify-between gap-2 min-h-[26px] mb-2.5">
+        <div className="flex items-center gap-1.5 flex-wrap">
           {product.hasCashea !== false && (
-            <span className="bg-[#FFE600] text-black font-black text-[9px] uppercase px-2 py-0.5 rounded-md border border-amber-400 shadow-2xs">
+            <span className="bg-[#FFE600] text-black font-black text-[9px] uppercase px-2 py-0.5 rounded-md border border-amber-400 shadow-2xs shrink-0">
               CASHEA
             </span>
           )}
           {product.tag && (
-            <span className="bg-blue-50 border border-blue-200 text-blue-700 font-extrabold text-[9px] uppercase px-2 py-0.5 rounded-md">
+            <span className="bg-blue-50 border border-blue-200 text-blue-700 font-extrabold text-[9px] uppercase px-2 py-0.5 rounded-md truncate max-w-[130px]">
               {product.tag}
             </span>
           )}
@@ -60,13 +58,15 @@ export const CategoryShowcaseCard = ({
             e.stopPropagation();
             onQuickView && onQuickView(product);
           }}
-          className="absolute top-2.5 right-2.5 z-10 p-2 rounded-xl bg-white text-slate-700 hover:text-blue-600 hover:bg-blue-50 transition-all shadow-sm border border-slate-200 opacity-0 group-hover:opacity-100"
+          className="p-1.5 rounded-xl text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all opacity-0 group-hover:opacity-100 shrink-0"
           title="Vista Rápida"
         >
           <Eye className="w-4 h-4" />
         </button>
+      </div>
 
-        {/* Product Image */}
+      {/* 2. DEDICATED CLEAN IMAGE CONTAINER (100% FREE OF ANY OVERLAYS) */}
+      <div className="w-full rounded-2xl bg-[#F8FAFC] p-4 flex items-center justify-center h-44 sm:h-48 border border-slate-100 mb-3 overflow-hidden">
         <img
           src={product.image || product.img}
           alt={product.name}
@@ -75,7 +75,7 @@ export const CategoryShowcaseCard = ({
         />
       </div>
 
-      {/* Product Information */}
+      {/* 3. PRODUCT INFORMATION */}
       <div className="space-y-3 flex flex-col justify-between flex-grow">
         <div className="space-y-1.5">
           {/* Rating */}

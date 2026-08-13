@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingCart, Search, LayoutGrid, X, ChevronDown, Flame, Shield, ArrowRight } from 'lucide-react';
+import { ShoppingCart, Search, LayoutGrid, X, ChevronDown, Shield, ArrowRight } from 'lucide-react';
 import { Logo } from './Logo';
 
 export const Navbar = ({ 
@@ -166,9 +166,9 @@ export const Navbar = ({
                 <button
                   key={cat.id}
                   onClick={() => onSelectCategory && onSelectCategory(cat.id)}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-black text-xs uppercase tracking-wider text-rose-600 bg-rose-50 hover:bg-rose-100/80 border border-rose-200/80 transition-all shrink-0 active:scale-95 shadow-2xs"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-black text-xs uppercase tracking-wider text-emerald-700 bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 transition-all shrink-0 active:scale-95 shadow-2xs"
                 >
-                  <Flame className="w-3.5 h-3.5 text-rose-500 animate-bounce" />
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   <span>{cat.label}</span>
                 </button>
               );

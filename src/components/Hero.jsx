@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, ChevronLeft, ShieldCheck, Truck, CreditCard, Sparkles, ArrowRight, Zap } from 'lucide-react';
+import { ChevronRight, ChevronLeft, ShieldCheck, Truck, CreditCard, MessageCircle } from 'lucide-react';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
-export const Hero = ({ onCategorySelect, onExploreClick, onQuickViewHero }) => {
+export const Hero = ({ onCategorySelect, onExploreClick }) => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [firebaseBanners, setFirebaseBanners] = useState([]);
   const [isPaused, setIsPaused] = useState(false);
@@ -13,22 +13,16 @@ export const Hero = ({ onCategorySelect, onExploreClick, onQuickViewHero }) => {
     { 
       id: 1, 
       imageUrl: '/banners/banner_smartphone.jpg', 
-      title: 'Flagship Store 2026',
-      subtitle: 'Samsung Galaxy S24 Ultra & iPhone 15 Pro Max',
       alt: 'Oferta Especial Galaxy S24 Ultra y Flagships' 
     },
     { 
       id: 2, 
       imageUrl: '/banners/banner_smarttv.jpg', 
-      title: 'Experiencia Cine en Casa',
-      subtitle: 'Smart TVs 4K OLED & Sistemas de Audio Hi-Fi',
       alt: 'Cine en Casa Smart TV OLED' 
     },
     { 
       id: 3, 
       imageUrl: '/banners/banner_laptop.jpg', 
-      title: 'Máximo Rendimiento Pro',
-      subtitle: 'MacBook Pro M3 & Laptops Gaming de Alta Gama',
       alt: 'Poder Creativo MacBook Pro M3' 
     }
   ];
@@ -49,12 +43,12 @@ export const Hero = ({ onCategorySelect, onExploreClick, onQuickViewHero }) => {
 
   const banners = firebaseBanners.length > 0 ? firebaseBanners : fallbackBanners;
 
-  // Auto-slide every 5.5s (pauses when user hovers)
+  // Auto-slide every 6s
   useEffect(() => {
     if (isPaused) return;
     const timer = setInterval(() => {
       setCurrentSlideIndex((prev) => (prev + 1) % banners.length);
-    }, 5500);
+    }, 6000);
     return () => clearInterval(timer);
   }, [banners.length, isPaused]);
 
@@ -67,12 +61,12 @@ export const Hero = ({ onCategorySelect, onExploreClick, onQuickViewHero }) => {
   };
 
   return (
-    <section className="relative w-full bg-white pt-3 pb-8 md:pt-4 font-sans select-none border-b border-slate-200">
+    <section className="relative w-full bg-white pt-3 pb-6 md:pt-4 font-sans select-none border-b border-slate-200/80">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-8 space-y-4">
         
         {/* Main Banner Carousel Container */}
         <div 
-          className="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-2xl md:rounded-3xl overflow-hidden bg-[#0A0D14] shadow-xl group cursor-pointer border border-slate-800" 
+          className="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-2xl md:rounded-3xl overflow-hidden bg-[#0A0D14] shadow-lg group cursor-pointer border border-slate-800" 
           onClick={() => onExploreClick && onExploreClick()}
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
@@ -93,8 +87,6 @@ export const Hero = ({ onCategorySelect, onExploreClick, onQuickViewHero }) => {
                 alt={banner.alt || 'Banner M Store'} 
                 className="w-full h-full object-cover md:object-contain bg-[#0A0D14]"
               />
-              {/* Subtle dark gradient overlay for contrast */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
             </div>
           ))}
 
@@ -102,104 +94,89 @@ export const Hero = ({ onCategorySelect, onExploreClick, onQuickViewHero }) => {
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); handlePrevSlide(); }}
-            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-3 rounded-full bg-black/40 hover:bg-black/80 text-white backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 flex items-center justify-center shadow-lg border border-white/10 active:scale-95"
+            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-2.5 rounded-full bg-black/40 hover:bg-black/80 text-white backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 flex items-center justify-center shadow-md border border-white/10 active:scale-95"
             aria-label="Anterior Banner"
           >
-            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+            <ChevronLeft className="w-5 h-5" />
           </button>
 
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); handleNextSlide(); }}
-            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-3 rounded-full bg-black/40 hover:bg-black/80 text-white backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 flex items-center justify-center shadow-lg border border-white/10 active:scale-95"
+            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-2.5 rounded-full bg-black/40 hover:bg-black/80 text-white backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 flex items-center justify-center shadow-md border border-white/10 active:scale-95"
             aria-label="Siguiente Banner"
           >
-            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+            <ChevronRight className="w-5 h-5" />
           </button>
 
-          {/* Slide Indicator Bars */}
-          <div className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
+          {/* Slide Indicator Dots */}
+          <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5">
             {banners.map((_, idx) => (
               <button
                 key={idx}
                 type="button"
                 onClick={(e) => { e.stopPropagation(); setCurrentSlideIndex(idx); }}
-                className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 cursor-pointer shadow-md ${
+                className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer shadow-xs ${
                   idx === currentSlideIndex 
-                    ? 'w-7 sm:w-10 bg-blue-600' 
-                    : 'w-2 sm:w-2.5 bg-white/40 hover:bg-white/80'
+                    ? 'w-6 sm:w-8 bg-blue-600' 
+                    : 'w-1.5 sm:w-2 bg-white/50 hover:bg-white/80'
                 }`}
                 aria-label={`Ir al banner ${idx + 1}`}
               />
             ))}
           </div>
 
-          {/* Quick Floating CTA Tag (Bottom Left) */}
-          <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-20 hidden sm:flex items-center gap-2 bg-black/60 backdrop-blur-md border border-white/20 px-3.5 py-1.5 rounded-full text-white text-xs font-black shadow-lg">
-            <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-            <span>Haz clic para ver las promociones de hoy</span>
-            <ArrowRight className="w-3.5 h-3.5 ml-1 text-blue-400 group-hover:translate-x-1 transition-transform" />
-          </div>
-
         </div>
 
-        {/* 3 HIGH-IMPACT PROMOTIONAL FEATURE CARDS (UNDER HERO) */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-1">
-          
-          {/* Card 1: Cashea */}
-          <div 
-            onClick={() => onCategorySelect && onCategorySelect('todos')}
-            className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-amber-50 to-amber-100/50 border border-amber-200/80 flex items-center gap-3.5 cursor-pointer hover:shadow-md transition-all group"
-          >
-            <div className="w-11 h-11 rounded-xl bg-[#FFE600] text-black font-black text-xs flex items-center justify-center shrink-0 border border-amber-400 shadow-2xs group-hover:scale-105 transition-transform">
-              CASHEA
+        {/* ULTRA-MINIMALIST CORPORATE VALUE STRIP (UNDER HERO) */}
+        <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-3 sm:p-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 divide-y md:divide-y-0 md:divide-x divide-slate-200/80">
+            
+            {/* Feature 1: Garantía */}
+            <div className="flex items-center gap-2.5 sm:gap-3 px-2 py-1">
+              <div className="p-2 rounded-xl bg-white border border-slate-200 text-blue-600 shrink-0 shadow-2xs">
+                <ShieldCheck className="w-4 h-4" />
+              </div>
+              <div className="min-w-0">
+                <span className="text-xs font-black text-slate-900 block truncate">1 Año de Garantía</span>
+                <span className="text-[11px] text-slate-500 font-medium block truncate">Equipos nuevos sellados</span>
+              </div>
             </div>
-            <div>
-              <span className="text-xs font-black text-slate-900 block group-hover:text-amber-900">
-                Paga en Cuotas sin Interés
-              </span>
-              <span className="text-[11px] text-slate-600 font-medium leading-tight block">
-                Llévate tu smartphone o Smart TV hoy
-              </span>
-            </div>
-          </div>
 
-          {/* Card 2: Envíos Nacionales */}
-          <div 
-            onClick={() => onCategorySelect && onCategorySelect('todos')}
-            className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-50 to-emerald-100/50 border border-emerald-200/80 flex items-center gap-3.5 cursor-pointer hover:shadow-md transition-all group"
-          >
-            <div className="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
-              <Truck className="w-5 h-5" />
+            {/* Feature 2: Envíos */}
+            <div className="flex items-center gap-2.5 sm:gap-3 px-2 py-1 pt-2 md:pt-1">
+              <div className="p-2 rounded-xl bg-white border border-slate-200 text-emerald-600 shrink-0 shadow-2xs">
+                <Truck className="w-4 h-4" />
+              </div>
+              <div className="min-w-0">
+                <span className="text-xs font-black text-slate-900 block truncate">Envíos Asegurados</span>
+                <span className="text-[11px] text-slate-500 font-medium block truncate">A toda Venezuela</span>
+              </div>
             </div>
-            <div>
-              <span className="text-xs font-black text-slate-900 block group-hover:text-emerald-900">
-                Envío Gratis Asegurado
-              </span>
-              <span className="text-[11px] text-slate-600 font-medium leading-tight block">
-                Entregas rápidas a toda Venezuela
-              </span>
-            </div>
-          </div>
 
-          {/* Card 3: Garantía Oficial */}
-          <div 
-            onClick={() => onCategorySelect && onCategorySelect('todos')}
-            className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-blue-100/50 border border-blue-200/80 flex items-center gap-3.5 cursor-pointer hover:shadow-md transition-all group"
-          >
-            <div className="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
-              <ShieldCheck className="w-5 h-5" />
+            {/* Feature 3: Cashea */}
+            <div className="flex items-center gap-2.5 sm:gap-3 px-2 py-1 pt-2 md:pt-1">
+              <div className="px-1.5 py-1 rounded-xl bg-[#FFE600] border border-amber-400 text-black font-black text-[9px] uppercase tracking-wider shrink-0 shadow-2xs">
+                CASHEA
+              </div>
+              <div className="min-w-0">
+                <span className="text-xs font-black text-slate-900 block truncate">Paga en Cuotas</span>
+                <span className="text-[11px] text-slate-500 font-medium block truncate">Financiamiento sin interés</span>
+              </div>
             </div>
-            <div>
-              <span className="text-xs font-black text-slate-900 block group-hover:text-blue-900">
-                1 Año de Garantía Total
-              </span>
-              <span className="text-[11px] text-slate-600 font-medium leading-tight block">
-                Equipos 100% nuevos en caja sellada
-              </span>
-            </div>
-          </div>
 
+            {/* Feature 4: WhatsApp */}
+            <div className="flex items-center gap-2.5 sm:gap-3 px-2 py-1 pt-2 md:pt-1">
+              <div className="p-2 rounded-xl bg-white border border-slate-200 text-slate-700 shrink-0 shadow-2xs">
+                <MessageCircle className="w-4 h-4" />
+              </div>
+              <div className="min-w-0">
+                <span className="text-xs font-black text-slate-900 block truncate">Atención VIP 24/7</span>
+                <span className="text-[11px] text-slate-500 font-medium block truncate">Asesoría directa</span>
+              </div>
+            </div>
+
+          </div>
         </div>
 
       </div>

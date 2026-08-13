@@ -1,16 +1,16 @@
 import React from 'react';
-import { Smartphone, Laptop, Tv, Headphones, Clock, Gamepad2, Zap, Flame } from 'lucide-react';
+import { Smartphone, Laptop, Tv, Headphones, Clock, Gamepad2, Zap, Tag } from 'lucide-react';
 
 export const CategoryBubbles = ({ onSelectCategory }) => {
   const categories = [
-    { id: 'smartphones', label: 'Smartphones', icon: Smartphone, color: 'from-blue-500 to-blue-600', badge: 'Popular' },
+    { id: 'smartphones', label: 'Smartphones', icon: Smartphone, color: 'from-blue-500 to-blue-600' },
     { id: 'computacion', label: 'Laptops & PC', icon: Laptop, color: 'from-indigo-500 to-indigo-600' },
     { id: 'linea-blanca', label: 'Smart TVs', icon: Tv, color: 'from-cyan-500 to-blue-500' },
     { id: 'audio', label: 'Audio Hi-Fi', icon: Headphones, color: 'from-purple-500 to-indigo-600' },
-    { id: 'wearables', label: 'Smartwatches', icon: Clock, color: 'from-emerald-500 to-teal-600' },
-    { id: 'gaming', label: 'Gaming', icon: Gamepad2, color: 'from-violet-500 to-purple-600' },
-    { id: 'accesorios', label: 'Accesorios', icon: Zap, color: 'from-amber-500 to-orange-600' },
-    { id: 'ofertas', label: 'Ofertas TOP', icon: Flame, color: 'from-rose-500 to-red-600', isHot: true }
+    { id: 'wearables', label: 'Smartwatches', icon: Clock, color: 'from-slate-600 to-slate-800' },
+    { id: 'gaming', label: 'Gaming', icon: Gamepad2, color: 'from-blue-600 to-indigo-700' },
+    { id: 'accesorios', label: 'Accesorios', icon: Zap, color: 'from-amber-500 to-amber-600' },
+    { id: 'ofertas', label: 'Ofertas TOP', icon: Tag, color: 'from-emerald-500 to-teal-600', isGreenPromo: true }
   ];
 
   return (
@@ -25,6 +25,7 @@ export const CategoryBubbles = ({ onSelectCategory }) => {
             <p className="text-[11px] text-slate-500 font-medium">Encuentra los mejores equipos seleccionados para ti</p>
           </div>
           <button
+            type="button"
             onClick={() => onSelectCategory && onSelectCategory('todos')}
             className="text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline transition-all"
           >
@@ -39,18 +40,15 @@ export const CategoryBubbles = ({ onSelectCategory }) => {
             return (
               <button
                 key={cat.id}
+                type="button"
                 onClick={() => onSelectCategory && onSelectCategory(cat.id)}
                 className="group flex flex-col items-center gap-2.5 p-3 rounded-2xl bg-slate-50 hover:bg-white border border-slate-200 hover:border-blue-500 hover:shadow-md transition-all duration-300 min-w-[95px] sm:min-w-[110px] shrink-0 active:scale-95 text-center relative overflow-hidden"
               >
-                {/* Hot / Popular Badge */}
-                {cat.badge && (
-                  <span className="absolute top-1.5 right-1.5 bg-blue-600 text-white text-[8px] font-black px-1.5 py-0.2 rounded-full uppercase">
-                    {cat.badge}
-                  </span>
-                )}
-                {cat.isHot && (
-                  <span className="absolute top-1.5 right-1.5 bg-rose-600 text-white text-[8px] font-black px-1.5 py-0.2 rounded-full uppercase animate-pulse">
-                    Hot
+                {/* Clean Solid Green Indicator for Promo */}
+                {cat.isGreenPromo && (
+                  <span className="absolute top-2 right-2 flex items-center gap-1 bg-emerald-100 border border-emerald-300 text-emerald-800 text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                    <span>Top</span>
                   </span>
                 )}
 

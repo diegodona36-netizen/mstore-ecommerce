@@ -160,6 +160,7 @@ export default function ProductManager() {
     description: '',
     inStock: true,
     hasCashea: true,
+    isFlashDeal: false,
     casheaInitialPercent: 40,
     casheaInstallments: 3,
     variants: [],
@@ -205,6 +206,7 @@ export default function ProductManager() {
       description: '',
       inStock: true,
       hasCashea: true,
+      isFlashDeal: false,
       casheaInitialPercent: 40,
       casheaInstallments: 3,
       variants: [
@@ -288,6 +290,7 @@ export default function ProductManager() {
       description: product.description || '',
       inStock: product.inStock !== false,
       hasCashea: product.hasCashea !== false,
+      isFlashDeal: product.isFlashDeal || false,
       casheaInitialPercent: product.casheaInitialPercent || 40,
       casheaInstallments: product.casheaInstallments || 3,
       variants: existingVariants,
@@ -411,6 +414,7 @@ export default function ProductManager() {
         description: formData.description.trim(),
         inStock: formData.inStock,
         hasCashea: formData.hasCashea,
+        isFlashDeal: formData.isFlashDeal || false,
         casheaInitialPercent: parseInt(formData.casheaInitialPercent) || 40,
         casheaInstallments: parseInt(formData.casheaInstallments) || 3,
         variants: cleanVariants,
@@ -1160,8 +1164,30 @@ export default function ProductManager() {
                 />
               </div>
 
+              {/* FLASH SALE / OFERTA RELÁMPAGO TOGGLE */}
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                    <Zap className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-black text-slate-900 block">Incluir en Ofertas Relámpago (Flash Sale)</span>
+                    <span className="text-[11px] text-slate-500 font-medium">Muestra este equipo en el carrusel de ofertas destacadas en la portada</span>
+                  </div>
+                </div>
+
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.isFlashDeal || false}
+                    onChange={(e) => setFormData({ ...formData, isFlashDeal: e.target.checked })}
+                    className="w-5 h-5 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer"
+                  />
+                </label>
+              </div>
+
               {/* Stock Toggle */}
-              <div className="flex items-center gap-3 pt-2">
+              <div className="flex items-center gap-3 pt-1">
                 <input
                   type="checkbox"
                   id="inStock"

@@ -90,7 +90,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
   const displayOldPrice = product.oldPrice ? product.oldPrice : (product.price * 1.25);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 overflow-y-auto bg-slate-950/80 backdrop-blur-md animate-fadeIn font-sans">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-md animate-fadeIn font-sans">
       {/* Backdrop overlay */}
       <div className="absolute inset-0" onClick={onClose}></div>
 
@@ -98,7 +98,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
       <div className="relative z-10 bg-white w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl border border-slate-200 my-auto text-slate-900">
         
         {/* 1. HEADER DEL MODAL (TOP BAR OSCURO SLATE-950 HORIZONTAL DE LADO A LADO) */}
-        <div className="bg-slate-950 px-5 sm:px-8 py-4 border-b border-white/10 flex items-center justify-between relative z-20 w-full shrink-0">
+        <div className="bg-black px-5 sm:px-8 py-4 border-b border-white/10 flex items-center justify-between relative z-20 w-full shrink-0">
           
           {/* Logo y Migas de Pan (Breadcrumbs) */}
           <div className="flex items-center gap-2 sm:gap-3 text-xs font-bold text-slate-300 overflow-x-auto pr-4 scrollbar-none" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
@@ -244,7 +244,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                           onClick={() => setSelectedRam(ramOption)}
                           className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all border ${
                             isSelected
-                              ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
+                              ? 'bg-black text-white border-slate-900 shadow-sm'
                               : 'bg-white text-slate-700 border-slate-300 hover:border-slate-500'
                           }`}
                         >
@@ -269,7 +269,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                           onClick={() => setSelectedStorage(storageOption)}
                           className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all border ${
                             isSelected
-                              ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
+                              ? 'bg-black text-white border-slate-900 shadow-sm'
                               : 'bg-white text-slate-700 border-slate-300 hover:border-slate-500'
                           }`}
                         >
@@ -306,8 +306,8 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                     onClick={handleAdd}
                     className={`py-3.5 px-4 rounded-2xl text-xs font-black flex items-center justify-center gap-2 transition-all duration-300 shadow-md active:scale-95 text-white ${
                       added
-                        ? 'bg-slate-800'
-                        : 'bg-slate-900 hover:bg-slate-800'
+                        ? 'bg-neutral-900'
+                        : 'bg-black hover:bg-neutral-900'
                     }`}
                   >
                     {added ? (

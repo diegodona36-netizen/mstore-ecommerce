@@ -646,7 +646,7 @@ export const LandingPageTest = ({
                     step="50" 
                     value={calcAmount} 
                     onChange={(e) => setCalcAmount(Number(e.target.value))}
-                    className="w-full accent-[#00E5FF] cursor-pointer h-2 bg-slate-800 rounded-lg"
+                    className="w-full accent-[#00E5FF] cursor-pointer h-2 bg-neutral-900 rounded-lg"
                   />
                   <div className="flex justify-between text-[10px] text-slate-400 font-inter">
                     <span>$200 USD</span>

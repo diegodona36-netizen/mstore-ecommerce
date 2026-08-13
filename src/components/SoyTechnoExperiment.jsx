@@ -199,14 +199,14 @@ export function SoyTechnoExperiment({ onBackToMain }) {
       <div className="bg-[#00E5FF] text-slate-950 font-extrabold text-xs py-2 px-4 sm:px-8 flex items-center justify-between shadow-sm border-b border-cyan-400/40">
         <button 
           onClick={onBackToMain}
-          className="flex items-center gap-1.5 bg-slate-950/10 hover:bg-slate-950/20 text-slate-950 px-3.5 py-1 rounded-full text-[11px] font-black transition-all shrink-0"
+          className="flex items-center gap-1.5 bg-black/10 hover:bg-black/20 text-slate-950 px-3.5 py-1 rounded-full text-[11px] font-black transition-all shrink-0"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Volver a M Store Principal</span>
         </button>
 
         <div className="flex items-center gap-2 font-black text-[11px] sm:text-xs tracking-tight text-slate-950">
-          <span className="bg-slate-950 text-[#00E5FF] px-2.5 py-0.5 rounded text-[10px] uppercase font-mono font-black">M STORE</span>
+          <span className="bg-black text-[#00E5FF] px-2.5 py-0.5 rounded text-[10px] uppercase font-mono font-black">M STORE</span>
           <span>Compra en cuotas lo que necesitas hoy con Cashea | Envío Gratis Nacional</span>
         </div>
 
@@ -606,7 +606,7 @@ export function SoyTechnoExperiment({ onBackToMain }) {
 
       {/* 1. MODAL MÉTODOS DE PAGO */}
       {activeModal === 'payment' && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative space-y-6 text-left border border-slate-200 animate-in fade-in zoom-in-95">
             <button onClick={() => setActiveModal(null)} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-900">
               <X className="w-5 h-5" />
@@ -654,7 +654,7 @@ export function SoyTechnoExperiment({ onBackToMain }) {
 
       {/* 2. MODAL RASTREO DE PEDIDO */}
       {activeModal === 'tracking' && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative space-y-6 text-left border border-slate-200">
             <button onClick={() => { setActiveModal(null); setTrackingStatus(null); }} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-900">
               <X className="w-5 h-5" />
@@ -689,7 +689,7 @@ export function SoyTechnoExperiment({ onBackToMain }) {
 
       {/* 3. MODAL CLUB M STORE */}
       {activeModal === 'club' && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative space-y-6 text-left border border-slate-200">
             <button onClick={() => setActiveModal(null)} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-900">
               <X className="w-5 h-5" />
@@ -712,7 +712,7 @@ export function SoyTechnoExperiment({ onBackToMain }) {
 
       {/* 4. MODAL CATEGORÍAS MEGA MENU */}
       {activeModal === 'categories' && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl relative space-y-6 text-left border border-slate-200">
             <button onClick={() => setActiveModal(null)} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-900">
               <X className="w-5 h-5" />
@@ -736,7 +736,7 @@ export function SoyTechnoExperiment({ onBackToMain }) {
 
       {/* 5. MODAL CARRITO / DRAWER */}
       {activeModal === 'cart' && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-end">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end">
           <div className="bg-white w-full max-w-md h-full p-6 shadow-2xl flex flex-col justify-between text-left relative animate-in slide-in-from-right">
             <div className="space-y-6 overflow-y-auto">
               <div className="flex items-center justify-between border-b border-slate-100 pb-4">
@@ -787,7 +787,7 @@ export function SoyTechnoExperiment({ onBackToMain }) {
 
       {/* 6. MODAL MI CUENTA */}
       {activeModal === 'user' && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative space-y-6 text-left border border-slate-200">
             <button onClick={() => setActiveModal(null)} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-900">
               <X className="w-5 h-5" />
@@ -809,7 +809,7 @@ export function SoyTechnoExperiment({ onBackToMain }) {
 
       {/* 7. MODAL CONTACTO */}
       {activeModal === 'contact' && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative space-y-6 text-left border border-slate-200">
             <button onClick={() => setActiveModal(null)} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-900">
               <X className="w-5 h-5" />

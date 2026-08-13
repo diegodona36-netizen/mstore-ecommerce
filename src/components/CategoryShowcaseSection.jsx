@@ -57,7 +57,7 @@ export const CategoryShowcaseCard = ({
             e.stopPropagation();
             onAddToCart && onAddToCart(product);
           }}
-          className="absolute top-2 right-2 z-10 p-2 rounded-full bg-slate-900 text-white font-extrabold hover:bg-slate-800 hover:scale-110 transition-all shadow-md"
+          className="absolute top-2 right-2 z-10 p-2 rounded-full bg-black text-white font-extrabold hover:bg-neutral-900 hover:scale-110 transition-all shadow-md"
           title="Agregar al Carrito"
         >
           <ShoppingCart className="w-4 h-4" />
@@ -111,7 +111,7 @@ export const CategoryShowcaseCard = ({
               e.stopPropagation();
               onQuickView && onQuickView(product);
             }}
-            className="w-full py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-sans font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm"
+            className="w-full py-2 rounded-xl bg-black hover:bg-neutral-900 text-white font-sans font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm"
           >
             <Eye className="w-3.5 h-3.5 text-white" />
             <span>Ver Detalle del Producto</span>

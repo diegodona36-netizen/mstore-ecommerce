@@ -96,7 +96,7 @@ export const SoyTechnoFilterSidebar = ({
           : 'bg-[#070B12] border-white/10 text-slate-400'
       }`}>
         {/* Main Menu Toggle Icon */}
-        <div className="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-sm mb-2 cursor-pointer">
+        <div className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center shadow-sm mb-2 cursor-pointer">
           <SlidersHorizontal className="w-4 h-4" />
         </div>
 
@@ -110,7 +110,7 @@ export const SoyTechnoFilterSidebar = ({
               title={item.name}
               className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 relative group ${
                 isActive
-                  ? 'bg-slate-900 text-white shadow-sm scale-110'
+                  ? 'bg-black text-white shadow-sm scale-110'
                   : isLightBg
                     ? 'hover:bg-slate-100 hover:text-slate-900 text-slate-600'
                     : 'hover:bg-white/10 hover:text-white text-slate-400'
@@ -235,10 +235,10 @@ export const SoyTechnoFilterSidebar = ({
 
           {/* Dual Handle Slider track */}
           <div className="relative w-full py-2">
-            <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full relative">
+            <div className="h-1.5 w-full bg-slate-200 dark:bg-neutral-900 rounded-full relative">
               {/* Active corporate range highlight */}
               <div 
-                className="absolute h-full bg-slate-900 rounded-full"
+                className="absolute h-full bg-black rounded-full"
                 style={{
                   left: `${((minPrice - minLimit) / (maxLimit - minLimit)) * 100}%`,
                   right: `${100 - ((maxPrice - minLimit) / (maxLimit - minLimit)) * 100}%`
@@ -252,7 +252,7 @@ export const SoyTechnoFilterSidebar = ({
               max={maxLimit}
               value={minPrice}
               onChange={handleMinSliderChange}
-              className="absolute top-1 left-0 w-full appearance-none bg-transparent pointer-events-none focus:outline-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-slate-900 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md"
+              className="absolute top-1 left-0 w-full appearance-none bg-transparent pointer-events-none focus:outline-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-black [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md"
             />
 
             <input 
@@ -261,7 +261,7 @@ export const SoyTechnoFilterSidebar = ({
               max={maxLimit}
               value={maxPrice}
               onChange={handleMaxSliderChange}
-              className="absolute top-1 left-0 w-full appearance-none bg-transparent pointer-events-none focus:outline-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-slate-900 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md"
+              className="absolute top-1 left-0 w-full appearance-none bg-transparent pointer-events-none focus:outline-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-black [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md"
             />
           </div>
 
@@ -272,7 +272,7 @@ export const SoyTechnoFilterSidebar = ({
 
           <button
             onClick={() => onApplyFilter && onApplyFilter({ minPrice, maxPrice, selectedBrand, selectedColor, selectedType })}
-            className="px-6 py-2.5 rounded-md bg-slate-900 border border-slate-800 text-white hover:bg-slate-800 font-extrabold text-xs font-space transition-all shadow-sm active:scale-95 uppercase tracking-wider"
+            className="px-6 py-2.5 rounded-md bg-black border border-neutral-800 text-white hover:bg-neutral-900 font-extrabold text-xs font-space transition-all shadow-sm active:scale-95 uppercase tracking-wider"
           >
             Filtrar
           </button>

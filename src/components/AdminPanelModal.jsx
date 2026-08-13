@@ -224,7 +224,7 @@ export const AdminPanelModal = ({
 
               <button
                 type="submit"
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors shadow-sm"
+                className="w-full bg-black hover:bg-neutral-900 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors shadow-sm"
               >
                 Ingresar al Panel
               </button>
@@ -240,7 +240,7 @@ export const AdminPanelModal = ({
                 onClick={() => setActiveTab('producto')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold transition-all ${
                   activeTab === 'producto' 
-                    ? 'bg-slate-900 text-white shadow-sm' 
+                    ? 'bg-black text-white shadow-sm' 
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
@@ -252,7 +252,7 @@ export const AdminPanelModal = ({
                 onClick={() => setActiveTab('categorias')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold transition-all ${
                   activeTab === 'categorias' 
-                    ? 'bg-slate-900 text-white shadow-sm' 
+                    ? 'bg-black text-white shadow-sm' 
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
@@ -264,7 +264,7 @@ export const AdminPanelModal = ({
                 onClick={() => setActiveTab('inventario')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold transition-all ${
                   activeTab === 'inventario' 
-                    ? 'bg-slate-900 text-white shadow-sm' 
+                    ? 'bg-black text-white shadow-sm' 
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
@@ -418,7 +418,7 @@ export const AdminPanelModal = ({
 
                 <button
                   type="submit"
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider mt-4 shadow-sm transition-colors"
+                  className="w-full bg-black hover:bg-neutral-900 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider mt-4 shadow-sm transition-colors"
                 >
                   {editingId ? 'Guardar Cambios del Producto' : 'Guardar Producto en la Tienda'}
                 </button>
@@ -454,7 +454,7 @@ export const AdminPanelModal = ({
 
                     <button
                       type="submit"
-                      className="bg-slate-900 hover:bg-slate-800 text-white py-2 px-4 rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-colors"
+                      className="bg-black hover:bg-neutral-900 text-white py-2 px-4 rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-colors"
                     >
                       <Plus className="w-4 h-4" />
                       Crear Categoría

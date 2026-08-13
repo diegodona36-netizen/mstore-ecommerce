@@ -267,7 +267,7 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
 
       {/* 4. HERO BANNER CAROUSEL PROMOCIONAL */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 mt-6">
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white p-8 sm:p-12 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8 border border-slate-800">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white p-8 sm:p-12 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8 border border-neutral-800">
           
           <div className="space-y-4 max-w-xl text-left">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#00E5FF] text-slate-950 text-xs font-black uppercase tracking-wider shadow-sm">
@@ -300,7 +300,7 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
             </div>
           </div>
 
-          <div className="w-full md:w-80 h-64 sm:h-72 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 relative group shrink-0 bg-slate-900">
+          <div className="w-full md:w-80 h-64 sm:h-72 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 relative group shrink-0 bg-black">
             <img 
               src={HERO_SLIDES[currentSlide].img} 
               alt="M Store Promo" 
@@ -474,7 +474,7 @@ export function SoyTechnoHomePage({ onBackToMain, onOpenCelularesCategory }) {
       {/* DRAWER LATERAL DE CATEGORÍAS (REPLICANDO SCREENSHOT 1) */}
       {isCategoriesDrawerOpen && (
         <div className="fixed inset-0 z-50 flex animate-fadeIn">
-          <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm" onClick={() => setIsCategoriesDrawerOpen(false)} />
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setIsCategoriesDrawerOpen(false)} />
 
           <div className="relative z-10 w-full max-w-xs sm:max-w-sm bg-white h-full shadow-2xl flex flex-col justify-between overflow-y-auto font-sans">
             <div>

@@ -106,7 +106,7 @@ export const ProductCarousel = ({
           {/* Mobile Filter Button */}
           <button
             onClick={() => setShowMobileFilterModal(true)}
-            className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs shadow-sm active:scale-95 transition-all"
+            className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-xl bg-black hover:bg-neutral-900 text-white font-extrabold text-xs shadow-sm active:scale-95 transition-all"
           >
             <Filter className="w-4 h-4 text-white" />
             <span>Filtros de Catálogo</span>
@@ -137,7 +137,7 @@ export const ProductCarousel = ({
             onClick={() => setSelectedBrand(tab.id)}
             className={`px-5 py-2.5 rounded-2xl text-xs font-extrabold whitespace-nowrap transition-all duration-300 border ${
               selectedBrand === tab.id
-                ? 'bg-slate-900 text-white border-slate-900 shadow-sm scale-105'
+                ? 'bg-black text-white border-slate-900 shadow-sm scale-105'
                 : 'bg-white border-2 border-slate-200 text-slate-800 hover:border-slate-400 shadow-sm'
             }`}
           >
@@ -182,7 +182,7 @@ export const ProductCarousel = ({
                   onCategoryChange('todos');
                   setPriceRange([1, 2500]);
                 }}
-                className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-xl text-xs font-extrabold inline-block mt-2 shadow-sm uppercase tracking-wider transition-all"
+                className="bg-black hover:bg-neutral-900 text-white px-6 py-2.5 rounded-xl text-xs font-extrabold inline-block mt-2 shadow-sm uppercase tracking-wider transition-all"
               >
                 Restablecer Filtros &rarr;
               </button>

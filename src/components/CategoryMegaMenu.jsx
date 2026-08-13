@@ -91,7 +91,7 @@ export const CategoryMegaMenu = ({ isOpen, onClose, onSelectCategory, customCate
           >
             <span>Categorías</span>
             {activeTab === 'categorias' && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-900" />
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-black" />
             )}
           </button>
 
@@ -105,7 +105,7 @@ export const CategoryMegaMenu = ({ isOpen, onClose, onSelectCategory, customCate
           >
             <span>Menú</span>
             {activeTab === 'menu' && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-900" />
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-black" />
             )}
           </button>
         </div>

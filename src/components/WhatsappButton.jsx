@@ -63,10 +63,10 @@ export const WhatsappButton = () => {
         <div className="mb-4 w-80 sm:w-96 bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden animate-fadeIn flex flex-col h-[420px]">
           
           {/* Header del Chat (Fondo Oscuro Premium slate-900) */}
-          <div className="bg-slate-900 px-5 py-3.5 border-b border-slate-800 flex items-center justify-between shrink-0">
+          <div className="bg-black px-5 py-3.5 border-b border-neutral-800 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-white font-black text-xs">
+                <div className="w-9 h-9 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center text-white font-black text-xs">
                   <Bot className="w-5 h-5 text-blue-400" />
                 </div>
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-slate-900 animate-pulse"></span>
@@ -78,7 +78,7 @@ export const WhatsappButton = () => {
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
+              className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-neutral-900 transition-colors"
               aria-label="Cerrar chat"
             >
               <X className="w-4 h-4" />
@@ -97,7 +97,7 @@ export const WhatsappButton = () => {
                 <div
                   className={`p-3 rounded-2xl text-xs leading-relaxed shadow-sm ${
                     msg.sender === 'user'
-                      ? 'bg-slate-900 text-white rounded-br-none font-medium'
+                      ? 'bg-black text-white rounded-br-none font-medium'
                       : 'bg-white text-slate-800 border border-slate-200 rounded-bl-none font-medium'
                   }`}
                 >
@@ -131,7 +131,7 @@ export const WhatsappButton = () => {
             <button
               type="submit"
               disabled={!inputText.trim()}
-              className="bg-slate-900 hover:bg-slate-800 disabled:opacity-40 text-white p-2.5 rounded-xl transition-all shadow-sm shrink-0 active:scale-95"
+              className="bg-black hover:bg-neutral-900 disabled:opacity-40 text-white p-2.5 rounded-xl transition-all shadow-sm shrink-0 active:scale-95"
               title="Enviar mensaje"
             >
               <Send className="w-4 h-4" />
@@ -144,7 +144,7 @@ export const WhatsappButton = () => {
       {/* Botón Flotante para Abrir Chat */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-slate-900 hover:bg-slate-800 text-white shadow-xl transition-all duration-300 transform hover:scale-110 active:scale-95 border border-slate-700"
+        className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-black hover:bg-neutral-900 text-white shadow-xl transition-all duration-300 transform hover:scale-110 active:scale-95 border border-neutral-800"
         aria-label="Abrir Chat de Atención al Cliente"
       >
         <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center text-[9px] font-black text-white ring-2 ring-white">

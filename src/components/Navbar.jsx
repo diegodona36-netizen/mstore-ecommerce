@@ -30,7 +30,7 @@ export const Navbar = ({
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-slate-950 border-b border-slate-800 shadow-sm transition-all duration-300 font-sans">
+    <header className="sticky top-0 z-50 w-full bg-black border-b border-neutral-800 shadow-sm transition-all duration-300 font-sans">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-3.5">
         <div className="flex items-center justify-between gap-3 md:gap-5">
           
@@ -47,8 +47,8 @@ export const Navbar = ({
             onClick={onOpenMegaMenu || onToggleMegaMenu}
             className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all duration-300 shrink-0 border ${
               isMegaMenuOpen 
-                ? 'bg-slate-800 text-white border-slate-700 shadow-md' 
-                : 'bg-slate-900 text-slate-300 hover:text-white hover:bg-slate-800 border-slate-800 shadow-sm'
+                ? 'bg-neutral-900 text-white border-neutral-800 shadow-md' 
+                : 'bg-black text-slate-300 hover:text-white hover:bg-neutral-900 border-neutral-800 shadow-sm'
             }`}
           >
             <LayoutGrid className="w-4 h-4" />
@@ -67,7 +67,7 @@ export const Navbar = ({
                 value={searchQuery || ''}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Buscar en M Store (ej: iPhone, Smart TV 4K, AirPods)..."
-                className="w-full bg-slate-900 border border-slate-800 focus:border-slate-700 focus:ring-1 focus:ring-slate-700 text-white text-xs rounded-lg pl-10 pr-4 py-2.5 outline-none transition-all placeholder:text-slate-500"
+                className="w-full bg-black border border-neutral-800 focus:border-neutral-800 focus:ring-1 focus:ring-slate-700 text-white text-xs rounded-lg pl-10 pr-4 py-2.5 outline-none transition-all placeholder:text-slate-500"
               />
               {searchQuery && (
                 <button
@@ -93,7 +93,7 @@ export const Navbar = ({
                 value={searchQuery || ''}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Buscar productos..."
-                className="w-full bg-slate-900 border border-slate-800 focus:border-slate-700 text-white text-xs rounded-full pl-9 pr-3 py-2 outline-none min-h-[38px] placeholder:text-slate-500"
+                className="w-full bg-black border border-neutral-800 focus:border-neutral-800 text-white text-xs rounded-full pl-9 pr-3 py-2 outline-none min-h-[38px] placeholder:text-slate-500"
               />
               {searchQuery && (
                 <button
@@ -113,7 +113,7 @@ export const Navbar = ({
             {/* Shopping Cart Button */}
             <button
               onClick={onOpenCart}
-              className="relative flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 px-4 py-2 rounded-lg text-xs font-bold transition-all duration-300 group shadow-sm active:scale-95"
+              className="relative flex items-center gap-2 bg-black hover:bg-neutral-900 text-slate-300 hover:text-white border border-neutral-800 px-4 py-2 rounded-lg text-xs font-bold transition-all duration-300 group shadow-sm active:scale-95"
               aria-label="Ver Carrito de Compras"
             >
               <ShoppingCart className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 text-slate-300 group-hover:text-white" />
@@ -130,7 +130,7 @@ export const Navbar = ({
 
         {/* Mobile Search & Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden mt-3 pt-3 border-t border-slate-800 flex flex-col gap-3 animate-fadeIn">
+          <div className="md:hidden mt-3 pt-3 border-t border-neutral-800 flex flex-col gap-3 animate-fadeIn">
             {/* Mobile Search */}
             <form onSubmit={handleSearchFormSubmit} className="relative">
               <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-3 pointer-events-none" />
@@ -139,7 +139,7 @@ export const Navbar = ({
                 value={searchQuery || ''}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Buscar productos..."
-                className="w-full bg-slate-900 border border-slate-800 text-white text-xs rounded-lg pl-10 pr-4 py-2.5 outline-none"
+                className="w-full bg-black border border-neutral-800 text-white text-xs rounded-lg pl-10 pr-4 py-2.5 outline-none"
               />
             </form>
 

@@ -39,7 +39,7 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRem
           {/* Cart Header */}
           <div className="p-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-slate-900 text-white">
+              <div className="p-2 rounded-lg bg-black text-white">
                 <ShoppingCart className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -67,7 +67,7 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRem
             </div>
             <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
               <div 
-                className="h-full bg-slate-900 transition-all duration-500"
+                className="h-full bg-black transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
               ></div>
             </div>
@@ -84,7 +84,7 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRem
                 </p>
                 <button
                   onClick={onClose}
-                  className="mt-6 bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-lg text-xs font-bold shadow-sm transition-all"
+                  className="mt-6 bg-black hover:bg-neutral-900 text-white px-6 py-2.5 rounded-lg text-xs font-bold shadow-sm transition-all"
                 >
                   Explorar Productos
                 </button>
@@ -165,7 +165,7 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRem
               {/* WhatsApp Primary Action */}
               <button
                 onClick={handleWhatsAppCheckout}
-                className="w-full py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white shadow-sm active:scale-95 transition-all"
+                className="w-full py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 bg-black hover:bg-neutral-900 text-white shadow-sm active:scale-95 transition-all"
               >
                 <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 fill-white shrink-0" />
                 <span className="truncate">Comprar por WhatsApp</span>

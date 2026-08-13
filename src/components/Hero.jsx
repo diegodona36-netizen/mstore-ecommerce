@@ -73,7 +73,7 @@ export const Hero = ({ onExploreClick, onQuickViewHero }) => {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 w-full">
               <button
                 onClick={() => onExploreClick && onExploreClick()}
-                className="px-8 py-3.5 rounded-xl text-sm font-extrabold font-sans bg-slate-900 hover:bg-slate-800 text-white flex items-center justify-center gap-2 w-full sm:w-auto group shadow-md hover:scale-105 active:scale-95 transition-all"
+                className="px-8 py-3.5 rounded-xl text-sm font-extrabold font-sans bg-black hover:bg-neutral-900 text-white flex items-center justify-center gap-2 w-full sm:w-auto group shadow-md hover:scale-105 active:scale-95 transition-all"
               >
                 <span>Explorar Catálogo Completo</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -131,7 +131,7 @@ export const Hero = ({ onExploreClick, onQuickViewHero }) => {
             >
               
               {/* Product Badge Tag */}
-              <div className="absolute top-8 left-8 z-20 bg-slate-900/90 backdrop-blur-md border border-slate-700 px-3 py-1 rounded-full flex items-center gap-1.5">
+              <div className="absolute top-8 left-8 z-20 bg-black/90 backdrop-blur-md border border-neutral-800 px-3 py-1 rounded-full flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span className="text-[10px] font-bold text-white uppercase tracking-wider font-sans">
                   {currentProduct.tag || 'Destacado Flagship'}
@@ -144,7 +144,7 @@ export const Hero = ({ onExploreClick, onQuickViewHero }) => {
                   e.stopPropagation();
                   handlePrevSlide();
                 }}
-                className="absolute top-1/2 left-3 -translate-y-1/2 z-30 p-2 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white transition-all border border-slate-700 shadow-md"
+                className="absolute top-1/2 left-3 -translate-y-1/2 z-30 p-2 rounded-full bg-black/80 hover:bg-black text-white transition-all border border-neutral-800 shadow-md"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -154,7 +154,7 @@ export const Hero = ({ onExploreClick, onQuickViewHero }) => {
                   e.stopPropagation();
                   handleNextSlide();
                 }}
-                className="absolute top-1/2 right-3 -translate-y-1/2 z-30 p-2 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white transition-all border border-slate-700 shadow-md"
+                className="absolute top-1/2 right-3 -translate-y-1/2 z-30 p-2 rounded-full bg-black/80 hover:bg-black text-white transition-all border border-neutral-800 shadow-md"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -195,7 +195,7 @@ export const Hero = ({ onExploreClick, onQuickViewHero }) => {
                     e.stopPropagation();
                     handleDetailClick();
                   }}
-                  className="bg-slate-900 hover:bg-slate-800 text-white px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition-all shadow-sm flex items-center gap-1.5 font-sans shrink-0"
+                  className="bg-black hover:bg-neutral-900 text-white px-3.5 py-2.5 rounded-xl text-xs font-extrabold transition-all shadow-sm flex items-center gap-1.5 font-sans shrink-0"
                 >
                   <Eye className="w-4 h-4" />
                   <span>Ver Detalle</span>
@@ -213,7 +213,7 @@ export const Hero = ({ onExploreClick, onQuickViewHero }) => {
                     }}
                     className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
                       idx === currentSlideIndex 
-                        ? 'w-6 bg-slate-900' 
+                        ? 'w-6 bg-black' 
                         : 'w-1.5 bg-slate-300 hover:bg-slate-400'
                     }`}
                   ></span>

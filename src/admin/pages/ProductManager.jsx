@@ -22,10 +22,6 @@ import {
   Upload, 
   Check, 
   DollarSign,
-  Cpu,
-  HardDrive,
-  Palette,
-  Sparkles,
   Layers,
   Layers3,
   ChevronDown,
@@ -34,13 +30,43 @@ import {
 } from 'lucide-react';
 import { CATEGORIES } from '../../data/products';
 
-// Quick suggestions for datalists
-const RAM_SUGGESTIONS = ['4GB', '6GB', '8GB', '12GB', '16GB', '24GB', '32GB'];
-const STORAGE_SUGGESTIONS = ['64GB', '128GB', '256GB', '512GB', '1TB', '2TB'];
-const COLOR_SUGGESTIONS = [
-  'Negro Mate', 'Blanco Puro', 'Titanio Natural', 'Gris Grafito',
-  'Azul Titanio', 'Oro Champán', 'Verde Esmeralda', 'Rojo Carmesí',
-  'Plata', 'Rosa Gold', 'Morado', 'Naranja'
+// PREDEFINED LOGICAL OPTIONS FOR MOBILE & CONSUMER ELECTRONICS
+export const PREDEFINED_COLORS = [
+  'Negro Mate',
+  'Negro Titanio',
+  'Blanco Puro',
+  'Titanio Natural',
+  'Gris Grafito',
+  'Azul Titanio',
+  'Oro Champán',
+  'Verde Esmeralda',
+  'Rojo Carmesí',
+  'Plata',
+  'Rosa Gold',
+  'Morado'
+];
+
+export const PREDEFINED_RAMS = [
+  'No Aplica',
+  '4GB',
+  '6GB',
+  '8GB',
+  '12GB',
+  '16GB',
+  '24GB',
+  '32GB',
+  '64GB'
+];
+
+export const PREDEFINED_STORAGES = [
+  'No Aplica / Estándar',
+  '32GB',
+  '64GB',
+  '128GB',
+  '256GB',
+  '512GB',
+  '1TB',
+  '2TB'
 ];
 
 // Client-side image compressor (fits within Firestore document limits easily)
@@ -94,12 +120,10 @@ export default function ProductManager() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Form State
+  // Form State (Parent Product has NO price fields - prices exist exclusively per variant)
   const [formData, setFormData] = useState({
     name: '',
     category: 'smartphones',
-    price: '',
-    originalPrice: '',
     tag: '',
     description: '',
     inStock: true,
@@ -145,8 +169,6 @@ export default function ProductManager() {
     setFormData({
       name: '',
       category: 'smartphones',
-      price: '',
-      originalPrice: '',
       tag: '',
       description: '',
       inStock: true,
@@ -179,7 +201,7 @@ export default function ProductManager() {
     if (Array.isArray(product.variants) && product.variants.length > 0) {
       existingVariants = product.variants.map((v, i) => ({
         id: v.id || `var_${Date.now()}_${i}`,
-        color: v.color || (typeof v.colors === 'string' ? v.colors : 'Negro'),
+        color: v.color || (typeof v.colors === 'string' ? v.colors : 'Negro Mate'),
         ram: v.ram || '8GB',
         storage: v.storage || (typeof v.size === 'string' ? v.size : '256GB'),
         price: v.price !== undefined ? v.price : (product.price || ''),
@@ -193,12 +215,12 @@ export default function ProductManager() {
         const price = typeof st === 'object' ? st.price : product.price;
         const color = Array.isArray(product.colors) && product.colors[0] 
           ? (typeof product.colors[0] === 'object' ? product.colors[0].name : product.colors[0]) 
-          : 'Negro';
+          : 'Negro Mate';
         const ram = Array.isArray(product.ramOptions) && product.ramOptions[0] ? product.ramOptions[0] : '8GB';
 
         return {
           id: `var_${Date.now()}_${i}`,
-          color: color || 'Negro',
+          color: color || 'Negro Mate',
           ram: ram || '8GB',
           storage: size || '256GB',
           price: price || product.price || '',
@@ -206,13 +228,23 @@ export default function ProductManager() {
           hasCashea: product.hasCashea !== false
         };
       });
+    } else {
+      existingVariants = [
+        {
+          id: `var_${Date.now()}_1`,
+          color: 'Negro Mate',
+          ram: '12GB',
+          storage: '256GB',
+          price: product.price || '',
+          stock: 5,
+          hasCashea: product.hasCashea !== false
+        }
+      ];
     }
 
     setFormData({
       name: product.name || '',
       category: product.category || 'smartphones',
-      price: product.price || '',
-      originalPrice: product.originalPrice || '',
       tag: product.tag || '',
       description: product.description || '',
       inStock: product.inStock !== false,
@@ -235,7 +267,7 @@ export default function ProductManager() {
       color: lastVar?.color || 'Negro Mate',
       ram: lastVar?.ram || '8GB',
       storage: lastVar?.storage || '256GB',
-      price: formData.price || lastVar?.price || '',
+      price: lastVar?.price || '',
       stock: 5,
       hasCashea: formData.hasCashea !== false
     };
@@ -255,6 +287,10 @@ export default function ProductManager() {
   };
 
   const removeVariantBlock = (indexToRemove) => {
+    if (formData.variants.length <= 1) {
+      alert('El producto debe tener al menos una variante o modelo.');
+      return;
+    }
     setFormData(prev => ({
       ...prev,
       variants: prev.variants.filter((_, idx) => idx !== indexToRemove)
@@ -272,8 +308,20 @@ export default function ProductManager() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.price) {
-      alert('Por favor ingresa nombre y precio.');
+    if (!formData.name.trim()) {
+      alert('Por favor ingresa el nombre del producto.');
+      return;
+    }
+
+    if (!formData.variants || formData.variants.length === 0) {
+      alert('Debes agregar al menos una variante con su precio de venta.');
+      return;
+    }
+
+    // Validate that all variants have a valid price
+    const missingPrice = formData.variants.some(v => !v.price || parseFloat(v.price) <= 0);
+    if (missingPrice) {
+      alert('Por favor ingresa un precio de venta válido ($ USD) para cada una de las variantes agregadas.');
       return;
     }
 
@@ -289,10 +337,10 @@ export default function ProductManager() {
       // Clean and normalize variants
       const cleanVariants = formData.variants.map((v, i) => ({
         id: v.id || `var_${Date.now()}_${i}`,
-        color: (v.color || 'Negro').trim(),
-        ram: (v.ram || '').trim(),
-        storage: (v.storage || '').trim(),
-        price: parseFloat(v.price) || parseFloat(formData.price) || 0,
+        color: v.color || 'Negro Mate',
+        ram: v.ram === 'No Aplica' ? '' : (v.ram || ''),
+        storage: v.storage === 'No Aplica / Estándar' ? '' : (v.storage || ''),
+        price: parseFloat(v.price) || 0,
         stock: parseInt(v.stock) >= 0 ? parseInt(v.stock) : 0,
         hasCashea: v.hasCashea !== false
       }));
@@ -302,11 +350,14 @@ export default function ProductManager() {
       const uniqueRams = Array.from(new Set(cleanVariants.map(v => v.ram).filter(Boolean)));
       const uniqueStorages = Array.from(new Set(cleanVariants.map(v => v.storage).filter(Boolean)));
 
+      // Calculate min base price for queries
+      const variantPrices = cleanVariants.map(v => v.price).filter(p => p > 0);
+      const minPrice = variantPrices.length > 0 ? Math.min(...variantPrices) : 0;
+
       const productPayload = {
         name: formData.name.trim(),
         category: formData.category,
-        price: parseFloat(formData.price) || 0,
-        originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : null,
+        price: minPrice, // Derived strictly from minimum variant price for DB sorting
         tag: formData.tag.trim(),
         description: formData.description.trim(),
         inStock: formData.inStock,
@@ -364,22 +415,11 @@ export default function ProductManager() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      {/* Suggestions datalists for easy fast typing */}
-      <datalist id="ram-list">
-        {RAM_SUGGESTIONS.map(r => <option key={r} value={r} />)}
-      </datalist>
-      <datalist id="storage-list">
-        {STORAGE_SUGGESTIONS.map(s => <option key={s} value={s} />)}
-      </datalist>
-      <datalist id="color-list">
-        {COLOR_SUGGESTIONS.map(c => <option key={c} value={c} />)}
-      </datalist>
-
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900">Catálogo de Productos</h1>
-          <p className="text-slate-500 text-sm mt-1">Crea, edita y administra los productos, variantes y financiamiento Cashea.</p>
+          <p className="text-slate-500 text-sm mt-1">Crea, edita y administra los modelos, inventario y financiamiento Cashea.</p>
         </div>
 
         <button
@@ -539,9 +579,6 @@ export default function ProductManager() {
                           ) : (
                             <div>
                               <div className="font-black text-slate-900">${minPrice.toFixed(2)} USD</div>
-                              {p.originalPrice && (
-                                <div className="text-xs text-slate-400 line-through">${p.originalPrice}</div>
-                              )}
                             </div>
                           )}
                         </td>
@@ -711,9 +748,9 @@ export default function ProductManager() {
             <div className="flex items-center justify-between pb-4 border-b border-slate-100 sticky top-0 bg-white z-20">
               <div>
                 <h2 className="text-xl font-extrabold text-slate-900">
-                  {editingProduct ? 'Editar Producto' : 'Crear Nuevo Producto'}
+                  {editingProduct ? 'Editar Producto y Modelos' : 'Crear Nuevo Producto'}
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">Configuración de catálogo y lotes de inventario</p>
+                <p className="text-xs text-slate-500 mt-0.5">Configuración de catálogo y lotes físicos con precios individuales</p>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -815,46 +852,9 @@ export default function ProductManager() {
                 </div>
               </div>
 
-              {/* Base Price & Original Price */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
-                    Precio Base de Referencia ($ USD) *
-                  </label>
-                  <div className="relative">
-                    <DollarSign className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input
-                      type="number"
-                      step="0.01"
-                      required
-                      value={formData.price}
-                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                      placeholder="999.00"
-                      className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
-                    Precio Anterior Tachado ($ USD)
-                  </label>
-                  <div className="relative">
-                    <DollarSign className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={formData.originalPrice}
-                      onChange={(e) => setFormData({ ...formData, originalPrice: e.target.value })}
-                      placeholder="1199.00"
-                      className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all"
-                    />
-                  </div>
-                </div>
-              </div>
-
               {/* ------------------------------------------------------------- */}
               {/* SECTION: GESTOR DE VARIANTES DINÁMICAS (DYNAMIC REPEATER)      */}
+              {/* NOTE: Prices exist exclusively per variant below!             */}
               {/* ------------------------------------------------------------- */}
               <div className="bg-slate-50/70 border border-slate-200 rounded-3xl p-4 sm:p-6 space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 pb-3">
@@ -866,161 +866,153 @@ export default function ProductManager() {
                       </h3>
                     </div>
                     <p className="text-[11px] text-slate-500 mt-0.5">
-                      Agrega solo las combinaciones físicas que tienes en tu factura o stock.
+                      Configura cada modelo con sus selectores de Color, RAM, Almacenamiento, Precio individual y Stock.
                     </p>
                   </div>
 
                   <span className="text-xs font-black px-2.5 py-1 bg-white border border-slate-200 rounded-lg text-slate-700 self-start sm:self-auto">
-                    {formData.variants.length} {formData.variants.length === 1 ? 'variante' : 'variantes'}
+                    {formData.variants.length} {formData.variants.length === 1 ? 'modelo' : 'modelos'}
                   </span>
                 </div>
 
                 {/* Dynamic Variants List */}
-                {formData.variants.length === 0 ? (
-                  <div className="py-8 px-4 text-center bg-white rounded-2xl border-2 border-dashed border-slate-200">
-                    <Package className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-                    <p className="text-xs font-bold text-slate-700">No has agregado modelos específicos todavía</p>
-                    <p className="text-[11px] text-slate-400 mt-1 max-w-sm mx-auto">
-                      Haz clic en el botón de abajo para registrar cada combinación con su color, RAM, almacenamiento, precio y stock.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {formData.variants.map((variant, idx) => (
-                      <div 
-                        key={variant.id || idx}
-                        className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs transition-all hover:border-slate-300 relative space-y-4"
-                      >
-                        {/* Card Header: Title & Delete button */}
-                        <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-                          <div className="flex items-center gap-2">
-                            <span className="w-6 h-6 rounded-lg bg-slate-900 text-white font-black text-xs flex items-center justify-center">
-                              {idx + 1}
+                <div className="space-y-4">
+                  {formData.variants.map((variant, idx) => (
+                    <div 
+                      key={variant.id || idx}
+                      className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs transition-all hover:border-slate-300 relative space-y-4"
+                    >
+                      {/* Card Header: Title & Delete button */}
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                        <div className="flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-lg bg-slate-900 text-white font-black text-xs flex items-center justify-center">
+                            {idx + 1}
+                          </span>
+                          <span className="font-extrabold text-xs text-slate-900">
+                            {variant.color} {variant.ram && variant.ram !== 'No Aplica' ? `• ${variant.ram}` : ''} {variant.storage && variant.storage !== 'No Aplica / Estándar' ? `• ${variant.storage}` : ''}
+                          </span>
+                          {variant.price && (
+                            <span className="text-xs font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
+                              ${parseFloat(variant.price).toFixed(2)} USD
                             </span>
-                            <span className="font-extrabold text-xs text-slate-900">
-                              {variant.color || 'Color'} • {variant.ram || 'RAM'} • {variant.storage || 'Almacenamiento'}
-                            </span>
-                            {variant.price && (
-                              <span className="text-xs font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
-                                ${parseFloat(variant.price).toFixed(2)} USD
-                              </span>
-                            )}
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() => removeVariantBlock(idx)}
-                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-1 text-xs font-bold"
-                            title="Eliminar esta variante"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                            <span className="hidden sm:inline">Eliminar</span>
-                          </button>
+                          )}
                         </div>
 
-                        {/* Card Inputs Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                          {/* Color */}
-                          <div>
-                            <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                              Color del Equipo *
-                            </label>
-                            <input
-                              type="text"
-                              required
-                              list="color-list"
-                              value={variant.color}
-                              onChange={(e) => updateVariantField(idx, 'color', e.target.value)}
-                              placeholder="ej. Negro Mate, Titanio"
-                              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
-                            />
-                          </div>
+                        <button
+                          type="button"
+                          onClick={() => removeVariantBlock(idx)}
+                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-1 text-xs font-bold"
+                          title="Eliminar este modelo"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          <span className="hidden sm:inline">Eliminar</span>
+                        </button>
+                      </div>
 
-                          {/* RAM */}
-                          <div>
-                            <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                              Memoria RAM
-                            </label>
-                            <input
-                              type="text"
-                              list="ram-list"
-                              value={variant.ram}
-                              onChange={(e) => updateVariantField(idx, 'ram', e.target.value)}
-                              placeholder="ej. 8GB, 12GB"
-                              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
-                            />
-                          </div>
+                      {/* Card Inputs Grid with Strict <select> Dropdowns */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {/* 1. Strict Color Dropdown */}
+                        <div>
+                          <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
+                            Color del Equipo *
+                          </label>
+                          <select
+                            value={variant.color}
+                            onChange={(e) => updateVariantField(idx, 'color', e.target.value)}
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all cursor-pointer"
+                          >
+                            {PREDEFINED_COLORS.map(c => (
+                              <option key={c} value={c}>{c}</option>
+                            ))}
+                          </select>
+                        </div>
 
-                          {/* Storage */}
-                          <div>
-                            <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                              Almacenamiento *
-                            </label>
-                            <input
-                              type="text"
-                              required
-                              list="storage-list"
-                              value={variant.storage}
-                              onChange={(e) => updateVariantField(idx, 'storage', e.target.value)}
-                              placeholder="ej. 128GB, 256GB, 512GB"
-                              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
-                            />
-                          </div>
+                        {/* 2. Strict RAM Dropdown */}
+                        <div>
+                          <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
+                            Memoria RAM *
+                          </label>
+                          <select
+                            value={variant.ram || '8GB'}
+                            onChange={(e) => updateVariantField(idx, 'ram', e.target.value)}
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all cursor-pointer"
+                          >
+                            {PREDEFINED_RAMS.map(r => (
+                              <option key={r} value={r}>{r}</option>
+                            ))}
+                          </select>
+                        </div>
 
-                          {/* Price */}
-                          <div>
-                            <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                              Precio de Venta ($ USD) *
-                            </label>
-                            <div className="relative">
-                              <DollarSign className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-                              <input
-                                type="number"
-                                step="0.01"
-                                required
-                                value={variant.price}
-                                onChange={(e) => updateVariantField(idx, 'price', e.target.value)}
-                                placeholder={formData.price || '0.00'}
-                                className="w-full pl-7 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
-                              />
-                            </div>
-                          </div>
+                        {/* 3. Strict Storage Dropdown */}
+                        <div>
+                          <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
+                            Almacenamiento *
+                          </label>
+                          <select
+                            value={variant.storage || '256GB'}
+                            onChange={(e) => updateVariantField(idx, 'storage', e.target.value)}
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all cursor-pointer"
+                          >
+                            {PREDEFINED_STORAGES.map(s => (
+                              <option key={s} value={s}>{s}</option>
+                            ))}
+                          </select>
+                        </div>
 
-                          {/* Stock */}
-                          <div>
-                            <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                              Stock Disponible (Unidades) *
-                            </label>
+                        {/* 4. Variant Selling Price Input */}
+                        <div>
+                          <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
+                            Precio de Venta ($ USD) *
+                          </label>
+                          <div className="relative">
+                            <DollarSign className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
                             <input
                               type="number"
-                              min="0"
+                              step="0.01"
+                              min="0.01"
                               required
-                              value={variant.stock}
-                              onChange={(e) => updateVariantField(idx, 'stock', e.target.value)}
-                              placeholder="5"
-                              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                              value={variant.price}
+                              onChange={(e) => updateVariantField(idx, 'price', e.target.value)}
+                              placeholder="ej. 999.00"
+                              className="w-full pl-7 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-blue-700 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
                             />
                           </div>
+                        </div>
 
-                          {/* Cashea Toggle */}
-                          <div className="flex flex-col justify-end">
-                            <label className="flex items-center gap-2 p-2 bg-amber-50/60 border border-amber-200 rounded-xl cursor-pointer hover:bg-amber-50 transition-colors">
-                              <input
-                                type="checkbox"
-                                checked={variant.hasCashea}
-                                onChange={(e) => updateVariantField(idx, 'hasCashea', e.target.checked)}
-                                className="w-4 h-4 text-amber-500 rounded border-amber-300 focus:ring-amber-400 cursor-pointer"
-                              />
-                              <span className="text-[11px] font-extrabold text-amber-950 select-none">
-                                Aplica Cashea
-                              </span>
-                            </label>
-                          </div>
+                        {/* 5. Stock Units */}
+                        <div>
+                          <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
+                            Stock Disponible *
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            required
+                            value={variant.stock}
+                            onChange={(e) => updateVariantField(idx, 'stock', e.target.value)}
+                            placeholder="5"
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                          />
+                        </div>
+
+                        {/* 6. Cashea Toggle */}
+                        <div className="flex flex-col justify-end">
+                          <label className="flex items-center gap-2 p-2 bg-amber-50/60 border border-amber-200 rounded-xl cursor-pointer hover:bg-amber-50 transition-colors">
+                            <input
+                              type="checkbox"
+                              checked={variant.hasCashea}
+                              onChange={(e) => updateVariantField(idx, 'hasCashea', e.target.checked)}
+                              className="w-4 h-4 text-amber-500 rounded border-amber-300 focus:ring-amber-400 cursor-pointer"
+                            />
+                            <span className="text-[11px] font-extrabold text-amber-950 select-none">
+                              Aplica Cashea
+                            </span>
+                          </label>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                )}
+                    </div>
+                  ))}
+                </div>
 
                 {/* MAIN ACTION BUTTON: + Agregar Modelo/Variante */}
                 <button

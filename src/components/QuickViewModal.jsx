@@ -49,15 +49,21 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
   const getColorHexFromName = (color) => {
     if (typeof color === 'object' && color.hex) return color.hex;
     const name = String(typeof color === 'object' ? color.name : color).toLowerCase();
+    if (name.includes('desierto') || name.includes('desert') || name.includes('arena')) return '#C2B280';
     if (name.includes('negro') || name.includes('black') || name.includes('oscuro')) return '#121212';
-    if (name.includes('blanco') || name.includes('white') || name.includes('puro')) return '#FFFFFF';
-    if (name.includes('titanio') || name.includes('gris') || name.includes('gray')) return '#948B7D';
-    if (name.includes('morado') || name.includes('purple') || name.includes('lila') || name.includes('violeta')) return '#D8B4FE';
-    if (name.includes('azul') || name.includes('blue') || name.includes('celeste') || name.includes('cyan')) return '#93C5FD';
+    if (name.includes('blanco') || name.includes('white') || name.includes('estrella') || name.includes('puro')) return '#FFFFFF';
+    if (name.includes('medianoche') || name.includes('midnight')) return '#1E293B';
+    if (name.includes('titanio') || name.includes('natural')) return '#948B7D';
+    if (name.includes('grafito') || name.includes('gris') || name.includes('espacial')) return '#475569';
+    if (name.includes('plata') || name.includes('silver')) return '#E2E8F0';
+    if (name.includes('morado') || name.includes('purple') || name.includes('lila') || name.includes('lavanda')) return '#D8B4FE';
+    if (name.includes('azul') || name.includes('blue') || name.includes('celeste') || name.includes('cielo')) return '#93C5FD';
     if (name.includes('oro') || name.includes('gold') || name.includes('champan') || name.includes('champán')) return '#D97706';
-    if (name.includes('verde') || name.includes('green') || name.includes('esmeralda')) return '#059669';
+    if (name.includes('oliva') || name.includes('verde') || name.includes('green') || name.includes('esmeralda')) return '#059669';
     if (name.includes('rojo') || name.includes('red') || name.includes('rubi')) return '#DC2626';
-    if (name.includes('rosa') || name.includes('pink')) return '#F472B6';
+    if (name.includes('rosa') || name.includes('pink') || name.includes('rose')) return '#F472B6';
+    if (name.includes('naranja') || name.includes('orange')) return '#F97316';
+    if (name.includes('amarillo') || name.includes('yellow')) return '#EAB308';
     return '#334155';
   };
 

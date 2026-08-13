@@ -30,20 +30,27 @@ import {
 } from 'lucide-react';
 import { CATEGORIES } from '../../data/products';
 
-// PREDEFINED LOGICAL OPTIONS FOR MOBILE & CONSUMER ELECTRONICS
-export const PREDEFINED_COLORS = [
+// PREDEFINED SUGGESTIONS FOR CONSUMER ELECTRONICS
+export const COLOR_SUGGESTIONS = [
   'Negro Mate',
   'Negro Titanio',
-  'Blanco Puro',
+  'Titanio Desierto',
   'Titanio Natural',
+  'Blanco Puro',
+  'Blanco Estrella',
   'Gris Grafito',
+  'Gris Espacial',
   'Azul Titanio',
+  'Azul Medianoche',
+  'Azul Cielo',
   'Oro Champán',
   'Verde Esmeralda',
+  'Verde Oliva',
   'Rojo Carmesí',
   'Plata',
   'Rosa Gold',
-  'Morado'
+  'Morado Lavanda',
+  'Naranja Cósmico'
 ];
 
 export const PREDEFINED_RAMS = [
@@ -182,7 +189,7 @@ export default function ProductManager() {
           ram: '12GB',
           storage: '256GB',
           price: '',
-          stock: 5,
+          stock: '',
           hasCashea: true
         }
       ],
@@ -205,7 +212,7 @@ export default function ProductManager() {
         ram: v.ram || '8GB',
         storage: v.storage || (typeof v.size === 'string' ? v.size : '256GB'),
         price: v.price !== undefined ? v.price : (product.price || ''),
-        stock: v.stock !== undefined ? v.stock : 5,
+        stock: v.stock !== undefined && v.stock !== null ? v.stock : '',
         hasCashea: v.hasCashea !== undefined ? v.hasCashea : (product.hasCashea !== false)
       }));
     } else if (Array.isArray(product.storageOptions) && product.storageOptions.length > 0) {
@@ -224,7 +231,7 @@ export default function ProductManager() {
           ram: ram || '8GB',
           storage: size || '256GB',
           price: price || product.price || '',
-          stock: 5,
+          stock: '',
           hasCashea: product.hasCashea !== false
         };
       });
@@ -236,7 +243,7 @@ export default function ProductManager() {
           ram: '12GB',
           storage: '256GB',
           price: product.price || '',
-          stock: 5,
+          stock: '',
           hasCashea: product.hasCashea !== false
         }
       ];
@@ -268,7 +275,7 @@ export default function ProductManager() {
       ram: lastVar?.ram || '8GB',
       storage: lastVar?.storage || '256GB',
       price: lastVar?.price || '',
-      stock: 5,
+      stock: '',
       hasCashea: formData.hasCashea !== false
     };
 
@@ -334,16 +341,19 @@ export default function ProductManager() {
         finalImageUrl = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80';
       }
 
-      // Clean and normalize variants
-      const cleanVariants = formData.variants.map((v, i) => ({
-        id: v.id || `var_${Date.now()}_${i}`,
-        color: v.color || 'Negro Mate',
-        ram: v.ram === 'No Aplica' ? '' : (v.ram || ''),
-        storage: v.storage === 'No Aplica / Estándar' ? '' : (v.storage || ''),
-        price: parseFloat(v.price) || 0,
-        stock: parseInt(v.stock) >= 0 ? parseInt(v.stock) : 0,
-        hasCashea: v.hasCashea !== false
-      }));
+      // Clean and normalize variants (Stock is optional: null if not provided)
+      const cleanVariants = formData.variants.map((v, i) => {
+        const rawStock = v.stock !== '' && v.stock !== undefined && v.stock !== null ? parseInt(v.stock) : null;
+        return {
+          id: v.id || `var_${Date.now()}_${i}`,
+          color: (v.color || 'Negro').trim(),
+          ram: v.ram === 'No Aplica' ? '' : (v.ram || '').trim(),
+          storage: v.storage === 'No Aplica / Estándar' ? '' : (v.storage || '').trim(),
+          price: parseFloat(v.price) || 0,
+          stock: isNaN(rawStock) ? null : rawStock,
+          hasCashea: v.hasCashea !== false
+        };
+      });
 
       // Extract unique lists for backwards compatibility with storefront filters
       const uniqueColors = Array.from(new Set(cleanVariants.map(v => v.color).filter(Boolean)));
@@ -415,6 +425,11 @@ export default function ProductManager() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
+      {/* Global Datalists for fast suggestion picking */}
+      <datalist id="admin-color-suggestions">
+        {COLOR_SUGGESTIONS.map(c => <option key={c} value={c} />)}
+      </datalist>
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -521,12 +536,13 @@ export default function ProductManager() {
                   const maxPrice = variantPrices.length > 0 ? Math.max(...variantPrices) : (parseFloat(p.price) || 0);
                   const hasPriceRange = minPrice !== maxPrice;
 
-                  // Total Stock
-                  const totalStock = hasVariants
+                  // Total Stock Calculation (Supports optional stock)
+                  const hasExplicitStockCounts = hasVariants && variants.some(v => v.stock !== null && v.stock !== undefined);
+                  const totalStockUnits = hasVariants && hasExplicitStockCounts
                     ? variants.reduce((acc, v) => acc + (parseInt(v.stock) || 0), 0)
-                    : (p.inStock !== false ? 'En Stock' : 'Agotado');
+                    : null;
 
-                  const hasOutOfStockVariant = hasVariants && variants.some(v => parseInt(v.stock) <= 0);
+                  const hasOutOfStockVariant = hasVariants && variants.some(v => v.stock !== null && v.stock !== undefined && parseInt(v.stock) <= 0);
 
                   // Cashea calculation
                   const pInitPct = p.casheaInitialPercent || 40;
@@ -624,14 +640,14 @@ export default function ProductManager() {
                         <td className="py-3 px-4">
                           <div className="space-y-1">
                             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
-                              totalStock === 0 || totalStock === 'Agotado'
+                              totalStockUnits === 0
                                 ? 'bg-red-50 text-red-600'
                                 : 'bg-emerald-50 text-emerald-700'
                             }`}>
                               <span className={`w-1.5 h-1.5 rounded-full ${
-                                totalStock === 0 || totalStock === 'Agotado' ? 'bg-red-500' : 'bg-emerald-500'
+                                totalStockUnits === 0 ? 'bg-red-500' : 'bg-emerald-500'
                               }`} />
-                              {typeof totalStock === 'number' ? `${totalStock} unid.` : totalStock}
+                              {totalStockUnits !== null ? `${totalStockUnits} unid.` : 'Disponible'}
                             </span>
 
                             {hasOutOfStockVariant && (
@@ -677,7 +693,11 @@ export default function ProductManager() {
                                   </span>
                                 </div>
                                 <span className="text-xs font-bold text-slate-500">
-                                  Stock Total: <strong className="text-slate-900">{totalStock} unidades</strong>
+                                  {totalStockUnits !== null ? (
+                                    <>Stock Total: <strong className="text-slate-900">{totalStockUnits} unidades</strong></>
+                                  ) : (
+                                    <strong className="text-emerald-600">Stock Disponible Continuo</strong>
+                                  )}
                                 </span>
                               </div>
 
@@ -696,7 +716,8 @@ export default function ProductManager() {
                                   </thead>
                                   <tbody className="divide-y divide-slate-100 font-medium">
                                     {variants.map((v, vIdx) => {
-                                      const vStock = parseInt(v.stock) || 0;
+                                      const hasStockVal = v.stock !== null && v.stock !== undefined && v.stock !== '';
+                                      const vStock = hasStockVal ? parseInt(v.stock) : null;
                                       const vPrice = parseFloat(v.price) || parseFloat(p.price) || 0;
                                       return (
                                         <tr key={v.id || vIdx} className="hover:bg-slate-50/50">
@@ -710,9 +731,11 @@ export default function ProductManager() {
                                           <td className="py-2 px-3 font-black text-blue-600">${vPrice.toFixed(2)} USD</td>
                                           <td className="py-2 px-3">
                                             <span className={`px-2 py-0.5 rounded-md font-bold text-[11px] ${
-                                              vStock > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'
+                                              vStock === null || vStock > 0 
+                                                ? 'bg-emerald-50 text-emerald-700' 
+                                                : 'bg-red-50 text-red-600'
                                             }`}>
-                                              {vStock > 0 ? `${vStock} unid.` : 'Agotado (0)'}
+                                              {vStock !== null ? (vStock > 0 ? `${vStock} unid.` : 'Agotado (0)') : 'Disponible'}
                                             </span>
                                           </td>
                                           <td className="py-2 px-3">
@@ -854,7 +877,7 @@ export default function ProductManager() {
 
               {/* ------------------------------------------------------------- */}
               {/* SECTION: GESTOR DE VARIANTES DINÁMICAS (DYNAMIC REPEATER)      */}
-              {/* NOTE: Prices exist exclusively per variant below!             */}
+              {/* Flexible Color Variables + Optional Stock                     */}
               {/* ------------------------------------------------------------- */}
               <div className="bg-slate-50/70 border border-slate-200 rounded-3xl p-4 sm:p-6 space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 pb-3">
@@ -866,7 +889,7 @@ export default function ProductManager() {
                       </h3>
                     </div>
                     <p className="text-[11px] text-slate-500 mt-0.5">
-                      Configura cada modelo con sus selectores de Color, RAM, Almacenamiento, Precio individual y Stock.
+                      Escribe o selecciona cualquier color, RAM, almacenamiento y precio individual.
                     </p>
                   </div>
 
@@ -889,7 +912,7 @@ export default function ProductManager() {
                             {idx + 1}
                           </span>
                           <span className="font-extrabold text-xs text-slate-900">
-                            {variant.color} {variant.ram && variant.ram !== 'No Aplica' ? `• ${variant.ram}` : ''} {variant.storage && variant.storage !== 'No Aplica / Estándar' ? `• ${variant.storage}` : ''}
+                            {variant.color || 'Color'} {variant.ram && variant.ram !== 'No Aplica' ? `• ${variant.ram}` : ''} {variant.storage && variant.storage !== 'No Aplica / Estándar' ? `• ${variant.storage}` : ''}
                           </span>
                           {variant.price && (
                             <span className="text-xs font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
@@ -909,25 +932,25 @@ export default function ProductManager() {
                         </button>
                       </div>
 
-                      {/* Card Inputs Grid with Strict <select> Dropdowns */}
+                      {/* Card Inputs Grid */}
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        {/* 1. Strict Color Dropdown */}
+                        {/* 1. Flexible Color Input (Autocomplete Suggestions + Custom Text) */}
                         <div>
                           <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
                             Color del Equipo *
                           </label>
-                          <select
+                          <input
+                            type="text"
+                            required
+                            list="admin-color-suggestions"
                             value={variant.color}
                             onChange={(e) => updateVariantField(idx, 'color', e.target.value)}
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all cursor-pointer"
-                          >
-                            {PREDEFINED_COLORS.map(c => (
-                              <option key={c} value={c}>{c}</option>
-                            ))}
-                          </select>
+                            placeholder="ej. Titanio Desierto, Negro..."
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                          />
                         </div>
 
-                        {/* 2. Strict RAM Dropdown */}
+                        {/* 2. RAM Dropdown */}
                         <div>
                           <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
                             Memoria RAM *
@@ -943,7 +966,7 @@ export default function ProductManager() {
                           </select>
                         </div>
 
-                        {/* 3. Strict Storage Dropdown */}
+                        {/* 3. Storage Dropdown */}
                         <div>
                           <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
                             Almacenamiento *
@@ -959,7 +982,7 @@ export default function ProductManager() {
                           </select>
                         </div>
 
-                        {/* 4. Variant Selling Price Input */}
+                        {/* 4. Variant Selling Price Input (Required) */}
                         <div>
                           <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
                             Precio de Venta ($ USD) *
@@ -979,18 +1002,17 @@ export default function ProductManager() {
                           </div>
                         </div>
 
-                        {/* 5. Stock Units */}
+                        {/* 5. Stock Units (OPTIONAL: Leave empty for Unlimited) */}
                         <div>
                           <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
-                            Stock Disponible *
+                            Stock Disponible <span className="text-[10px] text-slate-400 font-normal">(Opcional)</span>
                           </label>
                           <input
                             type="number"
                             min="0"
-                            required
                             value={variant.stock}
                             onChange={(e) => updateVariantField(idx, 'stock', e.target.value)}
-                            placeholder="5"
+                            placeholder="Opcional (Ilimitado)"
                             className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
                           />
                         </div>

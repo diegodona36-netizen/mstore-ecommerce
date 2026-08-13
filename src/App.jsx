@@ -124,14 +124,6 @@ export function App() {
             {/* 3. SECCIONES CENTRALES HOMEPAGE */}
             <main className="space-y-12 py-8 bg-[#0A0908]">
               
-              {/* 3.1 Bento Grid Categorías Innovadoras */}
-              <div id="bento" className="max-w-7xl mx-auto px-4 md:px-8">
-                <BentoGrid 
-                  isLightBg={false}
-                  onSelectCategory={(catId) => navigateToCatalog(catId)} 
-                />
-              </div>
-
               {/* 3.2 SECCIONES DE EXHIBICIÓN DE PRODUCTOS (3 BLOQUES LIMPIOS CON 'VER TODO >') */}
               <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-12">
                 

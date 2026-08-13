@@ -17,6 +17,37 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
 
   const rateVES = 60.5;
 
+  // Human-readable color map for HEX codes
+  const colorNameMap = {
+    '#000000': 'Negro Oscuro',
+    '#0F172A': 'Negro Azabache',
+    '#121212': 'Negro Mate',
+    '#475569': 'Gris Grafito',
+    '#F5F5DC': 'Blanco Marfil',
+    '#FFFFFF': 'Blanco Puro',
+    '#E2E8F0': 'Plata Titanio',
+    '#2563EB': 'Azul Cobalto',
+    '#DC2626': 'Rojo Carmesí',
+    '#10B981': 'Verde Esmeralda',
+    '#F59E0B': 'Oro Titanio'
+  };
+
+  const getColorDisplayName = (col) => {
+    if (!col) return 'Negro Oscuro';
+    if (typeof col === 'object') {
+      if (col.name && !col.name.startsWith('#')) return col.name;
+      if (col.hex && colorNameMap[col.hex.toUpperCase()]) return colorNameMap[col.hex.toUpperCase()];
+      if (col.hex && colorNameMap[col.hex]) return colorNameMap[col.hex];
+    }
+    if (typeof col === 'string') {
+      if (!col.startsWith('#')) return col;
+      if (colorNameMap[col.toUpperCase()]) return colorNameMap[col.toUpperCase()];
+      if (colorNameMap[col]) return colorNameMap[col];
+      return 'Negro Oscuro';
+    }
+    return 'Negro Oscuro';
+  };
+
   // Mock multi-angle thumbnails
   const thumbnails = product.images && product.images.length > 0 ? product.images : [
     product.image,
@@ -33,6 +64,8 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
   const ramOptions = ['8GB', '12GB', '16GB'];
   const storageOptions = ['128GB', '256GB', '512GB', '1TB'];
 
+  const currentColorDisplayName = getColorDisplayName(selectedColor);
+
   const handleAdd = () => {
     onAddToCart({ ...product, selectedColor, selectedRam, selectedStorage, quantity });
     setAdded(true);
@@ -41,10 +74,9 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
 
   const handleWhatsAppCheckout = () => {
     const subtotal = product.price * quantity;
-    const colorName = typeof selectedColor === 'object' ? selectedColor.name : selectedColor;
     let message = `*PEDIDO DIRECTO M STORE*\n\n`;
     message += `*Producto:* ${product.name}\n`;
-    message += `*Color:* ${colorName}\n`;
+    message += `*Color:* ${currentColorDisplayName}\n`;
     message += `*RAM:* ${selectedRam}\n`;
     message += `*Almacenamiento:* ${selectedStorage}\n`;
     message += `*Cantidad:* ${quantity}\n`;
@@ -56,7 +88,6 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
   };
 
   const displayOldPrice = product.oldPrice ? product.oldPrice : (product.price * 1.25);
-  const currentColorName = typeof selectedColor === 'object' ? selectedColor.name : selectedColor;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 overflow-y-auto bg-slate-950/80 backdrop-blur-md animate-fadeIn font-sans">
@@ -66,8 +97,8 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
       {/* Main Split-Background Product Detail Modal Container */}
       <div className="relative z-10 bg-white w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl border border-slate-200 my-auto text-slate-900">
         
-        {/* 1. HEADER DEL MODAL (TOP BAR OSCURO PRINCIPAL bg-[#0A0908]) */}
-        <div className="bg-[#0A0908] px-5 sm:px-8 py-4 border-b border-white/10 flex items-center justify-between relative z-20">
+        {/* 1. HEADER DEL MODAL (UNIFICADO EN bg-slate-950 TANTO EN MÓVIL COMO EN ESCRITORIO) */}
+        <div className="bg-slate-950 px-5 sm:px-8 py-4 border-b border-white/10 flex items-center justify-between relative z-20">
           
           {/* Logo y Migas de Pan (Breadcrumbs) con contraste blanco */}
           <div className="flex items-center gap-2 sm:gap-3 text-xs font-bold text-slate-300 overflow-x-auto pr-4 scrollbar-none" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
@@ -103,18 +134,17 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
           <div className="p-0 bg-white">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-0 items-stretch">
               
-              {/* COLUMNA IZQUIERDA: GALERÍA DE IMÁGENES CON SIDEBAR OSCURO PLANO SIN MARGENES EXTERNOS */}
+              {/* COLUMNA IZQUIERDA: GALERÍA DE IMÁGENES CON UNIFICACIÓN bg-slate-950 */}
               <div className="md:col-span-6 flex items-stretch p-0 m-0 bg-slate-50 border-r border-slate-200">
                 
                 {/* Tira de Miniaturas (Left Column):
-                    - Cero márgenes externos (m-0)
-                    - Ocupa alto completo (h-full)
-                    - Conecta plano con el header arriba (rounded-none rounded-bl-xl)
-                    - Sin barra de scroll visible (overflow-y-auto scrollbar-hide)
-                    - Borde sutil y limpio (border-2 border-slate-400) en miniatura activa sin tapar foto
+                    - UNIFICADO EN bg-slate-950 (mismo tono que el header)
+                    - m-0, h-full, rounded-none, rounded-bl-xl
+                    - overflow-y-auto scrollbar-hide
+                    - Borde sutil y limpio (border-2 border-slate-400) en miniatura activa
                 */}
                 <div 
-                  className="flex flex-col w-24 h-full m-0 p-0 bg-slate-900 rounded-none rounded-bl-xl overflow-y-auto scrollbar-hide shrink-0"
+                  className="flex flex-col w-24 h-full m-0 p-0 bg-slate-950 rounded-none rounded-bl-xl overflow-y-auto scrollbar-hide shrink-0"
                   style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
                   {thumbnails.map((imgUrl, idx) => (
@@ -132,9 +162,10 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                   ))}
                 </div>
 
-                {/* Cuadro Principal de Imagen */}
-                <div className="relative flex-1 p-6 sm:p-8 flex items-center justify-center min-h-[320px] sm:min-h-[420px]">
-                  <span className="absolute top-4 right-4 bg-emerald-500 text-white font-black text-[10px] px-2.5 py-1 rounded-md uppercase tracking-wider shadow-sm">
+                {/* Cuadro Principal de Imagen con CENTRADO PERFECTO flex items-center justify-center h-full */}
+                <div className="relative flex-1 p-6 sm:p-8 flex items-center justify-center h-full min-h-[320px] sm:min-h-[420px] bg-white">
+                  {/* BADGE "NUEVO" FLOTANTE ABSOLUTO */}
+                  <span className="absolute top-4 right-4 z-10 rounded-full px-3 py-1 text-xs font-bold bg-emerald-500 text-white shadow-md uppercase tracking-wider">
                     NUEVO
                   </span>
                   <img
@@ -155,7 +186,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                     {product.name}
                   </h2>
 
-                  {/* PRECIOS Y FINANCIAMIENTO (PRECIO GRANDE EN TEXT-SLATE-900 NEGRO GRIS OSCURO) */}
+                  {/* PRECIOS Y FINANCIAMIENTO (PRECIO GRANDE EN TEXT-SLATE-900) */}
                   <div className="space-y-2 pt-1">
                     <div className="flex items-baseline gap-3 flex-wrap">
                       <span className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
@@ -182,16 +213,16 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                     </div>
                   </div>
 
-                  {/* SELECTOR DE COLOR (TEXTO DINÁMICO EN TEXT-SLATE-900) */}
+                  {/* SELECTOR DE COLOR (NOMBRE REAL EN LUGAR DE CÓDIGO HEX) */}
                   <div className="space-y-2 pt-2">
                     <label className="text-xs font-extrabold text-slate-700 block uppercase tracking-wider">
-                      Color Seleccionado: <span className="text-slate-900 font-black">{currentColorName}</span>
+                      COLOR SELECCIONADO: <span className="text-slate-900 font-black">{currentColorDisplayName}</span>
                     </label>
                     <div className="flex items-center gap-3">
                       {colorsList.map((col, idx) => {
                         const hex = typeof col === 'object' ? col.hex : (idx === 0 ? '#F5F5DC' : idx === 1 ? '#475569' : '#0F172A');
-                        const name = typeof col === 'object' ? col.name : col;
-                        const isSel = currentColorName === name;
+                        const name = getColorDisplayName(col);
+                        const isSel = currentColorDisplayName === name;
                         return (
                           <button
                             key={idx}

@@ -210,11 +210,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
     message += `*Precio Unitario:* $${currentPrice.toFixed(2)}\n`;
     message += `*TOTAL:* $${subtotal.toFixed(2)} USD (${(subtotal * rateVES).toLocaleString('es-VE')} Bs)\n\n`;
     if (isVariantCasheaActive) {
-      const initPct = product.casheaInitialPercent || 40;
-      const installments = product.casheaInstallments || 3;
-      const initPay = subtotal * (initPct / 100);
-      const installmentPay = (subtotal * (1 - initPct / 100)) / installments;
-      message += `*Plan Cashea:* Inicial $${initPay.toFixed(2)} + ${installments} cuotas de $${installmentPay.toFixed(2)}\n\n`;
+      message += `*Financiamiento:* Disponible para pagar en cuotas con Cashea\n\n`;
     }
     if (isOutOfStock) {
       message += `Hola, veo que esta combinación figura como agotada en la web. ¿Cuándo les llega nuevo inventario?`;
@@ -346,16 +342,22 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                     )}
                   </div>
 
-                  {/* Insignia Cashea Dinámica */}
-                  {isVariantCasheaActive && currentPrice > 0 && (
-                    <div className="mt-2 bg-amber-50 border border-amber-300 rounded-xl p-2.5 flex items-center justify-between text-xs font-black text-slate-900 shadow-sm">
-                      <div className="flex items-center gap-2">
-                        <span className="bg-[#FFE600] text-black px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border border-amber-400">CASHEA</span>
-                        <span>Inicial: ${(currentPrice * ((product.casheaInitialPercent || 40) / 100)).toFixed(2)} USD</span>
+                  {/* Insignia Cashea Profesional */}
+                  {isVariantCasheaActive && (
+                    <div className="mt-2.5 bg-amber-50/90 border border-amber-300 rounded-2xl p-3 flex items-center justify-between shadow-xs">
+                      <div className="flex items-center gap-2.5">
+                        <span className="bg-[#FFE600] text-black px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border border-amber-400 shadow-xs shrink-0">
+                          CASHEA
+                        </span>
+                        <div className="text-left">
+                          <span className="block text-xs font-black text-slate-900">
+                            Disponible con Cashea
+                          </span>
+                          <span className="text-[11px] font-semibold text-amber-900">
+                            Paga en cuotas sin interés con tu cuenta Cashea
+                          </span>
+                        </div>
                       </div>
-                      <span className="text-[11px] text-amber-900 font-bold">
-                        + {product.casheaInstallments || 3} cuotas de ${((currentPrice * (1 - (product.casheaInitialPercent || 40) / 100)) / (product.casheaInstallments || 3)).toFixed(2)}
-                      </span>
                     </div>
                   )}
                 </div>

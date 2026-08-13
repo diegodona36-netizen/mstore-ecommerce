@@ -68,19 +68,14 @@ export const ProductCard = ({ product, onAddToCart, onQuickView, isLightBg = tru
         {product.name}
       </h3>
 
-      {/* CASHEA FINANCING BADGE */}
-      {product.hasCashea !== false && product.price > 0 && (
-        <div className="my-2 px-2.5 py-1.5 rounded-xl bg-amber-50/90 border border-amber-200 flex items-center justify-between text-[11px]">
-          <div className="flex items-center gap-1.5">
-            <span className="bg-[#FFE600] text-black px-1.5 py-0.5 rounded font-black text-[9px] uppercase tracking-wider border border-amber-300 shadow-xs">
-              CASHEA
-            </span>
-            <span className="font-extrabold text-amber-950">
-              Inicial: ${((parseFloat(product.price) || 0) * ((product.casheaInitialPercent || 40) / 100)).toFixed(0)}
-            </span>
-          </div>
-          <span className="font-extrabold text-slate-700">
-            +{product.casheaInstallments || 3}x ${(((parseFloat(product.price) || 0) * (1 - (product.casheaInitialPercent || 40) / 100)) / (product.casheaInstallments || 3)).toFixed(0)}
+      {/* CASHEA BADGE PROFESIONAL */}
+      {product.hasCashea !== false && (
+        <div className="my-2 px-2.5 py-1 rounded-xl bg-amber-50 border border-amber-200/90 flex items-center gap-2 text-xs">
+          <span className="bg-[#FFE600] text-black px-1.5 py-0.5 rounded font-black text-[9px] uppercase tracking-wider border border-amber-400 shadow-xs shrink-0">
+            CASHEA
+          </span>
+          <span className="font-extrabold text-[11px] text-amber-950 truncate">
+            Paga en cuotas sin interés
           </span>
         </div>
       )}

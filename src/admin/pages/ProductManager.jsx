@@ -583,14 +583,6 @@ export default function ProductManager() {
 
                   const hasOutOfStockVariant = hasVariants && variants.some(v => v.stock !== null && v.stock !== undefined && parseInt(v.stock) <= 0);
 
-                  // Cashea calculation
-                  const pInitPct = p.casheaInitialPercent || 40;
-                  const pInstallments = p.casheaInstallments || 3;
-                  const minInitial = minPrice * (pInitPct / 100);
-                  const maxInitial = maxPrice * (pInitPct / 100);
-                  const minInstallment = (minPrice * (1 - pInitPct / 100)) / pInstallments;
-                  const maxInstallment = (maxPrice * (1 - pInitPct / 100)) / pInstallments;
-
                   const isExpanded = !!expandedRows[p.id];
 
                   return (
@@ -638,21 +630,14 @@ export default function ProductManager() {
                           )}
                         </td>
 
-                        {/* Cashea Plan Preview */}
+                        {/* Cashea Status Preview */}
                         <td className="py-3 px-4">
                           {p.hasCashea !== false ? (
-                            <div className="space-y-1">
-                              <div className="inline-flex items-center gap-1 bg-[#FFE600] text-black px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border border-amber-400">
+                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-900 border border-amber-200/90 rounded-xl text-xs font-bold shadow-2xs">
+                              <span className="bg-[#FFE600] text-black px-1.5 py-0.5 rounded text-[9px] font-black uppercase border border-amber-400">
                                 CASHEA
-                              </div>
-                              <div className="text-xs font-bold text-slate-800">
-                                Inicial: <span className="text-amber-600">
-                                  ${minInitial.toFixed(0)}{hasPriceRange ? ` - $${maxInitial.toFixed(0)}` : ''}
-                                </span>
-                              </div>
-                              <div className="text-[11px] text-slate-500 font-medium">
-                                {pInstallments} cuotas de ${minInstallment.toFixed(0)}{hasPriceRange ? ` - $${maxInstallment.toFixed(0)}` : ''}
-                              </div>
+                              </span>
+                              <span>Aplica</span>
                             </div>
                           ) : (
                             <span className="text-slate-400 text-xs italic">Solo Contado</span>
@@ -1135,58 +1120,25 @@ export default function ProductManager() {
               </div>
 
               {/* GLOBAL CASHEA FINANCING CONFIGURATION */}
-              <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="bg-[#FFE600] text-black px-2 py-0.5 rounded font-black text-[10px] uppercase tracking-wider border border-amber-400 shadow-sm">
-                      CASHEA
-                    </span>
-                    <span className="text-xs font-bold text-slate-900">Parámetros de Financiamiento Cashea</span>
+              <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="bg-[#FFE600] text-black px-2.5 py-1 rounded-lg font-black text-[10px] uppercase tracking-wider border border-amber-400 shadow-xs shrink-0">
+                    CASHEA
+                  </span>
+                  <div>
+                    <span className="text-xs font-black text-slate-900 block">Habilitar Pago con Cashea</span>
+                    <span className="text-[11px] text-slate-500 font-medium">Permite a los clientes financiar este producto en cuotas con su cuenta Cashea</span>
                   </div>
-
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formData.hasCashea}
-                      onChange={(e) => setFormData({ ...formData, hasCashea: e.target.checked })}
-                      className="w-4 h-4 text-amber-500 rounded border-amber-300 focus:ring-amber-400 cursor-pointer"
-                    />
-                    <span className="text-xs font-bold text-slate-700">Cashea Habilitado</span>
-                  </label>
                 </div>
 
-                {formData.hasCashea && (
-                  <div className="grid grid-cols-2 gap-3 pt-2">
-                    <div>
-                      <label className="block text-[11px] font-bold text-slate-600 mb-1">
-                        % Inicial Solicitada
-                      </label>
-                      <select
-                        value={formData.casheaInitialPercent}
-                        onChange={(e) => setFormData({ ...formData, casheaInitialPercent: e.target.value })}
-                        className="w-full px-3 py-1.5 bg-white border border-amber-200 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-amber-400 cursor-pointer"
-                      >
-                        <option value="40">40% Inicial (Nivel 1 y 2)</option>
-                        <option value="50">50% Inicial (Nivel 3)</option>
-                        <option value="60">60% Inicial</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-[11px] font-bold text-slate-600 mb-1">
-                        Número de Cuotas
-                      </label>
-                      <select
-                        value={formData.casheaInstallments}
-                        onChange={(e) => setFormData({ ...formData, casheaInstallments: e.target.value })}
-                        className="w-full px-3 py-1.5 bg-white border border-amber-200 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-amber-400 cursor-pointer"
-                      >
-                        <option value="3">3 Cuotas (Estándar)</option>
-                        <option value="6">6 Cuotas (Línea Extendida)</option>
-                      </select>
-                    </div>
-                  </div>
-                )}
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.hasCashea}
+                    onChange={(e) => setFormData({ ...formData, hasCashea: e.target.checked })}
+                    className="w-5 h-5 text-amber-500 rounded border-amber-300 focus:ring-amber-400 cursor-pointer"
+                  />
+                </label>
               </div>
 
               {/* Description */}

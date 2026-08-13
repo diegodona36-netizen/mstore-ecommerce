@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Navbar } from './components/Navbar';
+import { TopAnnouncementBar } from './components/TopAnnouncementBar';
 import { Hero } from './components/Hero';
+import { SocialProofBar } from './components/SocialProofBar';
+import { ValuePropositionSection } from './components/ValuePropositionSection';
+import { TestimonialsSection } from './components/TestimonialsSection';
 import { ProductCarousel } from './components/ProductCarousel';
 import { BenefitsBanner } from './components/BenefitsBanner';
 import { LocationSection } from './components/LocationSection';
@@ -89,6 +93,7 @@ export function App() {
       
       <div>
         {/* 1. TOP HEADER & NAVIGATION */}
+        <TopAnnouncementBar />
         <Navbar 
           onOpenCart={() => setIsCartOpen(true)}
           onOpenMegaMenu={() => setIsMegaMenuOpen(true)}
@@ -125,15 +130,21 @@ export function App() {
               onQuickViewHero={(p) => setQuickViewProduct(p)}
             />
 
-            {/* 3. SECCIONES CENTRALES HOMEPAGE */}
-            <main className="space-y-12 py-8 bg-slate-50">
+            {/* 3. SECCIONES CENTRALES HOMEPAGE DE ALTA CONVERSIÓN */}
+            <main className="bg-slate-50 pb-16">
               
-              {/* 3.2 SECCIONES DE EXHIBICIÓN DE PRODUCTOS (3 BLOQUES LIMPIOS CON 'VER TODO >') */}
-              <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-12">
+              {/* 3.1 SOCIAL PROOF / MARCAS */}
+              <SocialProofBar />
+
+              {/* 3.2 PROBLEMA / SOLUCIÓN */}
+              <ValuePropositionSection onNavigateCatalog={() => navigateToCatalog('todos')} />
+
+              {/* 3.3 PRODUCTOS DESTACADOS */}
+              <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 space-y-24">
                 
-                {/* Categoría 1: Smartphones Insignia */}
+                {/* Bloque 1: Smartphones */}
                 <CategoryShowcaseSection 
-                  title="Smartphones Insignia 2026"
+                  title="Flagships Más Vendidos"
                   categoryFilterId="smartphones"
                   products={products}
                   onSelectCategory={(catId) => navigateToCatalog(catId)}
@@ -144,9 +155,9 @@ export function App() {
                   isLightBg={true}
                 />
 
-                {/* Categoría 2: Televisores & Smart TVs */}
+                {/* Bloque 2: Smart TVs y Audio */}
                 <CategoryShowcaseSection 
-                  title="Televisores & Smart TVs 4K"
+                  title="Smart TVs & Entretenimiento"
                   categoryFilterId="linea-blanca"
                   products={products}
                   onSelectCategory={(catId) => navigateToCatalog(catId)}
@@ -157,10 +168,10 @@ export function App() {
                   isLightBg={true}
                 />
 
-                {/* Categoría 3: Audio High-End */}
+                {/* Bloque 3: Computación */}
                 <CategoryShowcaseSection 
-                  title="Audio High-End & Cancelling"
-                  categoryFilterId="audio"
+                  title="Laptops & Productividad"
+                  categoryFilterId="computacion"
                   products={products}
                   onSelectCategory={(catId) => navigateToCatalog(catId)}
                   onAddToCart={handleAddToCart}
@@ -169,16 +180,13 @@ export function App() {
                   onToggleWishlist={handleToggleWishlist}
                   isLightBg={true}
                 />
-
               </div>
 
-              {/* 3.3 Módulo de Beneficios & Garantía M Store */}
-              <div className="max-w-7xl mx-auto px-4 md:px-8 pt-4">
-                <BenefitsBanner isLightBg={true} />
-              </div>
+              {/* 3.4 TESTIMONIOS */}
+              <TestimonialsSection />
 
-              {/* 3.4 Sección Tienda Física & Mapa */}
-              <div className="max-w-7xl mx-auto px-4 md:px-8">
+              {/* 3.5 TIENDA FÍSICA & UBICACIÓN */}
+              <div className="max-w-7xl mx-auto px-4 md:px-8 pt-16">
                 <LocationSection isLightBg={true} />
               </div>
 

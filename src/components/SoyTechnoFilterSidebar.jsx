@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  Smartphone, Tv, Laptop, Gamepad2, Monitor, Printer, Tablet, Watch, Headphones, Radio, 
-  ChevronDown, ChevronUp, Check, SlidersHorizontal
-} from 'lucide-react';
+import { ChevronDown, ChevronUp, Check, SlidersHorizontal } from 'lucide-react';
 
 export const SoyTechnoFilterSidebar = ({
   activeCategory = 'todos',
@@ -20,14 +17,13 @@ export const SoyTechnoFilterSidebar = ({
   onApplyFilter,
   isLightBg = false
 }) => {
-  // Accordion collapsed state (Collapsed by default as requested by user)
   const [openSections, setOpenSections] = useState({
-    color: false,
-    marca: false,
-    tipo: false
+    categoria: true,
+    marca: true,
+    precio: true,
+    color: true,
   });
 
-  // Dual handle local state
   const [minPrice, setMinPrice] = useState(priceRange[0]);
   const [maxPrice, setMaxPrice] = useState(priceRange[1]);
 
@@ -47,239 +43,178 @@ export const SoyTechnoFilterSidebar = ({
     if (onPriceChange) onPriceChange([minPrice, val]);
   };
 
-  // Categories list for Mini Sidebar (Vertical Icons Column)
-  const miniSidebarCategories = [
-    { id: 'smartphones', name: 'Teléfonos Celulares', Icon: Smartphone },
-    { id: 'linea-blanca', name: 'Televisores & Smart TVs', Icon: Tv },
-    { id: 'laptops', name: 'Laptops', Icon: Laptop },
-    { id: 'gamer', name: 'Zona Gamer', Icon: Gamepad2 },
-    { id: 'computacion', name: 'Equipos de Computación', Icon: Monitor },
-    { id: 'impresoras', name: 'Impresoras', Icon: Printer },
-    { id: 'tablets', name: 'Tablets', Icon: Tablet },
-    { id: 'wearables', name: 'Relojes Inteligentes', Icon: Watch },
-    { id: 'audio', name: 'Audífonos y Sonido', Icon: Headphones },
-    { id: 'streaming', name: 'Dispositivos Streaming', Icon: Radio }
+  const categories = [
+    { id: 'todos', name: 'Todas las Categorías' },
+    { id: 'smartphones', name: 'Smartphones y Celulares' },
+    { id: 'linea-blanca', name: 'Televisores y Video' },
+    { id: 'laptops', name: 'Laptops y PC' },
+    { id: 'gamer', name: 'Consolas y Gaming' },
+    { id: 'audio', name: 'Audio y Sonido' },
+    { id: 'wearables', name: 'Smartwatches' },
+    { id: 'tablets', name: 'Tablets' }
   ];
 
   const brandOptions = [
     { id: 'todas', label: 'Todas las Marcas' },
-    { id: 'apple', label: ' Apple' },
+    { id: 'apple', label: 'Apple' },
     { id: 'samsung', label: 'Samsung' },
     { id: 'xiaomi', label: 'Xiaomi' },
-    { id: 'siragon', label: 'Síragon' },
-    { id: 'lg', label: 'LG Electronics' }
+    { id: 'lg', label: 'LG' },
+    { id: 'sony', label: 'Sony' }
   ];
 
   const colorOptions = [
-    { id: 'todos', label: 'Todos los Colores', hex: '#FFFFFF' },
-    { id: 'negro', label: 'Negro / Space Gray', hex: '#0F172A' },
-    { id: 'titanio', label: 'Titanio / Plata', hex: '#94A3B8' },
-    { id: 'cian', label: 'Cian Neón / Azul', hex: '#00E5FF' },
-    { id: 'dorado', label: 'Dorado / Gold', hex: '#F59E0B' }
+    { id: 'todos', label: 'Todos' },
+    { id: 'negro', label: 'Negro' },
+    { id: 'plata', label: 'Plata / Titanio' },
+    { id: 'blanco', label: 'Blanco' }
   ];
 
-  const typeOptions = [
-    { id: 'todos', label: 'Todos los Tipos' },
-    { id: 'smartphones', label: 'Smartphones Flagship' },
-    { id: 'tvs', label: 'Smart TVs 4K & OLED' },
-    { id: 'laptops', label: 'Laptops Pro & Gamer' },
-    { id: 'audio', label: 'Audífonos Hi-Fi & Soundbars' }
-  ];
+  // Base classes for the sidebar
+  const bgClass = isLightBg ? 'bg-white border-slate-200 text-slate-900' : 'bg-[#0a0a0a] border-neutral-800 text-white';
+  const borderClass = isLightBg ? 'border-slate-200' : 'border-neutral-800';
+  const textMuted = isLightBg ? 'text-slate-500' : 'text-slate-400';
+  const hoverBg = isLightBg ? 'hover:bg-slate-50' : 'hover:bg-neutral-900';
 
   return (
-    <div className="flex items-start gap-3 select-none font-space">
+    <div className={`w-full lg:w-[260px] shrink-0 rounded-2xl border p-5 font-sans ${bgClass}`}>
       
-      {/* 1. NAVEGACIÓN VERTICAL RÁPIDA (MINI SIDEBAR EXTRACTO IZQUIERDO) */}
-      <div className={`w-14 shrink-0 rounded-2xl py-4 flex flex-col items-center gap-3 border shadow-md ${
-        isLightBg 
-          ? 'bg-white border-slate-200 text-slate-700' 
-          : 'bg-[#070B12] border-white/10 text-slate-400'
-      }`}>
-        {/* Main Menu Toggle Icon */}
-        <div className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center shadow-sm mb-2 cursor-pointer">
-          <SlidersHorizontal className="w-4 h-4" />
-        </div>
-
-        {miniSidebarCategories.map((item) => {
-          const isActive = activeCategory === item.id;
-          const { Icon } = item;
-          return (
-            <button
-              key={item.id}
-              onClick={() => onSelectCategory && onSelectCategory(item.id)}
-              title={item.name}
-              className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 relative group ${
-                isActive
-                  ? 'bg-black text-white shadow-sm scale-110'
-                  : isLightBg
-                    ? 'hover:bg-slate-100 hover:text-slate-900 text-slate-600'
-                    : 'hover:bg-white/10 hover:text-white text-slate-400'
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              
-              {/* Tooltip Hover */}
-              <span className="absolute left-12 px-3 py-1 rounded-lg bg-black text-white text-[10px] font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30 shadow-lg border border-white/10">
-                {item.name}
-              </span>
-            </button>
-          );
-        })}
+      {/* Header */}
+      <div className={`flex items-center justify-between pb-4 mb-4 border-b ${borderClass}`}>
+        <h2 className="text-lg font-black tracking-tight">Filtros</h2>
+        <button 
+          onClick={() => {
+             if(onSelectCategory) onSelectCategory('todos');
+             if(onSelectBrand) onSelectBrand('todas');
+          }}
+          className={`text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors`}
+        >
+          Borrar
+        </button>
       </div>
 
-      {/* 2. SIDEBAR DE FILTROS PRINCIPAL (DESKTOP/TABLET) */}
-      <div className={`flex-1 rounded-3xl p-6 border shadow-lg space-y-6 ${
-        isLightBg
-          ? 'bg-white border-slate-200 text-slate-900'
-          : 'glass-card border-white/10 text-white'
-      }`}>
+      <div className="space-y-5">
         
-        {/* Acordeón 1: Color */}
-        <div className="border-b pb-4 border-slate-200 dark:border-white/10">
+        {/* CATEGORÍAS */}
+        <div>
           <button
-            onClick={() => toggleSection('color')}
-            className="w-full flex items-center justify-between py-1 text-sm font-extrabold text-left font-space hover:text-slate-600 transition-colors"
+            onClick={() => toggleSection('categoria')}
+            className="w-full flex items-center justify-between py-1 text-sm font-extrabold text-left mb-2"
           >
-            <span>Color</span>
-            {openSections.color ? <ChevronUp className="w-4 h-4 text-slate-900" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+            <span>Categorías</span>
+            {openSections.categoria ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
-
-          {openSections.color && (
-            <div className="pt-3 space-y-2 text-xs font-inter animate-fadeIn">
-              {colorOptions.map((c) => (
+          
+          {openSections.categoria && (
+            <div className="space-y-1.5 pt-1 animate-fadeIn">
+              {categories.map(c => (
                 <button
                   key={c.id}
-                  onClick={() => onSelectColor && onSelectColor(c.id)}
-                  className={`w-full flex items-center justify-between p-2 rounded-xl text-left border transition-all ${
-                    selectedColor === c.id
-                      ? 'bg-slate-100 border-slate-300 text-slate-900 font-bold'
-                      : 'border-transparent hover:bg-slate-50 text-slate-700'
+                  onClick={() => onSelectCategory && onSelectCategory(c.id)}
+                  className={`w-full flex items-center gap-2 text-left text-sm py-1.5 transition-colors ${
+                    activeCategory === c.id ? 'font-bold text-blue-600' : `${textMuted} hover:text-blue-600`
                   }`}
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="w-3.5 h-3.5 rounded-full border border-black/20 shadow-sm" style={{ backgroundColor: c.hex }} />
-                    <span>{c.label}</span>
+                  <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
+                    activeCategory === c.id ? 'border-blue-600 bg-blue-600' : borderClass
+                  }`}>
+                    {activeCategory === c.id && <Check className="w-3 h-3 text-white" />}
                   </div>
-                  {selectedColor === c.id && <Check className="w-3.5 h-3.5 text-slate-900" />}
+                  <span className="truncate">{c.name}</span>
                 </button>
               ))}
             </div>
           )}
         </div>
 
-        {/* Acordeón 2: Marca */}
-        <div className="border-b pb-4 border-slate-200 dark:border-white/10">
+        <div className={`w-full h-px ${borderClass}`}></div>
+
+        {/* MARCAS */}
+        <div>
           <button
             onClick={() => toggleSection('marca')}
-            className="w-full flex items-center justify-between py-1 text-sm font-extrabold text-left font-space hover:text-slate-600 transition-colors"
+            className="w-full flex items-center justify-between py-1 text-sm font-extrabold text-left mb-2"
           >
-            <span>Marca</span>
-            {openSections.marca ? <ChevronUp className="w-4 h-4 text-slate-900" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+            <span>Marcas</span>
+            {openSections.marca ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
-
+          
           {openSections.marca && (
-            <div className="pt-3 space-y-1.5 text-xs font-inter animate-fadeIn">
-              {brandOptions.map((b) => (
+            <div className="space-y-1.5 pt-1 animate-fadeIn">
+              {brandOptions.map(b => (
                 <button
                   key={b.id}
                   onClick={() => onSelectBrand && onSelectBrand(b.id)}
-                  className={`w-full text-left p-2 rounded-xl border transition-all flex items-center justify-between ${
-                    selectedBrand === b.id
-                      ? 'bg-slate-100 border-slate-300 text-slate-900 font-bold'
-                      : 'border-transparent hover:bg-slate-50 text-slate-700'
+                  className={`w-full flex items-center gap-2 text-left text-sm py-1.5 transition-colors ${
+                    selectedBrand === b.id ? 'font-bold text-blue-600' : `${textMuted} hover:text-blue-600`
                   }`}
                 >
-                  <span>{b.label}</span>
-                  {selectedBrand === b.id && <Check className="w-3.5 h-3.5 text-slate-900" />}
+                  <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
+                    selectedBrand === b.id ? 'border-blue-600 bg-blue-600' : borderClass
+                  }`}>
+                    {selectedBrand === b.id && <Check className="w-3 h-3 text-white" />}
+                  </div>
+                  <span className="truncate">{b.label}</span>
                 </button>
               ))}
             </div>
           )}
         </div>
 
-        {/* Acordeón 3: Tipo De Producto */}
-        <div className="border-b pb-4 border-slate-200 dark:border-white/10">
-          <button
-            onClick={() => toggleSection('tipo')}
-            className="w-full flex items-center justify-between py-1 text-sm font-extrabold text-left font-space hover:text-slate-600 transition-colors"
-          >
-            <span>Tipo De Producto</span>
-            {openSections.tipo ? <ChevronUp className="w-4 h-4 text-slate-900" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
-          </button>
+        <div className={`w-full h-px ${borderClass}`}></div>
 
-          {openSections.tipo && (
-            <div className="pt-3 space-y-1.5 text-xs font-inter animate-fadeIn">
-              {typeOptions.map((t) => (
-                <button
-                  key={t.id}
-                  onClick={() => onSelectType && onSelectType(t.id)}
-                  className={`w-full text-left p-2 rounded-xl border transition-all flex items-center justify-between ${
-                    selectedType === t.id
-                      ? 'bg-slate-100 border-slate-300 text-slate-900 font-bold'
-                      : 'border-transparent hover:bg-slate-50 text-slate-700'
-                  }`}
-                >
-                  <span>{t.label}</span>
-                  {selectedType === t.id && <Check className="w-3.5 h-3.5 text-slate-900" />}
-                </button>
-              ))}
+        {/* PRECIO */}
+        <div>
+          <button
+            onClick={() => toggleSection('precio')}
+            className="w-full flex items-center justify-between py-1 text-sm font-extrabold text-left mb-3"
+          >
+            <span>Precios</span>
+            {openSections.precio ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+          
+          {openSections.precio && (
+            <div className="pt-1 animate-fadeIn space-y-4">
+              <div className="flex items-center justify-between text-xs font-bold">
+                <span className="px-2 py-1 bg-slate-100 dark:bg-neutral-800 rounded text-slate-700 dark:text-slate-300">
+                  ${minPrice}
+                </span>
+                <span className="px-2 py-1 bg-slate-100 dark:bg-neutral-800 rounded text-slate-700 dark:text-slate-300">
+                  ${maxPrice}
+                </span>
+              </div>
+              
+              <div className="relative w-full py-2">
+                <div className={`h-1 w-full rounded-full relative ${isLightBg ? 'bg-slate-200' : 'bg-neutral-800'}`}>
+                  <div 
+                    className="absolute h-full bg-blue-600 rounded-full"
+                    style={{
+                      left: `${((minPrice - minLimit) / (maxLimit - minLimit)) * 100}%`,
+                      right: `${100 - ((maxPrice - minLimit) / (maxLimit - minLimit)) * 100}%`
+                    }}
+                  />
+                </div>
+                <input 
+                  type="range" min={minLimit} max={maxLimit} value={minPrice} onChange={handleMinSliderChange}
+                  className="absolute top-1 left-0 w-full appearance-none bg-transparent pointer-events-none focus:outline-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:cursor-pointer"
+                />
+                <input 
+                  type="range" min={minLimit} max={maxLimit} value={maxPrice} onChange={handleMaxSliderChange}
+                  className="absolute top-1 left-0 w-full appearance-none bg-transparent pointer-events-none focus:outline-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:cursor-pointer"
+                />
+              </div>
+
+              <button
+                onClick={() => onApplyFilter && onApplyFilter({ minPrice, maxPrice, selectedBrand, selectedColor, selectedType })}
+                className="w-full py-2 rounded-lg bg-black hover:bg-neutral-900 text-white text-xs font-bold transition-colors mt-2"
+              >
+                Aplicar Filtro
+              </button>
             </div>
           )}
-        </div>
-
-        {/* 3. FILTRO DE RANGO DE PRECIO (DUAL-HANDLE SLIDER) */}
-        <div className="space-y-4 pt-1">
-          <h4 className="text-sm font-extrabold font-space text-slate-900 dark:text-white">
-            Filtrar Por Rango De Precio
-          </h4>
-
-          {/* Dual Handle Slider track */}
-          <div className="relative w-full py-2">
-            <div className="h-1.5 w-full bg-slate-200 dark:bg-neutral-900 rounded-full relative">
-              {/* Active corporate range highlight */}
-              <div 
-                className="absolute h-full bg-black rounded-full"
-                style={{
-                  left: `${((minPrice - minLimit) / (maxLimit - minLimit)) * 100}%`,
-                  right: `${100 - ((maxPrice - minLimit) / (maxLimit - minLimit)) * 100}%`
-                }}
-              />
-            </div>
-
-            <input 
-              type="range"
-              min={minLimit}
-              max={maxLimit}
-              value={minPrice}
-              onChange={handleMinSliderChange}
-              className="absolute top-1 left-0 w-full appearance-none bg-transparent pointer-events-none focus:outline-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-black [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md"
-            />
-
-            <input 
-              type="range"
-              min={minLimit}
-              max={maxLimit}
-              value={maxPrice}
-              onChange={handleMaxSliderChange}
-              className="absolute top-1 left-0 w-full appearance-none bg-transparent pointer-events-none focus:outline-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-black [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md"
-            />
-          </div>
-
-          {/* Dynamic Price Text Display (ej. Precio: 1,00$ — 1.041,00$) */}
-          <div className="text-xs font-bold font-inter text-slate-700 dark:text-slate-300">
-            Precio: <span className="font-extrabold text-slate-900 dark:text-white font-space">${minPrice.toFixed(2)}$</span> — <span className="font-extrabold text-slate-900 dark:text-white font-space">${maxPrice.toFixed(2)}$</span>
-          </div>
-
-          <button
-            onClick={() => onApplyFilter && onApplyFilter({ minPrice, maxPrice, selectedBrand, selectedColor, selectedType })}
-            className="px-6 py-2.5 rounded-md bg-black border border-neutral-800 text-white hover:bg-neutral-900 font-extrabold text-xs font-space transition-all shadow-sm active:scale-95 uppercase tracking-wider"
-          >
-            Filtrar
-          </button>
         </div>
 
       </div>
-
     </div>
   );
 };

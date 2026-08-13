@@ -89,7 +89,7 @@ export const ProductCarousel = ({
         isLightBg ? 'border-slate-200' : 'border-white/10'
       }`}>
         <div>
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-extrabold uppercase mb-2 bg-blue-50 text-blue-700 border border-blue-200">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-extrabold uppercase mb-3 bg-slate-100 text-slate-800 border border-slate-200">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Catálogo Oficial M Store</span>
           </div>
@@ -171,6 +171,12 @@ export const ProductCarousel = ({
 
         {/* PRODUCT GRID CONTAINER (Lg: col-span-8, Xl: col-span-9) */}
         <div className="lg:col-span-8 xl:col-span-9 space-y-6">
+          
+          <div className="flex items-center justify-between bg-slate-50 border border-slate-200 px-4 py-3 rounded-2xl">
+            <span className="text-sm font-extrabold text-slate-800">
+              Mostrando {filtered.length} {filtered.length === 1 ? 'producto' : 'productos'}
+            </span>
+          </div>
           
           {filtered.length === 0 ? (
             <div className="rounded-3xl p-12 text-center space-y-3 bg-white border-2 border-slate-200 shadow-sm text-slate-700">

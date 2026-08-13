@@ -45,10 +45,10 @@ export const Navbar = ({
           {/* 2. Menú de Categorías Button */}
           <button
             onClick={onOpenMegaMenu || onToggleMegaMenu}
-            className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all duration-300 shrink-0 border ${
+            className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-300 shrink-0 border-none ${
               isMegaMenuOpen 
-                ? 'bg-neutral-900 text-white border-neutral-800 shadow-md' 
-                : 'bg-black text-slate-300 hover:text-white hover:bg-neutral-900 border-neutral-800 shadow-sm'
+                ? 'bg-slate-200 text-slate-900 shadow-md' 
+                : 'bg-white text-slate-900 hover:bg-slate-200 shadow-sm'
             }`}
           >
             <LayoutGrid className="w-4 h-4" />
@@ -67,7 +67,7 @@ export const Navbar = ({
                 value={searchQuery || ''}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Buscar en M Store (ej: iPhone, Smart TV 4K, AirPods)..."
-                className="w-full bg-black border border-neutral-800 focus:border-neutral-800 focus:ring-1 focus:ring-slate-700 text-white text-xs rounded-lg pl-10 pr-4 py-2.5 outline-none transition-all placeholder:text-slate-500"
+                className="w-full bg-slate-100 border-none focus:ring-2 focus:ring-blue-600/50 text-slate-900 text-xs rounded-lg pl-10 pr-4 py-2.5 outline-none transition-all placeholder:text-slate-500"
               />
               {searchQuery && (
                 <button
@@ -93,7 +93,7 @@ export const Navbar = ({
                 value={searchQuery || ''}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Buscar productos..."
-                className="w-full bg-black border border-neutral-800 focus:border-neutral-800 text-white text-xs rounded-full pl-9 pr-3 py-2 outline-none min-h-[38px] placeholder:text-slate-500"
+                className="w-full bg-slate-100 border-none text-slate-900 text-xs rounded-full pl-9 pr-3 py-2 outline-none min-h-[38px] placeholder:text-slate-500 focus:ring-2 focus:ring-blue-600/50"
               />
               {searchQuery && (
                 <button
@@ -113,13 +113,13 @@ export const Navbar = ({
             {/* Shopping Cart Button */}
             <button
               onClick={onOpenCart}
-              className="relative flex items-center gap-2 bg-black hover:bg-neutral-900 text-slate-300 hover:text-white border border-neutral-800 px-4 py-2 rounded-lg text-xs font-bold transition-all duration-300 group shadow-sm active:scale-95"
+              className="relative flex items-center gap-2 bg-white hover:bg-slate-200 text-slate-900 border-none px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-300 group shadow-sm active:scale-95"
               aria-label="Ver Carrito de Compras"
             >
-              <ShoppingCart className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 text-slate-300 group-hover:text-white" />
+              <ShoppingCart className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 text-slate-900" />
               <span>Carrito</span>
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-white text-slate-900 font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-md">
+                <span className="absolute -top-2 -right-2 bg-blue-600 text-white font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-md">
                   {cartCount}
                 </span>
               )}
@@ -155,6 +155,19 @@ export const Navbar = ({
             </button>
           </div>
         )}
+      </div>
+
+      {/* Horizontal Category Navigation Bar */}
+      <div className="w-full bg-slate-50 border-b border-slate-200 overflow-x-auto shadow-sm [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-start sm:justify-center gap-6 sm:gap-8 text-[10px] sm:text-[11px] font-medium text-slate-800 uppercase tracking-wide py-2.5">
+          <span className="cursor-pointer hover:text-blue-600 transition-colors whitespace-nowrap shrink-0">Smartphones</span>
+          <span className="cursor-pointer hover:text-blue-600 transition-colors whitespace-nowrap shrink-0">Laptops & PC</span>
+          <span className="cursor-pointer hover:text-blue-600 transition-colors whitespace-nowrap shrink-0">Audio Hi-Fi</span>
+          <span className="cursor-pointer hover:text-blue-600 transition-colors whitespace-nowrap shrink-0">Televisores</span>
+          <span className="cursor-pointer hover:text-blue-600 transition-colors whitespace-nowrap shrink-0">Hogar Inteligente</span>
+          <span className="cursor-pointer hover:text-blue-600 transition-colors whitespace-nowrap shrink-0">Gaming</span>
+          <span className="cursor-pointer text-emerald-600 hover:text-emerald-700 transition-colors whitespace-nowrap shrink-0">Ofertas</span>
+        </div>
       </div>
     </header>
   );

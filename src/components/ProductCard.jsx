@@ -21,17 +21,8 @@ export const ProductCard = ({ product, onAddToCart, onQuickView, isLightBg = tru
       }`}
     >
       
-      {/* Top Tag Badge & Quick View Eye Icon */}
-      <div className="flex items-center justify-between z-10 mb-3">
-        {product.tag ? (
-          <span className={`text-[10px] font-extrabold tracking-wider uppercase px-3 py-1 rounded-full font-space ${
-            isLightBg 
-              ? 'bg-slate-100 text-slate-800' 
-              : 'bg-neutral-900 text-slate-200'
-          }`}>
-            {product.tag}
-          </span>
-        ) : <div></div>}
+      {/* Quick View Eye Icon */}
+      <div className="flex items-center justify-end z-10 mb-3 min-h-[28px]">
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -80,7 +71,7 @@ export const ProductCard = ({ product, onAddToCart, onQuickView, isLightBg = tru
       {/* Price & Add to Cart Button */}
       <div className="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between gap-2">
         <div>
-          <div className="text-[10px] text-slate-500 font-inter uppercase tracking-wider font-bold">Precio M Store</div>
+          <div className="text-[10px] text-slate-500 font-inter uppercase tracking-wider font-bold">Compra Por</div>
           <div className="flex items-baseline gap-1">
             <span className={`text-lg font-black font-inter tracking-tight ${isLightBg ? 'text-slate-900' : 'text-white'}`}>
               ${product.price ? (product.price.toFixed ? product.price.toFixed(2) : product.price) : '0.00'}
@@ -96,7 +87,7 @@ export const ProductCard = ({ product, onAddToCart, onQuickView, isLightBg = tru
 
         <button
           onClick={handleAdd}
-          className={`p-3 rounded-2xl font-bold transition-all transform active:scale-95 flex items-center justify-center ${
+          className={`p-3 rounded-2xl font-bold transition-all transform active:scale-95 flex items-center justify-center min-h-[44px] min-w-[44px] ${
             added 
               ? 'bg-emerald-600 text-white shadow-sm' 
               : 'bg-black hover:bg-neutral-900 text-white shadow-sm'

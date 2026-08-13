@@ -11,8 +11,8 @@ export const LocationSection = ({
       {/* Background glow effects */}
       {!isLightBg && (
         <>
-          <div className="absolute top-1/2 left-0 w-96 h-96 bg-[#00E5FF]/10 blur-[120px] rounded-full pointer-events-none" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#00F2FE]/10 blur-[120px] rounded-full pointer-events-none" />
+          <div className="absolute top-1/2 left-0 w-96 h-96 bg-slate-800/10 blur-[120px] rounded-full pointer-events-none" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-slate-800/10 blur-[120px] rounded-full pointer-events-none" />
         </>
       )}
 
@@ -22,15 +22,15 @@ export const LocationSection = ({
         <div className="text-center space-y-3 max-w-2xl mx-auto">
           <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold font-space uppercase tracking-wider ${
             isLightBg 
-              ? 'bg-[#00E5FF]/15 border border-[#00E5FF]/40 text-[#0066FF]' 
-              : 'bg-[#00E5FF]/10 border border-[#00E5FF]/30 text-[#00E5FF]'
+              ? 'bg-blue-50 border border-blue-200 text-blue-700' 
+              : 'bg-blue-900/30 border border-blue-700/50 text-blue-400'
           }`}>
             <MapPin className="w-3.5 h-3.5" />
             <span>Sucursal Principal M Store</span>
           </div>
           
           <h2 className={`text-3xl sm:text-4xl font-extrabold font-space tracking-tight ${isLightBg ? 'text-slate-900' : 'text-white'}`}>
-            Visita Nuestra <span className="text-[#0066FF]">Tienda Física</span>
+            Visita Nuestra <span className="text-blue-600">Tienda Física</span>
           </h2>
           
           <p className={`text-sm font-inter ${isLightBg ? 'text-slate-600' : 'text-slate-400'}`}>
@@ -52,7 +52,7 @@ export const LocationSection = ({
               
               {/* Header Info */}
               <div className={`flex items-center gap-3 pb-4 border-b ${isLightBg ? 'border-slate-200' : 'border-white/10'}`}>
-                <div className={`p-3 rounded-2xl ${isLightBg ? 'bg-[#00E5FF]/15 text-[#0066FF] border border-[#00E5FF]/40' : 'bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30'}`}>
+                <div className={`p-3 rounded-2xl ${isLightBg ? 'bg-blue-50 text-blue-600 border border-blue-100' : 'bg-blue-900/30 text-blue-400 border border-blue-700/50'}`}>
                   <Building2 className="w-6 h-6" />
                 </div>
                 <div>
@@ -63,7 +63,7 @@ export const LocationSection = ({
 
               {/* Address */}
               <div className="flex items-start gap-4">
-                <div className={`p-2.5 rounded-xl shrink-0 ${isLightBg ? 'bg-slate-100 text-[#0066FF]' : 'bg-white/5 text-[#00E5FF]'}`}>
+                <div className={`p-2.5 rounded-xl shrink-0 ${isLightBg ? 'bg-blue-50 text-blue-600' : 'bg-blue-900/30 text-blue-400'}`}>
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div className="space-y-1">
@@ -76,7 +76,7 @@ export const LocationSection = ({
 
               {/* Business Hours */}
               <div className="flex items-start gap-4">
-                <div className={`p-2.5 rounded-xl shrink-0 ${isLightBg ? 'bg-slate-100 text-[#0066FF]' : 'bg-white/5 text-[#00E5FF]'}`}>
+                <div className={`p-2.5 rounded-xl shrink-0 ${isLightBg ? 'bg-blue-50 text-blue-600' : 'bg-blue-900/30 text-blue-400'}`}>
                   <Clock className="w-5 h-5" />
                 </div>
                 <div className="space-y-1">
@@ -90,7 +90,7 @@ export const LocationSection = ({
 
               {/* Phone & Direct Support */}
               <div className="flex items-start gap-4">
-                <div className={`p-2.5 rounded-xl shrink-0 ${isLightBg ? 'bg-slate-100 text-[#0066FF]' : 'bg-white/5 text-[#00E5FF]'}`}>
+                <div className={`p-2.5 rounded-xl shrink-0 ${isLightBg ? 'bg-blue-50 text-blue-600' : 'bg-blue-900/30 text-blue-400'}`}>
                   <Phone className="w-5 h-5" />
                 </div>
                 <div className="space-y-1">
@@ -116,7 +116,7 @@ export const LocationSection = ({
               </a>
 
               <div className={`flex items-center justify-center gap-2 text-[11px] ${isLightBg ? 'text-slate-500' : 'text-slate-400'}`}>
-                <ShieldCheck className="w-3.5 h-3.5 text-[#0066FF]" />
+                <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
                 <span>Estacionamiento privado y seguridad 24H</span>
               </div>
             </div>
@@ -141,7 +141,7 @@ export const LocationSection = ({
               ></iframe>
 
               {/* Overlay badge */}
-              <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-[#00E5FF]/40 text-[#00E5FF] text-[11px] font-bold font-space flex items-center gap-2 pointer-events-none">
+              <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-blue-500/40 text-blue-400 text-[11px] font-bold font-space flex items-center gap-2 pointer-events-none">
                 <Sparkles className="w-3.5 h-3.5 animate-pulse" />
                 <span>Mapa Interactivo Google Maps API</span>
               </div>

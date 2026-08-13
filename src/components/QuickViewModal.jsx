@@ -137,7 +137,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
             <div className="p-6 sm:p-8 bg-slate-50 border-r border-slate-200 flex flex-col justify-between items-center relative min-h-[360px] sm:min-h-[440px]">
               
               {/* Badge "NUEVO" Flotante */}
-              <span className="absolute top-4 right-4 z-10 rounded-full px-3 py-1 text-xs font-bold bg-emerald-500 text-white shadow-md uppercase tracking-wider">
+              <span className="absolute top-4 right-4 z-10 rounded-full px-3 py-1 text-[10px] font-extrabold bg-slate-900 text-white shadow-sm uppercase tracking-wider">
                 NUEVO
               </span>
 
@@ -325,10 +325,10 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
 
                   <button
                     onClick={handleWhatsAppCheckout}
-                    className="py-3.5 px-4 rounded-2xl text-xs font-black flex items-center justify-center gap-2 bg-[#25D366] hover:bg-emerald-600 text-white shadow-md transition-all active:scale-95"
+                    className="py-3.5 px-4 rounded-2xl text-xs font-black flex items-center justify-center gap-2 bg-white text-slate-900 border-2 border-slate-900 hover:bg-slate-50 shadow-sm transition-all active:scale-95"
                   >
-                    <MessageCircle className="w-4 h-4 fill-white" />
-                    <span>Comprar Ahora</span>
+                    <MessageCircle className="w-4 h-4 text-slate-900" />
+                    <span>Compra Rápida</span>
                   </button>
                 </div>
               </div>

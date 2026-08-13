@@ -1,5 +1,5 @@
-import React from 'react';
-import { Star, ShoppingCart, Eye, Heart, ChevronRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Star, ShoppingCart, Eye, Heart, ChevronRight, Check } from 'lucide-react';
 
 export const CategoryShowcaseCard = ({ 
   product, 
@@ -8,6 +8,8 @@ export const CategoryShowcaseCard = ({
   isWishlisted = false, 
   onToggleWishlist 
 }) => {
+  const [added, setAdded] = useState(false);
+
   if (!product) return null;
 
   const formattedPrice = Number(product.price || 0).toLocaleString('en-US');
@@ -19,6 +21,13 @@ export const CategoryShowcaseCard = ({
     if (onQuickView) onQuickView(product);
   };
 
+  const handleAdd = (e) => {
+    e.stopPropagation();
+    onAddToCart && onAddToCart(product);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
+  };
+
   return (
     <div 
       onClick={handleCardClick}
@@ -28,21 +37,7 @@ export const CategoryShowcaseCard = ({
       {/* Top Badges & Wishlist Heart */}
       <div className="relative w-full rounded-xl bg-slate-50 p-2 overflow-hidden flex items-center justify-center h-36 sm:h-40 border border-slate-100">
         
-        {/* Wishlist Heart Top-Left */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleWishlist && onToggleWishlist(product.id);
-          }}
-          className={`absolute top-2 left-2 z-10 p-2 rounded-full backdrop-blur-md transition-all ${
-            isWishlisted 
-              ? 'bg-rose-500 text-white shadow-md' 
-              : 'bg-white/80 text-slate-500 hover:text-slate-900 hover:bg-white border border-slate-200'
-          }`}
-          title="Guardar en Favoritos"
-        >
-          <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
-        </button>
+
 
         {/* Tag / Discount Badge */}
         {(product.tag || product.discountBadge) && (
@@ -51,16 +46,16 @@ export const CategoryShowcaseCard = ({
           </span>
         )}
 
-        {/* Quick Add Cart Top-Right */}
+        {/* Quick View Top-Right (Swapped from cart to eye) */}
         <button
           onClick={(e) => {
             e.stopPropagation();
-            onAddToCart && onAddToCart(product);
+            onQuickView && onQuickView(product);
           }}
-          className="absolute top-2 right-2 z-10 p-2 rounded-full bg-black text-white font-extrabold hover:bg-neutral-900 hover:scale-110 transition-all shadow-md"
-          title="Agregar al Carrito"
+          className="absolute top-2 right-2 z-10 p-2 rounded-full bg-white text-slate-700 font-extrabold hover:text-slate-900 hover:bg-slate-100 transition-all shadow-sm border border-slate-200 opacity-0 group-hover:opacity-100"
+          title="Vista Rápida"
         >
-          <ShoppingCart className="w-4 h-4" />
+          <Eye className="w-4 h-4" />
         </button>
 
         {/* Product Image */}
@@ -83,7 +78,7 @@ export const CategoryShowcaseCard = ({
           </div>
 
           {/* Title */}
-          <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 font-sans leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors">
+          <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 font-sans leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors min-h-[40px]">
             {product.name}
           </h3>
         </div>
@@ -105,16 +100,17 @@ export const CategoryShowcaseCard = ({
             )}
           </div>
 
-          {/* Action CTA Button */}
+          {/* Action CTA Button (Add to cart) */}
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onQuickView && onQuickView(product);
-            }}
-            className="w-full py-2 rounded-xl bg-black hover:bg-neutral-900 text-white font-sans font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm"
+            onClick={handleAdd}
+            className={`w-full py-2.5 rounded-xl font-sans font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm min-h-[44px] ${
+              added 
+                ? 'bg-emerald-600 text-white hover:bg-emerald-700' 
+                : 'bg-black text-white hover:bg-neutral-900'
+            }`}
           >
-            <Eye className="w-3.5 h-3.5 text-white" />
-            <span>Ver Detalle del Producto</span>
+            {added ? <Check className="w-4 h-4 text-white" /> : <ShoppingCart className="w-4 h-4 text-white" />}
+            <span>{added ? 'Agregado' : 'Agregar al Carrito'}</span>
           </button>
         </div>
       </div>
@@ -161,17 +157,18 @@ export const CategoryShowcaseSection = ({
         </button>
       </div>
 
-      {/* Grid: 4 cols desktop, 3 tablet, 2 mobile */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+      {/* Responsive Grid/Carousel */}
+      <div className="flex sm:grid overflow-x-auto sm:overflow-x-visible snap-x snap-mandatory sm:snap-none pb-4 sm:pb-0 gap-4 sm:grid-cols-3 lg:grid-cols-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {categoryProducts.map((product) => (
-          <CategoryShowcaseCard
-            key={product.id}
-            product={product}
-            onAddToCart={onAddToCart}
-            onQuickView={onQuickView}
-            isWishlisted={safeWishlist.includes(product.id)}
-            onToggleWishlist={onToggleWishlist}
-          />
+          <div key={product.id} className="snap-start shrink-0 w-[260px] sm:w-auto h-full">
+            <CategoryShowcaseCard
+              product={product}
+              onAddToCart={onAddToCart}
+              onQuickView={onQuickView}
+              isWishlisted={safeWishlist.includes(product.id)}
+              onToggleWishlist={onToggleWishlist}
+            />
+          </div>
         ))}
       </div>
 

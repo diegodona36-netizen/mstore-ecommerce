@@ -1,0 +1,63 @@
+
+[38;5;102mInstall with[0m npx skills add <owner/repo@skill>
+
+[38;5;145myaklang/hack-skills@smart-contract-vulnerabilities[0m [36m2.4K installs[0m
+[38;5;102m└ https://skills.sh/yaklang/hack-skills/smart-contract-vulnerabilities[0m
+
+[38;5;145mericosiu/ai-marketing-skills@expert-panel[0m [36m158 installs[0m
+[38;5;102m└ https://skills.sh/ericosiu/ai-marketing-skills/expert-panel[0m
+
+[38;5;145mopenai/symphony@land[0m [36m126 installs[0m
+[38;5;102m└ https://skills.sh/openai/symphony/land[0m
+
+[38;5;145macedergren/oci-agent-skills@landing-zones[0m [36m66 installs[0m
+[38;5;102m└ https://skills.sh/acedergren/oci-agent-skills/landing-zones[0m
+
+[38;5;145mbxmaximum/bitrix-framework-skills@bitrix-landing[0m [36m54 installs[0m
+[38;5;102m└ https://skills.sh/bxmaximum/bitrix-framework-skills/bitrix-landing[0m
+
+[38;5;145mpwguler/skills@land[0m [36m17 installs[0m
+[38;5;102m└ https://skills.sh/pwguler/skills/land[0m
+
+[38;5;145macedergren/agentic-tools@landing-zones[0m [36m11 installs[0m
+[38;5;102m└ https://skills.sh/acedergren/agentic-tools/landing-zones[0m
+
+[38;5;145mtruchot/claude-skills-test@content-marketing[0m [36m11 installs[0m
+[38;5;102m└ https://skills.sh/truchot/claude-skills-test/content-marketing[0m
+
+[38;5;145msmanaton/adhd-skills@land[0m [36m11 installs[0m
+[38;5;102m└ https://skills.sh/smanaton/adhd-skills/land[0m
+
+[38;5;145mj4flmao/agent-skills@blockchain-application[0m [36m8 installs[0m
+[38;5;102m└ https://skills.sh/j4flmao/agent-skills/blockchain-application[0m
+
+[38;5;145mbighardperson/computer-science-skills-collection@content-ops[0m [36m8 installs[0m
+[38;5;102m└ https://skills.sh/bighardperson/computer-science-skills-collection/content-ops[0m
+
+[38;5;145mj4flmao/agent-skills@blockchain-ethereum[0m [36m8 installs[0m
+[38;5;102m└ https://skills.sh/j4flmao/agent-skills/blockchain-ethereum[0m
+
+[38;5;145mskills.volces.com@landing[0m [36m6 installs[0m
+[38;5;102m└ https://skills.sh/skills.volces.com/landing[0m
+
+[38;5;145mhugocarreira/agentrc@landing-page[0m [36m1 install[0m
+[38;5;102m└ https://skills.sh/hugocarreira/agentrc/landing-page[0m
+
+[38;5;145msmithery.ai@landing-zones[0m [36m1 install[0m
+[38;5;102m└ https://skills.sh/smithery.ai/landing-zones[0m
+
+[38;5;145mbytesagain/ai-skills@landing[0m [36m1 install[0m
+[38;5;102m└ https://skills.sh/bytesagain/ai-skills/landing[0m
+
+[38;5;145mfloboflo-cmd/ai-marketing-skills@expert-panel[0m [36m1 install[0m
+[38;5;102m└ https://skills.sh/floboflo-cmd/ai-marketing-skills/expert-panel[0m
+
+[38;5;145mmarcotuliobrz/ai-marketing-skills@expert-panel[0m [36m1 install[0m
+[38;5;102m└ https://skills.sh/marcotuliobrz/ai-marketing-skills/expert-panel[0m
+
+[38;5;145mhoangsonww/forge-agentic-coding-cli@landing[0m [36m1 install[0m
+[38;5;102m└ https://skills.sh/hoangsonww/forge-agentic-coding-cli/landing[0m
+
+[38;5;145mkiyohken2000/5ch-browser-template@landing[0m [36m1 install[0m
+[38;5;102m└ https://skills.sh/kiyohken2000/5ch-browser-template/landing[0m
+

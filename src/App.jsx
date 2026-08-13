@@ -129,6 +129,7 @@ export function App() {
           products={products}
           onQuickView={(p) => setQuickViewProduct(p)}
           onNavigateHome={navigateToHome}
+          onSelectCategory={(catId) => navigateToCatalog(catId)}
         />
 
         <CategoryMegaMenu 

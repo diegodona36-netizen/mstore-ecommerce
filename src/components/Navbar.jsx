@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingCart, Menu, X, Search, LayoutGrid, Sparkles } from 'lucide-react';
+import { ShoppingCart, Search, LayoutGrid, X, ChevronDown, Flame, Shield, ArrowRight } from 'lucide-react';
 import { Logo } from './Logo';
 
 export const Navbar = ({ 
-  cartCount, 
+  cartCount = 0, 
   onOpenCart, 
   onOpenMegaMenu,
   onToggleMegaMenu, 
   isMegaMenuOpen,
-  searchQuery,
+  searchQuery = '',
   onSearchChange,
   onSearchSubmit,
-  onNavigateHome
+  onNavigateHome,
+  onSelectCategory
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,146 +29,164 @@ export const Navbar = ({
     if (onSearchSubmit) onSearchSubmit();
   };
 
+  const navCategories = [
+    { label: 'Smartphones', id: 'smartphones' },
+    { label: 'Laptops & PC', id: 'computacion' },
+    { label: 'Audio Hi-Fi', id: 'audio' },
+    { label: 'Televisores', id: 'televisores' },
+    { label: 'Hogar Inteligente', id: 'hogar' },
+    { label: 'Gaming', id: 'gaming' },
+    { label: 'Ofertas', id: 'ofertas', isSpecial: true }
+  ];
+
   return (
-    <header className="sticky top-0 z-50 w-full bg-black border-b border-neutral-800 shadow-sm transition-all duration-300 font-sans">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-3.5">
-        <div className="flex items-center justify-between gap-3 md:gap-5">
-          
-          {/* 1. Brand Logo (Navega a Inicio) */}
-          <div 
-            onClick={() => onNavigateHome && onNavigateHome()} 
-            className="flex items-center shrink-0 cursor-pointer"
-          >
-            <Logo size="medium" />
-          </div>
-
-          {/* 2. Menú de Categorías Button */}
-          <button
-            onClick={onOpenMegaMenu || onToggleMegaMenu}
-            className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-300 shrink-0 border-none ${
-              isMegaMenuOpen 
-                ? 'bg-slate-200 text-slate-900 shadow-md' 
-                : 'bg-white text-slate-900 hover:bg-slate-200 shadow-sm'
-            }`}
-          >
-            <LayoutGrid className="w-4 h-4" />
-            <span>Menú de Categorías</span>
-          </button>
-
-          {/* 3. Integrated Live Search Bar (Escritorio) */}
-          <form 
-            onSubmit={handleSearchFormSubmit}
-            className="flex-1 max-w-md relative hidden md:block"
-          >
-            <div className="relative flex items-center">
-              <Search className="w-4 h-4 text-slate-500 absolute left-3.5 pointer-events-none transition-colors" />
-              <input
-                type="text"
-                value={searchQuery || ''}
-                onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Buscar en M Store (ej: iPhone, Smart TV 4K, AirPods)..."
-                className="w-full bg-slate-100 border-none focus:ring-2 focus:ring-blue-600/50 text-slate-900 text-xs rounded-lg pl-10 pr-4 py-2.5 outline-none transition-all placeholder:text-slate-500"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => onSearchChange('')}
-                  className="absolute right-3 text-slate-400 hover:text-slate-600 text-xs p-1"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-          </form>
-
-          {/* 3b. Buscador Amplio en Móvil (Ocupa todo el espacio restable) */}
-          <form 
-            onSubmit={handleSearchFormSubmit}
-            className="flex-1 relative md:hidden ml-1 sm:ml-2"
-          >
-            <div className="relative flex items-center">
-              <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3.5 pointer-events-none" />
-              <input
-                type="text"
-                value={searchQuery || ''}
-                onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Buscar productos..."
-                className="w-full bg-slate-100 border-none text-slate-900 text-xs rounded-full pl-9 pr-3 py-2 outline-none min-h-[38px] placeholder:text-slate-500 focus:ring-2 focus:ring-blue-600/50"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => onSearchChange('')}
-                  className="absolute right-3 text-slate-400 hover:text-slate-600 text-xs p-1"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-          </form>
-
-          {/* 4. Right Actions */}
-          <div className="hidden md:flex items-center gap-2 sm:gap-3 shrink-0">
+    <header className="sticky top-0 z-50 w-full shadow-md font-sans transition-all duration-300">
+      
+      {/* 1. MAIN HEADER (DEEP LUXURY SLATE / OBSIDIAN) */}
+      <div className="bg-[#0B0F17] border-b border-white/10 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-3">
+          <div className="flex items-center justify-between gap-3 md:gap-5">
             
-            {/* Shopping Cart Button */}
-            <button
-              onClick={onOpenCart}
-              className="relative flex items-center gap-2 bg-white hover:bg-slate-200 text-slate-900 border-none px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-300 group shadow-sm active:scale-95"
-              aria-label="Ver Carrito de Compras"
+            {/* BRAND LOGO */}
+            <div 
+              onClick={() => onNavigateHome && onNavigateHome()} 
+              className="flex items-center shrink-0 cursor-pointer group"
+              title="Volver a Inicio"
             >
-              <ShoppingCart className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 text-slate-900" />
-              <span>Carrito</span>
-              {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-blue-600 text-white font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-md">
-                  {cartCount}
-                </span>
-              )}
+              <Logo size="medium" />
+            </div>
+
+            {/* CATEGORIES BUTTON (DESKTOP) */}
+            <button
+              type="button"
+              onClick={onOpenMegaMenu || onToggleMegaMenu}
+              className={`hidden md:flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all shrink-0 border ${
+                isMegaMenuOpen 
+                  ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-600/30' 
+                  : 'bg-white/10 hover:bg-white/15 text-white border-white/15 hover:border-white/25 shadow-xs active:scale-95'
+              }`}
+            >
+              <LayoutGrid className="w-4 h-4 text-blue-400" />
+              <span>Categorías</span>
+              <ChevronDown className="w-3.5 h-3.5 opacity-60 ml-0.5" />
             </button>
-          </div>
 
-        </div>
+            {/* SEARCH BAR (EXPANSIVE DESKTOP) */}
+            <form 
+              onSubmit={handleSearchFormSubmit}
+              className="flex-1 max-w-xl relative hidden md:block"
+            >
+              <div className="relative flex items-center bg-white rounded-xl shadow-sm border border-slate-200 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all overflow-hidden">
+                <Search className="w-4 h-4 text-slate-400 ml-3.5 pointer-events-none shrink-0" />
+                <input
+                  type="text"
+                  value={searchQuery || ''}
+                  onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+                  placeholder="Buscar en M Store (ej: iPhone 15 Pro, MacBook, Smart TV 4K)..."
+                  className="w-full text-slate-900 text-xs font-medium px-3 py-2.5 bg-transparent placeholder:text-slate-400 outline-none"
+                />
+                
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => onSearchChange && onSearchChange('')}
+                    className="p-1.5 mr-1 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
+                    title="Limpiar búsqueda"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
 
-        {/* Mobile Search & Dropdown Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden mt-3 pt-3 border-t border-neutral-800 flex flex-col gap-3 animate-fadeIn">
-            {/* Mobile Search */}
-            <form onSubmit={handleSearchFormSubmit} className="relative">
-              <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-3 pointer-events-none" />
-              <input
-                type="text"
-                value={searchQuery || ''}
-                onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Buscar productos..."
-                className="w-full bg-black border border-neutral-800 text-white text-xs rounded-lg pl-10 pr-4 py-2.5 outline-none"
-              />
+                <button
+                  type="submit"
+                  className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-4 py-2.5 text-xs font-bold flex items-center gap-1.5 transition-colors shrink-0"
+                >
+                  <span>Buscar</span>
+                </button>
+              </div>
             </form>
 
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onToggleMegaMenu();
-              }}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold text-slate-900 bg-white transition-all shadow-sm"
+            {/* SEARCH BAR (MOBILE) */}
+            <form 
+              onSubmit={handleSearchFormSubmit}
+              className="flex-1 relative md:hidden"
             >
-              <LayoutGrid className="w-4 h-4" />
-              Ver Menú Completo de Categorías
-            </button>
-          </div>
-        )}
-      </div>
+              <div className="relative flex items-center bg-white rounded-xl shadow-xs border border-slate-200 focus-within:border-blue-500 overflow-hidden">
+                <Search className="w-3.5 h-3.5 text-slate-400 ml-3 pointer-events-none shrink-0" />
+                <input
+                  type="text"
+                  value={searchQuery || ''}
+                  onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+                  placeholder="Buscar productos..."
+                  className="w-full text-slate-900 text-xs font-medium px-2.5 py-2 bg-transparent placeholder:text-slate-400 outline-none"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => onSearchChange && onSearchChange('')}
+                    className="p-1 mr-1 text-slate-400 hover:text-slate-700"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            </form>
 
-      {/* Horizontal Category Navigation Bar */}
-      <div className="w-full bg-slate-50 border-b border-slate-200 overflow-x-auto shadow-sm [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-start sm:justify-center gap-6 sm:gap-8 text-[10px] sm:text-[11px] font-medium text-slate-800 uppercase tracking-wide py-2.5">
-          <span className="cursor-pointer hover:text-blue-600 transition-colors whitespace-nowrap shrink-0">Smartphones</span>
-          <span className="cursor-pointer hover:text-blue-600 transition-colors whitespace-nowrap shrink-0">Laptops & PC</span>
-          <span className="cursor-pointer hover:text-blue-600 transition-colors whitespace-nowrap shrink-0">Audio Hi-Fi</span>
-          <span className="cursor-pointer hover:text-blue-600 transition-colors whitespace-nowrap shrink-0">Televisores</span>
-          <span className="cursor-pointer hover:text-blue-600 transition-colors whitespace-nowrap shrink-0">Hogar Inteligente</span>
-          <span className="cursor-pointer hover:text-blue-600 transition-colors whitespace-nowrap shrink-0">Gaming</span>
-          <span className="cursor-pointer text-emerald-600 hover:text-emerald-700 transition-colors whitespace-nowrap shrink-0">Ofertas</span>
+            {/* RIGHT ACTIONS GROUP */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              
+              {/* Shopping Cart Button */}
+              <button
+                type="button"
+                onClick={onOpenCart}
+                className="relative flex items-center gap-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white px-4 py-2.5 rounded-xl text-xs font-black shadow-md shadow-blue-600/25 active:scale-95 transition-all group"
+                aria-label="Ver Carrito de Compras"
+              >
+                <ShoppingCart className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
+                <span className="hidden sm:inline">Carrito</span>
+                {cartCount > 0 && (
+                  <span className="bg-white text-blue-700 font-black text-[11px] min-w-[20px] h-5 px-1.5 rounded-full flex items-center justify-center shadow-xs">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+
+            </div>
+
+          </div>
         </div>
       </div>
+
+      {/* 2. SUB-NAVIGATION CATEGORIES RIBBON */}
+      <div className="w-full bg-white border-b border-slate-200/90 shadow-xs overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-start md:justify-center gap-1 sm:gap-2 py-2">
+          {navCategories.map((cat) => {
+            if (cat.isSpecial) {
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => onSelectCategory && onSelectCategory(cat.id)}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-black text-xs uppercase tracking-wider text-rose-600 bg-rose-50 hover:bg-rose-100/80 border border-rose-200/80 transition-all shrink-0 active:scale-95 shadow-2xs"
+                >
+                  <Flame className="w-3.5 h-3.5 text-rose-500 animate-bounce" />
+                  <span>{cat.label}</span>
+                </button>
+              );
+            }
+
+            return (
+              <button
+                key={cat.id}
+                onClick={() => onSelectCategory && onSelectCategory(cat.id)}
+                className="px-3.5 py-1.5 rounded-xl font-bold text-xs uppercase tracking-wide text-slate-700 hover:text-blue-600 hover:bg-blue-50/70 transition-all shrink-0 whitespace-nowrap active:scale-95"
+              >
+                {cat.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
     </header>
   );
 };

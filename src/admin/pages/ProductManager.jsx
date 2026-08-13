@@ -24,9 +24,24 @@ import {
   DollarSign,
   Cpu,
   HardDrive,
-  Palette
+  Palette,
+  Sparkles
 } from 'lucide-react';
 import { CATEGORIES } from '../../data/products';
+
+// Presets for quick selection
+const RAM_PRESETS = ['4GB', '6GB', '8GB', '12GB', '16GB', '24GB', '32GB'];
+const STORAGE_PRESETS = ['64GB', '128GB', '256GB', '512GB', '1TB', '2TB'];
+const COLOR_PRESETS = [
+  { name: 'Negro Mate', hex: '#121212' },
+  { name: 'Blanco Puro', hex: '#FFFFFF' },
+  { name: 'Titanio Natural', hex: '#948B7D' },
+  { name: 'Gris Grafito', hex: '#475569' },
+  { name: 'Azul Titanio', hex: '#1E3A8A' },
+  { name: 'Oro Champán', hex: '#D97706' },
+  { name: 'Verde Esmeralda', hex: '#059669' },
+  { name: 'Rojo Rubí', hex: '#DC2626' }
+];
 
 // Client-side image compressor (fits within Firestore document limits easily)
 const compressImage = (file, maxWidth = 800, maxHeight = 800, quality = 0.8) => {
@@ -90,11 +105,26 @@ export default function ProductManager() {
     hasCashea: true,
     casheaInitialPercent: 40,
     casheaInstallments: 3,
-    ramOptions: '',
-    storageOptions: '',
-    colors: '',
+    ramOptions: ['8GB', '12GB', '16GB'],
+    storageOptions: [
+      { size: '128GB', price: 999 },
+      { size: '256GB', price: 1099 },
+      { size: '512GB', price: 1249 }
+    ],
+    colors: [
+      { name: 'Negro Mate', hex: '#121212' },
+      { name: 'Titanio Natural', hex: '#948B7D' },
+      { name: 'Blanco Puro', hex: '#FFFFFF' }
+    ],
     image: ''
   });
+
+  // Custom Variant Inputs State
+  const [customRam, setCustomRam] = useState('');
+  const [customStorage, setCustomStorage] = useState('');
+  const [customColorName, setCustomColorName] = useState('');
+  const [customColorHex, setCustomColorHex] = useState('#2563eb');
+
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
 
@@ -131,11 +161,22 @@ export default function ProductManager() {
       hasCashea: true,
       casheaInitialPercent: 40,
       casheaInstallments: 3,
-      ramOptions: '8GB, 12GB, 16GB',
-      storageOptions: '128GB, 256GB, 512GB, 1TB',
-      colors: 'Negro, Blanco, Titanio',
+      ramOptions: ['8GB', '12GB', '16GB'],
+      storageOptions: [
+        { size: '128GB', price: '' },
+        { size: '256GB', price: '' },
+        { size: '512GB', price: '' }
+      ],
+      colors: [
+        { name: 'Negro Mate', hex: '#121212' },
+        { name: 'Titanio Natural', hex: '#948B7D' },
+        { name: 'Blanco Puro', hex: '#FFFFFF' }
+      ],
       image: ''
     });
+    setCustomRam('');
+    setCustomStorage('');
+    setCustomColorName('');
     setSelectedFile(null);
     setPreviewUrl('');
     setIsModalOpen(true);
@@ -144,12 +185,45 @@ export default function ProductManager() {
   const openEditModal = (product) => {
     setEditingProduct(product);
 
-    const formatArrayOrString = (val) => {
-      if (Array.isArray(val)) {
-        return val.map(item => typeof item === 'object' ? (item.name || item.hex) : item).join(', ');
-      }
-      return val || '';
-    };
+    // Normalize RAM options
+    let parsedRam = [];
+    if (Array.isArray(product.ramOptions)) {
+      parsedRam = product.ramOptions.map(r => typeof r === 'object' ? r.size || r.name : r);
+    } else if (typeof product.ramOptions === 'string' && product.ramOptions.trim()) {
+      parsedRam = product.ramOptions.split(',').map(s => s.trim()).filter(Boolean);
+    }
+
+    // Normalize Storage options with pricing
+    let parsedStorage = [];
+    if (Array.isArray(product.storageOptions)) {
+      parsedStorage = product.storageOptions.map(st => {
+        if (typeof st === 'object' && st !== null) {
+          return { size: st.size || st.name || '', price: st.price || product.price || '' };
+        }
+        return { size: st, price: product.price || '' };
+      });
+    } else if (typeof product.storageOptions === 'string' && product.storageOptions.trim()) {
+      parsedStorage = product.storageOptions.split(',').map(s => ({
+        size: s.trim(),
+        price: product.price || ''
+      })).filter(s => s.size);
+    }
+
+    // Normalize Colors
+    let parsedColors = [];
+    if (Array.isArray(product.colors)) {
+      parsedColors = product.colors.map(c => {
+        if (typeof c === 'object' && c !== null) {
+          return { name: c.name || 'Color', hex: c.hex || '#1E293B' };
+        }
+        return { name: c, hex: '#1E293B' };
+      });
+    } else if (typeof product.colors === 'string' && product.colors.trim()) {
+      parsedColors = product.colors.split(',').map(s => ({
+        name: s.trim(),
+        hex: '#1E293B'
+      })).filter(c => c.name);
+    }
 
     setFormData({
       name: product.name || '',
@@ -162,14 +236,132 @@ export default function ProductManager() {
       hasCashea: product.hasCashea !== false,
       casheaInitialPercent: product.casheaInitialPercent || 40,
       casheaInstallments: product.casheaInstallments || 3,
-      ramOptions: formatArrayOrString(product.ramOptions),
-      storageOptions: formatArrayOrString(product.storageOptions),
-      colors: formatArrayOrString(product.colors),
+      ramOptions: parsedRam,
+      storageOptions: parsedStorage,
+      colors: parsedColors,
       image: product.image || ''
     });
+    setCustomRam('');
+    setCustomStorage('');
+    setCustomColorName('');
     setSelectedFile(null);
     setPreviewUrl(product.image || '');
     setIsModalOpen(true);
+  };
+
+  // RAM Handlers
+  const toggleRamPreset = (preset) => {
+    setFormData(prev => {
+      const exists = prev.ramOptions.includes(preset);
+      return {
+        ...prev,
+        ramOptions: exists 
+          ? prev.ramOptions.filter(r => r !== preset)
+          : [...prev.ramOptions, preset]
+      };
+    });
+  };
+
+  const addCustomRam = () => {
+    if (!customRam.trim()) return;
+    const formatted = customRam.trim().toUpperCase().endsWith('GB') ? customRam.trim().toUpperCase() : `${customRam.trim()}GB`;
+    if (!formData.ramOptions.includes(formatted)) {
+      setFormData(prev => ({
+        ...prev,
+        ramOptions: [...prev.ramOptions, formatted]
+      }));
+    }
+    setCustomRam('');
+  };
+
+  const removeRam = (ramToRemove) => {
+    setFormData(prev => ({
+      ...prev,
+      ramOptions: prev.ramOptions.filter(r => r !== ramToRemove)
+    }));
+  };
+
+  // Storage Handlers
+  const toggleStoragePreset = (preset) => {
+    setFormData(prev => {
+      const exists = prev.storageOptions.some(s => s.size === preset);
+      if (exists) {
+        return {
+          ...prev,
+          storageOptions: prev.storageOptions.filter(s => s.size !== preset)
+        };
+      } else {
+        return {
+          ...prev,
+          storageOptions: [...prev.storageOptions, { size: preset, price: prev.price || '' }]
+        };
+      }
+    });
+  };
+
+  const addCustomStorage = () => {
+    if (!customStorage.trim()) return;
+    const formatted = customStorage.trim().toUpperCase();
+    if (!formData.storageOptions.some(s => s.size === formatted)) {
+      setFormData(prev => ({
+        ...prev,
+        storageOptions: [...prev.storageOptions, { size: formatted, price: prev.price || '' }]
+      }));
+    }
+    setCustomStorage('');
+  };
+
+  const updateStoragePrice = (index, newPrice) => {
+    setFormData(prev => {
+      const updated = [...prev.storageOptions];
+      updated[index] = { ...updated[index], price: newPrice };
+      return { ...prev, storageOptions: updated };
+    });
+  };
+
+  const removeStorage = (indexToRemove) => {
+    setFormData(prev => ({
+      ...prev,
+      storageOptions: prev.storageOptions.filter((_, idx) => idx !== indexToRemove)
+    }));
+  };
+
+  // Color Handlers
+  const toggleColorPreset = (preset) => {
+    setFormData(prev => {
+      const exists = prev.colors.some(c => c.name === preset.name);
+      if (exists) {
+        return {
+          ...prev,
+          colors: prev.colors.filter(c => c.name !== preset.name)
+        };
+      } else {
+        return {
+          ...prev,
+          colors: [...prev.colors, preset]
+        };
+      }
+    });
+  };
+
+  const addCustomColor = () => {
+    if (!customColorName.trim()) return;
+    const newColor = {
+      name: customColorName.trim(),
+      hex: customColorHex
+    };
+    setFormData(prev => ({
+      ...prev,
+      colors: [...prev.colors, newColor]
+    }));
+    setCustomColorName('');
+  };
+
+  const removeColor = (colorNameToRemove) => {
+    setFormData(prev => ({
+      ...prev,
+      colors: prev.colors.filter(c => c.name !== colorNameToRemove)
+    }));
   };
 
   const handleFileChange = async (e) => {
@@ -197,10 +389,11 @@ export default function ProductManager() {
         finalImageUrl = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80';
       }
 
-      const parseCommaArray = (str) => {
-        if (!str) return [];
-        return str.split(',').map(s => s.trim()).filter(Boolean);
-      };
+      // Ensure storage options have a valid fallback price if blank
+      const cleanStorageOptions = formData.storageOptions.map(st => ({
+        size: st.size,
+        price: parseFloat(st.price) || parseFloat(formData.price) || 0
+      }));
 
       const productPayload = {
         name: formData.name.trim(),
@@ -213,9 +406,9 @@ export default function ProductManager() {
         hasCashea: formData.hasCashea,
         casheaInitialPercent: parseInt(formData.casheaInitialPercent) || 40,
         casheaInstallments: parseInt(formData.casheaInstallments) || 3,
-        ramOptions: parseCommaArray(formData.ramOptions),
-        storageOptions: parseCommaArray(formData.storageOptions),
-        colors: parseCommaArray(formData.colors),
+        ramOptions: formData.ramOptions,
+        storageOptions: cleanStorageOptions,
+        colors: formData.colors,
         image: finalImageUrl,
         rating: editingProduct?.rating || 5.0,
         reviewsCount: editingProduct?.reviewsCount || 1,
@@ -342,9 +535,9 @@ export default function ProductManager() {
             <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 mb-4">
               <Package className="w-8 h-8" />
             </div>
-            <h3 className="text-base font-bold text-slate-800">No hay productos registrados en la base de datos</h3>
+            <h3 className="text-base font-bold text-slate-800">No hay productos registrados</h3>
             <p className="text-slate-500 text-sm mt-1 max-w-sm">
-              {searchQuery ? 'No se encontraron resultados para tu búsqueda.' : 'La tienda muestra los productos de muestra iniciales. Comienza creando tu primer producto con el botón "Nuevo Producto".'}
+              {searchQuery ? 'No se encontraron resultados para tu búsqueda.' : 'Crea tu primer producto con el botón "Nuevo Producto".'}
             </p>
           </div>
         ) : (
@@ -356,6 +549,7 @@ export default function ProductManager() {
                   <th className="py-3.5 px-4">Categoría</th>
                   <th className="py-3.5 px-4">Precio Contado</th>
                   <th className="py-3.5 px-4">Plan Cashea</th>
+                  <th className="py-3.5 px-4">Variantes Disponibles</th>
                   <th className="py-3.5 px-4">Estado</th>
                   <th className="py-3.5 px-4 text-right">Acciones</th>
                 </tr>
@@ -367,6 +561,11 @@ export default function ProductManager() {
                   const pInstallments = p.casheaInstallments || 3;
                   const pInitial = pPrice * (pInitPct / 100);
                   const pInstallment = (pPrice * (1 - pInitPct / 100)) / pInstallments;
+
+                  // Normalized storage string for table display
+                  const storageList = Array.isArray(p.storageOptions) 
+                    ? p.storageOptions.map(st => typeof st === 'object' ? `${st.size}${st.price ? ` ($${st.price})` : ''}` : st)
+                    : [];
 
                   return (
                     <tr key={p.id} className="hover:bg-slate-50/50 transition-colors">
@@ -383,7 +582,6 @@ export default function ProductManager() {
                           <div>
                             <div className="font-bold text-slate-900 line-clamp-1">{p.name}</div>
                             <div className="text-xs text-slate-400 line-clamp-1">
-                              {p.storageOptions?.length > 0 && `${p.storageOptions.join(' / ')} • `}
                               {p.description || 'Sin descripción'}
                             </div>
                           </div>
@@ -422,6 +620,31 @@ export default function ProductManager() {
                         ) : (
                           <span className="text-slate-400 text-xs italic">Solo Contado</span>
                         )}
+                      </td>
+
+                      {/* Variants Summary */}
+                      <td className="py-3 px-4">
+                        <div className="space-y-1">
+                          {storageList.length > 0 && (
+                            <div className="text-xs font-bold text-slate-700 flex items-center gap-1 flex-wrap">
+                              <HardDrive className="w-3 h-3 text-indigo-500" />
+                              <span>{storageList.join(' • ')}</span>
+                            </div>
+                          )}
+                          {Array.isArray(p.colors) && p.colors.length > 0 && (
+                            <div className="flex items-center gap-1.5 pt-0.5">
+                              <Palette className="w-3 h-3 text-purple-500" />
+                              {p.colors.map((c, i) => (
+                                <span
+                                  key={i}
+                                  className="w-3.5 h-3.5 rounded-full border border-slate-300 shadow-xs inline-block"
+                                  style={{ backgroundColor: typeof c === 'object' ? c.hex : '#1E293B' }}
+                                  title={typeof c === 'object' ? c.name : c}
+                                />
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </td>
 
                       {/* Stock */}
@@ -467,8 +690,8 @@ export default function ProductManager() {
       {/* MODAL CREAR / EDITAR */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 md:p-8 shadow-2xl border border-slate-200 my-8">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 md:p-8 shadow-2xl border border-slate-200 my-8 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 sticky top-0 bg-white z-10">
               <h2 className="text-xl font-extrabold text-slate-900">
                 {editingProduct ? 'Editar Producto' : 'Crear Nuevo Producto'}
               </h2>
@@ -480,14 +703,14 @@ export default function ProductManager() {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+            <form onSubmit={handleSubmit} className="mt-6 space-y-6">
               {/* Product Image Upload Section */}
               <div>
                 <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-2">
                   Imagen del Producto
                 </label>
                 <div className="flex items-center gap-4">
-                  <div className="w-24 h-24 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden relative group">
+                  <div className="w-24 h-24 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden relative group flex-shrink-0">
                     {previewUrl || formData.image ? (
                       <img src={previewUrl || formData.image} alt="Preview" className="w-full h-full object-contain p-2" />
                     ) : (
@@ -533,7 +756,7 @@ export default function ProductManager() {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="ej. Samsung Galaxy S24 Ultra 512GB"
+                  placeholder="ej. Samsung Galaxy S24 Ultra"
                   className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all"
                 />
               </div>
@@ -547,7 +770,7 @@ export default function ProductManager() {
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all cursor-pointer"
                   >
                     <option value="smartphones">Smartphones</option>
                     <option value="linea-blanca">Línea Blanca & Smart TV</option>
@@ -572,11 +795,11 @@ export default function ProductManager() {
                 </div>
               </div>
 
-              {/* Price & Original Price */}
+              {/* Base Price & Original Price */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
-                    Precio de Contado ($ USD) *
+                    Precio Base de Contado ($ USD) *
                   </label>
                   <div className="relative">
                     <DollarSign className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -610,60 +833,242 @@ export default function ProductManager() {
                 </div>
               </div>
 
-              {/* VARIANTES: RAM, ALMACENAMIENTO Y COLORES */}
-              <div className="bg-slate-50/80 border border-slate-200 rounded-2xl p-4 space-y-3">
-                <h4 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
-                  ⚙️ Opciones y Variantes (Opcional)
-                </h4>
-                <p className="text-[11px] text-slate-500">
-                  Escribe las opciones separadas por coma para que el cliente pueda seleccionarlas en la tienda.
-                </p>
+              {/* ------------------------------------------------------------- */}
+              {/* SECTION: GESTIÓN INTERACTIVA DE VARIANTES                     */}
+              {/* ------------------------------------------------------------- */}
+              <div className="bg-slate-50/80 border border-slate-200 rounded-2xl p-5 space-y-5">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-blue-600" />
+                  <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider">
+                    Gestor de Variantes (RAM, Almacenamiento y Colores)
+                  </h4>
+                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-                  {/* RAM Options */}
-                  <div>
-                    <label className="flex items-center gap-1.5 text-[11px] font-bold text-slate-700 mb-1">
-                      <Cpu className="w-3.5 h-3.5 text-blue-600" />
+                {/* 1. MEMORIA RAM BUILDER */}
+                <div className="space-y-2.5 bg-white p-3.5 rounded-xl border border-slate-200">
+                  <div className="flex items-center justify-between">
+                    <label className="flex items-center gap-1.5 text-xs font-extrabold text-slate-800">
+                      <Cpu className="w-4 h-4 text-blue-600" />
                       <span>Memoria RAM</span>
                     </label>
-                    <input
-                      type="text"
-                      value={formData.ramOptions}
-                      onChange={(e) => setFormData({ ...formData, ramOptions: e.target.value })}
-                      placeholder="ej. 8GB, 12GB, 16GB"
-                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-blue-600"
-                    />
+                    <span className="text-[11px] text-slate-400 font-medium">Toca para activar/desactivar</span>
                   </div>
 
-                  {/* Storage Options */}
-                  <div>
-                    <label className="flex items-center gap-1.5 text-[11px] font-bold text-slate-700 mb-1">
-                      <HardDrive className="w-3.5 h-3.5 text-indigo-600" />
-                      <span>Almacenamiento</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.storageOptions}
-                      onChange={(e) => setFormData({ ...formData, storageOptions: e.target.value })}
-                      placeholder="ej. 128GB, 256GB, 512GB"
-                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-blue-600"
-                    />
+                  {/* Preset Pills */}
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {RAM_PRESETS.map((ram) => {
+                      const isSelected = formData.ramOptions.includes(ram);
+                      return (
+                        <button
+                          key={ram}
+                          type="button"
+                          onClick={() => toggleRamPreset(ram)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all border ${
+                            isSelected
+                              ? 'bg-blue-600 text-white border-blue-600 shadow-sm shadow-blue-600/30'
+                              : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-slate-400'
+                          }`}
+                        >
+                          {isSelected && <Check className="w-3 h-3 inline mr-1" />}
+                          {ram}
+                        </button>
+                      );
+                    })}
                   </div>
 
-                  {/* Colors */}
-                  <div>
-                    <label className="flex items-center gap-1.5 text-[11px] font-bold text-slate-700 mb-1">
-                      <Palette className="w-3.5 h-3.5 text-purple-600" />
-                      <span>Colores</span>
-                    </label>
+                  {/* Custom RAM input */}
+                  <div className="flex items-center gap-2 pt-1">
                     <input
                       type="text"
-                      value={formData.colors}
-                      onChange={(e) => setFormData({ ...formData, colors: e.target.value })}
-                      placeholder="ej. Negro, Blanco, Titanio"
-                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-blue-600"
+                      value={customRam}
+                      onChange={(e) => setCustomRam(e.target.value)}
+                      placeholder="Otra RAM (ej. 24GB)"
+                      className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-blue-600 flex-1"
                     />
+                    <button
+                      type="button"
+                      onClick={addCustomRam}
+                      className="px-3 py-1.5 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl transition-all"
+                    >
+                      + Agregar
+                    </button>
                   </div>
+
+                  {/* Selected RAM Chips with Delete */}
+                  {formData.ramOptions.length > 0 && (
+                    <div className="flex items-center gap-1.5 flex-wrap pt-1 border-t border-slate-100">
+                      <span className="text-[10px] uppercase font-bold text-slate-400 mr-1">Seleccionadas:</span>
+                      {formData.ramOptions.map(r => (
+                        <span key={r} className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold rounded-lg">
+                          {r}
+                          <button type="button" onClick={() => removeRam(r)} className="hover:text-red-500 font-bold ml-0.5">✕</button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. ALMACENAMIENTO & PRECIOS POR CAPACIDAD */}
+                <div className="space-y-2.5 bg-white p-3.5 rounded-xl border border-slate-200">
+                  <div className="flex items-center justify-between">
+                    <label className="flex items-center gap-1.5 text-xs font-extrabold text-slate-800">
+                      <HardDrive className="w-4 h-4 text-indigo-600" />
+                      <span>Almacenamiento y Precios</span>
+                    </label>
+                    <span className="text-[11px] text-slate-400 font-medium">Define precio por capacidad</span>
+                  </div>
+
+                  {/* Preset Pills */}
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {STORAGE_PRESETS.map((storage) => {
+                      const isSelected = formData.storageOptions.some(s => s.size === storage);
+                      return (
+                        <button
+                          key={storage}
+                          type="button"
+                          onClick={() => toggleStoragePreset(storage)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all border ${
+                            isSelected
+                              ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm shadow-indigo-600/30'
+                              : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-slate-400'
+                          }`}
+                        >
+                          {isSelected && <Check className="w-3 h-3 inline mr-1" />}
+                          {storage}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Custom Storage input */}
+                  <div className="flex items-center gap-2 pt-1">
+                    <input
+                      type="text"
+                      value={customStorage}
+                      onChange={(e) => setCustomStorage(e.target.value)}
+                      placeholder="Otro Almacenamiento (ej. 2TB)"
+                      className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-indigo-600 flex-1"
+                    />
+                    <button
+                      type="button"
+                      onClick={addCustomStorage}
+                      className="px-3 py-1.5 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl transition-all"
+                    >
+                      + Agregar
+                    </button>
+                  </div>
+
+                  {/* Selected Storage with Individual Price Input */}
+                  {formData.storageOptions.length > 0 && (
+                    <div className="space-y-2 pt-2 border-t border-slate-100">
+                      <span className="text-[10px] uppercase font-extrabold text-slate-500 block">
+                        💰 Precio de Venta para cada Capacidad:
+                      </span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {formData.storageOptions.map((st, idx) => (
+                          <div key={idx} className="flex items-center justify-between gap-2 p-2 bg-slate-50 border border-slate-200 rounded-xl">
+                            <span className="font-extrabold text-xs text-slate-900 px-2 py-1 bg-white rounded-lg border border-slate-200 shadow-xs">
+                              {st.size}
+                            </span>
+                            <div className="flex items-center gap-1 flex-1 max-w-[140px]">
+                              <span className="text-xs font-bold text-slate-500">$</span>
+                              <input
+                                type="number"
+                                step="0.01"
+                                value={st.price}
+                                onChange={(e) => updateStoragePrice(idx, e.target.value)}
+                                placeholder={formData.price || '0.00'}
+                                className="w-full px-2 py-1 bg-white border border-slate-200 rounded-lg text-xs font-black text-slate-900 outline-none focus:ring-2 focus:ring-indigo-600"
+                              />
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => removeStorage(idx)}
+                              className="text-slate-400 hover:text-red-500 p-1 font-bold"
+                              title="Eliminar"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* 3. COLORES VISUALES BUILDER */}
+                <div className="space-y-2.5 bg-white p-3.5 rounded-xl border border-slate-200">
+                  <div className="flex items-center justify-between">
+                    <label className="flex items-center gap-1.5 text-xs font-extrabold text-slate-800">
+                      <Palette className="w-4 h-4 text-purple-600" />
+                      <span>Colores Visuales</span>
+                    </label>
+                    <span className="text-[11px] text-slate-400 font-medium">Toca para seleccionar</span>
+                  </div>
+
+                  {/* Preset Colors Swatches */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {COLOR_PRESETS.map((col) => {
+                      const isSelected = formData.colors.some(c => c.name === col.name);
+                      return (
+                        <button
+                          key={col.name}
+                          type="button"
+                          onClick={() => toggleColorPreset(col)}
+                          className={`flex items-center gap-2 p-2 rounded-xl border text-left transition-all ${
+                            isSelected
+                              ? 'bg-purple-50 border-purple-500 shadow-xs ring-1 ring-purple-500'
+                              : 'bg-slate-50 border-slate-200 hover:border-slate-300'
+                          }`}
+                        >
+                          <span
+                            className="w-4 h-4 rounded-full border border-slate-300 shadow-xs flex-shrink-0"
+                            style={{ backgroundColor: col.hex }}
+                          />
+                          <span className="text-[11px] font-bold text-slate-800 truncate">{col.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Custom Color Input with HEX Picker */}
+                  <div className="flex items-center gap-2 pt-1">
+                    <input
+                      type="color"
+                      value={customColorHex}
+                      onChange={(e) => setCustomColorHex(e.target.value)}
+                      className="w-8 h-8 rounded-xl cursor-pointer border border-slate-200 p-0.5 bg-white"
+                      title="Seleccionar tono HEX"
+                    />
+                    <input
+                      type="text"
+                      value={customColorName}
+                      onChange={(e) => setCustomColorName(e.target.value)}
+                      placeholder="Nombre del nuevo color (ej. Titanio Desierto)"
+                      className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-purple-600 flex-1"
+                    />
+                    <button
+                      type="button"
+                      onClick={addCustomColor}
+                      className="px-3 py-1.5 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl transition-all"
+                    >
+                      + Agregar
+                    </button>
+                  </div>
+
+                  {/* Selected Colors with Visual Circle and Delete */}
+                  {formData.colors.length > 0 && (
+                    <div className="flex items-center gap-1.5 flex-wrap pt-1 border-t border-slate-100">
+                      <span className="text-[10px] uppercase font-bold text-slate-400 mr-1">Seleccionados:</span>
+                      {formData.colors.map(c => (
+                        <span key={c.name} className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-purple-50 text-purple-900 border border-purple-200 text-xs font-bold rounded-lg shadow-xs">
+                          <span className="w-3 h-3 rounded-full border border-slate-400" style={{ backgroundColor: c.hex }} />
+                          {c.name}
+                          <button type="button" onClick={() => removeColor(c.name)} className="hover:text-red-500 font-bold ml-1">✕</button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -698,7 +1103,7 @@ export default function ProductManager() {
                         <select
                           value={formData.casheaInitialPercent}
                           onChange={(e) => setFormData({ ...formData, casheaInitialPercent: e.target.value })}
-                          className="w-full px-3 py-1.5 bg-white border border-amber-200 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-amber-400"
+                          className="w-full px-3 py-1.5 bg-white border border-amber-200 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-amber-400 cursor-pointer"
                         >
                           <option value="40">40% Inicial (Nivel 1 y 2)</option>
                           <option value="50">50% Inicial (Nivel 3)</option>
@@ -713,7 +1118,7 @@ export default function ProductManager() {
                         <select
                           value={formData.casheaInstallments}
                           onChange={(e) => setFormData({ ...formData, casheaInstallments: e.target.value })}
-                          className="w-full px-3 py-1.5 bg-white border border-amber-200 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-amber-400"
+                          className="w-full px-3 py-1.5 bg-white border border-amber-200 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-amber-400 cursor-pointer"
                         >
                           <option value="3">3 Cuotas (Estándar)</option>
                           <option value="6">6 Cuotas (Línea Extendida)</option>
@@ -773,7 +1178,7 @@ export default function ProductManager() {
               </div>
 
               {/* Modal Actions */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 sticky bottom-0 bg-white z-10">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}

@@ -68,36 +68,54 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
   const defaultStorageFallback = (product.category === 'smartphones' || product.category === 'computacion') ? ['128GB', '256GB', '512GB', '1TB'] : [];
 
   const ramOptions = parseOptions(product.ramOptions, defaultRamFallback);
-  const storageOptions = parseOptions(product.storageOptions, defaultStorageFallback);
+  const rawStorageOptions = parseOptions(product.storageOptions, defaultStorageFallback);
+
+  const normalizedStorageOptions = rawStorageOptions.map(st => {
+    if (typeof st === 'object' && st !== null) {
+      return { size: st.size || '', price: parseFloat(st.price) || parseFloat(product.price) || 0 };
+    }
+    return { size: String(st), price: parseFloat(product.price) || 0 };
+  });
 
   const [selectedColor, setSelectedColor] = useState(colorsList[0] || 'Negro');
   const [selectedRam, setSelectedRam] = useState(ramOptions[0] || '');
-  const [selectedStorage, setSelectedStorage] = useState(storageOptions[1] || storageOptions[0] || '');
+  const [selectedStorage, setSelectedStorage] = useState(normalizedStorageOptions[0]?.size || '');
+
+  // Calculate current price dynamically based on chosen storage
+  const activeStorageObj = normalizedStorageOptions.find(s => s.size === selectedStorage) || normalizedStorageOptions[0];
+  const currentPrice = activeStorageObj ? activeStorageObj.price : (parseFloat(product.price) || 0);
 
   const currentColorDisplayName = getColorDisplayName(selectedColor);
 
   const handleAdd = () => {
-    onAddToCart({ ...product, selectedColor, selectedRam, selectedStorage, quantity });
+    onAddToCart({ ...product, price: currentPrice, selectedColor, selectedRam, selectedStorage, quantity });
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   };
 
   const handleWhatsAppCheckout = () => {
-    const subtotal = product.price * quantity;
+    const subtotal = currentPrice * quantity;
     let message = `*PEDIDO DIRECTO M STORE*\n\n`;
     message += `*Producto:* ${product.name}\n`;
     message += `*Color:* ${currentColorDisplayName}\n`;
-    message += `*RAM:* ${selectedRam}\n`;
-    message += `*Almacenamiento:* ${selectedStorage}\n`;
+    if (selectedRam) message += `*RAM:* ${selectedRam}\n`;
+    if (selectedStorage) message += `*Almacenamiento:* ${selectedStorage}\n`;
     message += `*Cantidad:* ${quantity}\n`;
-    message += `*Precio Unitario:* $${product.price.toFixed(2)}\n`;
+    message += `*Precio Unitario:* $${currentPrice.toFixed(2)}\n`;
     message += `*TOTAL:* $${subtotal.toFixed(2)} USD (${(subtotal * rateVES).toLocaleString('es-VE')} Bs)\n\n`;
+    if (product.hasCashea !== false) {
+      const initPct = product.casheaInitialPercent || 40;
+      const installments = product.casheaInstallments || 3;
+      const initPay = subtotal * (initPct / 100);
+      const installmentPay = (subtotal * (1 - initPct / 100)) / installments;
+      message += `*Plan Cashea:* Inicial $${initPay.toFixed(2)} + ${installments} cuotas de $${installmentPay.toFixed(2)}\n\n`;
+    }
     message += `Hola, quiero comprar este producto inmediatamente. ¿Tienen disponibilidad?`;
 
     window.open(`https://wa.me/584120000000?text=${encodeURIComponent(message)}`, '_blank');
   };
 
-  const displayOldPrice = product.oldPrice ? product.oldPrice : (product.price * 1.25);
+  const displayOldPrice = product.oldPrice ? product.oldPrice : (currentPrice * 1.25);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-md animate-fadeIn font-sans">
@@ -192,7 +210,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                 <div className="space-y-2 pt-1">
                   <div className="flex items-baseline gap-3 flex-wrap">
                     <span className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-                      ${product.price.toFixed(2)}{' '}
+                      ${currentPrice.toFixed(2)}{' '}
                       <span className="text-sm font-extrabold text-slate-700">USD</span>
                     </span>
                     {displayOldPrice && (
@@ -201,19 +219,19 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                       </span>
                     )}
                     <span className="text-xs font-bold text-slate-500">
-                      (~{(product.price * rateVES).toLocaleString('es-VE', { maximumFractionDigits: 0 })} Bs)
+                      (~{(currentPrice * rateVES).toLocaleString('es-VE', { maximumFractionDigits: 0 })} Bs)
                     </span>
                   </div>
 
                   {/* Insignia Cashea Dinámica */}
-                  {product.hasCashea !== false && product.price > 0 && (
+                  {product.hasCashea !== false && currentPrice > 0 && (
                     <div className="bg-amber-50 border border-amber-300 rounded-xl p-2.5 flex items-center justify-between text-xs font-black text-slate-900 shadow-sm">
                       <div className="flex items-center gap-2">
                         <span className="bg-[#FFE600] text-black px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border border-amber-400">CASHEA</span>
-                        <span>Inicial: ${((parseFloat(product.price) || 0) * ((product.casheaInitialPercent || 40) / 100)).toFixed(2)} USD</span>
+                        <span>Inicial: ${(currentPrice * ((product.casheaInitialPercent || 40) / 100)).toFixed(2)} USD</span>
                       </div>
                       <span className="text-[11px] text-amber-900 font-bold">
-                        + {product.casheaInstallments || 3} cuotas de ${(((parseFloat(product.price) || 0) * (1 - (product.casheaInitialPercent || 40) / 100)) / (product.casheaInstallments || 3)).toFixed(2)}
+                        + {product.casheaInstallments || 3} cuotas de ${((currentPrice * (1 - (product.casheaInitialPercent || 40) / 100)) / (product.casheaInstallments || 3)).toFixed(2)}
                       </span>
                     </div>
                   )}
@@ -274,25 +292,30 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                 )}
 
                 {/* SELECTOR DE ALMACENAMIENTO */}
-                {storageOptions.length > 0 && (
+                {normalizedStorageOptions.length > 0 && (
                   <div className="space-y-2 pt-1">
                     <label className="text-xs font-extrabold text-slate-700 block uppercase tracking-wider">
                       Almacenamiento: <span className="text-slate-900 font-black">{selectedStorage}</span>
                     </label>
                     <div className="flex items-center gap-2 flex-wrap">
-                      {storageOptions.map((storageOption) => {
-                        const isSelected = selectedStorage === storageOption;
+                      {normalizedStorageOptions.map((stObj) => {
+                        const isSelected = selectedStorage === stObj.size;
                         return (
                           <button
-                            key={storageOption}
-                            onClick={() => setSelectedStorage(storageOption)}
-                            className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all border ${
+                            key={stObj.size}
+                            onClick={() => setSelectedStorage(stObj.size)}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all border flex items-center gap-1.5 ${
                               isSelected
                                 ? 'bg-black text-white border-slate-900 shadow-sm'
                                 : 'bg-white text-slate-700 border-slate-300 hover:border-slate-500'
                             }`}
                           >
-                            {storageOption}
+                            <span>{stObj.size}</span>
+                            {stObj.price && stObj.price !== product.price && (
+                              <span className={`text-[10px] ${isSelected ? 'text-amber-300' : 'text-slate-500 font-medium'}`}>
+                                (${stObj.price})
+                              </span>
+                            )}
                           </button>
                         );
                       })}

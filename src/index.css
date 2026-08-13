@@ -88,64 +88,29 @@ body {
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 229, 255, 0.15);
 }
 
-/* Neon Glow Button */
-.btn-cyan-glow {
-  background: linear-gradient(135deg, #00E5FF 0%, #00B0FF 100%);
-  color: #050505;
-  font-weight: 700;
-  box-shadow: 0 0 20px var(--cyan-glow), 0 4px 15px rgba(0, 0, 0, 0.4);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-cyan-glow:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 0 35px rgba(0, 229, 255, 0.8), 0 8px 25px rgba(0, 229, 255, 0.3);
-  color: #000000;
-}
-
-.btn-cyan-glow::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  transform: rotate(30deg);
-  transition: transform 0.6s ease;
-}
-
-.btn-cyan-glow:hover::after {
-  transform: rotate(30deg) translate(100%, 100%);
-}
-
-.btn-glass-secondary {
-  background: rgba(255, 255, 255, 0.05);
+/* Minimalist Premium E-Commerce Buttons & Typography */
+.btn-cyan-glow,
+.btn-slate-dark {
+  background-color: #0F172A;
   color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
+  font-weight: 800;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  border-radius: 0.75rem;
 }
 
-.btn-glass-secondary:hover {
-  background: rgba(0, 229, 255, 0.12);
-  border-color: var(--cyan-neon);
-  color: var(--cyan-neon);
-  box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+.btn-cyan-glow:hover,
+.btn-slate-dark:hover {
+  background-color: #1E293B;
+  color: #FFFFFF;
 }
 
-/* Text glow */
-.text-cyan-glow {
-  color: var(--cyan-neon);
-  text-shadow: 0 0 12px rgba(0, 229, 255, 0.6);
-}
-
+.text-cyan-glow,
 .gradient-text-cyan {
-  background: linear-gradient(135deg, #FFFFFF 30%, #00E5FF 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #0F172A;
+  text-shadow: none;
+  background: none;
+  -webkit-text-fill-color: initial;
 }
 
 /* Animations */

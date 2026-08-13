@@ -131,7 +131,7 @@ export const Footer = () => {
                 <button
                   type="submit"
                   aria-label="Suscribirse al boletín"
-                  className="btn-cyan-glow px-4 py-2.5 rounded-xl shrink-0 text-black font-extrabold text-xs font-space flex items-center justify-center min-h-[44px]"
+                  className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl shrink-0 font-extrabold text-xs flex items-center justify-center min-h-[44px] shadow-sm active:scale-95 transition-all"
                 >
                   <Send className="w-4 h-4" />
                 </button>

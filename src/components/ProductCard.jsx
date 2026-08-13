@@ -98,8 +98,8 @@ export const ProductCard = ({ product, onAddToCart, onQuickView, isLightBg = tru
           onClick={handleAdd}
           className={`p-3 rounded-2xl font-bold transition-all transform active:scale-95 flex items-center justify-center ${
             added 
-              ? 'bg-emerald-500 text-white shadow-[0_0_15px_#10B981]' 
-              : 'btn-cyan-glow text-black shadow-[0_0_15px_rgba(0,229,255,0.4)]'
+              ? 'bg-emerald-600 text-white shadow-sm' 
+              : 'bg-slate-900 hover:bg-slate-800 text-white shadow-sm'
           }`}
           title="Agregar al Carrito"
         >

@@ -89,18 +89,14 @@ export const ProductCarousel = ({
         isLightBg ? 'border-slate-200' : 'border-white/10'
       }`}>
         <div>
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-extrabold font-space uppercase mb-2 bg-[#00E5FF]/15 text-[#00E5FF] border border-[#00E5FF]/40">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-extrabold uppercase mb-2 bg-blue-50 text-blue-700 border border-blue-200">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Catálogo Oficial M Store</span>
           </div>
-          <h2 className={`text-3xl sm:text-4xl font-extrabold font-space tracking-tight ${
-            isLightBg ? 'text-slate-900' : 'text-white'
-          }`}>
-            Tecnología & <span className="gradient-text-cyan">Electrodomésticos</span>
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+            Tecnología & Electrodomésticos
           </h2>
-          <p className={`text-xs sm:text-sm font-inter mt-1 ${
-            isLightBg ? 'text-slate-600' : 'text-slate-300'
-          }`}>
+          <p className="text-xs sm:text-sm mt-1 text-slate-600">
             Explora la más alta calidad importada con garantía oficial de 1 año y envío exprés a todo el país.
           </p>
         </div>
@@ -110,23 +106,19 @@ export const ProductCarousel = ({
           {/* Mobile Filter Button */}
           <button
             onClick={() => setShowMobileFilterModal(true)}
-            className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0066FF] text-white font-extrabold text-xs shadow-md active:scale-95 transition-all"
+            className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs shadow-sm active:scale-95 transition-all"
           >
-            <Filter className="w-4 h-4" />
+            <Filter className="w-4 h-4 text-white" />
             <span>Filtros de Catálogo</span>
           </button>
 
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="w-4 h-4 text-[#00E5FF]" />
-            <span className={`text-xs font-space font-extrabold hidden sm:inline ${isLightBg ? 'text-slate-800' : 'text-slate-200'}`}>Ordenar por:</span>
+            <SlidersHorizontal className="w-4 h-4 text-slate-700" />
+            <span className="text-xs font-extrabold hidden sm:inline text-slate-800">Ordenar por:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className={`text-xs rounded-xl px-3 py-2 outline-none font-space font-extrabold transition-all ${
-                isLightBg 
-                  ? 'bg-white border-2 border-slate-300 text-slate-900 shadow-sm focus:border-[#0066FF]' 
-                  : 'bg-[#141824] border border-white/20 text-white focus:border-[#00E5FF]'
-              }`}
+              className="text-xs rounded-xl px-3 py-2 outline-none font-extrabold transition-all bg-white border-2 border-slate-300 text-slate-900 shadow-sm focus:border-slate-900"
             >
               <option value="destacados">Destacados M Store</option>
               <option value="precio-menor">Precio: Menor a Mayor</option>
@@ -143,12 +135,10 @@ export const ProductCarousel = ({
           <button
             key={tab.id}
             onClick={() => setSelectedBrand(tab.id)}
-            className={`px-5 py-2.5 rounded-2xl text-xs font-extrabold font-space whitespace-nowrap transition-all duration-300 border ${
+            className={`px-5 py-2.5 rounded-2xl text-xs font-extrabold whitespace-nowrap transition-all duration-300 border ${
               selectedBrand === tab.id
-                ? 'bg-[#00E5FF] text-black border-[#00E5FF] shadow-[0_0_20px_#00E5FF] scale-105'
-                : isLightBg 
-                  ? 'bg-slate-100 border-2 border-slate-200 text-slate-900 hover:bg-slate-200 hover:border-slate-300 shadow-sm'
-                  : 'bg-[#1E293B] border border-slate-700 text-white hover:text-[#00E5FF] hover:border-[#00E5FF]'
+                ? 'bg-slate-900 text-white border-slate-900 shadow-sm scale-105'
+                : 'bg-white border-2 border-slate-200 text-slate-800 hover:border-slate-400 shadow-sm'
             }`}
           >
             {tab.label}
@@ -183,18 +173,16 @@ export const ProductCarousel = ({
         <div className="lg:col-span-8 xl:col-span-9 space-y-6">
           
           {filtered.length === 0 ? (
-            <div className={`rounded-3xl p-12 text-center space-y-3 ${
-              isLightBg ? 'bg-white border-2 border-slate-200 shadow-sm text-slate-700' : 'glass-card text-slate-300'
-            }`}>
-              <p className={`text-base font-space font-extrabold ${isLightBg ? 'text-slate-900' : 'text-white'}`}>No se encontraron productos con estos criterios de filtro.</p>
-              <p className="text-xs font-inter">Prueba ajustando el rango de precio o seleccionando otra marca.</p>
+            <div className="rounded-3xl p-12 text-center space-y-3 bg-white border-2 border-slate-200 shadow-sm text-slate-700">
+              <p className="text-base font-extrabold text-slate-900">No se encontraron productos con estos criterios de filtro.</p>
+              <p className="text-xs font-medium text-slate-500">Prueba ajustando el rango de precio o seleccionando otra marca.</p>
               <button
                 onClick={() => {
                   setSelectedBrand('todas');
                   onCategoryChange('todos');
                   setPriceRange([1, 2500]);
                 }}
-                className="btn-cyan-glow px-6 py-2.5 rounded-xl text-xs font-extrabold font-space text-black inline-block mt-2 shadow-md uppercase tracking-wider"
+                className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-xl text-xs font-extrabold inline-block mt-2 shadow-sm uppercase tracking-wider transition-all"
               >
                 Restablecer Filtros &rarr;
               </button>

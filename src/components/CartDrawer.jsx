@@ -84,7 +84,7 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRem
                 </p>
                 <button
                   onClick={onClose}
-                  className="mt-6 btn-cyan-glow px-6 py-2.5 rounded-xl text-xs font-bold"
+                  className="mt-6 bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-xl text-xs font-extrabold shadow-sm transition-all"
                 >
                   Explorar Productos
                 </button>

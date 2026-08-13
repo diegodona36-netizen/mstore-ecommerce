@@ -109,9 +109,9 @@ export const LocationSection = ({
                 href="https://maps.google.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full btn-cyan-glow py-3 rounded-2xl font-bold text-xs font-space text-black flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(0,229,255,0.4)]"
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-2xl font-extrabold text-xs flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95"
               >
-                <Navigation className="w-4 h-4" />
+                <Navigation className="w-4 h-4 text-white" />
                 <span>Cómo Llegar en Google Maps &rarr;</span>
               </a>
 

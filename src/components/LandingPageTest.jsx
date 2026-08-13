@@ -937,8 +937,9 @@ export const LandingPageTest = ({
                   >
                     Añadir al Carrito
                   </button>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
 
           {/* PAGINATION / LOAD MORE PRODUCTS */}
@@ -952,10 +953,12 @@ export const LandingPageTest = ({
                 Cargar Más Productos del Catálogo &darr;
               </button>
             </div>
-            )}
+          )}
 
           </div>
-        </main>
+        </div>
+      </div>
+    </main>
 
         {/* SECCIÓN TIENDA FÍSICA Y MAPA (ENMARCADA EN CYBER MATTE) */}
         <div className="max-w-7xl mx-auto px-4 md:px-8">

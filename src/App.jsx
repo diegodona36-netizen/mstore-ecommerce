@@ -12,6 +12,7 @@ import { WhatsappButton } from './components/WhatsappButton';
 import { CategoryShowcaseSection } from './components/CategoryShowcaseSection';
 import { INITIAL_PRODUCTS } from './data/products';
 import { MobileBottomNav } from './components/MobileBottomNav';
+import { Toast } from './components/Toast';
 import { ArrowLeft, ChevronRight, Home } from 'lucide-react';
 
 export function App() {
@@ -19,6 +20,7 @@ export function App() {
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
+  const [toastProduct, setToastProduct] = useState(null);
   
   // VIEW MODE ROUTING: 'home' | 'catalog'
   const [viewMode, setViewMode] = useState('home');
@@ -47,18 +49,20 @@ export function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Add to cart logic
+  // Add to cart logic SILENT (Does NOT open cart drawer, shows Toast notification)
   const handleAddToCart = (product) => {
     setCart((prevCart) => {
       const existing = prevCart.find((item) => item.id === product.id);
       if (existing) {
         return prevCart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          item.id === product.id ? { ...item, quantity: item.quantity + (product.quantity || 1) } : item
         );
       }
-      return [...prevCart, { ...product, quantity: 1 }];
+      return [...prevCart, { ...product, quantity: product.quantity || 1 }];
     });
-    setIsCartOpen(true);
+
+    // Show floating Toast notification silently without opening side drawer
+    setToastProduct(product);
   };
 
   // Update quantity
@@ -239,6 +243,14 @@ export function App() {
           product={quickViewProduct}
           onClose={() => setQuickViewProduct(null)}
           onAddToCart={handleAddToCart}
+        />
+      )}
+
+      {/* NOTIFICACIÓN FLOTANTE (TOAST) DE PRODUCTO AÑADIDO AL CARRITO */}
+      {toastProduct && (
+        <Toast
+          product={toastProduct}
+          onClose={() => setToastProduct(null)}
         />
       )}
 

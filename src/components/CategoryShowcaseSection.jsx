@@ -1,5 +1,5 @@
 import React from 'react';
-import { Star, ShoppingBag, Eye, Heart, ChevronRight } from 'lucide-react';
+import { Star, ShoppingCart, Eye, Heart, ChevronRight } from 'lucide-react';
 
 export const CategoryShowcaseCard = ({ 
   product, 
@@ -60,7 +60,7 @@ export const CategoryShowcaseCard = ({
           className="absolute top-2 right-2 z-10 p-2 rounded-full bg-slate-900 text-white font-extrabold hover:bg-slate-800 hover:scale-110 transition-all shadow-md"
           title="Agregar al Carrito"
         >
-          <ShoppingBag className="w-4 h-4" />
+          <ShoppingCart className="w-4 h-4" />
         </button>
 
         {/* Product Image */}

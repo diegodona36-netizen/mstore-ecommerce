@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Menu, X, Search, LayoutGrid, Sparkles } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, LayoutGrid, Sparkles } from 'lucide-react';
 import { Logo } from './Logo';
 
 export const Navbar = ({ 
@@ -113,13 +113,13 @@ export const Navbar = ({
             {/* Shopping Cart Button */}
             <button
               onClick={onOpenCart}
-              className="relative flex items-center gap-2 bg-[#00E5FF]/10 hover:bg-[#00E5FF] text-[#00E5FF] hover:text-black border border-[#00E5FF]/40 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold font-space transition-all duration-300 group hover:shadow-[0_0_20px_#00E5FF]"
+              className="relative flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-extrabold transition-all duration-300 group shadow-sm active:scale-95"
               aria-label="Ver Carrito de Compras"
             >
-              <ShoppingBag className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
+              <ShoppingCart className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 text-white" />
               <span>Carrito</span>
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-[#00E5FF] text-black font-extrabold text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-[0_0_10px_#00E5FF] animate-bounce">
+                <span className="absolute -top-2 -right-2 bg-emerald-500 text-white font-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-md animate-bounce">
                   {cartCount}
                 </span>
               )}

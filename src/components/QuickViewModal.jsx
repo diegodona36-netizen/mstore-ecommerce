@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  X, ShoppingBag, ShieldCheck, Check, Minus, Plus, 
+  X, ShoppingCart, ShieldCheck, Check, Minus, Plus, 
   ChevronRight, MessageCircle, Eye
 } from 'lucide-react';
 import { Logo } from './Logo';
@@ -317,7 +317,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                       </>
                     ) : (
                       <>
-                        <ShoppingBag className="w-4 h-4" />
+                        <ShoppingCart className="w-4 h-4" />
                         <span>Añadir al Carrito</span>
                       </>
                     )}

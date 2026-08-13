@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, LayoutGrid, ShoppingBag, MapPin } from 'lucide-react';
+import { Home, LayoutGrid, ShoppingCart, MapPin } from 'lucide-react';
 
 export const MobileBottomNav = ({ 
   cartCount = 0, 
@@ -42,7 +42,7 @@ export const MobileBottomNav = ({
           className="relative flex flex-col items-center justify-center gap-1 text-slate-300 hover:text-white active:text-white transition-colors py-1 focus-visible:outline-none min-h-[44px]"
         >
           <div className="relative">
-            <ShoppingBag className="w-5 h-5 shrink-0 text-slate-300" />
+            <ShoppingCart className="w-5 h-5 shrink-0 text-slate-300" />
             {cartCount > 0 && (
               <span className="absolute -top-1.5 -right-2 w-4 h-4 rounded-full bg-slate-100 text-slate-950 font-black text-[9px] flex items-center justify-center shadow-md border border-slate-800">
                 {cartCount}

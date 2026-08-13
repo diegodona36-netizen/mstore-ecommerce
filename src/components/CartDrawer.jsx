@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, MessageCircle, ShieldCheck } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingCart, ArrowRight, MessageCircle, ShieldCheck } from 'lucide-react';
 
 export const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem, onClearCart }) => {
   if (!isOpen) return null;
@@ -39,17 +39,17 @@ export const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRem
           {/* Cart Header */}
           <div className="p-6 border-b border-white/10 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-[#00E5FF]/10 text-[#00E5FF]">
-                <ShoppingBag className="w-5 h-5" />
+              <div className="p-2 rounded-xl bg-slate-800 text-white border border-slate-700">
+                <ShoppingCart className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-lg font-bold font-space text-white">Tu Carrito VIP</h2>
+                <h2 className="text-lg font-bold text-white">Tu Carrito VIP</h2>
                 <p className="text-xs text-slate-400">{cartItems.length} producto(s) seleccionados</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-full bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white transition-all"
+              className="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-white/5 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>

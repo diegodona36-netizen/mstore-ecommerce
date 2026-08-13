@@ -55,14 +55,27 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
     product.image
   ];
 
-  const colorsList = product.colors || [
-    { name: 'Blanco Marfil', hex: '#F5F5DC' },
-    { name: 'Gris Grafito', hex: '#475569' },
-    { name: 'Negro Azabache', hex: '#0F172A' }
-  ];
+  const parseOptions = (val, fallback = []) => {
+    if (Array.isArray(val) && val.length > 0) return val;
+    if (typeof val === 'string' && val.trim()) return val.split(',').map(s => s.trim()).filter(Boolean);
+    return fallback;
+  };
 
-  const ramOptions = ['8GB', '12GB', '16GB'];
-  const storageOptions = ['128GB', '256GB', '512GB', '1TB'];
+  const colorsList = parseOptions(product.colors, [
+    { name: 'Negro Titanio', hex: '#1E293B' },
+    { name: 'Plata Natural', hex: '#E2E8F0' },
+    { name: 'Oro Champán', hex: '#FDE68A' }
+  ]);
+
+  const defaultRamFallback = (product.category === 'smartphones' || product.category === 'computacion') ? ['8GB', '12GB', '16GB'] : [];
+  const defaultStorageFallback = (product.category === 'smartphones' || product.category === 'computacion') ? ['128GB', '256GB', '512GB', '1TB'] : [];
+
+  const ramOptions = parseOptions(product.ramOptions, defaultRamFallback);
+  const storageOptions = parseOptions(product.storageOptions, defaultStorageFallback);
+
+  const [selectedColor, setSelectedColor] = useState(colorsList[0] || 'Negro');
+  const [selectedRam, setSelectedRam] = useState(ramOptions[0] || '');
+  const [selectedStorage, setSelectedStorage] = useState(storageOptions[1] || storageOptions[0] || '');
 
   const currentColorDisplayName = getColorDisplayName(selectedColor);
 
@@ -209,80 +222,86 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                   )}
                 </div>
 
-                {/* SELECTOR DE COLOR (NOMBRE REAL EN LUGAR DE CÓDIGO HEX) */}
-                <div className="space-y-2 pt-2">
-                  <label className="text-xs font-extrabold text-slate-700 block uppercase tracking-wider">
-                    COLOR SELECCIONADO: <span className="text-slate-900 font-black">{currentColorDisplayName}</span>
-                  </label>
-                  <div className="flex items-center gap-3">
-                    {colorsList.map((col, idx) => {
-                      const hex = typeof col === 'object' ? col.hex : (idx === 0 ? '#F5F5DC' : idx === 1 ? '#475569' : '#0F172A');
-                      const name = getColorDisplayName(col);
-                      const isSel = currentColorDisplayName === name;
-                      return (
-                        <button
-                          key={idx}
-                          onClick={() => setSelectedColor(col)}
-                          className={`w-7 h-7 rounded-full border-2 transition-all shadow-sm ${
-                            isSel ? 'border-slate-900 scale-125 ring-2 ring-slate-900/30' : 'border-slate-300 hover:scale-110'
-                          }`}
-                          style={{ backgroundColor: hex }}
-                          title={name}
-                        />
-                      );
-                    })}
+                {/* SELECTOR DE COLOR */}
+                {colorsList.length > 0 && (
+                  <div className="space-y-2 pt-2">
+                    <label className="text-xs font-extrabold text-slate-700 block uppercase tracking-wider">
+                      COLOR SELECCIONADO: <span className="text-slate-900 font-black">{currentColorDisplayName}</span>
+                    </label>
+                    <div className="flex items-center gap-3">
+                      {colorsList.map((col, idx) => {
+                        const hex = typeof col === 'object' ? col.hex : (idx === 0 ? '#1E293B' : idx === 1 ? '#475569' : '#0F172A');
+                        const name = getColorDisplayName(col);
+                        const isSel = currentColorDisplayName === name;
+                        return (
+                          <button
+                            key={idx}
+                            onClick={() => setSelectedColor(col)}
+                            className={`w-7 h-7 rounded-full border-2 transition-all shadow-sm ${
+                              isSel ? 'border-slate-900 scale-125 ring-2 ring-slate-900/30' : 'border-slate-300 hover:scale-110'
+                            }`}
+                            style={{ backgroundColor: hex || '#1E293B' }}
+                            title={name}
+                          />
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
+                )}
 
-                {/* SELECTOR DE MEMORIA RAM (PÍLDORAS CON ACTIVO EN BG-SLATE-900) */}
-                <div className="space-y-2 pt-1">
-                  <label className="text-xs font-extrabold text-slate-700 block uppercase tracking-wider">
-                    Memoria RAM: <span className="text-slate-900 font-black">{selectedRam}</span>
-                  </label>
-                  <div className="flex items-center gap-2">
-                    {ramOptions.map((ramOption) => {
-                      const isSelected = selectedRam === ramOption;
-                      return (
-                        <button
-                          key={ramOption}
-                          onClick={() => setSelectedRam(ramOption)}
-                          className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all border ${
-                            isSelected
-                              ? 'bg-black text-white border-slate-900 shadow-sm'
-                              : 'bg-white text-slate-700 border-slate-300 hover:border-slate-500'
-                          }`}
-                        >
-                          {ramOption}
-                        </button>
-                      );
-                    })}
+                {/* SELECTOR DE MEMORIA RAM */}
+                {ramOptions.length > 0 && (
+                  <div className="space-y-2 pt-1">
+                    <label className="text-xs font-extrabold text-slate-700 block uppercase tracking-wider">
+                      Memoria RAM: <span className="text-slate-900 font-black">{selectedRam}</span>
+                    </label>
+                    <div className="flex items-center gap-2">
+                      {ramOptions.map((ramOption) => {
+                        const isSelected = selectedRam === ramOption;
+                        return (
+                          <button
+                            key={ramOption}
+                            onClick={() => setSelectedRam(ramOption)}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all border ${
+                              isSelected
+                                ? 'bg-black text-white border-slate-900 shadow-sm'
+                                : 'bg-white text-slate-700 border-slate-300 hover:border-slate-500'
+                            }`}
+                          >
+                            {ramOption}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
+                )}
 
-                {/* SELECTOR DE ALMACENAMIENTO (PÍLDORAS CON ACTIVO EN BG-SLATE-900) */}
-                <div className="space-y-2 pt-1">
-                  <label className="text-xs font-extrabold text-slate-700 block uppercase tracking-wider">
-                    Almacenamiento: <span className="text-slate-900 font-black">{selectedStorage}</span>
-                  </label>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {storageOptions.map((storageOption) => {
-                      const isSelected = selectedStorage === storageOption;
-                      return (
-                        <button
-                          key={storageOption}
-                          onClick={() => setSelectedStorage(storageOption)}
-                          className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all border ${
-                            isSelected
-                              ? 'bg-black text-white border-slate-900 shadow-sm'
-                              : 'bg-white text-slate-700 border-slate-300 hover:border-slate-500'
-                          }`}
-                        >
-                          {storageOption}
-                        </button>
-                      );
-                    })}
+                {/* SELECTOR DE ALMACENAMIENTO */}
+                {storageOptions.length > 0 && (
+                  <div className="space-y-2 pt-1">
+                    <label className="text-xs font-extrabold text-slate-700 block uppercase tracking-wider">
+                      Almacenamiento: <span className="text-slate-900 font-black">{selectedStorage}</span>
+                    </label>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {storageOptions.map((storageOption) => {
+                        const isSelected = selectedStorage === storageOption;
+                        return (
+                          <button
+                            key={storageOption}
+                            onClick={() => setSelectedStorage(storageOption)}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all border ${
+                              isSelected
+                                ? 'bg-black text-white border-slate-900 shadow-sm'
+                                : 'bg-white text-slate-700 border-slate-300 hover:border-slate-500'
+                            }`}
+                          >
+                            {storageOption}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* SELECTOR DE CANTIDAD */}
                 <div className="flex items-center gap-3 pt-2">

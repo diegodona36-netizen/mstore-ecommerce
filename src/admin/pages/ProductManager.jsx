@@ -22,8 +22,9 @@ import {
   Upload, 
   Check, 
   DollarSign,
-  Calculator,
-  Percent
+  Cpu,
+  HardDrive,
+  Palette
 } from 'lucide-react';
 import { CATEGORIES } from '../../data/products';
 
@@ -89,6 +90,9 @@ export default function ProductManager() {
     hasCashea: true,
     casheaInitialPercent: 40,
     casheaInstallments: 3,
+    ramOptions: '',
+    storageOptions: '',
+    colors: '',
     image: ''
   });
   const [selectedFile, setSelectedFile] = useState(null);
@@ -127,6 +131,9 @@ export default function ProductManager() {
       hasCashea: true,
       casheaInitialPercent: 40,
       casheaInstallments: 3,
+      ramOptions: '8GB, 12GB, 16GB',
+      storageOptions: '128GB, 256GB, 512GB, 1TB',
+      colors: 'Negro, Blanco, Titanio',
       image: ''
     });
     setSelectedFile(null);
@@ -136,6 +143,14 @@ export default function ProductManager() {
 
   const openEditModal = (product) => {
     setEditingProduct(product);
+
+    const formatArrayOrString = (val) => {
+      if (Array.isArray(val)) {
+        return val.map(item => typeof item === 'object' ? (item.name || item.hex) : item).join(', ');
+      }
+      return val || '';
+    };
+
     setFormData({
       name: product.name || '',
       category: product.category || 'smartphones',
@@ -147,6 +162,9 @@ export default function ProductManager() {
       hasCashea: product.hasCashea !== false,
       casheaInitialPercent: product.casheaInitialPercent || 40,
       casheaInstallments: product.casheaInstallments || 3,
+      ramOptions: formatArrayOrString(product.ramOptions),
+      storageOptions: formatArrayOrString(product.storageOptions),
+      colors: formatArrayOrString(product.colors),
       image: product.image || ''
     });
     setSelectedFile(null);
@@ -179,6 +197,11 @@ export default function ProductManager() {
         finalImageUrl = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80';
       }
 
+      const parseCommaArray = (str) => {
+        if (!str) return [];
+        return str.split(',').map(s => s.trim()).filter(Boolean);
+      };
+
       const productPayload = {
         name: formData.name.trim(),
         category: formData.category,
@@ -190,6 +213,9 @@ export default function ProductManager() {
         hasCashea: formData.hasCashea,
         casheaInitialPercent: parseInt(formData.casheaInitialPercent) || 40,
         casheaInstallments: parseInt(formData.casheaInstallments) || 3,
+        ramOptions: parseCommaArray(formData.ramOptions),
+        storageOptions: parseCommaArray(formData.storageOptions),
+        colors: parseCommaArray(formData.colors),
         image: finalImageUrl,
         rating: editingProduct?.rating || 5.0,
         reviewsCount: editingProduct?.reviewsCount || 1,
@@ -248,7 +274,7 @@ export default function ProductManager() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900">Catálogo de Productos</h1>
-          <p className="text-slate-500 text-sm mt-1">Crea, edita y administra los productos y financiamiento Cashea.</p>
+          <p className="text-slate-500 text-sm mt-1">Crea, edita y administra los productos, variantes y financiamiento Cashea.</p>
         </div>
 
         <button
@@ -318,7 +344,7 @@ export default function ProductManager() {
             </div>
             <h3 className="text-base font-bold text-slate-800">No hay productos registrados en la base de datos</h3>
             <p className="text-slate-500 text-sm mt-1 max-w-sm">
-              {searchQuery ? 'No se encontraron resultados para tu búsqueda.' : 'Comienza creando tu primer producto con el botón "Nuevo Producto".'}
+              {searchQuery ? 'No se encontraron resultados para tu búsqueda.' : 'La tienda muestra los productos de muestra iniciales. Comienza creando tu primer producto con el botón "Nuevo Producto".'}
             </p>
           </div>
         ) : (
@@ -356,7 +382,10 @@ export default function ProductManager() {
                           </div>
                           <div>
                             <div className="font-bold text-slate-900 line-clamp-1">{p.name}</div>
-                            <div className="text-xs text-slate-400 line-clamp-1">{p.description || 'Sin descripción'}</div>
+                            <div className="text-xs text-slate-400 line-clamp-1">
+                              {p.storageOptions?.length > 0 && `${p.storageOptions.join(' / ')} • `}
+                              {p.description || 'Sin descripción'}
+                            </div>
                           </div>
                         </div>
                       </td>
@@ -576,6 +605,63 @@ export default function ProductManager() {
                       onChange={(e) => setFormData({ ...formData, originalPrice: e.target.value })}
                       placeholder="1199.00"
                       className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* VARIANTES: RAM, ALMACENAMIENTO Y COLORES */}
+              <div className="bg-slate-50/80 border border-slate-200 rounded-2xl p-4 space-y-3">
+                <h4 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
+                  ⚙️ Opciones y Variantes (Opcional)
+                </h4>
+                <p className="text-[11px] text-slate-500">
+                  Escribe las opciones separadas por coma para que el cliente pueda seleccionarlas en la tienda.
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                  {/* RAM Options */}
+                  <div>
+                    <label className="flex items-center gap-1.5 text-[11px] font-bold text-slate-700 mb-1">
+                      <Cpu className="w-3.5 h-3.5 text-blue-600" />
+                      <span>Memoria RAM</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.ramOptions}
+                      onChange={(e) => setFormData({ ...formData, ramOptions: e.target.value })}
+                      placeholder="ej. 8GB, 12GB, 16GB"
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                  </div>
+
+                  {/* Storage Options */}
+                  <div>
+                    <label className="flex items-center gap-1.5 text-[11px] font-bold text-slate-700 mb-1">
+                      <HardDrive className="w-3.5 h-3.5 text-indigo-600" />
+                      <span>Almacenamiento</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.storageOptions}
+                      onChange={(e) => setFormData({ ...formData, storageOptions: e.target.value })}
+                      placeholder="ej. 128GB, 256GB, 512GB"
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                  </div>
+
+                  {/* Colors */}
+                  <div>
+                    <label className="flex items-center gap-1.5 text-[11px] font-bold text-slate-700 mb-1">
+                      <Palette className="w-3.5 h-3.5 text-purple-600" />
+                      <span>Colores</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.colors}
+                      onChange={(e) => setFormData({ ...formData, colors: e.target.value })}
+                      placeholder="ej. Negro, Blanco, Titanio"
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-blue-600"
                     />
                   </div>
                 </div>

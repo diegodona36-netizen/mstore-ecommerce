@@ -12,6 +12,7 @@ import { QuickViewModal } from './components/QuickViewModal';
 import { WhatsappButton } from './components/WhatsappButton';
 import { CategoryShowcaseSection } from './components/CategoryShowcaseSection';
 import { INITIAL_PRODUCTS } from './data/products';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { ArrowLeft, ChevronRight, Home } from 'lucide-react';
 
 export function App() {
@@ -81,7 +82,7 @@ export function App() {
   const cartTotalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-[#0A0908] text-white selection:bg-[#00E5FF] selection:text-black font-inter flex flex-col justify-between">
+    <div className="min-h-screen bg-[#0A0908] text-white selection:bg-[#00E5FF] selection:text-black font-inter flex flex-col justify-between pb-24 md:pb-0">
       
       <div>
         {/* 1. TOP HEADER & NAVIGATION (DARK CYBER) */}
@@ -248,6 +249,21 @@ export function App() {
       />
 
       <WhatsappButton />
+
+      {/* 5. NAVEGACIÓN BOTTOM MÓVIL (NATIVA ESTILO APP - SOLO MÓVIL flex md:hidden) */}
+      <MobileBottomNav 
+        cartCount={cartTotalCount}
+        onOpenMegaMenu={() => setIsMegaMenuOpen(true)}
+        onOpenCart={() => setIsCartOpen(true)}
+        onScrollToHome={navigateToHome}
+        onScrollToLocation={() => {
+          navigateToHome();
+          setTimeout(() => {
+            const locEl = document.getElementById('ubicacion');
+            if (locEl) locEl.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
+        }}
+      />
     </div>
   );
 }

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, ShoppingCart, ShieldCheck, Check, Minus, Plus, 
-  ChevronRight, ChevronDown, MessageCircle, Eye
+  ChevronRight, ChevronDown, MessageCircle, AlertCircle
 } from 'lucide-react';
 import { Logo } from './Logo';
 
@@ -9,6 +9,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [activeThumbIdx, setActiveThumbIdx] = useState(0);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
 
   if (!product) return null;
 
@@ -75,7 +76,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
 
   const hasExplicitVariants = Array.isArray(product.variants) && product.variants.length > 0;
 
-  // Extract available options from variants or fallback
+  // 1. ALL AVAILABLE COLORS
   const colorsList = hasExplicitVariants
     ? Array.from(new Set(product.variants.map(v => v.color).filter(Boolean)))
     : parseOptions(product.colors, [
@@ -84,31 +85,62 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
         { name: 'Oro Champán', hex: '#FDE68A' }
       ]);
 
-  const defaultRamFallback = (product.category === 'smartphones' || product.category === 'computacion') ? ['8GB', '12GB', '16GB'] : [];
-  const defaultStorageFallback = (product.category === 'smartphones' || product.category === 'computacion') ? ['128GB', '256GB', '512GB', '1TB'] : [];
-
-  const ramOptions = hasExplicitVariants
-    ? Array.from(new Set(product.variants.map(v => v.ram).filter(Boolean)))
-    : parseOptions(product.ramOptions, defaultRamFallback);
-
-  const rawStorageOptions = hasExplicitVariants
-    ? Array.from(new Set(product.variants.map(v => v.storage).filter(Boolean)))
-    : parseOptions(product.storageOptions, defaultStorageFallback);
-
   const [selectedColor, setSelectedColor] = useState(colorsList[0] || 'Negro');
-  const [selectedRam, setSelectedRam] = useState(ramOptions[0] || '');
-  const [selectedStorage, setSelectedStorage] = useState(rawStorageOptions[0] || '');
-
   const currentColorDisplayName = getColorDisplayName(selectedColor);
 
-  // Find exact matched variant
+  // 2. DEPENDENT AVAILABLE RAMS (Filtered strictly by selected color)
+  const variantsForColor = hasExplicitVariants
+    ? product.variants.filter(v => v.color === currentColorDisplayName || v.color === selectedColor)
+    : [];
+
+  const defaultRamFallback = (product.category === 'smartphones' || product.category === 'computacion') ? ['8GB', '12GB', '16GB'] : [];
+  const ramOptions = hasExplicitVariants
+    ? Array.from(new Set(variantsForColor.map(v => v.ram).filter(Boolean)))
+    : parseOptions(product.ramOptions, defaultRamFallback);
+
+  const [selectedRam, setSelectedRam] = useState(ramOptions[0] || '');
+
+  // Keep selectedRam synchronized if color changes and RAM doesn't exist
+  useEffect(() => {
+    if (ramOptions.length > 0 && !ramOptions.includes(selectedRam)) {
+      setSelectedRam(ramOptions[0]);
+    }
+  }, [selectedColor, ramOptions]);
+
+  // 3. DEPENDENT AVAILABLE STORAGES (Filtered strictly by selected color AND selected RAM)
+  const variantsForColorAndRam = hasExplicitVariants
+    ? variantsForColor.filter(v => !v.ram || v.ram === selectedRam)
+    : [];
+
+  const defaultStorageFallback = (product.category === 'smartphones' || product.category === 'computacion') ? ['128GB', '256GB', '512GB', '1TB'] : [];
+  const rawStorageOptions = hasExplicitVariants
+    ? Array.from(new Set(variantsForColorAndRam.map(v => v.storage).filter(Boolean)))
+    : parseOptions(product.storageOptions, defaultStorageFallback);
+
+  const [selectedStorage, setSelectedStorage] = useState(rawStorageOptions[0] || '');
+
+  // Keep selectedStorage synchronized if RAM changes and storage doesn't exist
+  useEffect(() => {
+    if (rawStorageOptions.length > 0 && !rawStorageOptions.includes(selectedStorage)) {
+      setSelectedStorage(rawStorageOptions[0]);
+    }
+  }, [selectedRam, selectedColor, rawStorageOptions]);
+
+  // 4. FIND EXACT MATCHED VARIANT
   const matchedVariant = hasExplicitVariants
-    ? (product.variants.find(v => 
-        (v.color === currentColorDisplayName || v.color === selectedColor) && 
-        (!v.storage || v.storage === selectedStorage) &&
-        (!v.ram || v.ram === selectedRam)
-      ) || product.variants.find(v => (!v.storage || v.storage === selectedStorage)) || product.variants[0])
+    ? (variantsForColorAndRam.find(v => v.storage === selectedStorage) ||
+       variantsForColor.find(v => v.storage === selectedStorage) ||
+       product.variants.find(v => (v.color === currentColorDisplayName || v.color === selectedColor)) ||
+       product.variants[0])
     : null;
+
+  // 5. PRICE RANGE VS SINGLE PRICE CALCULATION
+  const variantPrices = hasExplicitVariants 
+    ? product.variants.map(v => parseFloat(v.price) || 0).filter(p => p > 0) 
+    : [];
+  const minVariantPrice = variantPrices.length > 0 ? Math.min(...variantPrices) : (parseFloat(product.price) || 0);
+  const maxVariantPrice = variantPrices.length > 0 ? Math.max(...variantPrices) : (parseFloat(product.price) || 0);
+  const hasPriceRange = minVariantPrice !== maxVariantPrice;
 
   const currentPrice = matchedVariant 
     ? (parseFloat(matchedVariant.price) || parseFloat(product.price) || 0)
@@ -118,7 +150,31 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
     ? (matchedVariant.hasCashea !== false && product.hasCashea !== false)
     : (product.hasCashea !== false);
 
+  // 6. STOCK STATUS
+  const isOutOfStock = matchedVariant 
+    ? (matchedVariant.stock !== undefined && parseInt(matchedVariant.stock) <= 0)
+    : (product.inStock === false);
+
+  const availableStockUnits = matchedVariant?.stock !== undefined ? parseInt(matchedVariant.stock) : null;
+
+  // Handlers with user interaction flag
+  const handleColorSelect = (col) => {
+    setSelectedColor(col);
+    setHasUserInteracted(true);
+  };
+
+  const handleRamChange = (e) => {
+    setSelectedRam(e.target.value);
+    setHasUserInteracted(true);
+  };
+
+  const handleStorageChange = (e) => {
+    setSelectedStorage(e.target.value);
+    setHasUserInteracted(true);
+  };
+
   const handleAdd = () => {
+    if (isOutOfStock) return;
     onAddToCart({ 
       ...product, 
       price: currentPrice, 
@@ -148,7 +204,11 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
       const installmentPay = (subtotal * (1 - initPct / 100)) / installments;
       message += `*Plan Cashea:* Inicial $${initPay.toFixed(2)} + ${installments} cuotas de $${installmentPay.toFixed(2)}\n\n`;
     }
-    message += `Hola, quiero comprar este producto inmediatamente. ¿Tienen disponibilidad?`;
+    if (isOutOfStock) {
+      message += `Hola, veo que esta combinación figura como agotada en la web. ¿Cuándo les llega nuevo inventario?`;
+    } else {
+      message += `Hola, quiero comprar este producto inmediatamente. ¿Tienen disponibilidad?`;
+    }
 
     window.open(`https://wa.me/584120000000?text=${encodeURIComponent(message)}`, '_blank');
   };
@@ -158,7 +218,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
       {/* Backdrop overlay */}
       <div className="absolute inset-0" onClick={onClose}></div>
 
-      {/* Modern E-Commerce Clean 2-Column Product Detail Modal (SoyTecno Style) */}
+      {/* Modern E-Commerce Clean 2-Column Product Detail Modal (SoyTecno Architecture) */}
       <div className="relative z-10 bg-white w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl border border-slate-200 my-auto text-slate-900">
         
         {/* 1. HEADER DEL MODAL (TOP BAR OSCURO SLATE-950) */}
@@ -245,13 +305,33 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                   <span className="text-sm">🇺🇸</span>
                 </div>
 
-                {/* PRECIO DESTACADO EN AZUL ELÉCTRICO */}
+                {/* 1. RANGO DE PRECIO DINÁMICO EN AZUL ELÉCTRICO */}
                 <div className="space-y-1 pt-1">
                   <div className="text-3xl sm:text-4xl font-black text-blue-600 tracking-tight font-sans">
-                    ${currentPrice.toFixed(2)} USD
+                    {!hasUserInteracted && hasPriceRange ? (
+                      <span>${minVariantPrice.toFixed(2)} - ${maxVariantPrice.toFixed(2)} USD</span>
+                    ) : (
+                      <span>${currentPrice.toFixed(2)} USD</span>
+                    )}
                   </div>
+
                   <div className="text-xs font-bold text-slate-500">
                     (~{(currentPrice * rateVES).toLocaleString('es-VE', { maximumFractionDigits: 0 })} Bs)
+                  </div>
+
+                  {/* Stock Status Badge */}
+                  <div className="pt-1">
+                    {isOutOfStock ? (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-50 text-red-700 font-extrabold text-xs border border-red-200">
+                        <AlertCircle className="w-3.5 h-3.5" />
+                        <span>Agotado en esta combinación</span>
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-xs border border-emerald-200">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                        <span>En Stock {availableStockUnits !== null && `(${availableStockUnits} disponibles)`}</span>
+                      </span>
+                    )}
                   </div>
 
                   {/* Insignia Cashea Dinámica */}
@@ -268,7 +348,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                   )}
                 </div>
 
-                {/* SELECTOR DE COLOR (CÍRCULOS VISUALES SOYTECNO) */}
+                {/* 2. SELECTOR DE COLOR (CÍRCULOS VISUALES SWATCHES) */}
                 {colorsList.length > 0 && (
                   <div className="space-y-2 pt-2">
                     <div className="flex items-center gap-2">
@@ -283,7 +363,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                         return (
                           <button
                             key={idx}
-                            onClick={() => setSelectedColor(col)}
+                            onClick={() => handleColorSelect(col)}
                             className={`w-7 h-7 rounded-full border-2 transition-all shadow-sm relative ${
                               isSel 
                                 ? 'border-blue-600 scale-125 ring-2 ring-blue-600/30' 
@@ -302,7 +382,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                   </div>
                 )}
 
-                {/* SELECTOR DE MEMORIA RAM (DROPDOWN SOYTECNO) */}
+                {/* 3. SELECTOR DE MEMORIA RAM (DROPDOWN CONDICIONAL) */}
                 {ramOptions.length > 0 && (
                   <div className="space-y-1.5 pt-1">
                     <label className="text-xs font-black text-slate-800 block">
@@ -311,8 +391,8 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                     <div className="relative">
                       <select
                         value={selectedRam}
-                        onChange={(e) => setSelectedRam(e.target.value)}
-                        className="w-full appearance-none px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all cursor-pointer shadow-xs pr-10"
+                        onChange={handleRamChange}
+                        className="w-full appearance-none px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all cursor-pointer shadow-xs pr-10"
                       >
                         {ramOptions.map((ram) => (
                           <option key={ram} value={ram}>
@@ -325,7 +405,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                   </div>
                 )}
 
-                {/* SELECTOR DE ALMACENAMIENTO (DROPDOWN SOYTECNO) */}
+                {/* 4. SELECTOR DE ALMACENAMIENTO (DROPDOWN CONDICIONAL) */}
                 {rawStorageOptions.length > 0 && (
                   <div className="space-y-1.5 pt-1">
                     <label className="text-xs font-black text-slate-800 block">
@@ -334,18 +414,23 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                     <div className="relative">
                       <select
                         value={selectedStorage}
-                        onChange={(e) => setSelectedStorage(e.target.value)}
-                        className="w-full appearance-none px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all cursor-pointer shadow-xs pr-10"
+                        onChange={handleStorageChange}
+                        className="w-full appearance-none px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all cursor-pointer shadow-xs pr-10"
                       >
                         {rawStorageOptions.map((st) => {
                           const varForStorage = hasExplicitVariants 
-                            ? product.variants.find(v => v.storage === st && (v.color === currentColorDisplayName || v.color === selectedColor))
+                            ? product.variants.find(v => 
+                                v.storage === st && 
+                                (v.color === currentColorDisplayName || v.color === selectedColor) &&
+                                (!v.ram || v.ram === selectedRam)
+                              )
                             : null;
                           const vPrice = varForStorage ? varForStorage.price : null;
+                          const isOptOutOfStock = varForStorage && varForStorage.stock !== undefined && parseInt(varForStorage.stock) <= 0;
 
                           return (
                             <option key={st} value={st}>
-                              {st} {vPrice && vPrice !== product.price ? `— ($${parseFloat(vPrice).toFixed(2)} USD)` : ''}
+                              {st} {vPrice && vPrice !== product.price ? `— ($${parseFloat(vPrice).toFixed(2)} USD)` : ''} {isOptOutOfStock ? '(Agotado)' : ''}
                             </option>
                           );
                         })}
@@ -355,13 +440,14 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                   </div>
                 )}
 
-                {/* BARRA DE ACCIÓN SOYTECNO: CANTIDAD + AÑADIR AL CARRITO + COMPRAR AHORA */}
+                {/* BARRA DE ACCIÓN: CANTIDAD + AÑADIR AL CARRITO + COMPRAR AHORA */}
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-3">
                   {/* Quantity Counter */}
                   <div className="flex items-center border border-slate-200 rounded-xl bg-slate-50 overflow-hidden font-extrabold text-sm h-11 self-center sm:self-auto shrink-0">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="px-3.5 h-full hover:bg-slate-200 text-slate-700 transition-colors"
+                      disabled={isOutOfStock}
+                      className="px-3.5 h-full hover:bg-slate-200 text-slate-700 transition-colors disabled:opacity-40"
                       title="Disminuir"
                     >
                       -
@@ -369,21 +455,29 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                     <span className="w-8 text-center text-slate-900 font-black">{quantity}</span>
                     <button
                       onClick={() => setQuantity(quantity + 1)}
-                      className="px-3.5 h-full hover:bg-slate-200 text-slate-700 transition-colors"
+                      disabled={isOutOfStock}
+                      className="px-3.5 h-full hover:bg-slate-200 text-slate-700 transition-colors disabled:opacity-40"
                       title="Aumentar"
                     >
                       +
                     </button>
                   </div>
 
-                  {/* Botón 1: Añadir Al Carrito (Azul Eléctrico) */}
+                  {/* Botón 1: Añadir Al Carrito */}
                   <button
                     onClick={handleAdd}
-                    className={`flex-1 h-11 px-4 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 text-white shadow-md active:scale-95 ${
-                      added ? 'bg-emerald-600' : 'bg-blue-600 hover:bg-blue-700'
+                    disabled={isOutOfStock}
+                    className={`flex-1 h-11 px-4 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 text-white shadow-md active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${
+                      isOutOfStock 
+                        ? 'bg-slate-400' 
+                        : added 
+                          ? 'bg-emerald-600' 
+                          : 'bg-blue-600 hover:bg-blue-700'
                     }`}
                   >
-                    {added ? (
+                    {isOutOfStock ? (
+                      <span>Agotado</span>
+                    ) : added ? (
                       <>
                         <Check className="w-4 h-4" />
                         <span>¡Agregado!</span>
@@ -396,13 +490,17 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                     )}
                   </button>
 
-                  {/* Botón 2: Comprar Ahora (Verde WhatsApp) */}
+                  {/* Botón 2: Comprar Ahora (WhatsApp) */}
                   <button
                     onClick={handleWhatsAppCheckout}
-                    className="flex-1 h-11 px-4 rounded-xl font-black text-xs sm:text-sm bg-emerald-600 hover:bg-emerald-700 text-white transition-all flex items-center justify-center gap-2 shadow-md active:scale-95"
+                    className={`flex-1 h-11 px-4 rounded-xl font-black text-xs sm:text-sm text-white transition-all flex items-center justify-center gap-2 shadow-md active:scale-95 ${
+                      isOutOfStock 
+                        ? 'bg-slate-800 hover:bg-slate-900' 
+                        : 'bg-emerald-600 hover:bg-emerald-700'
+                    }`}
                   >
                     <MessageCircle className="w-4 h-4 fill-white" />
-                    <span>Comprar Ahora</span>
+                    <span>{isOutOfStock ? 'Consultar Stock' : 'Comprar Ahora'}</span>
                   </button>
                 </div>
 

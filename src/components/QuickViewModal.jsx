@@ -397,5 +397,6 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
 
       </div>
     </div>
+    </div>
   );
 };

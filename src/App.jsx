@@ -14,6 +14,9 @@ import { CategoryMegaMenu } from './components/CategoryMegaMenu';
 import { QuickViewModal } from './components/QuickViewModal';
 import { WhatsappButton } from './components/WhatsappButton';
 import { CategoryShowcaseSection } from './components/CategoryShowcaseSection';
+import { CategoryBubbles } from './components/CategoryBubbles';
+import { FlashDealsSection } from './components/FlashDealsSection';
+import { FAQSection } from './components/FAQSection';
 import { INITIAL_PRODUCTS } from './data/products';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { Toast } from './components/Toast';
@@ -147,70 +150,76 @@ export function App() {
         {/* ========================================================================= */}
         {viewMode === 'home' && (
           <div className="animate-fadeIn">
-            {/* 2. HERO BANNER PRINCIPAL E-COMMERCE */}
+            {/* 1. HERO BANNER PRINCIPAL + 3 PROMO FEATURE CARDS */}
             <Hero 
               onCategorySelect={(catId) => navigateToCatalog(catId)}
               onExploreClick={() => navigateToCatalog('todos')}
               onQuickViewHero={(p) => setQuickViewProduct(p)}
             />
 
-            {/* 3. SECCIONES CENTRALES HOMEPAGE DE ALTA CONVERSIÓN */}
+            {/* 2. CATEGORY STORY BUBBLES */}
+            <CategoryBubbles onSelectCategory={(catId) => navigateToCatalog(catId)} />
+
+            {/* 3. OFERTAS RELÁMPAGO CON CRONÓMETRO EN VIVO */}
+            <FlashDealsSection 
+              products={products}
+              onAddToCart={handleAddToCart}
+              onQuickView={(p) => setQuickViewProduct(p)}
+            />
+
+            {/* 4. SOCIAL PROOF / MARCAS / MÉTODOS DE PAGO */}
+            <SocialProofBar />
+
+            {/* 5. SECCIONES CENTRALES DE PRODUCTOS DESTACADOS */}
             <main className="bg-slate-50 pb-16">
               
-              {/* 3.1 SOCIAL PROOF / MARCAS */}
-              <SocialProofBar />
-
-              {/* 3.2 PROBLEMA / SOLUCIÓN */}
-              <ValuePropositionSection onNavigateCatalog={() => navigateToCatalog('todos')} />
-
-              {/* 3.3 PRODUCTOS DESTACADOS */}
-              <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 space-y-24">
+              <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-16 sm:space-y-20">
                 
                 {/* Bloque 1: Smartphones */}
                 <CategoryShowcaseSection 
-                  title="Flagships Más Vendidos"
+                  title="Flagships & Smartphones Más Vendidos"
+                  subtitle="Última tecnología de Apple, Samsung y Xiaomi con garantía oficial de 1 año"
                   categoryFilterId="smartphones"
                   products={products}
                   onSelectCategory={(catId) => navigateToCatalog(catId)}
                   onAddToCart={handleAddToCart}
                   onQuickView={(p) => setQuickViewProduct(p)}
-                  wishlist={wishlist}
-                  onToggleWishlist={handleToggleWishlist}
-                  isLightBg={true}
                 />
 
                 {/* Bloque 2: Smart TVs y Audio */}
                 <CategoryShowcaseSection 
-                  title="Smart TVs & Entretenimiento"
+                  title="Smart TVs 4K & Entretenimiento"
+                  subtitle="Pantallas OLED, QLED y barras de sonido de alta fidelidad"
                   categoryFilterId="linea-blanca"
                   products={products}
                   onSelectCategory={(catId) => navigateToCatalog(catId)}
                   onAddToCart={handleAddToCart}
                   onQuickView={(p) => setQuickViewProduct(p)}
-                  wishlist={wishlist}
-                  onToggleWishlist={handleToggleWishlist}
-                  isLightBg={true}
                 />
 
                 {/* Bloque 3: Computación */}
                 <CategoryShowcaseSection 
-                  title="Laptops & Productividad"
+                  title="Laptops & Computación Pro"
+                  subtitle="Equipos de alto rendimiento para trabajo profesional, oficina y gaming"
                   categoryFilterId="computacion"
                   products={products}
                   onSelectCategory={(catId) => navigateToCatalog(catId)}
                   onAddToCart={handleAddToCart}
                   onQuickView={(p) => setQuickViewProduct(p)}
-                  wishlist={wishlist}
-                  onToggleWishlist={handleToggleWishlist}
-                  isLightBg={true}
                 />
               </div>
 
-              {/* 3.4 TESTIMONIOS */}
+              {/* 6. PILARES DE VALOR Y GARANTÍAS */}
+              <ValuePropositionSection onNavigateCatalog={() => navigateToCatalog('todos')} />
+
+              {/* 7. TESTIMONIOS VERIFICADOS */}
               <TestimonialsSection />
 
-              {/* 3.5 TIENDA FÍSICA & UBICACIÓN */}
-              <div className="max-w-7xl mx-auto px-4 md:px-8 pt-16">
+              {/* 8. PREGUNTAS FRECUENTES INTERACTIVAS */}
+              <FAQSection />
+
+              {/* 9. TIENDA FÍSICA & UBICACIÓN */}
+              <div className="max-w-7xl mx-auto px-4 md:px-8 pt-12">
                 <LocationSection isLightBg={true} />
               </div>
 

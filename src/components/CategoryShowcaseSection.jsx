@@ -22,11 +22,11 @@ export const CategoryShowcaseCard = ({
   return (
     <div 
       onClick={handleCardClick}
-      className="group relative bg-[#0D131F] rounded-2xl p-3 border border-white/10 hover:border-[#00E5FF]/60 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,229,255,0.2)] flex flex-col justify-between h-full cursor-pointer select-none"
+      className="group relative bg-white rounded-2xl p-3 border border-slate-200 hover:border-slate-400 transition-all duration-300 hover:shadow-lg flex flex-col justify-between h-full cursor-pointer select-none"
     >
       
       {/* Top Badges & Wishlist Heart */}
-      <div className="relative w-full rounded-xl bg-[#0A0908] p-2 overflow-hidden flex items-center justify-center h-36 sm:h-40">
+      <div className="relative w-full rounded-xl bg-slate-50 p-2 overflow-hidden flex items-center justify-center h-36 sm:h-40 border border-slate-100">
         
         {/* Wishlist Heart Top-Left */}
         <button
@@ -36,8 +36,8 @@ export const CategoryShowcaseCard = ({
           }}
           className={`absolute top-2 left-2 z-10 p-2 rounded-full backdrop-blur-md transition-all ${
             isWishlisted 
-              ? 'bg-rose-500 text-white shadow-[0_0_12px_#f43f5e]' 
-              : 'bg-black/50 text-slate-300 hover:text-white hover:bg-black/80'
+              ? 'bg-rose-500 text-white shadow-md' 
+              : 'bg-white/80 text-slate-500 hover:text-slate-900 hover:bg-white border border-slate-200'
           }`}
           title="Guardar en Favoritos"
         >
@@ -46,7 +46,7 @@ export const CategoryShowcaseCard = ({
 
         {/* Tag / Discount Badge */}
         {(product.tag || product.discountBadge) && (
-          <span className="absolute bottom-2 left-2 z-10 px-2.5 py-0.5 rounded-md bg-[#00E5FF]/20 border border-[#00E5FF]/40 text-[#00E5FF] font-extrabold text-[9px] uppercase tracking-wider">
+          <span className="absolute bottom-2 left-2 z-10 px-2.5 py-0.5 rounded-md bg-blue-50 border border-blue-200 text-blue-700 font-extrabold text-[9px] uppercase tracking-wider">
             {product.tag || product.discountBadge}
           </span>
         )}
@@ -57,7 +57,7 @@ export const CategoryShowcaseCard = ({
             e.stopPropagation();
             onAddToCart && onAddToCart(product);
           }}
-          className="absolute top-2 right-2 z-10 p-2 rounded-full bg-[#00E5FF] text-black font-extrabold hover:bg-cyan-300 hover:scale-110 transition-all shadow-[0_0_15px_#00E5FF]"
+          className="absolute top-2 right-2 z-10 p-2 rounded-full bg-slate-900 text-white font-extrabold hover:bg-slate-800 hover:scale-110 transition-all shadow-md"
           title="Agregar al Carrito"
         >
           <ShoppingBag className="w-4 h-4" />
@@ -76,30 +76,30 @@ export const CategoryShowcaseCard = ({
       <div className="space-y-2.5 text-left pt-3 flex flex-col justify-between flex-grow">
         <div className="space-y-1.5">
           {/* Rating */}
-          <div className="flex items-center gap-1 text-amber-400 text-[11px] font-space font-extrabold">
-            <Star className="w-3.5 h-3.5 fill-amber-400" />
+          <div className="flex items-center gap-1 text-amber-500 text-[11px] font-sans font-extrabold">
+            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
             <span>{product.rating || '5.0'}</span>
-            <span className="text-slate-400 font-inter">({product.reviewsCount || 48})</span>
+            <span className="text-slate-400 font-sans">({product.reviewsCount || 48})</span>
           </div>
 
           {/* Title */}
-          <h3 className="text-xs sm:text-sm font-extrabold text-white font-space leading-snug line-clamp-2 group-hover:text-[#00E5FF] transition-colors">
+          <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 font-sans leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors">
             {product.name}
           </h3>
         </div>
 
         {/* Price & Action Button */}
-        <div className="space-y-2 pt-2 border-t border-white/10 mt-auto">
+        <div className="space-y-2 pt-2 border-t border-slate-100 mt-auto">
           <div className="flex items-baseline justify-between">
             <div className="flex items-baseline gap-1">
-              <span className="text-base sm:text-lg font-black text-white font-inter tracking-tight">
+              <span className="text-base sm:text-lg font-black text-slate-900 font-sans tracking-tight">
                 ${formattedPrice}
               </span>
-              <span className="text-[10px] font-extrabold text-[#00E5FF] font-inter">USD</span>
+              <span className="text-[10px] font-extrabold text-slate-700 font-sans">USD</span>
             </div>
 
             {formattedOriginalPrice && (
-              <span className="text-xs text-slate-400 line-through font-inter">
+              <span className="text-xs text-slate-400 line-through font-sans">
                 ${formattedOriginalPrice}
               </span>
             )}
@@ -111,9 +111,9 @@ export const CategoryShowcaseCard = ({
               e.stopPropagation();
               onQuickView && onQuickView(product);
             }}
-            className="w-full py-2 rounded-xl bg-white/5 hover:bg-[#00E5FF]/20 border border-white/10 hover:border-[#00E5FF]/50 text-white hover:text-[#00E5FF] font-space font-extrabold text-xs transition-all flex items-center justify-center gap-1.5"
+            className="w-full py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-sans font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm"
           >
-            <Eye className="w-3.5 h-3.5 text-[#00E5FF]" />
+            <Eye className="w-3.5 h-3.5 text-white" />
             <span>Ver Detalle del Producto</span>
           </button>
         </div>
@@ -144,17 +144,17 @@ export const CategoryShowcaseSection = ({
   if (categoryProducts.length === 0) return null;
 
   return (
-    <section className="space-y-4 font-space">
+    <section className="space-y-4 font-sans">
       
       {/* Cabecera de Categoría */}
-      <div className="flex items-center justify-between pb-2 border-b border-white/10">
-        <h2 className="text-xl sm:text-3xl font-extrabold text-white tracking-tight">
+      <div className="flex items-center justify-between pb-2.5 border-b border-slate-200">
+        <h2 className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">
           {title}
         </h2>
 
         <button
           onClick={() => onSelectCategory && onSelectCategory(categoryFilterId)}
-          className="text-xs sm:text-sm font-extrabold text-[#00E5FF] hover:text-cyan-300 transition-colors flex items-center gap-1 font-space group"
+          className="text-xs sm:text-sm font-extrabold text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1 font-sans group"
         >
           <span>Ver todo</span>
           <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

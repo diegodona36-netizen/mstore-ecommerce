@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { ProductCarousel } from './components/ProductCarousel';
@@ -11,6 +11,9 @@ import { QuickViewModal } from './components/QuickViewModal';
 import { WhatsappButton } from './components/WhatsappButton';
 import { CategoryShowcaseSection } from './components/CategoryShowcaseSection';
 import { MobileBottomNav } from './components/MobileBottomNav';
+import { SoyTechnoExperiment } from './components/SoyTechnoExperiment';
+import { SoyTechnoHomePage } from './components/SoyTechnoHomePage';
+import { CleanBrightStore } from './components/CleanBrightStore';
 import { INITIAL_PRODUCTS } from './data/products';
 import { ArrowLeft, ChevronRight, Home } from 'lucide-react';
 
@@ -20,13 +23,33 @@ export function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   
-  // VIEW MODE ROUTING: 'home' | 'catalog'
+  // VIEW MODE ROUTING: 'home' | 'catalog' | 'soytechno' | 'soytechno-home' | 'clean'
   const [viewMode, setViewMode] = useState('home');
   const [activeCategory, setActiveCategory] = useState('todos');
   const [searchQuery, setSearchQuery] = useState('');
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [wishlist, setWishlist] = useState([]);
   const [customCategories] = useState([]);
+
+  // Hash listener for experimental clone routes (#soytechno, #soytechno-home, #clean)
+  useEffect(() => {
+    const handleHashCheck = () => {
+      const hash = window.location.hash.toLowerCase();
+      if (hash === '#soytechno' || hash === '#experimento') {
+        setViewMode('soytechno');
+      } else if (hash === '#soytechno-home') {
+        setViewMode('soytechno-home');
+      } else if (hash === '#clean' || hash === '#bright') {
+        setViewMode('clean');
+      } else if (hash === '#catalogo') {
+        setViewMode('catalog');
+      }
+    };
+
+    handleHashCheck();
+    window.addEventListener('hashchange', handleHashCheck);
+    return () => window.removeEventListener('hashchange', handleHashCheck);
+  }, []);
 
   const handleToggleWishlist = (productId) => {
     setWishlist(prev => 
@@ -44,6 +67,9 @@ export function App() {
   // Handler to return home
   const navigateToHome = () => {
     setViewMode('home');
+    if (window.location.hash) {
+      window.history.pushState('', document.title, window.location.pathname);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -79,6 +105,21 @@ export function App() {
 
   // Cart total count
   const cartTotalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  // RENDER CLONE ROUTE 1: SoyTechno Experiment 1:1 (#soytechno)
+  if (viewMode === 'soytechno') {
+    return <SoyTechnoExperiment onBackToMain={navigateToHome} />;
+  }
+
+  // RENDER CLONE ROUTE 2: SoyTechno HomePage (#soytechno-home)
+  if (viewMode === 'soytechno-home') {
+    return <SoyTechnoHomePage onBackToMain={navigateToHome} />;
+  }
+
+  // RENDER CLONE ROUTE 3: Clean & Bright Store (#clean)
+  if (viewMode === 'clean') {
+    return <CleanBrightStore onBackToMain={navigateToHome} />;
+  }
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-800 selection:bg-[#00E5FF] selection:text-black font-inter flex flex-col justify-between pb-16 md:pb-0">
@@ -125,9 +166,7 @@ export function App() {
             {/* 3. SECCIONES CENTRALES HOMEPAGE */}
             <main className="space-y-14 py-10 bg-[#F8FAFC]">
               
-
-
-              {/* 3.2 SECCIONES DE EXHIBICIÓN DE PRODUCTOS */}
+              {/* 3.1 SECCIONES DE EXHIBICIÓN DE PRODUCTOS */}
               <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-14">
                 
                 {/* Categoría 1: Smartphones Insignia */}
@@ -171,12 +210,12 @@ export function App() {
 
               </div>
 
-              {/* 3.3 Módulo de Beneficios & Garantía M Store */}
+              {/* 3.2 Módulo de Beneficios & Garantía M Store */}
               <div className="max-w-7xl mx-auto px-4 md:px-8 pt-4">
                 <BenefitsBanner isLightBg={true} />
               </div>
 
-              {/* 3.4 Sección Tienda Física & Mapa */}
+              {/* 3.3 Sección Tienda Física & Mapa */}
               <div className="max-w-7xl mx-auto px-4 md:px-8">
                 <LocationSection isLightBg={true} />
               </div>

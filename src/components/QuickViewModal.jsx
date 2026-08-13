@@ -151,8 +151,8 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
           </button>
         </div>
 
-        {/* 2. CUERPO DEL MODAL - RESPONSIVO: desktop 2 columnas, móvil 1 columna scroll natural */}
-        <div className="overflow-y-auto max-h-[75vh] md:max-h-none md:overflow-visible">
+        {/* 2. CUERPO DEL MODAL - RESPONSIVO CON SCROLL LIMPIO */}
+        <div className="overflow-y-auto max-h-[75vh] sm:max-h-[80vh] no-scrollbar">
           <div className="p-5 sm:p-8 bg-white">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
               
@@ -336,12 +336,12 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                 >
                   {added ? (
                     <>
-                      <Check className="w-4 h-4" />
+                      <Check className="w-4 h-4 text-white" />
                       <span>¡Agregado al Carrito!</span>
                     </>
                   ) : (
                     <>
-                      <ShoppingBag className="w-4 h-4 text-black" />
+                      <ShoppingBag className="w-4 h-4 text-white" />
                       <span>Añadir Al Carrito</span>
                     </>
                   )}

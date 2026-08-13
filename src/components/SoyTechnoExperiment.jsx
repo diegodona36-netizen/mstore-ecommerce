@@ -301,55 +301,8 @@ export function SoyTechnoExperiment({ onBackToMain }) {
             <span>≡ Categorías</span>
           </button>
 
-          <div className="flex items-center gap-6">
-            <span 
-              className={`hover:text-blue-600 cursor-pointer ${activeTab === 'catalogo' && selectedBrand === 'todos' ? 'text-blue-600 font-black' : ''}`} 
-              onClick={() => { setSelectedBrand('todos'); setActiveTab('catalogo'); }}
-            >
-              Tienda electrónica
-            </span>
-            <span 
-              className="hover:text-blue-600 cursor-pointer text-red-600 font-black"
-              onClick={() => { setSelectedBrand('todos'); setSortBy('low'); setActiveTab('catalogo'); showToast('Mostrando ofertas destacadas'); }}
-            >
-              Ofertas M Store
-            </span>
-            <span 
-              className={`hover:text-blue-600 cursor-pointer ${activeTab === 'tiendas' ? 'text-blue-600 font-black' : ''}`} 
-              onClick={() => setActiveTab('tiendas')}
-            >
-              Ubicaciones / Tiendas
-            </span>
-            <span 
-              className="hover:text-blue-600 cursor-pointer"
-              onClick={() => setActiveModal('payment')}
-            >
-              Métodos de pago
-            </span>
-            <span 
-              className="hover:text-blue-600 cursor-pointer"
-              onClick={() => setActiveModal('contact')}
-            >
-              Nosotros
-            </span>
-            <span 
-              className="hover:text-blue-600 cursor-pointer"
-              onClick={() => setActiveModal('contact')}
-            >
-              Contacto
-            </span>
-            <span 
-              className="hover:text-blue-600 cursor-pointer"
-              onClick={() => setActiveModal('tracking')}
-            >
-              Rastrea tu pedido
-            </span>
-            <span 
-              className="hover:text-blue-600 cursor-pointer text-blue-600 font-black"
-              onClick={() => setActiveModal('club')}
-            >
-              Club M Store
-            </span>
+          <div className="flex items-center gap-6 text-slate-500 text-[11px] font-extrabold uppercase tracking-wider">
+            <span>📞 Atención Inmediata 24/7 en Venezuela</span>
           </div>
 
         </div>

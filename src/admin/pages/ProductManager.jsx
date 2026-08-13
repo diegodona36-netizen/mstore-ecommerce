@@ -27,7 +27,10 @@ import {
   Palette,
   Sparkles,
   Layers,
-  Layers3
+  Layers3,
+  ChevronDown,
+  ChevronUp,
+  AlertTriangle
 } from 'lucide-react';
 import { CATEGORIES } from '../../data/products';
 
@@ -84,6 +87,7 @@ export default function ProductManager() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('todos');
+  const [expandedRows, setExpandedRows] = useState({});
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -127,6 +131,13 @@ export default function ProductManager() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const toggleRowExpand = (productId) => {
+    setExpandedRows(prev => ({
+      ...prev,
+      [productId]: !prev[productId]
+    }));
   };
 
   const openCreateModal = () => {
@@ -216,9 +227,7 @@ export default function ProductManager() {
     setIsModalOpen(true);
   };
 
-  // -------------------------------------------------------------
-  // DYNAMIC REPEATER HANDLERS FOR VARIANTS
-  // -------------------------------------------------------------
+  // Dynamic repeater handlers
   const addVariantBlock = () => {
     const lastVar = formData.variants[formData.variants.length - 1];
     const newVariant = {
@@ -345,13 +354,6 @@ export default function ProductManager() {
     }
   };
 
-  // Calculations
-  const numericPrice = parseFloat(formData.price) || 0;
-  const initialPercent = parseInt(formData.casheaInitialPercent) || 40;
-  const installmentsCount = parseInt(formData.casheaInstallments) || 3;
-  const casheaInitialAmount = numericPrice * (initialPercent / 100);
-  const casheaInstallmentAmount = (numericPrice * (1 - initialPercent / 100)) / installmentsCount;
-
   // Filtering
   const filteredProducts = products.filter((p) => {
     const matchesSearch = p.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -457,132 +459,243 @@ export default function ProductManager() {
                 <tr className="border-b border-slate-200 bg-slate-50/75 text-slate-500 text-xs font-extrabold uppercase tracking-wider">
                   <th className="py-3.5 px-4">Producto</th>
                   <th className="py-3.5 px-4">Categoría</th>
-                  <th className="py-3.5 px-4">Precio Contado</th>
+                  <th className="py-3.5 px-4">Precio ($ USD)</th>
                   <th className="py-3.5 px-4">Plan Cashea</th>
-                  <th className="py-3.5 px-4">Lotes / Variantes</th>
-                  <th className="py-3.5 px-4">Estado</th>
+                  <th className="py-3.5 px-4">Lotes y Variantes</th>
+                  <th className="py-3.5 px-4">Stock Total</th>
                   <th className="py-3.5 px-4 text-right">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-sm">
                 {filteredProducts.map((p) => {
-                  const pPrice = parseFloat(p.price) || 0;
+                  const hasVariants = Array.isArray(p.variants) && p.variants.length > 0;
+                  const variants = hasVariants ? p.variants : [];
+                  const variantsCount = variants.length;
+
+                  // Price calculation with range support
+                  const variantPrices = hasVariants 
+                    ? variants.map(v => parseFloat(v.price) || 0).filter(pr => pr > 0)
+                    : [parseFloat(p.price) || 0];
+
+                  const minPrice = variantPrices.length > 0 ? Math.min(...variantPrices) : (parseFloat(p.price) || 0);
+                  const maxPrice = variantPrices.length > 0 ? Math.max(...variantPrices) : (parseFloat(p.price) || 0);
+                  const hasPriceRange = minPrice !== maxPrice;
+
+                  // Total Stock
+                  const totalStock = hasVariants
+                    ? variants.reduce((acc, v) => acc + (parseInt(v.stock) || 0), 0)
+                    : (p.inStock !== false ? 'En Stock' : 'Agotado');
+
+                  const hasOutOfStockVariant = hasVariants && variants.some(v => parseInt(v.stock) <= 0);
+
+                  // Cashea calculation
                   const pInitPct = p.casheaInitialPercent || 40;
                   const pInstallments = p.casheaInstallments || 3;
-                  const pInitial = pPrice * (pInitPct / 100);
-                  const pInstallment = (pPrice * (1 - pInitPct / 100)) / pInstallments;
+                  const minInitial = minPrice * (pInitPct / 100);
+                  const maxInitial = maxPrice * (pInitPct / 100);
+                  const minInstallment = (minPrice * (1 - pInitPct / 100)) / pInstallments;
+                  const maxInstallment = (maxPrice * (1 - pInitPct / 100)) / pInstallments;
 
-                  const variantsCount = Array.isArray(p.variants) ? p.variants.length : 0;
-                  const totalStock = Array.isArray(p.variants) && p.variants.length > 0
-                    ? p.variants.reduce((acc, v) => acc + (parseInt(v.stock) || 0), 0)
-                    : null;
+                  const isExpanded = !!expandedRows[p.id];
 
                   return (
-                    <tr key={p.id} className="hover:bg-slate-50/50 transition-colors">
-                      {/* Image & Name */}
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex-shrink-0 overflow-hidden p-1 flex items-center justify-center">
-                            <img
-                              src={p.image}
-                              alt={p.name}
-                              className="w-full h-full object-contain"
-                            />
-                          </div>
-                          <div>
-                            <div className="font-bold text-slate-900 line-clamp-1">{p.name}</div>
-                            <div className="text-xs text-slate-400 line-clamp-1">
-                              {p.description || 'Sin descripción'}
+                    <React.Fragment key={p.id}>
+                      <tr className={`hover:bg-slate-50/70 transition-colors ${isExpanded ? 'bg-blue-50/30' : ''}`}>
+                        {/* Image & Name */}
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex-shrink-0 overflow-hidden p-1 flex items-center justify-center">
+                              <img
+                                src={p.image}
+                                alt={p.name}
+                                className="w-full h-full object-contain"
+                              />
+                            </div>
+                            <div>
+                              <div className="font-bold text-slate-900 line-clamp-1">{p.name}</div>
+                              <div className="text-xs text-slate-400 line-clamp-1">
+                                {p.description || 'Sin descripción'}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </td>
+                        </td>
 
-                      {/* Category */}
-                      <td className="py-3 px-4">
-                        <span className="capitalize px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700">
-                          {p.category}
-                        </span>
-                      </td>
+                        {/* Category */}
+                        <td className="py-3 px-4">
+                          <span className="capitalize px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700">
+                            {p.category}
+                          </span>
+                        </td>
 
-                      {/* Price */}
-                      <td className="py-3 px-4">
-                        <div className="font-black text-slate-900">${pPrice.toFixed(2)} USD</div>
-                        {p.originalPrice && (
-                          <div className="text-xs text-slate-400 line-through">${p.originalPrice}</div>
-                        )}
-                      </td>
-
-                      {/* Cashea Plan Preview */}
-                      <td className="py-3 px-4">
-                        {p.hasCashea !== false ? (
-                          <div className="space-y-1">
-                            <div className="inline-flex items-center gap-1 bg-[#FFE600] text-black px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border border-amber-400">
-                              CASHEA
+                        {/* Price (Range Support) */}
+                        <td className="py-3 px-4">
+                          {hasPriceRange ? (
+                            <div>
+                              <div className="font-black text-blue-700 text-xs sm:text-sm">
+                                ${minPrice.toFixed(2)} - ${maxPrice.toFixed(2)}
+                              </div>
+                              <div className="text-[10px] font-bold text-slate-400">Rango según modelo</div>
                             </div>
-                            <div className="text-xs font-bold text-slate-800">
-                              Inicial: <span className="text-amber-600">${pInitial.toFixed(2)}</span>
+                          ) : (
+                            <div>
+                              <div className="font-black text-slate-900">${minPrice.toFixed(2)} USD</div>
+                              {p.originalPrice && (
+                                <div className="text-xs text-slate-400 line-through">${p.originalPrice}</div>
+                              )}
                             </div>
-                            <div className="text-[11px] text-slate-500 font-medium">
-                              {pInstallments} cuotas de ${pInstallment.toFixed(2)}
-                            </div>
-                          </div>
-                        ) : (
-                          <span className="text-slate-400 text-xs italic">Solo Contado</span>
-                        )}
-                      </td>
+                          )}
+                        </td>
 
-                      {/* Variants Summary */}
-                      <td className="py-3 px-4">
-                        {variantsCount > 0 ? (
-                          <div className="space-y-1">
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-50 text-indigo-700 font-bold text-xs rounded-md border border-indigo-100">
-                              <Layers className="w-3 h-3" />
-                              <span>{variantsCount} {variantsCount === 1 ? 'modelo' : 'modelos'}</span>
-                            </span>
-                            {totalStock !== null && (
+                        {/* Cashea Plan Preview */}
+                        <td className="py-3 px-4">
+                          {p.hasCashea !== false ? (
+                            <div className="space-y-1">
+                              <div className="inline-flex items-center gap-1 bg-[#FFE600] text-black px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border border-amber-400">
+                                CASHEA
+                              </div>
+                              <div className="text-xs font-bold text-slate-800">
+                                Inicial: <span className="text-amber-600">
+                                  ${minInitial.toFixed(0)}{hasPriceRange ? ` - $${maxInitial.toFixed(0)}` : ''}
+                                </span>
+                              </div>
                               <div className="text-[11px] text-slate-500 font-medium">
-                                Total: {totalStock} unid.
+                                {pInstallments} cuotas de ${minInstallment.toFixed(0)}{hasPriceRange ? ` - $${maxInstallment.toFixed(0)}` : ''}
+                              </div>
+                            </div>
+                          ) : (
+                            <span className="text-slate-400 text-xs italic">Solo Contado</span>
+                          )}
+                        </td>
+
+                        {/* Variants Accordion Button */}
+                        <td className="py-3 px-4">
+                          {hasVariants ? (
+                            <button
+                              onClick={() => toggleRowExpand(p.id)}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 font-extrabold text-xs rounded-xl border border-slate-200 transition-all shadow-xs"
+                            >
+                              <Layers className="w-3.5 h-3.5 text-blue-600" />
+                              <span>{variantsCount} {variantsCount === 1 ? 'modelo' : 'modelos'}</span>
+                              {isExpanded ? <ChevronUp className="w-3.5 h-3.5 ml-1" /> : <ChevronDown className="w-3.5 h-3.5 ml-1" />}
+                            </button>
+                          ) : (
+                            <span className="text-slate-400 text-xs italic">Modelo Único</span>
+                          )}
+                        </td>
+
+                        {/* Stock */}
+                        <td className="py-3 px-4">
+                          <div className="space-y-1">
+                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
+                              totalStock === 0 || totalStock === 'Agotado'
+                                ? 'bg-red-50 text-red-600'
+                                : 'bg-emerald-50 text-emerald-700'
+                            }`}>
+                              <span className={`w-1.5 h-1.5 rounded-full ${
+                                totalStock === 0 || totalStock === 'Agotado' ? 'bg-red-500' : 'bg-emerald-500'
+                              }`} />
+                              {typeof totalStock === 'number' ? `${totalStock} unid.` : totalStock}
+                            </span>
+
+                            {hasOutOfStockVariant && (
+                              <div className="text-[10px] font-bold text-amber-600 flex items-center gap-1">
+                                <AlertTriangle className="w-3 h-3" />
+                                <span>Hay modelos sin stock</span>
                               </div>
                             )}
                           </div>
-                        ) : (
-                          <span className="text-slate-400 text-xs italic">Modelo Único</span>
-                        )}
-                      </td>
+                        </td>
 
-                      {/* Stock */}
-                      <td className="py-3 px-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
-                          p.inStock 
-                            ? 'bg-emerald-50 text-emerald-700' 
-                            : 'bg-red-50 text-red-600'
-                        }`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${p.inStock ? 'bg-emerald-500' : 'bg-red-500'}`} />
-                          {p.inStock ? 'En Stock' : 'Agotado'}
-                        </span>
-                      </td>
+                        {/* Actions */}
+                        <td className="py-3 px-4 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => openEditModal(p)}
+                              className="p-2 rounded-xl text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                              title="Editar Producto y Lotes"
+                            >
+                              <Edit3 className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(p)}
+                              className="p-2 rounded-xl text-slate-600 hover:text-red-600 hover:bg-red-50 transition-colors"
+                              title="Eliminar Producto"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
 
-                      {/* Actions */}
-                      <td className="py-3 px-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => openEditModal(p)}
-                            className="p-2 rounded-xl text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                            title="Editar Producto"
-                          >
-                            <Edit3 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(p)}
-                            className="p-2 rounded-xl text-slate-600 hover:text-red-600 hover:bg-red-50 transition-colors"
-                            title="Eliminar Producto"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                      {/* EXPANDABLE INLINE DRAWER FOR VARIANTS */}
+                      {isExpanded && hasVariants && (
+                        <tr className="bg-slate-50/80 border-y border-slate-200">
+                          <td colSpan="7" className="p-4 sm:p-6">
+                            <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-3">
+                              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                                <div className="flex items-center gap-2">
+                                  <Layers3 className="w-4 h-4 text-blue-600" />
+                                  <span className="text-xs font-black uppercase tracking-wider text-slate-800">
+                                    Desglose de Lotes / Modelos Físicos de "{p.name}"
+                                  </span>
+                                </div>
+                                <span className="text-xs font-bold text-slate-500">
+                                  Stock Total: <strong className="text-slate-900">{totalStock} unidades</strong>
+                                </span>
+                              </div>
+
+                              <div className="overflow-x-auto">
+                                <table className="w-full text-left text-xs border-collapse">
+                                  <thead>
+                                    <tr className="text-slate-400 font-extrabold uppercase tracking-wider border-b border-slate-100">
+                                      <th className="py-2 px-3">#</th>
+                                      <th className="py-2 px-3">Color</th>
+                                      <th className="py-2 px-3">RAM</th>
+                                      <th className="py-2 px-3">Almacenamiento</th>
+                                      <th className="py-2 px-3">Precio Venta</th>
+                                      <th className="py-2 px-3">Stock Físico</th>
+                                      <th className="py-2 px-3">Cashea</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="divide-y divide-slate-100 font-medium">
+                                    {variants.map((v, vIdx) => {
+                                      const vStock = parseInt(v.stock) || 0;
+                                      const vPrice = parseFloat(v.price) || parseFloat(p.price) || 0;
+                                      return (
+                                        <tr key={v.id || vIdx} className="hover:bg-slate-50/50">
+                                          <td className="py-2 px-3 font-bold text-slate-400">{vIdx + 1}</td>
+                                          <td className="py-2 px-3 font-bold text-slate-900 flex items-center gap-1.5">
+                                            <span className="w-2.5 h-2.5 rounded-full bg-slate-700 inline-block" />
+                                            {v.color || 'Negro'}
+                                          </td>
+                                          <td className="py-2 px-3 text-slate-700 font-semibold">{v.ram || '—'}</td>
+                                          <td className="py-2 px-3 font-black text-slate-900">{v.storage || '—'}</td>
+                                          <td className="py-2 px-3 font-black text-blue-600">${vPrice.toFixed(2)} USD</td>
+                                          <td className="py-2 px-3">
+                                            <span className={`px-2 py-0.5 rounded-md font-bold text-[11px] ${
+                                              vStock > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'
+                                            }`}>
+                                              {vStock > 0 ? `${vStock} unid.` : 'Agotado (0)'}
+                                            </span>
+                                          </td>
+                                          <td className="py-2 px-3">
+                                            {v.hasCashea !== false ? (
+                                              <span className="text-amber-600 font-bold">🟡 Activo</span>
+                                            ) : (
+                                              <span className="text-slate-400">Contado</span>
+                                            )}
+                                          </td>
+                                        </tr>
+                                      );
+                                    })}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
                   );
                 })}
               </tbody>

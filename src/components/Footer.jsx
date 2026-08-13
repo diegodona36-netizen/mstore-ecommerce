@@ -151,6 +151,14 @@ export const Footer = () => {
         <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <div className="flex items-center gap-2">
             <span>© 2026 M Store. Todos los derechos reservados.</span>
+            <span>•</span>
+            <a 
+              href="/admin/login" 
+              className="text-slate-400 hover:text-slate-200 transition-colors"
+              title="Panel de Administración"
+            >
+              Acceso Admin
+            </a>
           </div>
 
           <div className="flex items-center gap-2 text-slate-300">

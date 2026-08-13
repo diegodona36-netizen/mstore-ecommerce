@@ -1,14 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 export const Hero = ({ onExploreClick }) => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [firebaseBanners, setFirebaseBanners] = useState([]);
 
-  const banners = [
-    { id: 1, image: '/banners/banner_smartphone.jpg', alt: 'Oferta Especial Galaxy S24 Ultra' },
-    { id: 2, image: '/banners/banner_smarttv.jpg', alt: 'Cine en Casa Smart TV OLED' },
-    { id: 3, image: '/banners/banner_laptop.jpg', alt: 'Poder Creativo MacBook Pro M3' }
+  // Static fallback banners
+  const fallbackBanners = [
+    { id: 1, imageUrl: '/banners/banner_smartphone.jpg', alt: 'Oferta Especial Galaxy S24 Ultra' },
+    { id: 2, imageUrl: '/banners/banner_smarttv.jpg', alt: 'Cine en Casa Smart TV OLED' },
+    { id: 3, imageUrl: '/banners/banner_laptop.jpg', alt: 'Poder Creativo MacBook Pro M3' }
   ];
+
+  useEffect(() => {
+    // Listen to Firebase banners in real-time
+    const q = query(collection(db, 'banners'), orderBy('createdAt', 'desc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetched = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setFirebaseBanners(fetched);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const banners = firebaseBanners.length > 0 ? firebaseBanners : fallbackBanners;
 
   // Auto-slide every 6 seconds
   useEffect(() => {
@@ -45,8 +65,8 @@ export const Hero = ({ onExploreClick }) => {
               }`}
             >
               <img 
-                src={banner.image} 
-                alt={banner.alt} 
+                src={banner.imageUrl} 
+                alt={banner.alt || 'Banner M Store'} 
                 className="w-full h-full object-cover md:object-contain bg-[#111111]"
               />
             </div>
@@ -77,7 +97,7 @@ export const Hero = ({ onExploreClick }) => {
                 onClick={(e) => { e.stopPropagation(); setCurrentSlideIndex(idx); }}
                 className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 min-h-[6px] sm:min-h-[8px] cursor-pointer shadow-md ${
                   idx === currentSlideIndex 
-                    ? 'w-6 sm:w-8 bg-blue-500' 
+                    ? 'w-6 sm:w-8 bg-blue-600' 
                     : 'w-1.5 sm:w-2 bg-white/50 hover:bg-white/80'
                 }`}
                 aria-label={`Ir al banner ${idx + 1}`}
@@ -90,3 +110,4 @@ export const Hero = ({ onExploreClick }) => {
     </section>
   );
 };
+

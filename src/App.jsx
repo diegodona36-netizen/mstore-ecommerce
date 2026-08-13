@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { TopAnnouncementBar } from './components/TopAnnouncementBar';
 import { Hero } from './components/Hero';
@@ -18,9 +18,32 @@ import { INITIAL_PRODUCTS } from './data/products';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { Toast } from './components/Toast';
 import { ArrowLeft, ChevronRight, Home } from 'lucide-react';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { db } from './lib/firebase';
 
 export function App() {
-  const [products] = useState(INITIAL_PRODUCTS);
+  const [products, setProducts] = useState(INITIAL_PRODUCTS);
+
+  useEffect(() => {
+    // Listen to Firebase products in real-time
+    const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      if (!snapshot.empty) {
+        const fetchedProducts = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setProducts(fetchedProducts);
+      } else {
+        setProducts(INITIAL_PRODUCTS);
+      }
+    }, (error) => {
+      console.warn("Firestore products listener notice:", error);
+      setProducts(INITIAL_PRODUCTS);
+    });
+
+    return () => unsubscribe();
+  }, []);
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);

@@ -147,27 +147,21 @@ export function App() {
         {/* ========================================================================= */}
         {viewMode === 'home' && (
           <div className="animate-fadeIn">
-            {/* 1. HERO BANNER PRINCIPAL + 3 PROMO FEATURE CARDS */}
+            {/* 1. HERO BANNER PRINCIPAL */}
             <Hero 
               onCategorySelect={(catId) => navigateToCatalog(catId)}
               onExploreClick={() => navigateToCatalog('todos')}
               onQuickViewHero={(p) => setQuickViewProduct(p)}
             />
 
-            {/* 2. CATEGORY STORY BUBBLES */}
-            <CategoryBubbles onSelectCategory={(catId) => navigateToCatalog(catId)} />
-
-            {/* 3. OFERTAS RELÁMPAGO CON CRONÓMETRO EN VIVO */}
+            {/* 2. OFERTAS RELÁMPAGO CON CRONÓMETRO EN VIVO */}
             <FlashDealsSection 
               products={products}
               onAddToCart={handleAddToCart}
               onQuickView={(p) => setQuickViewProduct(p)}
             />
 
-            {/* 4. SOCIAL PROOF / MARCAS / MÉTODOS DE PAGO */}
-            <SocialProofBar />
-
-            {/* 5. SECCIONES CENTRALES DE PRODUCTOS DESTACADOS */}
+            {/* 3. SECCIONES CENTRALES DE PRODUCTOS DESTACADOS */}
             <main className="bg-slate-50 pb-16">
               
               <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-16 sm:space-y-20">
@@ -206,11 +200,8 @@ export function App() {
                 />
               </div>
 
-              {/* 6. TESTIMONIOS VERIFICADOS */}
-              <TestimonialsSection />
-
-              {/* 7. TIENDA FÍSICA & UBICACIÓN */}
-              <div className="max-w-7xl mx-auto px-4 md:px-8 pt-12">
+              {/* 4. TIENDA FÍSICA & UBICACIÓN */}
+              <div className="max-w-7xl mx-auto px-4 md:px-8 pt-6">
                 <LocationSection isLightBg={true} />
               </div>
 

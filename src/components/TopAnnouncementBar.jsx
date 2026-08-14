@@ -47,7 +47,7 @@ export const TopAnnouncementBar = () => {
             <span>Atención WhatsApp 24/7</span>
           </a>
           <span className="text-white/20">|</span>
-          <span className="font-bold text-slate-300">Tasa Oficial BCV</span>
+          <span className="font-bold text-slate-300">Precios en Dólares ($ USD)</span>
         </div>
 
       </div>

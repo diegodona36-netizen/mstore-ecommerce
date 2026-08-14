@@ -25,32 +25,37 @@ import {
   Layers,
   ChevronDown,
   ChevronUp,
-  AlertTriangle,
   Zap,
-  Sparkles,
-  Sliders,
-  Tag,
-  Wand2,
   Palette,
   Copy,
-  CheckCheck
+  Sparkles
 } from 'lucide-react';
 import { CATEGORIES } from '../../data/products';
 
-// COMMON COLOR PRESETS (VISUAL SWATCHES ONLY - NO PRICE VARIANCE)
-const COMMON_COLOR_PRESETS = [
-  { name: 'Negro Mate', hex: '#121212' },
-  { name: 'Blanco Puro', hex: '#FFFFFF' },
-  { name: 'Acero Inoxidable', hex: '#94A3B8' },
-  { name: 'Gris Espacial', hex: '#475569' },
-  { name: 'Titanio Natural', hex: '#948B7D' },
-  { name: 'Azul Medianoche', hex: '#1E3A8A' },
-  { name: 'Titanio Desierto', hex: '#C2B280' },
-  { name: 'Verde Esmeralda', hex: '#059669' },
-  { name: 'Rojo Carmesí', hex: '#DC2626' }
+// Quick color suggestion presets
+const QUICK_COLOR_PRESETS = [
+  { name: 'Negro', hex: '#121212' },
+  { name: 'Blanco', hex: '#FFFFFF' },
+  { name: 'Acero Inox', hex: '#94A3B8' },
+  { name: 'Gris', hex: '#475569' },
+  { name: 'Titanio', hex: '#948B7D' },
+  { name: 'Azul', hex: '#1E3A8A' },
+  { name: 'Verde', hex: '#059669' },
+  { name: 'Rojo', hex: '#DC2626' },
+  { name: 'Dorado', hex: '#D97706' }
 ];
 
-// Helper to auto-suggest hex code from color name
+// Quick version/spec suggestions by category
+const QUICK_VERSION_PRESETS = {
+  'linea-blanca': ['110V', '220V', '400 Litros', '600 Litros', '12 Kg', '16 Kg', '4 Hornillas', '6 Hornillas'],
+  'smartphones': ['128GB', '256GB', '512GB', '1TB', '8GB / 128GB', '12GB / 256GB', '12GB / 512GB'],
+  'televisores': ['43"', '50"', '55"', '65"', '75"', '85"'],
+  'computacion': ['16GB / 512GB SSD', '16GB / 1TB SSD', '32GB / 1TB SSD'],
+  'audio': ['In-Ear', 'Over-Ear', 'Bluetooth', 'Hi-Res'],
+  'hogar': ['110V', '220V', 'Estándar'],
+  'gaming': ['512GB', '1TB', '2TB', 'Edición Especial']
+};
+
 const getSuggestedHex = (name = '') => {
   const n = name.toLowerCase().trim();
   if (n.includes('negro') || n.includes('black') || n.includes('oscuro')) return '#121212';
@@ -62,85 +67,10 @@ const getSuggestedHex = (name = '') => {
   if (n.includes('azul') || n.includes('blue') || n.includes('marino') || n.includes('medianoche')) return '#1E3A8A';
   if (n.includes('verde') || n.includes('green') || n.includes('oliva') || n.includes('esmeralda')) return '#059669';
   if (n.includes('rojo') || n.includes('red') || n.includes('carmesi')) return '#DC2626';
-  if (n.includes('oro') || n.includes('gold') || n.includes('champan') || n.includes('champán')) return '#D97706';
+  if (n.includes('oro') || n.includes('gold') || n.includes('dorado') || n.includes('champan')) return '#D97706';
   if (n.includes('rosa') || n.includes('pink') || n.includes('rose')) return '#F472B6';
   return '#334155';
 };
-
-// HARDWARE / SPEC PRESETS (THESE VARY THE PRICE)
-const CATEGORY_SMART_PRESETS = {
-  'linea-blanca': [
-    { label: '⚡ Voltaje (110V / 220V)', name: 'Voltaje', values: ['110V', '220V'] },
-    { label: '🧊 Capacidad (Litros)', name: 'Capacidad', values: ['400 Litros', '600 Litros'] },
-    { label: '🧺 Capacidad Carga (Kg)', name: 'Capacidad', values: ['12 Kg', '16 Kg', '20 Kg'] },
-    { label: '🔥 Hornillas (Cocinas)', name: 'Hornillas', values: ['4 Hornillas', '6 Hornillas'] },
-    { label: '❄️ Capacidad BTU (Aires)', name: 'Capacidad BTU', values: ['12.000 BTU', '18.000 BTU', '24.000 BTU'] }
-  ],
-  'smartphones': [
-    { label: '⚡ Combo Vinculado (RAM + Memoria)', name: 'Versión', values: ['8GB / 128GB', '12GB / 256GB', '12GB / 512GB', '16GB / 1TB'] },
-    { label: '💾 Solo Almacenamiento', name: 'Almacenamiento', values: ['128GB', '256GB', '512GB', '1TB'] },
-    { label: '⚡ Solo Memoria RAM', name: 'Memoria RAM', values: ['8GB', '12GB', '16GB'] }
-  ],
-  'televisores': [
-    { label: '📺 Pulgadas de Pantalla', name: 'Pulgadas', values: ['43"', '50"', '55"', '65"', '75"'] },
-    { label: '✨ Tecnología de Panel', name: 'Tecnología', values: ['4K Crystal UHD', 'QLED 4K', 'OLED 4K'] }
-  ],
-  'computacion': [
-    { label: '⚡ Combo Vinculado (RAM + SSD)', name: 'Configuración', values: ['16GB RAM / 512GB SSD', '32GB RAM / 1TB SSD', '64GB RAM / 2TB SSD'] },
-    { label: '⚡ Solo Memoria RAM', name: 'Memoria RAM', values: ['16GB', '32GB', '64GB'] },
-    { label: '💾 Solo Almacenamiento SSD', name: 'Almacenamiento', values: ['512GB SSD', '1TB SSD', '2TB SSD'] }
-  ],
-  'audio': [
-    { label: '📶 Conectividad', name: 'Conectividad', values: ['Bluetooth 5.3', 'Con Cable Hi-Res'] },
-    { label: '🎧 Tipo', name: 'Tipo', values: ['In-Ear', 'Over-Ear'] }
-  ],
-  'hogar': [
-    { label: '⚡ Voltaje (110V / 220V)', name: 'Voltaje', values: ['110V', '220V'] },
-    { label: '💨 Potencia', name: 'Potencia', values: ['1000W', '1500W'] }
-  ],
-  'gaming': [
-    { label: '💾 Almacenamiento', name: 'Almacenamiento', values: ['512GB SSD', '1TB SSD', '2TB SSD'] },
-    { label: '🎮 Edición', name: 'Edición', values: ['Estándar', 'Edición Limitada'] }
-  ]
-};
-
-// Helper: Cartesian product of option values
-function generateCartesianMatrix(optionsList, existingVariants = []) {
-  const validOptions = optionsList.filter(o => o.name && Array.isArray(o.values) && o.values.length > 0);
-  if (validOptions.length === 0) return [];
-
-  const cartesian = (arrays) => arrays.reduce((acc, curr) => 
-    acc.flatMap(d => curr.map(e => [d, e].flat())), [[]]
-  );
-
-  const valuesArrays = validOptions.map(o => o.values);
-  const combinations = cartesian(valuesArrays);
-
-  return combinations.map((combo, idx) => {
-    const optionsMap = {};
-    validOptions.forEach((opt, optIdx) => {
-      optionsMap[opt.name] = combo[optIdx];
-    });
-
-    const title = combo.join(' / ');
-
-    // Match existing variant to preserve entered price and stock
-    const match = existingVariants.find(v => {
-      if (v.title === title) return true;
-      if (v.options && Object.keys(optionsMap).every(k => v.options[k] === optionsMap[k])) return true;
-      return false;
-    });
-
-    return {
-      id: match?.id || `var_${Date.now()}_${idx}`,
-      title: title,
-      options: optionsMap,
-      price: match?.price !== undefined ? match.price : '',
-      stock: match?.stock !== undefined ? match.stock : '',
-      hasCashea: match?.hasCashea !== undefined ? match.hasCashea : true
-    };
-  });
-}
 
 export const ProductManager = () => {
   const [products, setProducts] = useState([]);
@@ -154,7 +84,14 @@ export const ProductManager = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Dynamic Form State
+  // Custom Color Input State
+  const [customColorName, setCustomColorName] = useState('');
+  const [customColorHex, setCustomColorHex] = useState('#121212');
+
+  // Custom Version Input State
+  const [customVersionTitle, setCustomVersionTitle] = useState('');
+
+  // Simplified Product Form State
   const [formData, setFormData] = useState({
     name: '',
     category: 'linea-blanca',
@@ -165,12 +102,11 @@ export const ProductManager = () => {
     isFlashDeal: false,
     casheaInitialPercent: 40,
     casheaInstallments: 3,
-    hasOptions: false,
+    hasVariants: false,
     basePrice: '',
     baseStock: '',
-    colors: [], // Visual Swatches [{ name: 'Negro Mate', hex: '#121212' }]
-    options: [], // Specs that vary price [{ name: 'Voltaje', values: ['110V', '220V'] }]
-    variants: [],
+    colors: [], // [{ name: 'Negro Mate', hex: '#121212' }]
+    variants: [], // [{ id: 'var_1', title: '128GB', price: 899, stock: 10, hasCashea: true }]
     image: ''
   });
 
@@ -216,17 +152,19 @@ export const ProductManager = () => {
       isFlashDeal: false,
       casheaInitialPercent: 40,
       casheaInstallments: 3,
-      hasOptions: false,
+      hasVariants: false,
       basePrice: '',
       baseStock: '',
       colors: [
         { name: 'Negro Mate', hex: '#121212' },
-        { name: 'Acero Inoxidable', hex: '#94A3B8' }
+        { name: 'Acero Inox', hex: '#94A3B8' }
       ],
-      options: [],
       variants: [],
       image: ''
     });
+    setCustomColorName('');
+    setCustomColorHex('#121212');
+    setCustomVersionTitle('');
     setSelectedFile(null);
     setPreviewUrl('');
     setIsModalOpen(true);
@@ -236,11 +174,6 @@ export const ProductManager = () => {
     setEditingProduct(product);
 
     let parsedColors = [];
-    let parsedOptions = [];
-    let parsedVariants = [];
-    let hasOpts = false;
-
-    // Parse Colors (Visual Swatches)
     if (Array.isArray(product.colors) && product.colors.length > 0) {
       parsedColors = product.colors.map(c => {
         if (typeof c === 'object' && c.name) return { name: c.name, hex: c.hex || getSuggestedHex(c.name) };
@@ -251,36 +184,14 @@ export const ProductManager = () => {
       parsedColors = uniqueColors.map(cName => ({ name: cName, hex: getSuggestedHex(cName) }));
     }
 
-    // Parse Hardware / Price Options
-    if (Array.isArray(product.options) && product.options.length > 0) {
-      parsedOptions = product.options.filter(o => !o.name.toLowerCase().includes('color'));
-      parsedVariants = Array.isArray(product.variants) ? product.variants : [];
-      hasOpts = parsedOptions.length > 0;
-    } else if (Array.isArray(product.variants) && product.variants.length > 0) {
-      const detectedOptions = [];
-      if (product.variants.some(v => v.ram)) {
-        const uniqueRams = Array.from(new Set(product.variants.map(v => v.ram).filter(Boolean)));
-        if (uniqueRams.length > 0) detectedOptions.push({ id: 'opt_ram', name: 'Memoria RAM', values: uniqueRams });
-      }
-      if (product.variants.some(v => v.storage)) {
-        const uniqueStorages = Array.from(new Set(product.variants.map(v => v.storage).filter(Boolean)));
-        if (uniqueStorages.length > 0) detectedOptions.push({ id: 'opt_storage', name: 'Almacenamiento', values: uniqueStorages });
-      }
-
-      parsedOptions = detectedOptions;
-      parsedVariants = product.variants.map((v, i) => ({
-        id: v.id || `var_${Date.now()}_${i}`,
-        title: v.title || [v.ram, v.storage].filter(Boolean).join(' / ') || `Variante ${i + 1}`,
-        options: v.options || {
-          ...(v.ram ? { 'Memoria RAM': v.ram } : {}),
-          ...(v.storage ? { 'Almacenamiento': v.storage } : {})
-        },
-        price: v.price !== undefined ? v.price : (product.price || ''),
-        stock: v.stock !== undefined && v.stock !== null ? v.stock : '',
-        hasCashea: v.hasCashea !== undefined ? v.hasCashea : (product.hasCashea !== false)
-      }));
-      hasOpts = parsedVariants.length > 0;
-    }
+    const hasVars = Array.isArray(product.variants) && product.variants.length > 0;
+    const parsedVariants = hasVars ? product.variants.map((v, i) => ({
+      id: v.id || `var_${Date.now()}_${i}`,
+      title: v.title || Object.values(v.options || {}).join(' / ') || [v.ram, v.storage].filter(Boolean).join(' / ') || `Versión ${i + 1}`,
+      price: v.price !== undefined ? v.price : (product.price || ''),
+      stock: v.stock !== undefined && v.stock !== null ? v.stock : '',
+      hasCashea: v.hasCashea !== false
+    })) : [];
 
     setFormData({
       name: product.name || '',
@@ -292,42 +203,55 @@ export const ProductManager = () => {
       isFlashDeal: product.isFlashDeal || false,
       casheaInitialPercent: product.casheaInitialPercent || 40,
       casheaInstallments: product.casheaInstallments || 3,
-      hasOptions: hasOpts,
+      hasVariants: hasVars,
       basePrice: product.price || '',
       baseStock: product.stock || '',
       colors: parsedColors,
-      options: parsedOptions,
       variants: parsedVariants,
       image: product.image || ''
     });
+    setCustomColorName('');
+    setCustomColorHex('#121212');
+    setCustomVersionTitle('');
     setSelectedFile(null);
     setPreviewUrl(product.image || '');
     setIsModalOpen(true);
   };
 
   // -------------------------------------------------------------
-  // COLOR SWATCH BUILDER HANDLERS (VISUAL ONLY)
+  // COLOR HANDLERS (SIMPLE & FULLY CUSTOMIZABLE)
   // -------------------------------------------------------------
-  const addColorSwatch = (colorName, hexVal) => {
-    const name = colorName.trim();
+  const handleAddCustomColor = () => {
+    const name = customColorName.trim();
     if (!name) return;
-    if (formData.colors.some(c => c.name.toLowerCase() === name.toLowerCase())) return;
+    if (formData.colors.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+      setCustomColorName('');
+      return;
+    }
 
-    const hex = hexVal || getSuggestedHex(name);
     setFormData(prev => ({
       ...prev,
-      colors: [...prev.colors, { name, hex }]
+      colors: [...prev.colors, { name, hex: customColorHex }]
+    }));
+    setCustomColorName('');
+  };
+
+  const handleAddPresetColor = (preset) => {
+    if (formData.colors.some(c => c.name.toLowerCase() === preset.name.toLowerCase())) return;
+    setFormData(prev => ({
+      ...prev,
+      colors: [...prev.colors, { name: preset.name, hex: preset.hex }]
     }));
   };
 
-  const removeColorSwatch = (cIdx) => {
+  const handleRemoveColor = (cIdx) => {
     setFormData(prev => ({
       ...prev,
       colors: prev.colors.filter((_, i) => i !== cIdx)
     }));
   };
 
-  const updateColorHex = (cIdx, hex) => {
+  const handleUpdateColorHex = (cIdx, hex) => {
     setFormData(prev => {
       const updated = [...prev.colors];
       updated[cIdx] = { ...updated[cIdx], hex };
@@ -336,147 +260,60 @@ export const ProductManager = () => {
   };
 
   // -------------------------------------------------------------
-  // DYNAMIC OPTION BUILDER HANDLERS (PRICE-VARYING SPECS)
+  // VARIANT / VERSION HANDLERS (SIMPLE LIST)
   // -------------------------------------------------------------
-  const addOptionBlock = () => {
-    const newOption = {
-      id: `opt_${Date.now()}_${formData.options.length + 1}`,
-      name: '',
-      values: []
-    };
-    setFormData(prev => ({
-      ...prev,
-      hasOptions: true,
-      options: [...prev.options, newOption]
-    }));
-  };
-
-  // 1-Click Smart Preset Injector
-  const handleApplyPreset = (preset) => {
-    const existingIdx = formData.options.findIndex(o => o.name.toLowerCase() === preset.name.toLowerCase());
-    let updatedOptions = [...formData.options];
-
-    if (existingIdx >= 0) {
-      const mergedValues = Array.from(new Set([...updatedOptions[existingIdx].values, ...preset.values]));
-      updatedOptions[existingIdx] = { ...updatedOptions[existingIdx], values: mergedValues };
-    } else {
-      updatedOptions.push({
-        id: `opt_${Date.now()}_${updatedOptions.length + 1}`,
-        name: preset.name,
-        values: [...preset.values]
-      });
+  const handleAddVersion = (titleToAdd) => {
+    const title = (titleToAdd || customVersionTitle).trim();
+    if (!title) return;
+    if (formData.variants.some(v => v.title.toLowerCase() === title.toLowerCase())) {
+      setCustomVersionTitle('');
+      return;
     }
 
-    const newVariants = generateCartesianMatrix(updatedOptions, formData.variants);
-    setFormData(prev => ({
-      ...prev,
-      hasOptions: true,
-      options: updatedOptions,
-      variants: newVariants
-    }));
-  };
-
-  const removeOptionBlock = (optIdx) => {
-    const updatedOptions = formData.options.filter((_, i) => i !== optIdx);
-    const newVariants = generateCartesianMatrix(updatedOptions, formData.variants);
-    setFormData(prev => ({
-      ...prev,
-      options: updatedOptions,
-      hasOptions: updatedOptions.length > 0,
-      variants: newVariants
-    }));
-  };
-
-  const updateOptionName = (optIdx, name) => {
-    const updatedOptions = [...formData.options];
-    updatedOptions[optIdx] = { ...updatedOptions[optIdx], name };
-    const newVariants = generateCartesianMatrix(updatedOptions, formData.variants);
-    setFormData(prev => ({
-      ...prev,
-      options: updatedOptions,
-      variants: newVariants
-    }));
-  };
-
-  const addOptionValue = (optIdx, rawVal) => {
-    const trimmed = rawVal.trim();
-    if (!trimmed) return;
-    const currentValues = formData.options[optIdx]?.values || [];
-    if (currentValues.includes(trimmed)) return;
-
-    const updatedOptions = [...formData.options];
-    updatedOptions[optIdx] = {
-      ...updatedOptions[optIdx],
-      values: [...currentValues, trimmed]
+    const defaultPrice = formData.variants.length > 0 ? formData.variants[0].price : formData.basePrice || '';
+    const newVar = {
+      id: `var_${Date.now()}_${formData.variants.length + 1}`,
+      title: title,
+      price: defaultPrice,
+      stock: '',
+      hasCashea: true
     };
 
-    const newVariants = generateCartesianMatrix(updatedOptions, formData.variants);
     setFormData(prev => ({
       ...prev,
-      options: updatedOptions,
-      variants: newVariants
+      hasVariants: true,
+      variants: [...prev.variants, newVar]
+    }));
+    setCustomVersionTitle('');
+  };
+
+  const handleRemoveVariant = (vIdx) => {
+    const updated = formData.variants.filter((_, i) => i !== vIdx);
+    setFormData(prev => ({
+      ...prev,
+      variants: updated,
+      hasVariants: updated.length > 0
     }));
   };
 
-  const removeOptionValue = (optIdx, valIdx) => {
-    const updatedOptions = [...formData.options];
-    updatedOptions[optIdx] = {
-      ...updatedOptions[optIdx],
-      values: updatedOptions[optIdx].values.filter((_, i) => i !== valIdx)
-    };
-
-    const newVariants = generateCartesianMatrix(updatedOptions, formData.variants);
-    setFormData(prev => ({
-      ...prev,
-      options: updatedOptions,
-      variants: newVariants
-    }));
-  };
-
-  const updateVariantField = (varIdx, field, value) => {
+  const handleUpdateVariantField = (vIdx, field, val) => {
     setFormData(prev => {
       const updated = [...prev.variants];
-      updated[varIdx] = { ...updated[varIdx], [field]: value };
+      updated[vIdx] = { ...updated[vIdx], [field]: val };
       return { ...prev, variants: updated };
     });
   };
 
-  const removeVariantRow = (varIdx) => {
-    setFormData(prev => ({
-      ...prev,
-      variants: prev.variants.filter((_, i) => i !== varIdx)
-    }));
-  };
-
-  // -------------------------------------------------------------
-  // MACROS / BULK ACTIONS FOR VARIANTS MATRIX
-  // -------------------------------------------------------------
-  const macroCopyFirstPriceToAll = () => {
-    if (!formData.variants || formData.variants.length === 0) return;
+  const handleCopyFirstPrice = () => {
+    if (formData.variants.length === 0) return;
     const firstPrice = formData.variants[0].price;
     if (!firstPrice && firstPrice !== 0) {
-      alert("Ingresa primero un precio en la primera fila para copiarlo a todas.");
+      alert("Ingresa un precio en la primera versión para copiarlo a todas.");
       return;
     }
     setFormData(prev => ({
       ...prev,
       variants: prev.variants.map(v => ({ ...v, price: firstPrice }))
-    }));
-  };
-
-  const macroCopyFirstStockToAll = () => {
-    if (!formData.variants || formData.variants.length === 0) return;
-    const firstStock = formData.variants[0].stock;
-    setFormData(prev => ({
-      ...prev,
-      variants: prev.variants.map(v => ({ ...v, stock: firstStock }))
-    }));
-  };
-
-  const macroToggleAllCashea = (enabled) => {
-    setFormData(prev => ({
-      ...prev,
-      variants: prev.variants.map(v => ({ ...v, hasCashea: enabled }))
     }));
   };
 
@@ -514,13 +351,12 @@ export const ProductManager = () => {
       let finalPrice = 0;
       let finalStock = null;
 
-      if (formData.hasOptions && formData.variants.length > 0) {
+      if (formData.hasVariants && formData.variants.length > 0) {
         cleanVariants = formData.variants.map((v, i) => {
           const rawStock = v.stock !== '' && v.stock !== undefined && v.stock !== null ? parseInt(v.stock) : null;
           return {
             id: v.id || `var_${Date.now()}_${i}`,
-            title: v.title || `Variante ${i + 1}`,
-            options: v.options || {},
+            title: v.title || `Versión ${i + 1}`,
             price: parseFloat(v.price) || 0,
             stock: isNaN(rawStock) ? null : rawStock,
             hasCashea: v.hasCashea !== false
@@ -533,6 +369,11 @@ export const ProductManager = () => {
         finalPrice = parseFloat(formData.basePrice) || 0;
         finalStock = formData.baseStock !== '' ? parseInt(formData.baseStock) : null;
       }
+
+      // Convert simple variants into options array for universal storefront compatibility
+      const optionsArray = (formData.hasVariants && cleanVariants.length > 0)
+        ? [{ name: 'Versión', values: cleanVariants.map(v => v.title) }]
+        : [];
 
       const productPayload = {
         name: formData.name.trim(),
@@ -547,7 +388,7 @@ export const ProductManager = () => {
         casheaInitialPercent: parseInt(formData.casheaInitialPercent) || 40,
         casheaInstallments: parseInt(formData.casheaInstallments) || 3,
         colors: formData.colors || [],
-        options: formData.hasOptions ? formData.options : [],
+        options: optionsArray,
         variants: cleanVariants,
         image: finalImageUrl,
         rating: editingProduct?.rating || 5.0,
@@ -592,7 +433,7 @@ export const ProductManager = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const activeCategoryPresets = CATEGORY_SMART_PRESETS[formData.category] || CATEGORY_SMART_PRESETS['linea-blanca'];
+  const categoryPresets = QUICK_VERSION_PRESETS[formData.category] || QUICK_VERSION_PRESETS['linea-blanca'];
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 font-sans">
@@ -602,7 +443,7 @@ export const ProductManager = () => {
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900">Catálogo de Productos</h1>
           <p className="text-slate-500 text-sm mt-1">
-            Administra Línea Blanca, Televisores y Tecnología con precios directos o matriz de variantes.
+            Administra tus productos, colores y precios de forma rápida y sencilla.
           </p>
         </div>
 
@@ -685,8 +526,8 @@ export const ProductManager = () => {
                   <th className="py-3.5 px-4">Categoría</th>
                   <th className="py-3.5 px-4">Precio ($ USD)</th>
                   <th className="py-3.5 px-4">Plan Cashea</th>
-                  <th className="py-3.5 px-4">Colores / Variantes</th>
-                  <th className="py-3.5 px-4">Stock Total</th>
+                  <th className="py-3.5 px-4">Colores / Versiones</th>
+                  <th className="py-3.5 px-4">Stock</th>
                   <th className="py-3.5 px-4 text-right">Acciones</th>
                 </tr>
               </thead>
@@ -750,7 +591,7 @@ export const ProductManager = () => {
                               <div className="font-black text-blue-700 text-xs sm:text-sm">
                                 ${minPrice.toFixed(2)} - ${maxPrice.toFixed(2)}
                               </div>
-                              <div className="text-[10px] font-bold text-slate-400">Rango según modelo</div>
+                              <div className="text-[10px] font-bold text-slate-400">Rango de precio</div>
                             </div>
                           ) : (
                             <div>
@@ -782,7 +623,7 @@ export const ProductManager = () => {
                                 className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 font-extrabold text-xs rounded-xl border border-slate-200 transition-all shadow-xs"
                               >
                                 <Layers className="w-3.5 h-3.5 text-blue-600" />
-                                <span>{variantsCount} {variantsCount === 1 ? 'modelo' : 'modelos'}</span>
+                                <span>{variantsCount} {variantsCount === 1 ? 'versión' : 'versiones'}</span>
                                 {isExpanded ? <ChevronUp className="w-3.5 h-3.5 ml-1" /> : <ChevronDown className="w-3.5 h-3.5 ml-1" />}
                               </button>
                             ) : (
@@ -790,7 +631,7 @@ export const ProductManager = () => {
                             )}
 
                             {colorsCount > 0 && (
-                              <div className="flex items-center gap-1">
+                              <div className="flex items-center gap-1 pt-0.5">
                                 {p.colors.slice(0, 4).map((c, cIdx) => (
                                   <span
                                     key={cIdx}
@@ -827,7 +668,7 @@ export const ProductManager = () => {
                             <button
                               onClick={() => openEditModal(p)}
                               className="p-2 rounded-xl text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                              title="Editar Producto y Variantes"
+                              title="Editar Producto"
                             >
                               <Edit3 className="w-4 h-4" />
                             </button>
@@ -851,7 +692,7 @@ export const ProductManager = () => {
                                 <div className="flex items-center gap-2">
                                   <Layers className="w-4 h-4 text-blue-600" />
                                   <span className="text-xs font-black uppercase tracking-wider text-slate-800">
-                                    Desglose de Variantes de "{p.name}"
+                                    Versiones y Precios de "{p.name}"
                                   </span>
                                 </div>
                                 <span className="text-xs font-bold text-slate-500">
@@ -868,7 +709,7 @@ export const ProductManager = () => {
                                   <thead>
                                     <tr className="text-slate-400 font-extrabold uppercase tracking-wider border-b border-slate-100">
                                       <th className="py-2 px-3">#</th>
-                                      <th className="py-2 px-3">Especificación / Modelo</th>
+                                      <th className="py-2 px-3">Versión / Capacidad</th>
                                       <th className="py-2 px-3">Precio Venta</th>
                                       <th className="py-2 px-3">Stock Físico</th>
                                       <th className="py-2 px-3">Cashea</th>
@@ -882,7 +723,7 @@ export const ProductManager = () => {
                                           <td className="py-2 px-3 font-bold text-slate-400">{vIdx + 1}</td>
                                           <td className="py-2 px-3 font-extrabold text-slate-900">
                                             <span className="px-2 py-0.5 bg-slate-100 rounded-md">
-                                              {v.title || Object.values(v.options || {}).join(' / ') || 'Variante'}
+                                              {v.title || 'Versión'}
                                             </span>
                                           </td>
                                           <td className="py-2 px-3 font-black text-blue-700">
@@ -920,20 +761,20 @@ export const ProductManager = () => {
       </div>
 
       {/* ========================================================================= */}
-      {/* MODAL: CREAR / EDITAR PRODUCTO                                            */}
+      {/* MODAL: CREAR / EDITAR PRODUCTO (ULTRA SIMPLIFICADO)                       */}
       {/* ========================================================================= */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
+          <div className="bg-white rounded-3xl w-full max-w-3xl max-h-[90vh] shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
             
-            {/* 1. FIXED TOP HEADER */}
+            {/* 1. FIXED HEADER */}
             <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-200 bg-slate-50/80 shrink-0">
               <div>
                 <h2 className="text-lg sm:text-xl font-black text-slate-900">
-                  {editingProduct ? 'Editar Producto' : 'Crear Nuevo Producto'}
+                  {editingProduct ? 'Editar Producto' : 'Nuevo Producto'}
                 </h2>
                 <p className="text-xs text-slate-500 font-medium mt-0.5">
-                  Los colores son visuales (no varían precio). Las especificaciones (Voltaje, Pulgadas, etc.) dictan la matriz.
+                  Completa los datos del producto de forma rápida y sencilla
                 </p>
               </div>
 
@@ -946,15 +787,15 @@ export const ProductManager = () => {
               </button>
             </div>
 
-            {/* 2. SCROLLABLE FORM BODY */}
+            {/* 2. SCROLLABLE BODY */}
             <form id="product-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
               
-              {/* Product General Info */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+              {/* Basic Fields */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 
-                {/* Name */}
+                {/* Product Name */}
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
+                  <label className="block text-xs font-extrabold text-slate-700 mb-1">
                     Nombre del Producto *
                   </label>
                   <input
@@ -962,14 +803,14 @@ export const ProductManager = () => {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="ej. Samsung Galaxy S24 Ultra o Nevera Side by Side"
+                    placeholder="ej. Nevera Samsung 600L Inverter o iPhone 16 Pro Max"
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
                   />
                 </div>
 
                 {/* Category */}
                 <div>
-                  <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
+                  <label className="block text-xs font-extrabold text-slate-700 mb-1">
                     Categoría *
                   </label>
                   <select
@@ -987,28 +828,28 @@ export const ProductManager = () => {
 
                 {/* Promotional Tag */}
                 <div>
-                  <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
+                  <label className="block text-xs font-extrabold text-slate-700 mb-1">
                     Etiqueta Promocional <span className="text-slate-400 font-normal">(Opcional)</span>
                   </label>
                   <input
                     type="text"
                     value={formData.tag}
                     onChange={(e) => setFormData({ ...formData, tag: e.target.value })}
-                    placeholder="ej. OFERTA TOP, INVERTER, 10 AÑOS MOTOR"
+                    placeholder="ej. OFERTA TOP, 10 AÑOS GARANTÍA"
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
                   />
                 </div>
 
               </div>
 
-              {/* Product Image Box */}
+              {/* Product Image */}
               <div>
-                <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
-                  Fotografía Principal del Producto
+                <label className="block text-xs font-extrabold text-slate-700 mb-1">
+                  Foto del Producto
                 </label>
                 
-                <div className="flex flex-col sm:flex-row items-center gap-4 p-4 border border-slate-200 rounded-2xl bg-slate-50/50">
-                  <div className="w-24 h-24 rounded-2xl bg-white border border-slate-200 flex items-center justify-center overflow-hidden p-2 shrink-0 shadow-xs">
+                <div className="flex items-center gap-4 p-3 border border-slate-200 rounded-2xl bg-slate-50/50">
+                  <div className="w-16 h-16 rounded-xl bg-white border border-slate-200 flex items-center justify-center overflow-hidden p-1 shrink-0 shadow-xs">
                     {previewUrl || formData.image ? (
                       <img
                         src={previewUrl || formData.image}
@@ -1016,14 +857,14 @@ export const ProductManager = () => {
                         className="w-full h-full object-contain"
                       />
                     ) : (
-                      <Package className="w-8 h-8 text-slate-300" />
+                      <Package className="w-6 h-6 text-slate-300" />
                     )}
                   </div>
 
-                  <div className="flex-1 space-y-2 w-full">
-                    <label className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-100 border border-slate-300 rounded-xl font-bold text-xs text-slate-700 cursor-pointer shadow-xs active:scale-95 transition-all">
-                      <Upload className="w-4 h-4 text-blue-600" />
-                      <span>Subir Imagen desde el Equipo</span>
+                  <div className="flex-1 flex flex-col sm:flex-row gap-2">
+                    <label className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-100 border border-slate-300 rounded-xl font-bold text-xs text-slate-700 cursor-pointer shadow-xs active:scale-95 transition-all shrink-0">
+                      <Upload className="w-3.5 h-3.5 text-blue-600" />
+                      <span>Subir Foto</span>
                       <input
                         type="file"
                         accept="image/*"
@@ -1039,461 +880,400 @@ export const ProductManager = () => {
                         setFormData({ ...formData, image: e.target.value });
                         setPreviewUrl(e.target.value);
                       }}
-                      placeholder="O pega una URL directa de la imagen (https://...)"
-                      className="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 transition-all"
+                      placeholder="O pega una URL de la imagen..."
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 transition-all"
                     />
                   </div>
                 </div>
               </div>
 
               {/* ------------------------------------------------------------- */}
-              {/* SECTION: COLORES DISPONIBLES (ESTÉTICOS - NO AFECTAN PRECIO)  */}
+              {/* SECTION: COLORES DEL PRODUCTO (SIMPLE Y PERSONALIZABLE)       */}
               {/* ------------------------------------------------------------- */}
-              <div className="bg-slate-50/80 border border-slate-200 rounded-3xl p-4 sm:p-5 space-y-3">
-                <div className="flex items-center justify-between border-b border-slate-200 pb-2.5">
+              <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50 space-y-3">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Palette className="w-4 h-4 text-slate-700" />
-                    <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">
-                      Colores y Acabados Disponibles
-                    </h3>
+                    <span className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
+                      Colores Disponibles
+                    </span>
                   </div>
-                  <span className="text-[11px] text-slate-500 font-medium">
-                    (Selección visual en la tienda — no altera el precio)
+                  <span className="text-[11px] text-slate-500">
+                    Personaliza los tonos para que el cliente los elija
                   </span>
                 </div>
 
-                {/* Color presets chips */}
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[11px] font-bold text-slate-600 mr-1">Sugeridos:</span>
-                  {COMMON_COLOR_PRESETS.map((preset, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => addColorSwatch(preset.name, preset.hex)}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 transition-all active:scale-95 shadow-2xs"
+                {/* Input para agregar color personalizado */}
+                <div className="flex items-center gap-2">
+                  <div className="relative flex items-center">
+                    <label 
+                      className="w-9 h-9 rounded-xl border-2 border-slate-300 cursor-pointer overflow-hidden flex items-center justify-center shrink-0 shadow-2xs hover:scale-105 transition-transform"
+                      style={{ backgroundColor: customColorHex }}
+                      title="Toca para elegir el tono en la paleta"
                     >
-                      <span 
-                        className="w-3 h-3 rounded-full border border-slate-300 inline-block shrink-0" 
-                        style={{ backgroundColor: preset.hex }} 
+                      <input
+                        type="color"
+                        value={customColorHex}
+                        onChange={(e) => setCustomColorHex(e.target.value)}
+                        className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
                       />
-                      <span>+ {preset.name}</span>
+                    </label>
+                  </div>
+
+                  <input
+                    type="text"
+                    value={customColorName}
+                    onChange={(e) => {
+                      setCustomColorName(e.target.value);
+                      const auto = getSuggestedHex(e.target.value);
+                      if (auto !== '#334155') setCustomColorHex(auto);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddCustomColor();
+                      }
+                    }}
+                    placeholder="Escribe un color (ej. Titanio Azul, Acero Inox, Blanco)..."
+                    className="flex-1 px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 transition-all"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={handleAddCustomColor}
+                    className="px-4 py-2 bg-slate-900 hover:bg-black text-white rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95 shrink-0"
+                  >
+                    + Agregar
+                  </button>
+                </div>
+
+                {/* Sugerencias Rápidas */}
+                <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                  <span className="text-[11px] font-bold text-slate-400">Rápidos:</span>
+                  {QUICK_COLOR_PRESETS.map((p, pIdx) => (
+                    <button
+                      key={pIdx}
+                      type="button"
+                      onClick={() => handleAddPresetColor(p)}
+                      className="px-2 py-1 bg-white hover:bg-slate-200 border border-slate-200 rounded-lg text-[11px] font-bold text-slate-700 transition-all active:scale-95 flex items-center gap-1 shadow-2xs"
+                    >
+                      <span className="w-2.5 h-2.5 rounded-full border border-slate-300" style={{ backgroundColor: p.hex }} />
+                      <span>{p.name}</span>
                     </button>
                   ))}
                 </div>
 
-                {/* Active Selected Colors */}
-                <div className="flex items-center gap-2 flex-wrap pt-1">
-                  {formData.colors.map((c, cIdx) => (
-                    <div 
-                      key={cIdx} 
-                      className="inline-flex items-center gap-2 p-1.5 pl-2.5 bg-white border border-slate-200 rounded-xl shadow-xs"
-                    >
-                      {/* Color Picker label */}
-                      <label 
-                        className="relative w-5 h-5 rounded-full border border-slate-300 cursor-pointer overflow-hidden shrink-0 flex items-center justify-center transition-transform hover:scale-110"
-                        style={{ backgroundColor: c.hex }}
-                        title="Haz clic para personalizar el tono exacto"
+                {/* Lista de Colores Activos */}
+                {formData.colors.length > 0 && (
+                  <div className="flex items-center gap-2 flex-wrap pt-1 border-t border-slate-200/60">
+                    {formData.colors.map((c, cIdx) => (
+                      <div 
+                        key={cIdx} 
+                        className="inline-flex items-center gap-2 px-2.5 py-1.5 bg-white border border-slate-200 rounded-xl shadow-2xs"
                       >
-                        <input
-                          type="color"
-                          value={c.hex}
-                          onChange={(e) => updateColorHex(cIdx, e.target.value)}
-                          className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
-                        />
-                      </label>
+                        <label 
+                          className="w-4 h-4 rounded-full border border-slate-300 cursor-pointer overflow-hidden shrink-0 hover:scale-110 transition-transform relative"
+                          style={{ backgroundColor: c.hex }}
+                          title="Toca para cambiar el tono exacto"
+                        >
+                          <input
+                            type="color"
+                            value={c.hex}
+                            onChange={(e) => handleUpdateColorHex(cIdx, e.target.value)}
+                            className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
+                          />
+                        </label>
 
-                      <span className="text-xs font-extrabold text-slate-900">{c.name}</span>
+                        <span className="text-xs font-bold text-slate-900">{c.name}</span>
 
-                      <button
-                        type="button"
-                        onClick={() => removeColorSwatch(cIdx)}
-                        className="p-1 text-slate-400 hover:text-red-600 rounded-md text-xs font-bold transition-colors"
-                        title="Quitar este color"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveColor(cIdx)}
+                          className="p-0.5 text-slate-400 hover:text-red-600 rounded transition-colors text-xs font-bold ml-0.5"
+                          title="Eliminar color"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* ------------------------------------------------------------- */}
-              {/* SECTION: PRECIO DIRECTO O VARIACIONES DE HARDWARE (MATRIZ)    */}
+              {/* SECTION: PRECIO Y VERSIONES (ULTRA SIMPLE)                    */}
               {/* ------------------------------------------------------------- */}
-              <div className="bg-slate-50 border border-slate-200 rounded-3xl p-4 sm:p-6 space-y-5">
+              <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50 space-y-4">
                 
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <Sliders className="w-4 h-4 text-blue-600" />
-                      <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">
-                        Especificaciones y Precio de Venta
-                      </h3>
-                    </div>
-                    <p className="text-[11px] text-slate-500 mt-0.5">
-                      Ingresa el precio directo o agrega variaciones de hardware (Voltaje, Capacidad, Pulgadas...) que alteren el costo.
-                    </p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <DollarSign className="w-4 h-4 text-blue-600" />
+                    <span className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
+                      Precio e Inventario
+                    </span>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={addOptionBlock}
-                    className="px-3.5 py-2 bg-slate-900 hover:bg-black text-white rounded-xl font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs active:scale-95 self-start sm:self-auto"
-                  >
-                    <Plus className="w-3.5 h-3.5" />
-                    <span>+ Agregar Opción de Precio</span>
-                  </button>
+                  {!formData.hasVariants ? (
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, hasVariants: true }))}
+                      className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold transition-all shadow-2xs active:scale-95"
+                    >
+                      + ¿Tiene diferentes versiones/tamaños?
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, hasVariants: false, variants: [] }))}
+                      className="text-xs font-bold text-slate-500 hover:text-red-600 transition-colors"
+                    >
+                      Volver a precio único
+                    </button>
+                  )}
                 </div>
 
-                {/* 1-CLICK SMART PRESET BUTTONS FOR ACTIVE CATEGORY */}
-                <div className="space-y-1.5 bg-blue-50/60 p-3 rounded-2xl border border-blue-100">
-                  <div className="flex items-center gap-1.5 text-blue-900 font-extrabold text-xs">
-                    <Wand2 className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Sugerencias rápidas para esta categoría (1 Clic):</span>
-                  </div>
-                  <div className="flex items-center gap-2 flex-wrap pt-1">
-                    {activeCategoryPresets.map((preset, pIdx) => (
-                      <button
-                        key={pIdx}
-                        type="button"
-                        onClick={() => handleApplyPreset(preset)}
-                        className="px-3 py-1.5 rounded-xl bg-white hover:bg-blue-600 text-slate-700 hover:text-white border border-blue-200 hover:border-blue-600 text-xs font-bold transition-all shadow-2xs active:scale-95 flex items-center gap-1"
-                      >
-                        <span>{preset.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* If NO dynamic options added -> Show Direct Price and Stock */}
-                {(!formData.hasOptions || formData.options.length === 0) ? (
-                  <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3">
-                    <div className="text-xs font-extrabold text-slate-800 uppercase tracking-wider">
-                      Precio de Venta Directo
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
-                          Precio de Venta ($ USD) *
-                        </label>
-                        <div className="relative">
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
-                          <input
-                            type="number"
-                            step="0.01"
-                            min="0.01"
-                            required={!formData.hasOptions || formData.options.length === 0}
-                            value={formData.basePrice}
-                            onChange={(e) => setFormData({ ...formData, basePrice: e.target.value })}
-                            placeholder="ej. 899.00"
-                            className="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-blue-700 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
-                          Stock Físico <span className="text-[10px] text-slate-400 font-normal">(Opcional)</span>
-                        </label>
+                {/* Si NO tiene versiones -> Precio Directo */}
+                {!formData.hasVariants ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
+                        Precio de Venta ($ USD) *
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
                         <input
                           type="number"
-                          min="0"
-                          value={formData.baseStock}
-                          onChange={(e) => setFormData({ ...formData, baseStock: e.target.value })}
-                          placeholder="Opcional (Ilimitado)"
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                          step="0.01"
+                          min="0.01"
+                          required={!formData.hasVariants}
+                          value={formData.basePrice}
+                          onChange={(e) => setFormData({ ...formData, basePrice: e.target.value })}
+                          placeholder="ej. 750.00"
+                          className="w-full pl-8 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-blue-700 outline-none focus:ring-2 focus:ring-blue-600 transition-all"
                         />
                       </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
+                        Stock Físico <span className="text-[10px] text-slate-400 font-normal">(Opcional)</span>
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={formData.baseStock}
+                        onChange={(e) => setFormData({ ...formData, baseStock: e.target.value })}
+                        placeholder="Opcional (Ilimitado)"
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 transition-all"
+                      />
                     </div>
                   </div>
                 ) : (
-                  /* OPTIONS LIST */
-                  <div className="space-y-4">
-                    {formData.options.map((opt, optIdx) => (
-                      <div 
-                        key={opt.id || optIdx}
-                        className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3 relative"
+                  /* Si TIENE versiones -> Lista simple de versiones */
+                  <div className="space-y-3">
+                    
+                    {/* Input rápido para agregar versión */}
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={customVersionTitle}
+                        onChange={(e) => setCustomVersionTitle(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            handleAddVersion();
+                          }
+                        }}
+                        placeholder="Escribe la versión o capacidad (ej. 128GB, 256GB / 110V, 220V / 55 pulg)..."
+                        className="flex-1 px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 transition-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleAddVersion()}
+                        className="px-4 py-2 bg-slate-900 hover:bg-black text-white rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95 shrink-0"
                       >
+                        + Agregar Versión
+                      </button>
+                    </div>
+
+                    {/* Sugerencias Rápidas según la categoría */}
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[11px] font-bold text-slate-400">Sugerencias:</span>
+                      {categoryPresets.map((pVal, pIdx) => (
+                        <button
+                          key={pIdx}
+                          type="button"
+                          onClick={() => handleAddVersion(pVal)}
+                          className="px-2.5 py-1 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 rounded-lg text-xs font-bold transition-all shadow-2xs active:scale-95"
+                        >
+                          + {pVal}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Tabla de Versiones */}
+                    {formData.variants.length > 0 ? (
+                      <div className="space-y-2 pt-1">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-black text-slate-800 uppercase tracking-wider">
-                            Opción {optIdx + 1}: {opt.name || 'Sin definir'}
+                          <span className="text-xs font-extrabold text-slate-800">
+                            Versiones Registradas ({formData.variants.length})
                           </span>
+
                           <button
                             type="button"
-                            onClick={() => removeOptionBlock(optIdx)}
-                            className="p-1 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-1 text-xs font-bold"
+                            onClick={handleCopyFirstPrice}
+                            className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors"
+                            title="Copia el precio de la primera fila a todas las demás"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
-                            <span>Eliminar opción</span>
+                            <Copy className="w-3 h-3" />
+                            <span>Copiar 1er precio a todas</span>
                           </button>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                          {/* Option Name */}
-                          <div>
-                            <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
-                              Nombre de la Especificación *
-                            </label>
-                            <input
-                              type="text"
-                              required
-                              value={opt.name}
-                              onChange={(e) => updateOptionName(optIdx, e.target.value)}
-                              placeholder="ej. Versión, Voltaje, Capacidad, Pulgadas..."
-                              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
-                            />
-                          </div>
+                        <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-2xs">
+                          <table className="w-full text-left text-xs border-collapse">
+                            <thead>
+                              <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-extrabold uppercase tracking-wider">
+                                <th className="py-2.5 px-3">Versión / Capacidad</th>
+                                <th className="py-2.5 px-3 w-40">Precio ($ USD) *</th>
+                                <th className="py-2.5 px-3 w-32">Stock</th>
+                                <th className="py-2.5 px-3 w-28">Cashea</th>
+                                <th className="py-2.5 px-3 text-right w-12"></th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100 font-medium">
+                              {formData.variants.map((v, vIdx) => (
+                                <tr key={v.id || vIdx} className="hover:bg-slate-50/60 transition-colors">
+                                  {/* Title */}
+                                  <td className="py-2 px-3 font-black text-slate-900">
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-100 font-extrabold text-xs">
+                                      {v.title}
+                                    </span>
+                                  </td>
 
-                          {/* Option Values (Tags) */}
-                          <div className="sm:col-span-2">
-                            <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
-                              Valores de Especificación * <span className="text-[10px] text-slate-400 font-normal">(Presiona Enter o coma para añadir)</span>
-                            </label>
+                                  {/* Price */}
+                                  <td className="py-2 px-3">
+                                    <div className="relative">
+                                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
+                                      <input
+                                        type="number"
+                                        step="0.01"
+                                        min="0.01"
+                                        required
+                                        placeholder="0.00"
+                                        value={v.price}
+                                        onChange={(e) => handleUpdateVariantField(vIdx, 'price', e.target.value)}
+                                        className="w-full pl-6 pr-2 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-black text-blue-700 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                                      />
+                                    </div>
+                                  </td>
 
-                            <div className="flex items-center gap-1.5 flex-wrap p-2 bg-slate-50 rounded-xl border border-slate-200 min-h-[42px] focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-600 transition-all">
-                              {opt.values.map((v, vIdx) => (
-                                <span 
-                                  key={vIdx} 
-                                  className="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-900 text-white rounded-lg text-xs font-bold shadow-2xs animate-fadeIn"
-                                >
-                                  <span>{v}</span>
-                                  <button
-                                    type="button"
-                                    onClick={() => removeOptionValue(optIdx, vIdx)}
-                                    className="hover:text-red-300 text-[10px] ml-0.5 font-black"
-                                    title="Quitar valor"
-                                  >
-                                    ✕
-                                  </button>
-                                </span>
+                                  {/* Stock */}
+                                  <td className="py-2 px-3">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      placeholder="Ilimitado"
+                                      value={v.stock}
+                                      onChange={(e) => handleUpdateVariantField(vIdx, 'stock', e.target.value)}
+                                      className="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                                    />
+                                  </td>
+
+                                  {/* Cashea */}
+                                  <td className="py-2 px-3">
+                                    <label className="inline-flex items-center gap-1 cursor-pointer select-none">
+                                      <input
+                                        type="checkbox"
+                                        checked={v.hasCashea !== false}
+                                        onChange={(e) => handleUpdateVariantField(vIdx, 'hasCashea', e.target.checked)}
+                                        className="w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer"
+                                      />
+                                      <span className="text-[11px] font-bold text-slate-700">Aplica</span>
+                                    </label>
+                                  </td>
+
+                                  {/* Delete */}
+                                  <td className="py-2 px-3 text-right">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleRemoveVariant(vIdx)}
+                                      className="p-1 text-slate-400 hover:text-red-600 rounded transition-colors"
+                                      title="Quitar versión"
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  </td>
+                                </tr>
                               ))}
-
-                              <input
-                                type="text"
-                                placeholder={opt.values.length === 0 ? "Escribe ej. 8GB / 128GB o 110V y presiona Enter..." : "+ Agregar valor..."}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter' || e.key === ',') {
-                                    e.preventDefault();
-                                    addOptionValue(optIdx, e.currentTarget.value);
-                                    e.currentTarget.value = '';
-                                  }
-                                }}
-                                onBlur={(e) => {
-                                  if (e.currentTarget.value) {
-                                    addOptionValue(optIdx, e.currentTarget.value);
-                                    e.currentTarget.value = '';
-                                  }
-                                }}
-                                className="flex-1 min-w-[150px] text-xs font-semibold outline-none bg-transparent py-1 px-1 text-slate-900 placeholder:text-slate-400"
-                              />
-                            </div>
-                          </div>
+                            </tbody>
+                          </table>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                )}
+                    ) : (
+                      <p className="text-xs text-slate-500 italic">
+                        No has agregado versiones todavía. Escribe una versión arriba o toca una de las sugerencias.
+                      </p>
+                    )}
 
-                {/* ------------------------------------------------------------- */}
-                {/* VARIANT MATRIX TABLE & MACRO TOOLBAR                          */}
-                {/* ------------------------------------------------------------- */}
-                {formData.hasOptions && formData.variants.length > 0 && (
-                  <div className="space-y-3 pt-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Layers className="w-4 h-4 text-blue-600" />
-                        <h4 className="text-xs font-black uppercase tracking-wider text-slate-800">
-                          Matriz de Precios e Inventario ({formData.variants.length})
-                        </h4>
-                      </div>
-                      <span className="text-[11px] text-slate-500 font-medium hidden sm:inline">
-                        Define el precio individual por modelo de hardware
-                      </span>
-                    </div>
-
-                    {/* MACRO BAR: BULK FILL TOOLS */}
-                    <div className="flex items-center gap-2 flex-wrap bg-slate-100/90 p-2.5 rounded-2xl border border-slate-200">
-                      <span className="text-[11px] font-black text-slate-700 uppercase tracking-wider flex items-center gap-1 mr-1">
-                        <Wand2 className="w-3.5 h-3.5 text-blue-600" />
-                        <span>Macros Rápidas:</span>
-                      </span>
-
-                      <button
-                        type="button"
-                        onClick={macroCopyFirstPriceToAll}
-                        className="px-2.5 py-1.5 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 rounded-xl text-xs font-extrabold transition-all shadow-2xs active:scale-95 flex items-center gap-1"
-                        title="Copia el precio de la primera fila a todas las variantes"
-                      >
-                        <Copy className="w-3 h-3 text-blue-600" />
-                        <span>Copiar 1er Precio a Todos</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={macroCopyFirstStockToAll}
-                        className="px-2.5 py-1.5 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 rounded-xl text-xs font-extrabold transition-all shadow-2xs active:scale-95 flex items-center gap-1"
-                        title="Copia el stock de la primera fila a todas las variantes"
-                      >
-                        <Package className="w-3 h-3 text-emerald-600" />
-                        <span>Copiar 1er Stock a Todos</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => macroToggleAllCashea(true)}
-                        className="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 rounded-xl text-xs font-extrabold transition-all shadow-2xs active:scale-95 flex items-center gap-1"
-                      >
-                        <CheckCheck className="w-3 h-3 text-amber-600" />
-                        <span>Cashea a Todos</span>
-                      </button>
-                    </div>
-
-                    <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-xs">
-                      <table className="w-full text-left text-xs border-collapse">
-                        <thead>
-                          <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-extrabold uppercase tracking-wider">
-                            <th className="py-3 px-4">Modelo / Especificación</th>
-                            <th className="py-3 px-4 w-44">Precio ($ USD) *</th>
-                            <th className="py-3 px-4 w-36">Stock Físico</th>
-                            <th className="py-3 px-4 w-32">Cashea</th>
-                            <th className="py-3 px-4 text-right w-16"></th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100 font-medium">
-                          {formData.variants.map((v, vIdx) => (
-                            <tr key={v.id || vIdx} className="hover:bg-slate-50/60 transition-colors">
-                              {/* Title / Combination */}
-                              <td className="py-2.5 px-4 font-black text-slate-900">
-                                <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-blue-50 text-blue-800 border border-blue-200/80 font-extrabold text-xs">
-                                  {v.title}
-                                </span>
-                              </td>
-
-                              {/* Price Input */}
-                              <td className="py-2.5 px-4">
-                                <div className="relative">
-                                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
-                                  <input
-                                    type="number"
-                                    step="0.01"
-                                    min="0.01"
-                                    required
-                                    placeholder="0.00"
-                                    value={v.price}
-                                    onChange={(e) => updateVariantField(vIdx, 'price', e.target.value)}
-                                    className="w-full pl-6 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-blue-700 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
-                                  />
-                                </div>
-                              </td>
-
-                              {/* Stock Input */}
-                              <td className="py-2.5 px-4">
-                                <input
-                                  type="number"
-                                  min="0"
-                                  placeholder="Ilimitado"
-                                  value={v.stock}
-                                  onChange={(e) => updateVariantField(vIdx, 'stock', e.target.value)}
-                                  className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
-                                />
-                              </td>
-
-                              {/* Cashea Toggle */}
-                              <td className="py-2.5 px-4">
-                                <label className="inline-flex items-center gap-1.5 cursor-pointer select-none">
-                                  <input
-                                    type="checkbox"
-                                    checked={v.hasCashea !== false}
-                                    onChange={(e) => updateVariantField(vIdx, 'hasCashea', e.target.checked)}
-                                    className="w-4 h-4 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer"
-                                  />
-                                  <span className="text-[11px] font-bold text-slate-700">Aplica</span>
-                                </label>
-                              </td>
-
-                              {/* Delete row */}
-                              <td className="py-2.5 px-4 text-right">
-                                <button
-                                  type="button"
-                                  onClick={() => removeVariantRow(vIdx)}
-                                  className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                  title="Eliminar esta combinación"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
                   </div>
                 )}
 
               </div>
 
-              {/* GLOBAL CASHEA TOGGLE */}
-              <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="bg-[#FFE600] text-black px-2.5 py-1 rounded-lg font-black text-[10px] uppercase tracking-wider border border-amber-400 shadow-xs shrink-0">
-                    CASHEA
-                  </span>
-                  <div>
-                    <span className="text-xs font-black text-slate-900 block">Habilitar Pago con Cashea</span>
-                    <span className="text-[11px] text-slate-500 font-medium">
-                      Permite a los clientes financiar este producto en cuotas con su cuenta Cashea
+              {/* Cashea Toggle & Flash Deal */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                
+                {/* Cashea Toggle */}
+                <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-3.5 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <span className="bg-[#FFE600] text-black px-2 py-0.5 rounded text-[9px] font-black uppercase border border-amber-400 shadow-2xs">
+                      CASHEA
                     </span>
+                    <span className="text-xs font-extrabold text-slate-900">Acepta Cashea</span>
                   </div>
-                </div>
 
-                <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
                     checked={formData.hasCashea}
                     onChange={(e) => setFormData({ ...formData, hasCashea: e.target.checked })}
-                    className="w-5 h-5 text-amber-500 rounded border-amber-300 focus:ring-amber-400 cursor-pointer"
+                    className="w-4 h-4 text-amber-500 rounded border-amber-300 focus:ring-amber-400 cursor-pointer"
                   />
-                </label>
-              </div>
-
-              {/* Description */}
-              <div>
-                <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
-                  Descripción Corta
-                </label>
-                <textarea
-                  rows="3"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Resumen de especificaciones o detalles clave del producto..."
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all resize-none"
-                />
-              </div>
-
-              {/* FLASH SALE TOGGLE */}
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
-                    <Zap className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-black text-slate-900 block">Incluir en Ofertas Relámpago (Flash Sale)</span>
-                    <span className="text-[11px] text-slate-500 font-medium">Muestra este equipo en el carrusel de ofertas destacadas en la portada</span>
-                  </div>
                 </div>
 
-                <label className="relative inline-flex items-center cursor-pointer">
+                {/* Flash Deal */}
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <Zap className="w-4 h-4 text-emerald-600" />
+                    <span className="text-xs font-extrabold text-slate-900">Oferta Relámpago</span>
+                  </div>
+
                   <input
                     type="checkbox"
                     checked={formData.isFlashDeal || false}
                     onChange={(e) => setFormData({ ...formData, isFlashDeal: e.target.checked })}
-                    className="w-5 h-5 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer"
+                    className="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer"
                   />
-                </label>
+                </div>
+
               </div>
 
-              {/* Stock Toggle */}
-              <div className="flex items-center gap-3 pt-1">
+              {/* Description */}
+              <div>
+                <label className="block text-xs font-extrabold text-slate-700 mb-1">
+                  Descripción Corta <span className="text-slate-400 font-normal">(Opcional)</span>
+                </label>
+                <textarea
+                  rows="2"
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="Detalles clave o garantía del producto..."
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all resize-none"
+                />
+              </div>
+
+              {/* In Stock */}
+              <div className="flex items-center gap-2.5">
                 <input
                   type="checkbox"
                   id="inStock"
@@ -1501,19 +1281,19 @@ export const ProductManager = () => {
                   onChange={(e) => setFormData({ ...formData, inStock: e.target.checked })}
                   className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 cursor-pointer"
                 />
-                <label htmlFor="inStock" className="text-sm font-bold text-slate-700 cursor-pointer select-none">
-                  Disponible en Stock para compra inmediata
+                <label htmlFor="inStock" className="text-xs font-bold text-slate-700 cursor-pointer select-none">
+                  Disponible para compra inmediata
                 </label>
               </div>
 
             </form>
 
-            {/* 3. FIXED BOTTOM FOOTER */}
+            {/* 3. FIXED FOOTER */}
             <div className="flex items-center justify-end gap-3 p-4 sm:p-6 border-t border-slate-200 bg-slate-50/80 shrink-0">
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="px-5 py-2.5 rounded-xl font-bold text-xs text-slate-600 hover:bg-slate-200/70 transition-colors"
+                className="px-4 py-2 rounded-xl font-bold text-xs text-slate-600 hover:bg-slate-200/70 transition-colors"
               >
                 Cancelar
               </button>

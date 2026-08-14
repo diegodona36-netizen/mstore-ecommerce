@@ -140,9 +140,11 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
   // Find active matched variant
   const matchedVariant = hasExplicitVariants
     ? (dynamicOptions && dynamicOptions.length > 0
-        ? (product.variants.find(v => 
-            v.options && Object.keys(selectedOptions).every(k => v.options[k] === selectedOptions[k])
-          ) || product.variants[0])
+        ? (product.variants.find(v => {
+            if (v.title && selectedOptions['Versión'] === v.title) return true;
+            if (v.options && Object.keys(selectedOptions).every(k => v.options[k] === selectedOptions[k])) return true;
+            return false;
+          }) || product.variants[0])
         : (product.variants.find(v => v.color === getColorDisplayName(selectedColor)) || product.variants[0]))
     : null;
 

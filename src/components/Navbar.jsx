@@ -132,8 +132,8 @@ export const Navbar = ({
               </div>
             </form>
 
-            {/* RIGHT ACTIONS GROUP */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* RIGHT ACTIONS GROUP (DESKTOP / TABLET ONLY) */}
+            <div className="hidden sm:flex items-center gap-2 sm:gap-3 shrink-0">
               
               {/* Shopping Cart Button */}
               <button
@@ -143,7 +143,7 @@ export const Navbar = ({
                 aria-label="Ver Carrito de Compras"
               >
                 <ShoppingCart className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
-                <span className="hidden sm:inline">Carrito</span>
+                <span>Carrito</span>
                 {cartCount > 0 && (
                   <span className="bg-white text-blue-700 font-black text-[11px] min-w-[20px] h-5 px-1.5 rounded-full flex items-center justify-center shadow-xs">
                     {cartCount}

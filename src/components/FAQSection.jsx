@@ -28,7 +28,7 @@ export const FAQSection = () => {
     {
       icon: Sparkles,
       question: "¿Cuáles son los métodos de pago aceptados?",
-      answer: "Aceptamos una amplia variedad de métodos: Pago Móvil y transferencias en Bolívares a Tasa Oficial BCV, Divisas en efectivo (USD), Zelle, Banesco Panamá, Binance Pay (USDT) y financiamiento con Cashea."
+      answer: "Aceptamos Divisas en efectivo (USD), Zelle, Banesco Panamá, Binance Pay (USDT), Pago Móvil y financiamiento en cuotas sin interés con Cashea."
     }
   ];
 

@@ -29,22 +29,48 @@ import {
   Zap,
   Sparkles,
   Sliders,
-  Tag
+  Tag,
+  Wand2
 } from 'lucide-react';
 import { CATEGORIES } from '../../data/products';
 
-// Quick option suggestions for admin convenience
-const COMMON_OPTION_PRESETS = [
-  'Pulgadas',
-  'Capacidad',
-  'Color',
-  'Voltaje',
-  'Talla',
-  'Memoria RAM',
-  'Almacenamiento',
-  'Resolución',
-  'Conectividad'
-];
+// SMART 1-CLICK PRESETS BY CATEGORY
+const CATEGORY_SMART_PRESETS = {
+  'linea-blanca': [
+    { label: '⚡ Voltaje (110V / 220V)', name: 'Voltaje', values: ['110V', '220V'] },
+    { label: '🧊 Capacidad (Litros)', name: 'Capacidad', values: ['400 Litros', '600 Litros'] },
+    { label: '🧺 Capacidad Carga (Kg)', name: 'Capacidad', values: ['12 Kg', '16 Kg', '20 Kg'] },
+    { label: '🔥 Hornillas (Cocinas)', name: 'Hornillas', values: ['4 Hornillas', '6 Hornillas'] },
+    { label: '❄️ Capacidad BTU (Aires)', name: 'Capacidad BTU', values: ['12.000 BTU', '18.000 BTU', '24.000 BTU'] },
+    { label: '🎨 Color / Acabado', name: 'Color / Acabado', values: ['Acero Inoxidable', 'Negro Mate', 'Blanco'] }
+  ],
+  'smartphones': [
+    { label: '💾 Almacenamiento', name: 'Almacenamiento', values: ['128GB', '256GB', '512GB', '1TB'] },
+    { label: '⚡ Memoria RAM', name: 'Memoria RAM', values: ['8GB', '12GB', '16GB'] },
+    { label: '🎨 Color del Equipo', name: 'Color', values: ['Negro Titanio', 'Titanio Natural', 'Azul Marino'] }
+  ],
+  'televisores': [
+    { label: '📺 Pulgadas de Pantalla', name: 'Pulgadas', values: ['43"', '50"', '55"', '65"', '75"'] },
+    { label: '✨ Tecnología de Panel', name: 'Tecnología', values: ['4K Crystal UHD', 'QLED 4K', 'OLED 4K'] }
+  ],
+  'computacion': [
+    { label: '⚡ Memoria RAM', name: 'Memoria RAM', values: ['16GB', '32GB', '64GB'] },
+    { label: '💾 Almacenamiento SSD', name: 'Almacenamiento', values: ['512GB SSD', '1TB SSD', '2TB SSD'] },
+    { label: '🧠 Procesador', name: 'Procesador', values: ['Intel Core i7', 'Intel Core i9', 'Apple M3 Pro'] }
+  ],
+  'audio': [
+    { label: '🎨 Color', name: 'Color', values: ['Negro Mate', 'Blanco Puro', 'Azul Medianoche'] },
+    { label: '📶 Conectividad', name: 'Conectividad', values: ['Bluetooth 5.3', 'Con Cable Hi-Res'] }
+  ],
+  'hogar': [
+    { label: '⚡ Voltaje (110V / 220V)', name: 'Voltaje', values: ['110V', '220V'] },
+    { label: '🎨 Color', name: 'Color', values: ['Blanco', 'Gris', 'Negro'] }
+  ],
+  'gaming': [
+    { label: '💾 Almacenamiento', name: 'Almacenamiento', values: ['512GB SSD', '1TB SSD', '2TB SSD'] },
+    { label: '🎨 Color / Edición', name: 'Edición', values: ['Estándar', 'Edición Limitada'] }
+  ]
+};
 
 // Helper: Cartesian product of option values
 function generateCartesianMatrix(optionsList, existingVariants = []) {
@@ -99,7 +125,7 @@ export const ProductManager = () => {
   // Dynamic Form State
   const [formData, setFormData] = useState({
     name: '',
-    category: 'smartphones',
+    category: 'linea-blanca',
     tag: '',
     description: '',
     inStock: true,
@@ -149,7 +175,7 @@ export const ProductManager = () => {
     setEditingProduct(null);
     setFormData({
       name: '',
-      category: 'smartphones',
+      category: 'linea-blanca',
       tag: '',
       description: '',
       inStock: true,
@@ -182,7 +208,6 @@ export const ProductManager = () => {
       hasOpts = true;
     } else if (Array.isArray(product.variants) && product.variants.length > 0) {
       // Convert legacy variant fields into dynamic options
-      const sample = product.variants[0];
       const detectedOptions = [];
 
       if (product.variants.some(v => v.color)) {
@@ -216,7 +241,7 @@ export const ProductManager = () => {
 
     setFormData({
       name: product.name || '',
-      category: product.category || 'smartphones',
+      category: product.category || 'linea-blanca',
       tag: product.tag || '',
       description: product.description || '',
       inStock: product.inStock !== false,
@@ -249,6 +274,33 @@ export const ProductManager = () => {
       ...prev,
       hasOptions: true,
       options: [...prev.options, newOption]
+    }));
+  };
+
+  // 1-Click Smart Preset Injector
+  const handleApplyPreset = (preset) => {
+    const existingIdx = formData.options.findIndex(o => o.name.toLowerCase() === preset.name.toLowerCase());
+    let updatedOptions = [...formData.options];
+
+    if (existingIdx >= 0) {
+      // Merge unique values
+      const mergedValues = Array.from(new Set([...updatedOptions[existingIdx].values, ...preset.values]));
+      updatedOptions[existingIdx] = { ...updatedOptions[existingIdx], values: mergedValues };
+    } else {
+      // Add new option
+      updatedOptions.push({
+        id: `opt_${Date.now()}_${updatedOptions.length + 1}`,
+        name: preset.name,
+        values: [...preset.values]
+      });
+    }
+
+    const newVariants = generateCartesianMatrix(updatedOptions, formData.variants);
+    setFormData(prev => ({
+      ...prev,
+      hasOptions: true,
+      options: updatedOptions,
+      variants: newVariants
     }));
   };
 
@@ -435,6 +487,8 @@ export const ProductManager = () => {
     return matchesSearch && matchesCategory;
   });
 
+  const activeCategoryPresets = CATEGORY_SMART_PRESETS[formData.category] || CATEGORY_SMART_PRESETS['linea-blanca'];
+
   return (
     <div className="max-w-7xl mx-auto space-y-6 font-sans">
       
@@ -443,7 +497,7 @@ export const ProductManager = () => {
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900">Catálogo de Productos</h1>
           <p className="text-slate-500 text-sm mt-1">
-            Gestiona productos, opciones dinámicas (Shopify style), inventario y financiamiento Cashea.
+            Administra Línea Blanca, Televisores y Tecnología con precios directos o matriz de variantes.
           </p>
         </div>
 
@@ -625,7 +679,7 @@ export const ProductManager = () => {
                               {isExpanded ? <ChevronUp className="w-3.5 h-3.5 ml-1" /> : <ChevronDown className="w-3.5 h-3.5 ml-1" />}
                             </button>
                           ) : (
-                            <span className="text-slate-400 text-xs italic">Producto Único</span>
+                            <span className="text-slate-400 text-xs italic">Precio Directo</span>
                           )}
                         </td>
 
@@ -690,7 +744,7 @@ export const ProductManager = () => {
                                   <thead>
                                     <tr className="text-slate-400 font-extrabold uppercase tracking-wider border-b border-slate-100">
                                       <th className="py-2 px-3">#</th>
-                                      <th className="py-2 px-3">Combinación / Título</th>
+                                      <th className="py-2 px-3">Combinación / Modelo</th>
                                       <th className="py-2 px-3">Precio Venta</th>
                                       <th className="py-2 px-3">Stock Físico</th>
                                       <th className="py-2 px-3">Cashea</th>
@@ -742,7 +796,7 @@ export const ProductManager = () => {
       </div>
 
       {/* ========================================================================= */}
-      {/* MODAL: CREAR / EDITAR PRODUCTO (DYNAMIC SHOPIFY-STYLE MATRIX)            */}
+      {/* MODAL: CREAR / EDITAR PRODUCTO (DYNAMIC CATEGORY PRESETS + MATRIX)        */}
       {/* ========================================================================= */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-fadeIn">
@@ -755,7 +809,7 @@ export const ProductManager = () => {
                   {editingProduct ? 'Editar Producto' : 'Crear Nuevo Producto'}
                 </h2>
                 <p className="text-xs text-slate-500 font-medium mt-0.5">
-                  Completa la información base y define opciones dinámicas por lote
+                  Define el precio directo o agrega variaciones (Voltaje, Capacidad, Pulgadas, etc.)
                 </p>
               </div>
 
@@ -784,7 +838,13 @@ export const ProductManager = () => {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="ej. Smart TV Samsung Neo QLED 4K 2026"
+                    placeholder={
+                      formData.category === 'linea-blanca'
+                        ? "ej. Nevera Samsung Side by Side Inverter 600L"
+                        : formData.category === 'televisores'
+                        ? "ej. Smart TV Samsung Neo QLED 4K 2026"
+                        : "ej. Samsung Galaxy S24 Ultra"
+                    }
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
                   />
                 </div>
@@ -816,7 +876,7 @@ export const ProductManager = () => {
                     type="text"
                     value={formData.tag}
                     onChange={(e) => setFormData({ ...formData, tag: e.target.value })}
-                    placeholder="ej. OFERTA TOP, LANZAMIENTO, 120HZ"
+                    placeholder="ej. OFERTA TOP, INVERTER, 10 AÑOS MOTOR"
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
                   />
                 </div>
@@ -869,7 +929,7 @@ export const ProductManager = () => {
               </div>
 
               {/* ------------------------------------------------------------- */}
-              {/* SECTION: DYNAMIC SHOPIFY-STYLE OPTIONS & VARIANT MATRIX       */}
+              {/* SECTION: PRECIO DIRECTO O VARIACIONES DINÁMICAS (1-CLICK)     */}
               {/* ------------------------------------------------------------- */}
               <div className="bg-slate-50 border border-slate-200 rounded-3xl p-4 sm:p-6 space-y-5">
                 
@@ -878,11 +938,11 @@ export const ProductManager = () => {
                     <div className="flex items-center gap-2">
                       <Sliders className="w-4 h-4 text-blue-600" />
                       <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">
-                        Opciones y Variantes Dinámicas
+                        Precio y Modelos del Equipo
                       </h3>
                     </div>
                     <p className="text-[11px] text-slate-500 mt-0.5">
-                      Agrega atributos personalizados (ej. Pulgadas, Capacidad, Color, Voltaje) para generar la matriz de combinaciones.
+                      Ingresa el precio directo o agrega variaciones (Voltaje, Capacidad, Pulgadas...) con 1 solo clic.
                     </p>
                   </div>
 
@@ -896,11 +956,31 @@ export const ProductManager = () => {
                   </button>
                 </div>
 
-                {/* If NO dynamic options added yet -> Show Single Price fields */}
+                {/* 1-CLICK SMART PRESET BUTTONS FOR ACTIVE CATEGORY */}
+                <div className="space-y-1.5 bg-blue-50/60 p-3 rounded-2xl border border-blue-100">
+                  <div className="flex items-center gap-1.5 text-blue-900 font-extrabold text-xs">
+                    <Wand2 className="w-3.5 h-3.5 text-blue-600" />
+                    <span>Sugerencias rápidas para esta categoría (1 Clic):</span>
+                  </div>
+                  <div className="flex items-center gap-2 flex-wrap pt-1">
+                    {activeCategoryPresets.map((preset, pIdx) => (
+                      <button
+                        key={pIdx}
+                        type="button"
+                        onClick={() => handleApplyPreset(preset)}
+                        className="px-3 py-1.5 rounded-xl bg-white hover:bg-blue-600 text-slate-700 hover:text-white border border-blue-200 hover:border-blue-600 text-xs font-bold transition-all shadow-2xs active:scale-95 flex items-center gap-1"
+                      >
+                        <span>{preset.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* If NO dynamic options added -> Show Direct Price and Stock */}
                 {(!formData.hasOptions || formData.options.length === 0) ? (
                   <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3">
                     <div className="text-xs font-extrabold text-slate-800 uppercase tracking-wider">
-                      Precio e Inventario Único (Sin Variantes)
+                      Precio de Venta Directo
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
@@ -947,7 +1027,7 @@ export const ProductManager = () => {
                       >
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-black text-slate-800 uppercase tracking-wider">
-                            Opción {optIdx + 1}
+                            Opción {optIdx + 1}: {opt.name || 'Sin definir'}
                           </span>
                           <button
                             type="button"
@@ -970,29 +1050,15 @@ export const ProductManager = () => {
                               required
                               value={opt.name}
                               onChange={(e) => updateOptionName(optIdx, e.target.value)}
-                              placeholder="ej. Pulgadas, Capacidad, Voltaje..."
+                              placeholder="ej. Voltaje, Capacidad, Pulgadas..."
                               className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
                             />
-                            
-                            {/* Preset Buttons */}
-                            <div className="flex items-center gap-1 flex-wrap mt-1.5">
-                              {COMMON_OPTION_PRESETS.slice(0, 5).map(preset => (
-                                <button
-                                  key={preset}
-                                  type="button"
-                                  onClick={() => updateOptionName(optIdx, preset)}
-                                  className="text-[9px] font-bold px-1.5 py-0.5 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 rounded text-slate-600 transition-colors"
-                                >
-                                  {preset}
-                                </button>
-                              ))}
-                            </div>
                           </div>
 
                           {/* Option Values (Tags) */}
                           <div className="sm:col-span-2">
                             <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
-                              Valores de la Opción * <span className="text-[10px] text-slate-400 font-normal">(Presiona Enter o coma para añadir)</span>
+                              Valores / Modelos * <span className="text-[10px] text-slate-400 font-normal">(Presiona Enter o coma para añadir)</span>
                             </label>
 
                             <div className="flex items-center gap-1.5 flex-wrap p-2 bg-slate-50 rounded-xl border border-slate-200 min-h-[42px] focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-600 transition-all">
@@ -1015,7 +1081,7 @@ export const ProductManager = () => {
 
                               <input
                                 type="text"
-                                placeholder={opt.values.length === 0 ? "Escribe ej. 55\", 65\" y presiona Enter..." : "+ Agregar valor..."}
+                                placeholder={opt.values.length === 0 ? "Escribe ej. 110V, 220V y presiona Enter..." : "+ Agregar valor..."}
                                 onKeyDown={(e) => {
                                   if (e.key === 'Enter' || e.key === ',') {
                                     e.preventDefault();
@@ -1048,11 +1114,11 @@ export const ProductManager = () => {
                       <div className="flex items-center gap-2">
                         <Layers className="w-4 h-4 text-blue-600" />
                         <h4 className="text-xs font-black uppercase tracking-wider text-slate-800">
-                          Matriz de Variantes Generada ({formData.variants.length})
+                          Matriz de Precios e Inventario ({formData.variants.length})
                         </h4>
                       </div>
                       <span className="text-[11px] text-slate-500 font-medium hidden sm:inline">
-                        Ingresa el precio y stock individual por combinación
+                        Define el precio individual por modelo
                       </span>
                     </div>
 
@@ -1060,7 +1126,7 @@ export const ProductManager = () => {
                       <table className="w-full text-left text-xs border-collapse">
                         <thead>
                           <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-extrabold uppercase tracking-wider">
-                            <th className="py-3 px-4">Variante Real</th>
+                            <th className="py-3 px-4">Modelo / Variante</th>
                             <th className="py-3 px-4 w-44">Precio ($ USD) *</th>
                             <th className="py-3 px-4 w-36">Stock Físico</th>
                             <th className="py-3 px-4 w-32">Cashea</th>
@@ -1125,7 +1191,7 @@ export const ProductManager = () => {
                                   type="button"
                                   onClick={() => removeVariantRow(vIdx)}
                                   className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                  title="Eliminar esta combinación específica"
+                                  title="Eliminar esta combinación"
                                 >
                                   <Trash2 className="w-4 h-4" />
                                 </button>

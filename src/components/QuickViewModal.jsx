@@ -358,23 +358,47 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
 
                       return (
                         <div key={oIdx} className="space-y-1.5">
-                          <label className="text-xs font-black text-slate-800 block">
-                            {opt.name}:
-                          </label>
-                          <div className="relative">
-                            <select
-                              value={selectedVal}
-                              onChange={(e) => handleDynamicOptionChange(opt.name, e.target.value)}
-                              className="w-full appearance-none px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all cursor-pointer shadow-xs pr-10"
-                            >
-                              {opt.values.map((val, vIdx) => (
-                                <option key={vIdx} value={val}>
-                                  {val}
-                                </option>
-                              ))}
-                            </select>
-                            <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-black text-slate-800">{opt.name}:</span>
+                            <span className="text-xs font-extrabold text-blue-600">{selectedVal}</span>
                           </div>
+
+                          {opt.values.length <= 6 ? (
+                            <div className="flex items-center gap-2 flex-wrap pt-0.5">
+                              {opt.values.map((val, vIdx) => {
+                                const isSel = selectedVal === val;
+                                return (
+                                  <button
+                                    key={vIdx}
+                                    type="button"
+                                    onClick={() => handleDynamicOptionChange(opt.name, val)}
+                                    className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all active:scale-95 border ${
+                                      isSel
+                                        ? 'bg-blue-600 text-white border-blue-600 shadow-xs scale-105'
+                                        : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200 hover:border-slate-300'
+                                    }`}
+                                  >
+                                    {val}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <div className="relative">
+                              <select
+                                value={selectedVal}
+                                onChange={(e) => handleDynamicOptionChange(opt.name, e.target.value)}
+                                className="w-full appearance-none px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all cursor-pointer shadow-xs pr-10"
+                              >
+                                {opt.values.map((val, vIdx) => (
+                                  <option key={vIdx} value={val}>
+                                    {val}
+                                  </option>
+                                ))}
+                              </select>
+                              <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                            </div>
+                          )}
                         </div>
                       );
                     })}

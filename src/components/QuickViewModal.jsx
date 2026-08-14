@@ -67,23 +67,60 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
     return '#334155';
   };
 
-  // Multi-angle product gallery
   const thumbnails = product.images && product.images.length > 0 ? product.images : [
     product.image,
     product.image,
     product.image
   ];
 
+  const hasExplicitVariants = Array.isArray(product.variants) && product.variants.length > 0;
+
+  // -------------------------------------------------------------
+  // DYNAMIC SHOPIFY-STYLE OPTION EXTRACTION
+  // -------------------------------------------------------------
+  const dynamicOptions = Array.isArray(product.options) && product.options.length > 0
+    ? product.options
+    : (hasExplicitVariants && product.variants[0].options
+        ? Object.keys(product.variants[0].options).map(optName => ({
+            name: optName,
+            values: Array.from(new Set(product.variants.map(v => v.options?.[optName]).filter(Boolean)))
+          }))
+        : null);
+
+  const [selectedOptions, setSelectedOptions] = useState(() => {
+    if (dynamicOptions && dynamicOptions.length > 0) {
+      const initial = {};
+      dynamicOptions.forEach(opt => {
+        if (opt.values && opt.values.length > 0) {
+          initial[opt.name] = opt.values[0];
+        }
+      });
+      return initial;
+    }
+    return {};
+  });
+
+  useEffect(() => {
+    if (dynamicOptions && dynamicOptions.length > 0) {
+      const initial = {};
+      dynamicOptions.forEach(opt => {
+        if (opt.values && opt.values.length > 0) {
+          initial[opt.name] = opt.values[0];
+        }
+      });
+      setSelectedOptions(initial);
+      setHasUserInteracted(false);
+    }
+  }, [product]);
+
+  // Legacy fallback options (if not using dynamic schema)
   const parseOptions = (val, fallback = []) => {
     if (Array.isArray(val) && val.length > 0) return val;
     if (typeof val === 'string' && val.trim()) return val.split(',').map(s => s.trim()).filter(Boolean);
     return fallback;
   };
 
-  const hasExplicitVariants = Array.isArray(product.variants) && product.variants.length > 0;
-
-  // 1. ALL AVAILABLE COLORS (WITH CUSTOM HEX SUPPORT)
-  const colorsList = hasExplicitVariants
+  const colorsList = !dynamicOptions && hasExplicitVariants
     ? Array.from(
         new Map(
           product.variants
@@ -91,68 +128,28 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
             .map(v => [v.color, { name: v.color, hex: v.colorHex || getColorHexFromName(v.color) }])
         ).values()
       )
-    : parseOptions(product.colors, [
-        { name: 'Negro Titanio', hex: '#1E293B' },
-        { name: 'Plata Natural', hex: '#E2E8F0' },
-        { name: 'Oro Champán', hex: '#FDE68A' }
-      ]);
+    : (!dynamicOptions ? parseOptions(product.colors, []) : []);
 
-  const [selectedColor, setSelectedColor] = useState(colorsList[0] || 'Negro');
-  const currentColorDisplayName = getColorDisplayName(selectedColor);
+  const [legacyColor, setLegacyColor] = useState(colorsList[0] || 'Negro');
+  const [legacyRam, setLegacyRam] = useState('');
+  const [legacyStorage, setLegacyStorage] = useState('');
 
-  // 2. DEPENDENT AVAILABLE RAMS (Filtered strictly by selected color)
-  const variantsForColor = hasExplicitVariants
-    ? product.variants.filter(v => v.color === currentColorDisplayName || v.color === selectedColor)
-    : [];
-
-  const defaultRamFallback = (product.category === 'smartphones' || product.category === 'computacion') ? ['8GB', '12GB', '16GB'] : [];
-  const ramOptions = hasExplicitVariants
-    ? Array.from(new Set(variantsForColor.map(v => v.ram).filter(Boolean)))
-    : parseOptions(product.ramOptions, defaultRamFallback);
-
-  const [selectedRam, setSelectedRam] = useState(ramOptions[0] || '');
-
-  // Keep selectedRam synchronized if color changes and RAM doesn't exist
-  useEffect(() => {
-    if (ramOptions.length > 0 && !ramOptions.includes(selectedRam)) {
-      setSelectedRam(ramOptions[0]);
-    }
-  }, [selectedColor, ramOptions]);
-
-  // 3. DEPENDENT AVAILABLE STORAGES (Filtered strictly by selected color AND selected RAM)
-  const variantsForColorAndRam = hasExplicitVariants
-    ? variantsForColor.filter(v => !v.ram || v.ram === selectedRam)
-    : [];
-
-  const defaultStorageFallback = (product.category === 'smartphones' || product.category === 'computacion') ? ['128GB', '256GB', '512GB', '1TB'] : [];
-  const rawStorageOptions = hasExplicitVariants
-    ? Array.from(new Set(variantsForColorAndRam.map(v => v.storage).filter(Boolean)))
-    : parseOptions(product.storageOptions, defaultStorageFallback);
-
-  const [selectedStorage, setSelectedStorage] = useState(rawStorageOptions[0] || '');
-
-  // Keep selectedStorage synchronized if RAM changes and storage doesn't exist
-  useEffect(() => {
-    if (rawStorageOptions.length > 0 && !rawStorageOptions.includes(selectedStorage)) {
-      setSelectedStorage(rawStorageOptions[0]);
-    }
-  }, [selectedRam, selectedColor, rawStorageOptions]);
-
-  // 4. FIND EXACT MATCHED VARIANT
+  // Find active matched variant
   const matchedVariant = hasExplicitVariants
-    ? (variantsForColorAndRam.find(v => v.storage === selectedStorage) ||
-       variantsForColor.find(v => v.storage === selectedStorage) ||
-       product.variants.find(v => (v.color === currentColorDisplayName || v.color === selectedColor)) ||
-       product.variants[0])
+    ? (dynamicOptions && dynamicOptions.length > 0
+        ? (product.variants.find(v => 
+            v.options && Object.keys(selectedOptions).every(k => v.options[k] === selectedOptions[k])
+          ) || product.variants[0])
+        : (product.variants.find(v => v.color === getColorDisplayName(legacyColor)) || product.variants[0]))
     : null;
 
-  // 5. PRICE RANGE VS SINGLE PRICE CALCULATION
+  // Price calculations
   const variantPrices = hasExplicitVariants 
     ? product.variants.map(v => parseFloat(v.price) || 0).filter(p => p > 0) 
     : [];
   const minVariantPrice = variantPrices.length > 0 ? Math.min(...variantPrices) : (parseFloat(product.price) || 0);
   const maxVariantPrice = variantPrices.length > 0 ? Math.max(...variantPrices) : (parseFloat(product.price) || 0);
-  const hasPriceRange = minVariantPrice !== maxVariantPrice;
+  const hasPriceRange = minVariantPrice !== maxVariantPrice && minVariantPrice > 0;
 
   const currentPrice = matchedVariant 
     ? (parseFloat(matchedVariant.price) || parseFloat(product.price) || 0)
@@ -162,26 +159,19 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
     ? (matchedVariant.hasCashea !== false && product.hasCashea !== false)
     : (product.hasCashea !== false);
 
-  // 6. STOCK STATUS
   const isOutOfStock = matchedVariant 
-    ? (matchedVariant.stock !== undefined && parseInt(matchedVariant.stock) <= 0)
+    ? (matchedVariant.stock !== undefined && matchedVariant.stock !== null && parseInt(matchedVariant.stock) <= 0)
     : (product.inStock === false);
 
-  const availableStockUnits = matchedVariant?.stock !== undefined ? parseInt(matchedVariant.stock) : null;
+  const availableStockUnits = matchedVariant?.stock !== undefined && matchedVariant?.stock !== null && matchedVariant?.stock !== ''
+    ? parseInt(matchedVariant.stock) 
+    : null;
 
-  // Handlers with user interaction flag
-  const handleColorSelect = (col) => {
-    setSelectedColor(col);
-    setHasUserInteracted(true);
-  };
-
-  const handleRamChange = (e) => {
-    setSelectedRam(e.target.value);
-    setHasUserInteracted(true);
-  };
-
-  const handleStorageChange = (e) => {
-    setSelectedStorage(e.target.value);
+  const handleDynamicOptionChange = (optionName, value) => {
+    setSelectedOptions(prev => ({
+      ...prev,
+      [optionName]: value
+    }));
     setHasUserInteracted(true);
   };
 
@@ -190,115 +180,74 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
     onAddToCart({ 
       ...product, 
       price: currentPrice, 
-      selectedColor: currentColorDisplayName, 
-      selectedRam, 
-      selectedStorage, 
+      selectedOptions,
+      selectedVariant: matchedVariant,
       quantity 
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   };
 
-  const handleWhatsAppCheckout = () => {
-    const subtotal = currentPrice * quantity;
-    let message = `*PEDIDO DIRECTO M STORE*\n\n`;
-    message += `*Producto:* ${product.name}\n`;
-    message += `*Color:* ${currentColorDisplayName}\n`;
-    if (selectedRam) message += `*RAM:* ${selectedRam}\n`;
-    if (selectedStorage) message += `*Almacenamiento:* ${selectedStorage}\n`;
-    message += `*Cantidad:* ${quantity}\n`;
-    message += `*Precio Unitario:* $${currentPrice.toFixed(2)}\n`;
-    message += `*TOTAL:* $${subtotal.toFixed(2)} USD (${(subtotal * rateVES).toLocaleString('es-VE')} Bs)\n\n`;
-    if (isVariantCasheaActive) {
-      message += `*Financiamiento:* Disponible para pagar en cuotas con Cashea\n\n`;
-    }
-    if (isOutOfStock) {
-      message += `Hola, veo que esta combinación figura como agotada en la web. ¿Cuándo les llega nuevo inventario?`;
-    } else {
-      message += `Hola, quiero comprar este producto inmediatamente. ¿Tienen disponibilidad?`;
-    }
-
-    window.open(`https://wa.me/584120000000?text=${encodeURIComponent(message)}`, '_blank');
-  };
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-md animate-fadeIn font-sans">
-      {/* Backdrop overlay */}
-      <div className="absolute inset-0" onClick={onClose}></div>
-
-      {/* Modern E-Commerce Clean 2-Column Product Detail Modal (SoyTecno Architecture) */}
-      <div className="relative z-10 bg-white w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl border border-slate-200 my-auto text-slate-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/70 backdrop-blur-md animate-fadeIn select-none font-sans">
+      <div className="bg-white rounded-3xl w-full max-w-4xl max-h-[92vh] overflow-hidden shadow-2xl border border-slate-200 relative flex flex-col">
         
-        {/* 1. HEADER DEL MODAL (TOP BAR OSCURO SLATE-950) */}
-        <div className="bg-black px-5 sm:px-8 py-4 border-b border-white/10 flex items-center justify-between relative z-20 w-full shrink-0">
+        {/* Botón Cerrar */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-slate-100/80 hover:bg-slate-200 text-slate-700 backdrop-blur-md transition-all shadow-sm active:scale-95"
+          aria-label="Cerrar modal"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        {/* Scrollable Container */}
+        <div className="overflow-y-auto flex-1 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-full">
           
-          {/* Logo y Migas de Pan */}
-          <div className="flex items-center gap-2 sm:gap-3 text-xs font-bold text-slate-300 overflow-x-auto pr-4 scrollbar-none" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-            <div className="shrink-0">
-              <Logo variant="dark" size="small" />
-            </div>
-
-            <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-            <span className="hover:text-white cursor-pointer shrink-0">Inicio</span>
-
-            <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-            <span className="hover:text-white cursor-pointer capitalize shrink-0">{product.category}</span>
-
-            <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-            <span className="text-white font-extrabold truncate max-w-[120px] sm:max-w-[200px]">{product.name}</span>
-          </div>
-
-          {/* Botón Cerrar */}
-          <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all duration-200 shrink-0"
-            aria-label="Cerrar modal"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* 2. CUERPO DEL MODAL (GRID LIMPIO DE 2 COLUMNAS) */}
-        <div className="overflow-y-auto max-h-[82vh] md:max-h-none md:overflow-visible bg-white">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2">
             
-            {/* COLUMNA IZQUIERDA: GALERÍA DE PRODUCTO */}
-            <div className="p-6 sm:p-8 bg-slate-50 border-r border-slate-200 flex flex-col justify-between items-center relative min-h-[360px] sm:min-h-[440px]">
+            {/* COLUMNA IZQUIERDA: GALERÍA DE IMÁGENES */}
+            <div className="p-6 sm:p-8 bg-[#F8FAFC] border-b md:border-b-0 md:border-r border-slate-200 flex flex-col justify-between items-center">
               
-              {/* Badge "NUEVO" Flotante */}
-              <span className="absolute top-4 right-4 z-10 rounded-full px-3 py-1 text-[10px] font-extrabold bg-slate-900 text-white shadow-sm uppercase tracking-wider">
-                {product.tag || 'NUEVO'}
-              </span>
-
-              {/* Imagen Principal del Producto */}
-              <div className="flex-1 flex items-center justify-center w-full my-auto py-4">
+              {/* Imagen Principal */}
+              <div className="w-full h-64 sm:h-80 flex items-center justify-center relative p-4">
                 <img
-                  src={thumbnails[activeThumbIdx]}
+                  src={thumbnails[activeThumbIdx] || product.image}
                   alt={product.name}
-                  className="max-h-[280px] sm:max-h-[320px] w-auto object-contain filter drop-shadow-md transition-transform duration-300 hover:scale-105"
+                  className="max-h-full max-w-full object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.12)] transition-all duration-300"
                 />
               </div>
 
-              {/* Tira de Miniaturas Horizontal */}
-              <div className="flex items-center justify-center gap-3 pt-4 w-full border-t border-slate-200/80">
-                {thumbnails.map((imgUrl, idx) => (
+              {/* Thumbnails */}
+              <div className="flex items-center gap-3 mt-4">
+                {thumbnails.map((img, idx) => (
                   <button
                     key={idx}
+                    type="button"
                     onClick={() => setActiveThumbIdx(idx)}
-                    className={`w-14 h-14 rounded-xl overflow-hidden p-1.5 transition-all flex items-center justify-center shrink-0 border-2 ${
+                    className={`w-14 h-14 rounded-2xl bg-white border-2 p-1.5 transition-all overflow-hidden flex items-center justify-center ${
                       activeThumbIdx === idx
-                        ? 'border-blue-600 bg-white scale-105 shadow-md ring-2 ring-blue-600/20'
-                        : 'border-slate-200 bg-white hover:border-slate-400 opacity-80 hover:opacity-100'
+                        ? 'border-blue-600 shadow-md scale-105'
+                        : 'border-slate-200 opacity-60 hover:opacity-100'
                     }`}
                   >
-                    <img src={imgUrl} alt="" className="h-full w-full object-contain" />
+                    <img src={img} alt="Miniatura" className="w-full h-full object-contain" />
                   </button>
                 ))}
               </div>
 
+              {/* Garantía y Seguridad */}
+              <div className="w-full mt-6 pt-4 border-t border-slate-200/80 flex items-center justify-between text-xs text-slate-500 font-medium">
+                <span className="flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <span>1 Año de Garantía Oficial</span>
+                </span>
+                <span>Caja Sellada Original</span>
+              </div>
+
             </div>
 
-            {/* COLUMNA DERECHA: BUY BOX ESTILO SOYTECNO */}
+            {/* COLUMNA DERECHA: BUY BOX */}
             <div className="p-6 sm:p-8 flex flex-col justify-between text-left space-y-5 bg-white">
               
               <div className="space-y-4">
@@ -307,13 +256,13 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                   {product.name}
                 </h2>
 
-                {/* Currency Badge estilo SoyTecno */}
+                {/* Currency Badge */}
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700">
                   <span>USD Dólares</span>
                   <span className="text-sm">🇺🇸</span>
                 </div>
 
-                {/* 1. RANGO DE PRECIO DINÁMICO EN AZUL ELÉCTRICO */}
+                {/* 1. RANGO DE PRECIO DINÁMICO */}
                 <div className="space-y-1 pt-1">
                   <div className="text-3xl sm:text-4xl font-black text-blue-600 tracking-tight font-sans">
                     {!hasUserInteracted && hasPriceRange ? (
@@ -342,7 +291,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                     )}
                   </div>
 
-                  {/* Insignia Cashea Profesional */}
+                  {/* Insignia Cashea */}
                   {isVariantCasheaActive && (
                     <div className="mt-2.5 bg-amber-50/90 border border-amber-300 rounded-2xl p-3 flex items-center justify-between shadow-xs">
                       <div className="flex items-center gap-2.5">
@@ -362,173 +311,173 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                   )}
                 </div>
 
-                {/* 2. SELECTOR DE COLOR (CÍRCULOS VISUALES SWATCHES) */}
-                {colorsList.length > 0 && (
-                  <div className="space-y-2 pt-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-black text-slate-800">Color:</span>
-                      <span className="text-xs font-bold text-slate-500">{currentColorDisplayName}</span>
-                    </div>
-                    <div className="flex items-center gap-3 flex-wrap">
-                      {colorsList.map((col, idx) => {
-                        const hex = typeof col === 'object' && col.hex ? col.hex : getColorHexFromName(col);
-                        const name = getColorDisplayName(col);
-                        const isSel = currentColorDisplayName === name;
+                {/* ------------------------------------------------------------- */}
+                {/* 2. DYNAMIC SHOPIFY-STYLE OPTION SELECTORS                     */}
+                {/* ------------------------------------------------------------- */}
+                {dynamicOptions && dynamicOptions.length > 0 ? (
+                  <div className="space-y-3.5 pt-2 border-t border-slate-100">
+                    {dynamicOptions.map((opt, oIdx) => {
+                      const optNameLower = opt.name.toLowerCase();
+                      const isColorOption = optNameLower.includes('color') || optNameLower.includes('tono');
+                      const selectedVal = selectedOptions[opt.name] || opt.values[0] || '';
+
+                      if (isColorOption) {
                         return (
-                          <button
-                            key={idx}
-                            onClick={() => handleColorSelect(name)}
-                            className={`w-7 h-7 rounded-full border-2 transition-all shadow-sm relative ${
-                              isSel 
-                                ? 'border-blue-600 scale-125 ring-2 ring-blue-600/30' 
-                                : 'border-slate-300 hover:scale-110 hover:border-slate-400'
-                            }`}
-                            style={{ backgroundColor: hex }}
-                            title={name}
-                          >
-                            {hex?.toUpperCase() === '#FFFFFF' && (
-                              <span className="absolute inset-0 rounded-full border border-slate-200" />
-                            )}
-                          </button>
+                          <div key={oIdx} className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-black text-slate-800">{opt.name}:</span>
+                              <span className="text-xs font-bold text-slate-600">{selectedVal}</span>
+                            </div>
+                            <div className="flex items-center gap-2.5 flex-wrap">
+                              {opt.values.map((val, vIdx) => {
+                                const hex = getColorHexFromName(val);
+                                const isSel = selectedVal === val;
+                                return (
+                                  <button
+                                    key={vIdx}
+                                    type="button"
+                                    onClick={() => handleDynamicOptionChange(opt.name, val)}
+                                    className={`w-7 h-7 rounded-full border-2 transition-all shadow-xs relative ${
+                                      isSel 
+                                        ? 'border-blue-600 scale-125 ring-2 ring-blue-600/30' 
+                                        : 'border-slate-300 hover:scale-110 hover:border-slate-400'
+                                    }`}
+                                    style={{ backgroundColor: hex }}
+                                    title={val}
+                                  >
+                                    {hex?.toUpperCase() === '#FFFFFF' && (
+                                      <span className="absolute inset-0 rounded-full border border-slate-200" />
+                                    )}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
                         );
-                      })}
-                    </div>
+                      }
+
+                      return (
+                        <div key={oIdx} className="space-y-1.5">
+                          <label className="text-xs font-black text-slate-800 block">
+                            {opt.name}:
+                          </label>
+                          <div className="relative">
+                            <select
+                              value={selectedVal}
+                              onChange={(e) => handleDynamicOptionChange(opt.name, e.target.value)}
+                              className="w-full appearance-none px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all cursor-pointer shadow-xs pr-10"
+                            >
+                              {opt.values.map((val, vIdx) => (
+                                <option key={vIdx} value={val}>
+                                  {val}
+                                </option>
+                              ))}
+                            </select>
+                            <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                )}
-
-                {/* 3. SELECTOR DE MEMORIA RAM (DROPDOWN CONDICIONAL) */}
-                {ramOptions.length > 0 && (
-                  <div className="space-y-1.5 pt-1">
-                    <label className="text-xs font-black text-slate-800 block">
-                      Memoria RAM:
-                    </label>
-                    <div className="relative">
-                      <select
-                        value={selectedRam}
-                        onChange={handleRamChange}
-                        className="w-full appearance-none px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all cursor-pointer shadow-xs pr-10"
-                      >
-                        {ramOptions.map((ram) => (
-                          <option key={ram} value={ram}>
-                            {ram}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                    </div>
-                  </div>
-                )}
-
-                {/* 4. SELECTOR DE ALMACENAMIENTO (DROPDOWN CONDICIONAL) */}
-                {rawStorageOptions.length > 0 && (
-                  <div className="space-y-1.5 pt-1">
-                    <label className="text-xs font-black text-slate-800 block">
-                      Capacidad de almacenamiento:
-                    </label>
-                    <div className="relative">
-                      <select
-                        value={selectedStorage}
-                        onChange={handleStorageChange}
-                        className="w-full appearance-none px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all cursor-pointer shadow-xs pr-10"
-                      >
-                        {rawStorageOptions.map((st) => {
-                          const varForStorage = hasExplicitVariants 
-                            ? product.variants.find(v => 
-                                v.storage === st && 
-                                (v.color === currentColorDisplayName || v.color === selectedColor) &&
-                                (!v.ram || v.ram === selectedRam)
-                              )
-                            : null;
-                          const vPrice = varForStorage ? varForStorage.price : null;
-                          const isOptOutOfStock = varForStorage && varForStorage.stock !== undefined && parseInt(varForStorage.stock) <= 0;
-
+                ) : (
+                  /* LEGACY COLOR SELECTOR */
+                  colorsList.length > 0 && (
+                    <div className="space-y-2 pt-2 border-t border-slate-100">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-black text-slate-800">Color:</span>
+                        <span className="text-xs font-bold text-slate-500">{getColorDisplayName(legacyColor)}</span>
+                      </div>
+                      <div className="flex items-center gap-3 flex-wrap">
+                        {colorsList.map((col, idx) => {
+                          const hex = typeof col === 'object' && col.hex ? col.hex : getColorHexFromName(col);
+                          const name = getColorDisplayName(col);
+                          const isSel = getColorDisplayName(legacyColor) === name;
                           return (
-                            <option key={st} value={st}>
-                              {st} {vPrice && vPrice !== product.price ? `— ($${parseFloat(vPrice).toFixed(2)} USD)` : ''} {isOptOutOfStock ? '(Agotado)' : ''}
-                            </option>
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => { setLegacyColor(col); setHasUserInteracted(true); }}
+                              className={`w-7 h-7 rounded-full border-2 transition-all shadow-sm relative ${
+                                isSel 
+                                  ? 'border-blue-600 scale-125 ring-2 ring-blue-600/30' 
+                                  : 'border-slate-300 hover:scale-110 hover:border-slate-400'
+                              }`}
+                              style={{ backgroundColor: hex }}
+                              title={name}
+                            >
+                              {hex?.toUpperCase() === '#FFFFFF' && (
+                                <span className="absolute inset-0 rounded-full border border-slate-200" />
+                              )}
+                            </button>
                           );
                         })}
-                      </select>
-                      <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
                     </div>
-                  </div>
+                  )
                 )}
 
-                {/* BARRA DE ACCIÓN: CANTIDAD + AÑADIR AL CARRITO + COMPRAR AHORA */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-3">
-                  {/* Quantity Counter */}
-                  <div className="flex items-center border border-slate-200 rounded-xl bg-slate-50 overflow-hidden font-extrabold text-sm h-11 self-center sm:self-auto shrink-0">
+              </div>
+
+              {/* BUY CONTROLS & QUANTITY */}
+              <div className="space-y-3 pt-4 border-t border-slate-200">
+                <div className="flex items-center gap-3">
+                  {/* Quantity Stepper */}
+                  <div className="flex items-center border-2 border-slate-200 rounded-2xl overflow-hidden bg-slate-50 shrink-0">
                     <button
+                      type="button"
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      disabled={isOutOfStock}
-                      className="px-3.5 h-full hover:bg-slate-200 text-slate-700 transition-colors disabled:opacity-40"
-                      title="Disminuir"
+                      className="p-3 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition-colors"
+                      aria-label="Disminuir cantidad"
                     >
-                      -
+                      <Minus className="w-4 h-4" />
                     </button>
-                    <span className="w-8 text-center text-slate-900 font-black">{quantity}</span>
+                    <span className="px-4 text-sm font-black text-slate-900 select-none">
+                      {quantity}
+                    </span>
                     <button
+                      type="button"
                       onClick={() => setQuantity(quantity + 1)}
-                      disabled={isOutOfStock}
-                      className="px-3.5 h-full hover:bg-slate-200 text-slate-700 transition-colors disabled:opacity-40"
-                      title="Aumentar"
+                      className="p-3 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition-colors"
+                      aria-label="Aumentar cantidad"
                     >
-                      +
+                      <Plus className="w-4 h-4" />
                     </button>
                   </div>
 
-                  {/* Botón 1: Añadir Al Carrito */}
+                  {/* Add to cart CTA */}
                   <button
+                    type="button"
                     onClick={handleAdd}
                     disabled={isOutOfStock}
-                    className={`flex-1 h-11 px-4 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 text-white shadow-md active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${
-                      isOutOfStock 
-                        ? 'bg-slate-400' 
-                        : added 
-                          ? 'bg-emerald-600' 
-                          : 'bg-blue-600 hover:bg-blue-700'
+                    className={`flex-1 py-3.5 px-6 rounded-2xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 ${
+                      isOutOfStock
+                        ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
+                        : added
+                        ? 'bg-emerald-600 text-white shadow-emerald-600/20'
+                        : 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/20'
                     }`}
                   >
                     {isOutOfStock ? (
                       <span>Agotado</span>
                     ) : added ? (
                       <>
-                        <Check className="w-4 h-4" />
-                        <span>¡Agregado!</span>
+                        <Check className="w-5 h-5" />
+                        <span>¡Agregado al Carrito!</span>
                       </>
                     ) : (
                       <>
-                        <ShoppingCart className="w-4 h-4" />
-                        <span>Añadir Al Carrito</span>
+                        <ShoppingCart className="w-5 h-5" />
+                        <span>Añadir al Carrito</span>
                       </>
                     )}
                   </button>
-
-                  {/* Botón 2: Comprar Ahora (WhatsApp) */}
-                  <button
-                    onClick={handleWhatsAppCheckout}
-                    className={`flex-1 h-11 px-4 rounded-xl font-black text-xs sm:text-sm text-white transition-all flex items-center justify-center gap-2 shadow-md active:scale-95 ${
-                      isOutOfStock 
-                        ? 'bg-slate-800 hover:bg-slate-900' 
-                        : 'bg-emerald-600 hover:bg-emerald-700'
-                    }`}
-                  >
-                    <MessageCircle className="w-4 h-4 fill-white" />
-                    <span>{isOutOfStock ? 'Consultar Stock' : 'Comprar Ahora'}</span>
-                  </button>
                 </div>
-
-                {/* Trust Footer */}
-                <div className="pt-2 flex items-center justify-center gap-2 text-[11px] text-slate-500 border-t border-slate-100">
-                  <ShieldCheck className="w-4 h-4 text-blue-600" />
-                  <span>Garantía Oficial M Store • Envío Asegurado a Nivel Nacional</span>
-                </div>
-
               </div>
 
             </div>
 
           </div>
+
         </div>
 
       </div>

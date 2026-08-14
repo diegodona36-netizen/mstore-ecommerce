@@ -27,120 +27,64 @@ import {
   ChevronUp,
   AlertTriangle,
   Zap,
-  RotateCcw
+  Sparkles,
+  Sliders,
+  Tag
 } from 'lucide-react';
-import { CATEGORIES, INITIAL_PRODUCTS } from '../../data/products';
+import { CATEGORIES } from '../../data/products';
 
-// PREDEFINED COLOR PRESETS WITH HEX CODES
-export const COLOR_PRESETS = {
-  'Negro Mate': '#121212',
-  'Negro Titanio': '#1E293B',
-  'Titanio Desierto': '#C2B280',
-  'Titanio Natural': '#948B7D',
-  'Blanco Puro': '#FFFFFF',
-  'Blanco Estrella': '#F8FAFC',
-  'Gris Grafito': '#475569',
-  'Gris Espacial': '#374151',
-  'Azul Titanio': '#1E3A8A',
-  'Azul Medianoche': '#0F172A',
-  'Azul Cielo': '#93C5FD',
-  'Oro Champán': '#D97706',
-  'Verde Esmeralda': '#059669',
-  'Verde Oliva': '#556B2F',
-  'Rojo Carmesí': '#DC2626',
-  'Plata': '#E2E8F0',
-  'Rosa Gold': '#F472B6',
-  'Morado Lavanda': '#D8B4FE',
-  'Naranja Cósmico': '#F97316'
-};
-
-export const COLOR_SUGGESTIONS = Object.keys(COLOR_PRESETS);
-
-export const getSuggestedHex = (colorName) => {
-  if (!colorName) return '#121212';
-  if (COLOR_PRESETS[colorName]) return COLOR_PRESETS[colorName];
-  const name = String(colorName).toLowerCase();
-  if (name.includes('desierto') || name.includes('desert') || name.includes('arena')) return '#C2B280';
-  if (name.includes('negro') || name.includes('black') || name.includes('oscuro')) return '#121212';
-  if (name.includes('blanco') || name.includes('white') || name.includes('estrella') || name.includes('puro')) return '#FFFFFF';
-  if (name.includes('medianoche') || name.includes('midnight')) return '#0F172A';
-  if (name.includes('titanio') || name.includes('natural')) return '#948B7D';
-  if (name.includes('grafito') || name.includes('gris') || name.includes('espacial')) return '#475569';
-  if (name.includes('plata') || name.includes('silver')) return '#E2E8F0';
-  if (name.includes('morado') || name.includes('purple') || name.includes('lila') || name.includes('lavanda')) return '#D8B4FE';
-  if (name.includes('azul') || name.includes('blue') || name.includes('celeste') || name.includes('cielo')) return '#93C5FD';
-  if (name.includes('oro') || name.includes('gold') || name.includes('champan') || name.includes('champán')) return '#D97706';
-  if (name.includes('oliva') || name.includes('verde') || name.includes('green') || name.includes('esmeralda')) return '#059669';
-  if (name.includes('rojo') || name.includes('red') || name.includes('rubi')) return '#DC2626';
-  if (name.includes('rosa') || name.includes('pink') || name.includes('rose')) return '#F472B6';
-  if (name.includes('naranja') || name.includes('orange')) return '#F97316';
-  if (name.includes('amarillo') || name.includes('yellow')) return '#EAB308';
-  return '#334155';
-};
-
-export const PREDEFINED_RAMS = [
-  'No Aplica',
-  '4GB',
-  '6GB',
-  '8GB',
-  '12GB',
-  '16GB',
-  '24GB',
-  '32GB',
-  '64GB'
+// Quick option suggestions for admin convenience
+const COMMON_OPTION_PRESETS = [
+  'Pulgadas',
+  'Capacidad',
+  'Color',
+  'Voltaje',
+  'Talla',
+  'Memoria RAM',
+  'Almacenamiento',
+  'Resolución',
+  'Conectividad'
 ];
 
-export const PREDEFINED_STORAGES = [
-  'No Aplica / Estándar',
-  '32GB',
-  '64GB',
-  '128GB',
-  '256GB',
-  '512GB',
-  '1TB',
-  '2TB'
-];
+// Helper: Cartesian product of option values
+function generateCartesianMatrix(optionsList, existingVariants = []) {
+  const validOptions = optionsList.filter(o => o.name && Array.isArray(o.values) && o.values.length > 0);
+  if (validOptions.length === 0) return [];
 
-// Client-side image compressor (fits within Firestore document limits easily)
-const compressImage = (file, maxWidth = 800, maxHeight = 800, quality = 0.8) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (event) => {
-      const img = new Image();
-      img.src = event.target.result;
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let width = img.width;
-        let height = img.height;
+  const cartesian = (arrays) => arrays.reduce((acc, curr) => 
+    acc.flatMap(d => curr.map(e => [d, e].flat())), [[]]
+  );
 
-        if (width > height) {
-          if (width > maxWidth) {
-            height = Math.round((height * maxWidth) / width);
-            width = maxWidth;
-          }
-        } else {
-          if (height > maxHeight) {
-            width = Math.round((width * maxHeight) / height);
-            height = maxHeight;
-          }
-        }
+  const valuesArrays = validOptions.map(o => o.values);
+  const combinations = cartesian(valuesArrays);
 
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
+  return combinations.map((combo, idx) => {
+    const optionsMap = {};
+    validOptions.forEach((opt, optIdx) => {
+      optionsMap[opt.name] = combo[optIdx];
+    });
 
-        const dataUrl = canvas.toDataURL('image/jpeg', quality);
-        resolve(dataUrl);
-      };
-      img.onerror = (err) => reject(err);
+    const title = combo.join(' / ');
+
+    // Match existing variant to preserve entered price and stock
+    const match = existingVariants.find(v => {
+      if (v.title === title) return true;
+      if (v.options && Object.keys(optionsMap).every(k => v.options[k] === optionsMap[k])) return true;
+      return false;
+    });
+
+    return {
+      id: match?.id || `var_${Date.now()}_${idx}`,
+      title: title,
+      options: optionsMap,
+      price: match?.price !== undefined ? match.price : '',
+      stock: match?.stock !== undefined ? match.stock : '',
+      hasCashea: match?.hasCashea !== undefined ? match.hasCashea : true
     };
-    reader.onerror = (err) => reject(err);
   });
-};
+}
 
-export default function ProductManager() {
+export const ProductManager = () => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -152,7 +96,7 @@ export default function ProductManager() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Form State (Parent Product has NO price fields - prices exist exclusively per variant)
+  // Dynamic Form State
   const [formData, setFormData] = useState({
     name: '',
     category: 'smartphones',
@@ -163,6 +107,10 @@ export default function ProductManager() {
     isFlashDeal: false,
     casheaInitialPercent: 40,
     casheaInstallments: 3,
+    hasOptions: false,
+    basePrice: '',
+    baseStock: '',
+    options: [],
     variants: [],
     image: ''
   });
@@ -209,18 +157,11 @@ export default function ProductManager() {
       isFlashDeal: false,
       casheaInitialPercent: 40,
       casheaInstallments: 3,
-      variants: [
-        {
-          id: `var_${Date.now()}_1`,
-          color: 'Negro Mate',
-          colorHex: '#121212',
-          ram: '12GB',
-          storage: '256GB',
-          price: '',
-          stock: '',
-          hasCashea: true
-        }
-      ],
+      hasOptions: false,
+      basePrice: '',
+      baseStock: '',
+      options: [],
+      variants: [],
       image: ''
     });
     setSelectedFile(null);
@@ -231,56 +172,46 @@ export default function ProductManager() {
   const openEditModal = (product) => {
     setEditingProduct(product);
 
-    // Parse existing variants or construct from legacy data
-    let existingVariants = [];
-    if (Array.isArray(product.variants) && product.variants.length > 0) {
-      existingVariants = product.variants.map((v, i) => {
-        const cName = v.color || (typeof v.colors === 'string' ? v.colors : 'Negro Mate');
-        return {
-          id: v.id || `var_${Date.now()}_${i}`,
-          color: cName,
-          colorHex: v.colorHex || getSuggestedHex(cName),
-          ram: v.ram || '8GB',
-          storage: v.storage || (typeof v.size === 'string' ? v.size : '256GB'),
-          price: v.price !== undefined ? v.price : (product.price || ''),
-          stock: v.stock !== undefined && v.stock !== null ? v.stock : '',
-          hasCashea: v.hasCashea !== undefined ? v.hasCashea : (product.hasCashea !== false)
-        };
-      });
-    } else if (Array.isArray(product.storageOptions) && product.storageOptions.length > 0) {
-      // Convert legacy storageOptions into explicit variant items
-      existingVariants = product.storageOptions.map((st, i) => {
-        const size = typeof st === 'object' ? st.size : st;
-        const price = typeof st === 'object' ? st.price : product.price;
-        const color = Array.isArray(product.colors) && product.colors[0] 
-          ? (typeof product.colors[0] === 'object' ? product.colors[0].name : product.colors[0]) 
-          : 'Negro Mate';
-        const ram = Array.isArray(product.ramOptions) && product.ramOptions[0] ? product.ramOptions[0] : '8GB';
+    let parsedOptions = [];
+    let parsedVariants = [];
+    let hasOpts = false;
 
-        return {
-          id: `var_${Date.now()}_${i}`,
-          color: color || 'Negro Mate',
-          colorHex: getSuggestedHex(color || 'Negro Mate'),
-          ram: ram || '8GB',
-          storage: size || '256GB',
-          price: price || product.price || '',
-          stock: '',
-          hasCashea: product.hasCashea !== false
-        };
-      });
-    } else {
-      existingVariants = [
-        {
-          id: `var_${Date.now()}_1`,
-          color: 'Negro Mate',
-          colorHex: '#121212',
-          ram: '12GB',
-          storage: '256GB',
-          price: product.price || '',
-          stock: '',
-          hasCashea: product.hasCashea !== false
-        }
-      ];
+    if (Array.isArray(product.options) && product.options.length > 0) {
+      parsedOptions = product.options;
+      parsedVariants = Array.isArray(product.variants) ? product.variants : [];
+      hasOpts = true;
+    } else if (Array.isArray(product.variants) && product.variants.length > 0) {
+      // Convert legacy variant fields into dynamic options
+      const sample = product.variants[0];
+      const detectedOptions = [];
+
+      if (product.variants.some(v => v.color)) {
+        const uniqueColors = Array.from(new Set(product.variants.map(v => v.color).filter(Boolean)));
+        if (uniqueColors.length > 0) detectedOptions.push({ id: 'opt_color', name: 'Color', values: uniqueColors });
+      }
+      if (product.variants.some(v => v.ram)) {
+        const uniqueRams = Array.from(new Set(product.variants.map(v => v.ram).filter(Boolean)));
+        if (uniqueRams.length > 0) detectedOptions.push({ id: 'opt_ram', name: 'Memoria RAM', values: uniqueRams });
+      }
+      if (product.variants.some(v => v.storage)) {
+        const uniqueStorages = Array.from(new Set(product.variants.map(v => v.storage).filter(Boolean)));
+        if (uniqueStorages.length > 0) detectedOptions.push({ id: 'opt_storage', name: 'Almacenamiento', values: uniqueStorages });
+      }
+
+      parsedOptions = detectedOptions;
+      parsedVariants = product.variants.map((v, i) => ({
+        id: v.id || `var_${Date.now()}_${i}`,
+        title: v.title || [v.color, v.ram, v.storage].filter(Boolean).join(' / ') || `Variante ${i + 1}`,
+        options: v.options || {
+          ...(v.color ? { 'Color': v.color } : {}),
+          ...(v.ram ? { 'Memoria RAM': v.ram } : {}),
+          ...(v.storage ? { 'Almacenamiento': v.storage } : {})
+        },
+        price: v.price !== undefined ? v.price : (product.price || ''),
+        stock: v.stock !== undefined && v.stock !== null ? v.stock : '',
+        hasCashea: v.hasCashea !== undefined ? v.hasCashea : (product.hasCashea !== false)
+      }));
+      hasOpts = parsedVariants.length > 0;
     }
 
     setFormData({
@@ -293,7 +224,11 @@ export default function ProductManager() {
       isFlashDeal: product.isFlashDeal || false,
       casheaInitialPercent: product.casheaInitialPercent || 40,
       casheaInstallments: product.casheaInstallments || 3,
-      variants: existingVariants,
+      hasOptions: hasOpts,
+      basePrice: product.price || '',
+      baseStock: product.stock || '',
+      options: parsedOptions,
+      variants: parsedVariants,
       image: product.image || ''
     });
     setSelectedFile(null);
@@ -301,115 +236,153 @@ export default function ProductManager() {
     setIsModalOpen(true);
   };
 
-  // Dynamic repeater handlers
-  const addVariantBlock = () => {
-    const lastVar = formData.variants[formData.variants.length - 1];
-    const newVariant = {
-      id: `var_${Date.now()}_${formData.variants.length + 1}`,
-      color: lastVar?.color || 'Negro Mate',
-      colorHex: lastVar?.colorHex || getSuggestedHex(lastVar?.color || 'Negro Mate'),
-      ram: lastVar?.ram || '8GB',
-      storage: lastVar?.storage || '256GB',
-      price: lastVar?.price || '',
-      stock: '',
-      hasCashea: formData.hasCashea !== false
+  // -------------------------------------------------------------
+  // DYNAMIC OPTION BUILDER HANDLERS
+  // -------------------------------------------------------------
+  const addOptionBlock = () => {
+    const newOption = {
+      id: `opt_${Date.now()}_${formData.options.length + 1}`,
+      name: '',
+      values: []
     };
-
     setFormData(prev => ({
       ...prev,
-      variants: [...prev.variants, newVariant]
+      hasOptions: true,
+      options: [...prev.options, newOption]
     }));
   };
 
-  const updateVariantField = (index, field, value) => {
+  const removeOptionBlock = (optIdx) => {
+    const updatedOptions = formData.options.filter((_, i) => i !== optIdx);
+    const newVariants = generateCartesianMatrix(updatedOptions, formData.variants);
+    setFormData(prev => ({
+      ...prev,
+      options: updatedOptions,
+      hasOptions: updatedOptions.length > 0,
+      variants: newVariants
+    }));
+  };
+
+  const updateOptionName = (optIdx, name) => {
+    const updatedOptions = [...formData.options];
+    updatedOptions[optIdx] = { ...updatedOptions[optIdx], name };
+    const newVariants = generateCartesianMatrix(updatedOptions, formData.variants);
+    setFormData(prev => ({
+      ...prev,
+      options: updatedOptions,
+      variants: newVariants
+    }));
+  };
+
+  const addOptionValue = (optIdx, rawVal) => {
+    const trimmed = rawVal.trim();
+    if (!trimmed) return;
+    const currentValues = formData.options[optIdx]?.values || [];
+    if (currentValues.includes(trimmed)) return;
+
+    const updatedOptions = [...formData.options];
+    updatedOptions[optIdx] = {
+      ...updatedOptions[optIdx],
+      values: [...currentValues, trimmed]
+    };
+
+    const newVariants = generateCartesianMatrix(updatedOptions, formData.variants);
+    setFormData(prev => ({
+      ...prev,
+      options: updatedOptions,
+      variants: newVariants
+    }));
+  };
+
+  const removeOptionValue = (optIdx, valIdx) => {
+    const updatedOptions = [...formData.options];
+    updatedOptions[optIdx] = {
+      ...updatedOptions[optIdx],
+      values: updatedOptions[optIdx].values.filter((_, i) => i !== valIdx)
+    };
+
+    const newVariants = generateCartesianMatrix(updatedOptions, formData.variants);
+    setFormData(prev => ({
+      ...prev,
+      options: updatedOptions,
+      variants: newVariants
+    }));
+  };
+
+  const updateVariantField = (varIdx, field, value) => {
     setFormData(prev => {
       const updated = [...prev.variants];
-      updated[index] = { ...updated[index], [field]: value };
+      updated[varIdx] = { ...updated[varIdx], [field]: value };
       return { ...prev, variants: updated };
     });
   };
 
-  const removeVariantBlock = (indexToRemove) => {
-    if (formData.variants.length <= 1) {
-      alert('El producto debe tener al menos una variante o modelo.');
-      return;
-    }
+  const removeVariantRow = (varIdx) => {
     setFormData(prev => ({
       ...prev,
-      variants: prev.variants.filter((_, idx) => idx !== indexToRemove)
+      variants: prev.variants.filter((_, i) => i !== varIdx)
     }));
   };
 
-  const handleFileChange = async (e) => {
+  // Image Upload Handler
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
-      const compressed = await compressImage(file);
-      setPreviewUrl(compressed);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
+  // Submit Handler
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!formData.name.trim()) {
-      alert('Por favor ingresa el nombre del producto.');
-      return;
-    }
-
-    if (!formData.variants || formData.variants.length === 0) {
-      alert('Debes agregar al menos una variante con su precio de venta.');
-      return;
-    }
-
-    // Validate that all variants have a valid price
-    const missingPrice = formData.variants.some(v => !v.price || parseFloat(v.price) <= 0);
-    if (missingPrice) {
-      alert('Por favor ingresa un precio de venta válido ($ USD) para cada una de las variantes agregadas.');
+      alert("Por favor ingresa el nombre del producto.");
       return;
     }
 
     setIsSubmitting(true);
+
     try {
       let finalImageUrl = previewUrl || formData.image;
-
-      // Default placeholder if none provided
       if (!finalImageUrl) {
         finalImageUrl = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80';
       }
 
-      // Clean and normalize variants with custom color hex
-      const cleanVariants = formData.variants.map((v, i) => {
-        const rawStock = v.stock !== '' && v.stock !== undefined && v.stock !== null ? parseInt(v.stock) : null;
-        const colorName = (v.color || 'Negro').trim();
-        const colorHex = v.colorHex || getSuggestedHex(colorName);
+      let cleanVariants = [];
+      let finalPrice = 0;
+      let finalStock = null;
 
-        return {
-          id: v.id || `var_${Date.now()}_${i}`,
-          color: colorName,
-          colorHex: colorHex,
-          ram: v.ram === 'No Aplica' ? '' : (v.ram || '').trim(),
-          storage: v.storage === 'No Aplica / Estándar' ? '' : (v.storage || '').trim(),
-          price: parseFloat(v.price) || 0,
-          stock: isNaN(rawStock) ? null : rawStock,
-          hasCashea: v.hasCashea !== false
-        };
-      });
+      if (formData.hasOptions && formData.variants.length > 0) {
+        cleanVariants = formData.variants.map((v, i) => {
+          const rawStock = v.stock !== '' && v.stock !== undefined && v.stock !== null ? parseInt(v.stock) : null;
+          return {
+            id: v.id || `var_${Date.now()}_${i}`,
+            title: v.title || `Variante ${i + 1}`,
+            options: v.options || {},
+            price: parseFloat(v.price) || 0,
+            stock: isNaN(rawStock) ? null : rawStock,
+            hasCashea: v.hasCashea !== false
+          };
+        });
 
-      // Extract unique lists for backwards compatibility with storefront filters
-      const uniqueColors = Array.from(
-        new Map(cleanVariants.map(v => [v.color, { name: v.color, hex: v.colorHex }])).values()
-      );
-      const uniqueRams = Array.from(new Set(cleanVariants.map(v => v.ram).filter(Boolean)));
-      const uniqueStorages = Array.from(new Set(cleanVariants.map(v => v.storage).filter(Boolean)));
-
-      // Calculate min base price for queries
-      const variantPrices = cleanVariants.map(v => v.price).filter(p => p > 0);
-      const minPrice = variantPrices.length > 0 ? Math.min(...variantPrices) : 0;
+        const variantPrices = cleanVariants.map(v => v.price).filter(p => p > 0);
+        finalPrice = variantPrices.length > 0 ? Math.min(...variantPrices) : 0;
+      } else {
+        finalPrice = parseFloat(formData.basePrice) || 0;
+        finalStock = formData.baseStock !== '' ? parseInt(formData.baseStock) : null;
+      }
 
       const productPayload = {
         name: formData.name.trim(),
         category: formData.category,
-        price: minPrice, // Derived strictly from minimum variant price for DB sorting
+        price: finalPrice,
+        stock: finalStock,
         tag: formData.tag.trim(),
         description: formData.description.trim(),
         inStock: formData.inStock,
@@ -417,10 +390,8 @@ export default function ProductManager() {
         isFlashDeal: formData.isFlashDeal || false,
         casheaInitialPercent: parseInt(formData.casheaInitialPercent) || 40,
         casheaInstallments: parseInt(formData.casheaInstallments) || 3,
+        options: formData.hasOptions ? formData.options : [],
         variants: cleanVariants,
-        colors: uniqueColors,
-        ramOptions: uniqueRams,
-        storageOptions: uniqueStorages,
         image: finalImageUrl,
         rating: editingProduct?.rating || 5.0,
         reviewsCount: editingProduct?.reviewsCount || 1,
@@ -428,10 +399,8 @@ export default function ProductManager() {
       };
 
       if (editingProduct) {
-        // UPDATE
         await updateDoc(doc(db, 'products', editingProduct.id), productPayload);
       } else {
-        // CREATE
         productPayload.createdAt = serverTimestamp();
         await addDoc(collection(db, 'products'), productPayload);
       }
@@ -458,8 +427,6 @@ export default function ProductManager() {
     }
   };
 
-
-
   // Filtering
   const filteredProducts = products.filter((p) => {
     const matchesSearch = p.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -469,17 +436,15 @@ export default function ProductManager() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      {/* Global Datalists for fast suggestion picking */}
-      <datalist id="admin-color-suggestions">
-        {COLOR_SUGGESTIONS.map(c => <option key={c} value={c} />)}
-      </datalist>
-
+    <div className="max-w-7xl mx-auto space-y-6 font-sans">
+      
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900">Catálogo de Productos</h1>
-          <p className="text-slate-500 text-sm mt-1">Crea, edita y administra los modelos, inventario y financiamiento Cashea.</p>
+          <p className="text-slate-500 text-sm mt-1">
+            Gestiona productos, opciones dinámicas (Shopify style), inventario y financiamiento Cashea.
+          </p>
         </div>
 
         <button
@@ -561,7 +526,7 @@ export default function ProductManager() {
                   <th className="py-3.5 px-4">Categoría</th>
                   <th className="py-3.5 px-4">Precio ($ USD)</th>
                   <th className="py-3.5 px-4">Plan Cashea</th>
-                  <th className="py-3.5 px-4">Lotes y Variantes</th>
+                  <th className="py-3.5 px-4">Variantes</th>
                   <th className="py-3.5 px-4">Stock Total</th>
                   <th className="py-3.5 px-4 text-right">Acciones</th>
                 </tr>
@@ -581,13 +546,11 @@ export default function ProductManager() {
                   const maxPrice = variantPrices.length > 0 ? Math.max(...variantPrices) : (parseFloat(p.price) || 0);
                   const hasPriceRange = minPrice !== maxPrice;
 
-                  // Total Stock Calculation (Supports optional stock)
+                  // Stock calculation
                   const hasExplicitStockCounts = hasVariants && variants.some(v => v.stock !== null && v.stock !== undefined);
                   const totalStockUnits = hasVariants && hasExplicitStockCounts
                     ? variants.reduce((acc, v) => acc + (parseInt(v.stock) || 0), 0)
-                    : null;
-
-                  const hasOutOfStockVariant = hasVariants && variants.some(v => v.stock !== null && v.stock !== undefined && parseInt(v.stock) <= 0);
+                    : p.stock !== null && p.stock !== undefined ? p.stock : null;
 
                   const isExpanded = !!expandedRows[p.id];
 
@@ -597,7 +560,7 @@ export default function ProductManager() {
                         {/* Image & Name */}
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex-shrink-0 overflow-hidden p-1 flex items-center justify-center">
+                            <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 shrink-0 overflow-hidden p-1 flex items-center justify-center">
                               <img
                                 src={p.image}
                                 alt={p.name}
@@ -620,14 +583,14 @@ export default function ProductManager() {
                           </span>
                         </td>
 
-                        {/* Price (Range Support) */}
+                        {/* Price */}
                         <td className="py-3 px-4">
                           {hasPriceRange ? (
                             <div>
                               <div className="font-black text-blue-700 text-xs sm:text-sm">
                                 ${minPrice.toFixed(2)} - ${maxPrice.toFixed(2)}
                               </div>
-                              <div className="text-[10px] font-bold text-slate-400">Rango según modelo</div>
+                              <div className="text-[10px] font-bold text-slate-400">Rango según variante</div>
                             </div>
                           ) : (
                             <div>
@@ -636,7 +599,7 @@ export default function ProductManager() {
                           )}
                         </td>
 
-                        {/* Cashea Status Preview */}
+                        {/* Cashea Status */}
                         <td className="py-3 px-4">
                           {p.hasCashea !== false ? (
                             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-900 border border-amber-200/90 rounded-xl text-xs font-bold shadow-2xs">
@@ -658,35 +621,26 @@ export default function ProductManager() {
                               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 font-extrabold text-xs rounded-xl border border-slate-200 transition-all shadow-xs"
                             >
                               <Layers className="w-3.5 h-3.5 text-blue-600" />
-                              <span>{variantsCount} {variantsCount === 1 ? 'modelo' : 'modelos'}</span>
+                              <span>{variantsCount} {variantsCount === 1 ? 'variante' : 'variantes'}</span>
                               {isExpanded ? <ChevronUp className="w-3.5 h-3.5 ml-1" /> : <ChevronDown className="w-3.5 h-3.5 ml-1" />}
                             </button>
                           ) : (
-                            <span className="text-slate-400 text-xs italic">Modelo Único</span>
+                            <span className="text-slate-400 text-xs italic">Producto Único</span>
                           )}
                         </td>
 
                         {/* Stock */}
                         <td className="py-3 px-4">
-                          <div className="space-y-1">
-                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
-                              totalStockUnits === 0
-                                ? 'bg-red-50 text-red-600'
-                                : 'bg-emerald-50 text-emerald-700'
-                            }`}>
-                              <span className={`w-1.5 h-1.5 rounded-full ${
-                                totalStockUnits === 0 ? 'bg-red-500' : 'bg-emerald-500'
-                              }`} />
-                              {totalStockUnits !== null ? `${totalStockUnits} unid.` : 'Disponible'}
-                            </span>
-
-                            {hasOutOfStockVariant && (
-                              <div className="text-[10px] font-bold text-amber-600 flex items-center gap-1">
-                                <AlertTriangle className="w-3 h-3" />
-                                <span>Hay modelos sin stock</span>
-                              </div>
-                            )}
-                          </div>
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
+                            totalStockUnits === 0
+                              ? 'bg-red-50 text-red-600'
+                              : 'bg-emerald-50 text-emerald-700'
+                          }`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${
+                              totalStockUnits === 0 ? 'bg-red-500' : 'bg-emerald-500'
+                            }`} />
+                            {totalStockUnits !== null ? `${totalStockUnits} unid.` : 'Disponible'}
+                          </span>
                         </td>
 
                         {/* Actions */}
@@ -695,7 +649,7 @@ export default function ProductManager() {
                             <button
                               onClick={() => openEditModal(p)}
                               className="p-2 rounded-xl text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                              title="Editar Producto y Lotes"
+                              title="Editar Producto y Variantes"
                             >
                               <Edit3 className="w-4 h-4" />
                             </button>
@@ -719,14 +673,14 @@ export default function ProductManager() {
                                 <div className="flex items-center gap-2">
                                   <Layers className="w-4 h-4 text-blue-600" />
                                   <span className="text-xs font-black uppercase tracking-wider text-slate-800">
-                                    Desglose de Lotes / Modelos Físicos de "{p.name}"
+                                    Desglose de Variantes de "{p.name}"
                                   </span>
                                 </div>
                                 <span className="text-xs font-bold text-slate-500">
                                   {totalStockUnits !== null ? (
                                     <>Stock Total: <strong className="text-slate-900">{totalStockUnits} unidades</strong></>
                                   ) : (
-                                    <strong className="text-emerald-600">Stock Disponible Continuo</strong>
+                                    <strong className="text-emerald-600">Stock Continuo</strong>
                                   )}
                                 </span>
                               </div>
@@ -736,9 +690,7 @@ export default function ProductManager() {
                                   <thead>
                                     <tr className="text-slate-400 font-extrabold uppercase tracking-wider border-b border-slate-100">
                                       <th className="py-2 px-3">#</th>
-                                      <th className="py-2 px-3">Color</th>
-                                      <th className="py-2 px-3">RAM</th>
-                                      <th className="py-2 px-3">Almacenamiento</th>
+                                      <th className="py-2 px-3">Combinación / Título</th>
                                       <th className="py-2 px-3">Precio Venta</th>
                                       <th className="py-2 px-3">Stock Físico</th>
                                       <th className="py-2 px-3">Cashea</th>
@@ -746,37 +698,28 @@ export default function ProductManager() {
                                   </thead>
                                   <tbody className="divide-y divide-slate-100 font-medium">
                                     {variants.map((v, vIdx) => {
-                                      const hasStockVal = v.stock !== null && v.stock !== undefined && v.stock !== '';
-                                      const vStock = hasStockVal ? parseInt(v.stock) : null;
                                       const vPrice = parseFloat(v.price) || parseFloat(p.price) || 0;
-                                      const vColorHex = v.colorHex || getSuggestedHex(v.color);
                                       return (
                                         <tr key={v.id || vIdx} className="hover:bg-slate-50/50">
                                           <td className="py-2 px-3 font-bold text-slate-400">{vIdx + 1}</td>
-                                          <td className="py-2 px-3 font-bold text-slate-900 flex items-center gap-2">
-                                            <span 
-                                              className="w-3.5 h-3.5 rounded-full border border-slate-300 shadow-xs inline-block shrink-0" 
-                                              style={{ backgroundColor: vColorHex }}
-                                            />
-                                            <span>{v.color || 'Negro'}</span>
-                                          </td>
-                                          <td className="py-2 px-3 text-slate-700 font-semibold">{v.ram || '—'}</td>
-                                          <td className="py-2 px-3 font-black text-slate-900">{v.storage || '—'}</td>
-                                          <td className="py-2 px-3 font-black text-blue-600">${vPrice.toFixed(2)} USD</td>
-                                          <td className="py-2 px-3">
-                                            <span className={`px-2 py-0.5 rounded-md font-bold text-[11px] ${
-                                              vStock === null || vStock > 0 
-                                                ? 'bg-emerald-50 text-emerald-700' 
-                                                : 'bg-red-50 text-red-600'
-                                            }`}>
-                                              {vStock !== null ? (vStock > 0 ? `${vStock} unid.` : 'Agotado (0)') : 'Disponible'}
+                                          <td className="py-2 px-3 font-extrabold text-slate-900">
+                                            <span className="px-2 py-0.5 bg-slate-100 rounded-md">
+                                              {v.title || Object.values(v.options || {}).join(' / ') || 'Variante'}
                                             </span>
+                                          </td>
+                                          <td className="py-2 px-3 font-black text-blue-700">
+                                            ${vPrice.toFixed(2)} USD
+                                          </td>
+                                          <td className="py-2 px-3 font-bold text-slate-700">
+                                            {v.stock !== null && v.stock !== undefined && v.stock !== '' ? `${v.stock} unid.` : 'Ilimitado'}
                                           </td>
                                           <td className="py-2 px-3">
                                             {v.hasCashea !== false ? (
-                                              <span className="text-amber-600 font-bold">🟡 Activo</span>
+                                              <span className="text-[10px] font-black text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded">
+                                                Cashea ✓
+                                              </span>
                                             ) : (
-                                              <span className="text-slate-400">Contado</span>
+                                              <span className="text-slate-400 text-[10px]">Contado</span>
                                             )}
                                           </td>
                                         </tr>
@@ -798,58 +741,118 @@ export default function ProductManager() {
         )}
       </div>
 
-      {/* MODAL CREAR / EDITAR */}
+      {/* ========================================================================= */}
+      {/* MODAL: CREAR / EDITAR PRODUCTO (DYNAMIC SHOPIFY-STYLE MATRIX)            */}
+      {/* ========================================================================= */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl max-w-3xl w-full shadow-2xl border border-slate-200 flex flex-col max-h-[90vh] overflow-hidden animate-fadeIn">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
             
-            {/* 1. FIXED MODAL HEADER (No scroll, no overlap) */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white shrink-0">
+            {/* 1. FIXED TOP HEADER */}
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-200 bg-slate-50/80 shrink-0">
               <div>
                 <h2 className="text-lg sm:text-xl font-black text-slate-900">
-                  {editingProduct ? 'Editar Producto y Modelos' : 'Crear Nuevo Producto'}
+                  {editingProduct ? 'Editar Producto' : 'Crear Nuevo Producto'}
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">Configuración de catálogo y lotes físicos con precios individuales</p>
+                <p className="text-xs text-slate-500 font-medium mt-0.5">
+                  Completa la información base y define opciones dinámicas por lote
+                </p>
               </div>
+
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
-                title="Cerrar modal"
+                className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-full transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* 2. SCROLLABLE FORM BODY */}
-            <form id="product-admin-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 sm:p-7 space-y-6">
-              {/* Product Image Upload Section */}
+            <form id="product-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+              
+              {/* Product General Info */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                
+                {/* Name */}
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
+                    Nombre del Producto *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="ej. Smart TV Samsung Neo QLED 4K 2026"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                  />
+                </div>
+
+                {/* Category */}
+                <div>
+                  <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
+                    Categoría *
+                  </label>
+                  <select
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all cursor-pointer"
+                  >
+                    {CATEGORIES.filter(c => c.id !== 'todos').map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Promotional Tag */}
+                <div>
+                  <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
+                    Etiqueta Promocional <span className="text-slate-400 font-normal">(Opcional)</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.tag}
+                    onChange={(e) => setFormData({ ...formData, tag: e.target.value })}
+                    placeholder="ej. OFERTA TOP, LANZAMIENTO, 120HZ"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                  />
+                </div>
+
+              </div>
+
+              {/* Product Image Box */}
               <div>
-                <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-2">
-                  Imagen Principal del Producto
+                <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
+                  Fotografía Principal del Producto
                 </label>
-                <div className="flex items-center gap-4">
-                  <div className="w-24 h-24 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden relative group flex-shrink-0">
+                
+                <div className="flex flex-col sm:flex-row items-center gap-4 p-4 border border-slate-200 rounded-2xl bg-slate-50/50">
+                  <div className="w-24 h-24 rounded-2xl bg-white border border-slate-200 flex items-center justify-center overflow-hidden p-2 shrink-0 shadow-xs">
                     {previewUrl || formData.image ? (
-                      <img src={previewUrl || formData.image} alt="Preview" className="w-full h-full object-contain p-2" />
+                      <img
+                        src={previewUrl || formData.image}
+                        alt="Preview"
+                        className="w-full h-full object-contain"
+                      />
                     ) : (
                       <Package className="w-8 h-8 text-slate-300" />
                     )}
                   </div>
 
-                  <div className="flex-1 space-y-2">
-                    <div className="flex flex-wrap gap-2">
-                      <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition-colors">
-                        <Upload className="w-4 h-4" />
-                        <span>Subir Foto del equipo</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleFileChange}
-                          className="hidden"
-                        />
-                      </label>
-                    </div>
+                  <div className="flex-1 space-y-2 w-full">
+                    <label className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-100 border border-slate-300 rounded-xl font-bold text-xs text-slate-700 cursor-pointer shadow-xs active:scale-95 transition-all">
+                      <Upload className="w-4 h-4 text-blue-600" />
+                      <span>Subir Imagen desde el Equipo</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </label>
 
                     <input
                       type="url"
@@ -858,279 +861,286 @@ export default function ProductManager() {
                         setFormData({ ...formData, image: e.target.value });
                         setPreviewUrl(e.target.value);
                       }}
-                      placeholder="O pega aquí una URL de imagen (https://...)"
-                      className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-blue-600"
+                      placeholder="O pega una URL directa de la imagen (https://...)"
+                      className="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 transition-all"
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Name */}
-              <div>
-                <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
-                  Nombre General del Producto *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="ej. Samsung Galaxy S24 Ultra"
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all"
-                />
-              </div>
-
-              {/* Category & Tag Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
-                    Categoría *
-                  </label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all cursor-pointer"
-                  >
-                    <option value="smartphones">Smartphones</option>
-                    <option value="linea-blanca">Línea Blanca & Smart TV</option>
-                    <option value="computacion">Computación & Laptops</option>
-                    <option value="audio">Audio High-End</option>
-                    <option value="wearables">Wearables & Relojes</option>
-                    <option value="accesorios">Accesorios Cyber</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-600 mb-1.5">
-                    Etiqueta Promocional
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.tag}
-                    onChange={(e) => setFormData({ ...formData, tag: e.target.value })}
-                    placeholder="ej. Flagship 2026, Oferta, Top Ventas"
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all"
-                  />
-                </div>
-              </div>
-
               {/* ------------------------------------------------------------- */}
-              {/* SECTION: GESTOR DE VARIANTES DINÁMICAS (DYNAMIC REPEATER)      */}
-              {/* Rich Custom Color Swatch + Optional Stock                     */}
+              {/* SECTION: DYNAMIC SHOPIFY-STYLE OPTIONS & VARIANT MATRIX       */}
               {/* ------------------------------------------------------------- */}
-              <div className="bg-slate-50/70 border border-slate-200 rounded-3xl p-4 sm:p-6 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 pb-3">
+              <div className="bg-slate-50 border border-slate-200 rounded-3xl p-4 sm:p-6 space-y-5">
+                
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
                   <div>
                     <div className="flex items-center gap-2">
-                      <Layers className="w-4 h-4 text-blue-600" />
+                      <Sliders className="w-4 h-4 text-blue-600" />
                       <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">
-                        Modelos y Variantes Reales
+                        Opciones y Variantes Dinámicas
                       </h3>
                     </div>
                     <p className="text-[11px] text-slate-500 mt-0.5">
-                      Configura el tono visual exacto, RAM, almacenamiento, precio individual y stock de cada variante.
+                      Agrega atributos personalizados (ej. Pulgadas, Capacidad, Color, Voltaje) para generar la matriz de combinaciones.
                     </p>
                   </div>
 
-                  <span className="text-xs font-black px-2.5 py-1 bg-white border border-slate-200 rounded-lg text-slate-700 self-start sm:self-auto">
-                    {formData.variants.length} {formData.variants.length === 1 ? 'modelo' : 'modelos'}
-                  </span>
+                  <button
+                    type="button"
+                    onClick={addOptionBlock}
+                    className="px-3.5 py-2 bg-slate-900 hover:bg-black text-white rounded-xl font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs active:scale-95 self-start sm:self-auto"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>+ Agregar Opción</span>
+                  </button>
                 </div>
 
-                {/* Dynamic Variants List */}
-                <div className="space-y-4">
-                  {formData.variants.map((variant, idx) => {
-                    const currentHex = variant.colorHex || getSuggestedHex(variant.color);
+                {/* If NO dynamic options added yet -> Show Single Price fields */}
+                {(!formData.hasOptions || formData.options.length === 0) ? (
+                  <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3">
+                    <div className="text-xs font-extrabold text-slate-800 uppercase tracking-wider">
+                      Precio e Inventario Único (Sin Variantes)
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
+                          Precio de Venta ($ USD) *
+                        </label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
+                          <input
+                            type="number"
+                            step="0.01"
+                            min="0.01"
+                            required={!formData.hasOptions || formData.options.length === 0}
+                            value={formData.basePrice}
+                            onChange={(e) => setFormData({ ...formData, basePrice: e.target.value })}
+                            placeholder="ej. 899.00"
+                            className="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-blue-700 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                          />
+                        </div>
+                      </div>
 
-                    return (
+                      <div>
+                        <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
+                          Stock Físico <span className="text-[10px] text-slate-400 font-normal">(Opcional)</span>
+                        </label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={formData.baseStock}
+                          onChange={(e) => setFormData({ ...formData, baseStock: e.target.value })}
+                          placeholder="Opcional (Ilimitado)"
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  /* OPTIONS LIST */
+                  <div className="space-y-4">
+                    {formData.options.map((opt, optIdx) => (
                       <div 
-                        key={variant.id || idx}
-                        className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs transition-all hover:border-slate-300 relative space-y-4"
+                        key={opt.id || optIdx}
+                        className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3 relative"
                       >
-                        {/* Card Header: Title & Delete button */}
-                        <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-                          <div className="flex items-center gap-2.5">
-                            <span className="w-6 h-6 rounded-lg bg-slate-900 text-white font-black text-xs flex items-center justify-center">
-                              {idx + 1}
-                            </span>
-                            <span 
-                              className="w-4 h-4 rounded-full border border-slate-300 shadow-xs inline-block shrink-0" 
-                              style={{ backgroundColor: currentHex }}
-                            />
-                            <span className="font-extrabold text-xs text-slate-900">
-                              {variant.color || 'Color'} {variant.ram && variant.ram !== 'No Aplica' ? `• ${variant.ram}` : ''} {variant.storage && variant.storage !== 'No Aplica / Estándar' ? `• ${variant.storage}` : ''}
-                            </span>
-                            {variant.price && (
-                              <span className="text-xs font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
-                                ${parseFloat(variant.price).toFixed(2)} USD
-                              </span>
-                            )}
-                          </div>
-
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-black text-slate-800 uppercase tracking-wider">
+                            Opción {optIdx + 1}
+                          </span>
                           <button
                             type="button"
-                            onClick={() => removeVariantBlock(idx)}
-                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-1 text-xs font-bold"
-                            title="Eliminar este modelo"
+                            onClick={() => removeOptionBlock(optIdx)}
+                            className="p-1 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-1 text-xs font-bold"
                           >
-                            <Trash2 className="w-4 h-4" />
-                            <span className="hidden sm:inline">Eliminar</span>
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Eliminar opción</span>
                           </button>
                         </div>
 
-                        {/* Card Inputs Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                          {/* 1. Custom Color Picker + Autocomplete Name */}
-                          <div>
-                            <div className="flex items-center justify-between mb-1">
-                              <label className="block text-[11px] font-extrabold text-slate-700">
-                                Color & Muestra *
-                              </label>
-                              <span className="text-[10px] text-slate-400 font-bold font-mono">
-                                {currentHex}
-                              </span>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                              {/* Visual Color Swatch / HTML5 Color Picker */}
-                              <label 
-                                className="relative w-8 h-8 rounded-xl border border-slate-300 shadow-xs cursor-pointer overflow-hidden shrink-0 flex items-center justify-center transition-transform hover:scale-105"
-                                style={{ backgroundColor: currentHex }}
-                                title="Haz clic aquí para seleccionar el tono visual exacto"
-                              >
-                                <input
-                                  type="color"
-                                  value={currentHex}
-                                  onChange={(e) => updateVariantField(idx, 'colorHex', e.target.value)}
-                                  className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
-                                />
-                                <span className="text-[10px] text-white/90 font-bold select-none pointer-events-none drop-shadow">🎨</span>
-                              </label>
-
-                              {/* Color Name Input with Suggestions */}
-                              <input
-                                type="text"
-                                required
-                                list="admin-color-suggestions"
-                                value={variant.color}
-                                onChange={(e) => {
-                                  const val = e.target.value;
-                                  const autoHex = getSuggestedHex(val);
-                                  setFormData(prev => {
-                                    const updated = [...prev.variants];
-                                    updated[idx] = { 
-                                      ...updated[idx], 
-                                      color: val,
-                                      colorHex: autoHex || updated[idx].colorHex
-                                    };
-                                    return { ...prev, variants: updated };
-                                  });
-                                }}
-                                placeholder="ej. Titanio Desierto, Azul..."
-                                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
-                              />
-                            </div>
-                          </div>
-
-                          {/* 2. RAM Dropdown */}
+                          {/* Option Name */}
                           <div>
                             <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
-                              Memoria RAM *
-                            </label>
-                            <select
-                              value={variant.ram || '8GB'}
-                              onChange={(e) => updateVariantField(idx, 'ram', e.target.value)}
-                              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all cursor-pointer"
-                            >
-                              {PREDEFINED_RAMS.map(r => (
-                                <option key={r} value={r}>{r}</option>
-                              ))}
-                            </select>
-                          </div>
-
-                          {/* 3. Storage Dropdown */}
-                          <div>
-                            <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
-                              Almacenamiento *
-                            </label>
-                            <select
-                              value={variant.storage || '256GB'}
-                              onChange={(e) => updateVariantField(idx, 'storage', e.target.value)}
-                              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all cursor-pointer"
-                            >
-                              {PREDEFINED_STORAGES.map(s => (
-                                <option key={s} value={s}>{s}</option>
-                              ))}
-                            </select>
-                          </div>
-
-                          {/* 4. Variant Selling Price Input (Required) */}
-                          <div>
-                            <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
-                              Precio de Venta ($ USD) *
-                            </label>
-                            <div className="relative">
-                              <DollarSign className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-                              <input
-                                type="number"
-                                step="0.01"
-                                min="0.01"
-                                required
-                                value={variant.price}
-                                onChange={(e) => updateVariantField(idx, 'price', e.target.value)}
-                                placeholder="ej. 999.00"
-                                className="w-full pl-7 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-blue-700 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
-                              />
-                            </div>
-                          </div>
-
-                          {/* 5. Stock Units (OPTIONAL: Leave empty for Unlimited) */}
-                          <div>
-                            <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
-                              Stock Disponible <span className="text-[10px] text-slate-400 font-normal">(Opcional)</span>
+                              Nombre de la Opción *
                             </label>
                             <input
-                              type="number"
-                              min="0"
-                              value={variant.stock}
-                              onChange={(e) => updateVariantField(idx, 'stock', e.target.value)}
-                              placeholder="Opcional (Ilimitado)"
+                              type="text"
+                              required
+                              value={opt.name}
+                              onChange={(e) => updateOptionName(optIdx, e.target.value)}
+                              placeholder="ej. Pulgadas, Capacidad, Voltaje..."
                               className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
                             />
+                            
+                            {/* Preset Buttons */}
+                            <div className="flex items-center gap-1 flex-wrap mt-1.5">
+                              {COMMON_OPTION_PRESETS.slice(0, 5).map(preset => (
+                                <button
+                                  key={preset}
+                                  type="button"
+                                  onClick={() => updateOptionName(optIdx, preset)}
+                                  className="text-[9px] font-bold px-1.5 py-0.5 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 rounded text-slate-600 transition-colors"
+                                >
+                                  {preset}
+                                </button>
+                              ))}
+                            </div>
                           </div>
 
-                          {/* 6. Cashea Toggle */}
-                          <div className="flex flex-col justify-end">
-                            <label className="flex items-center gap-2 p-2 bg-amber-50/60 border border-amber-200 rounded-xl cursor-pointer hover:bg-amber-50 transition-colors">
-                              <input
-                                type="checkbox"
-                                checked={variant.hasCashea}
-                                onChange={(e) => updateVariantField(idx, 'hasCashea', e.target.checked)}
-                                className="w-4 h-4 text-amber-500 rounded border-amber-300 focus:ring-amber-400 cursor-pointer"
-                              />
-                              <span className="text-[11px] font-extrabold text-amber-950 select-none">
-                                Aplica Cashea
-                              </span>
+                          {/* Option Values (Tags) */}
+                          <div className="sm:col-span-2">
+                            <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
+                              Valores de la Opción * <span className="text-[10px] text-slate-400 font-normal">(Presiona Enter o coma para añadir)</span>
                             </label>
+
+                            <div className="flex items-center gap-1.5 flex-wrap p-2 bg-slate-50 rounded-xl border border-slate-200 min-h-[42px] focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-600 transition-all">
+                              {opt.values.map((v, vIdx) => (
+                                <span 
+                                  key={vIdx} 
+                                  className="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-900 text-white rounded-lg text-xs font-bold shadow-2xs animate-fadeIn"
+                                >
+                                  <span>{v}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => removeOptionValue(optIdx, vIdx)}
+                                    className="hover:text-red-300 text-[10px] ml-0.5 font-black"
+                                    title="Quitar valor"
+                                  >
+                                    ✕
+                                  </button>
+                                </span>
+                              ))}
+
+                              <input
+                                type="text"
+                                placeholder={opt.values.length === 0 ? "Escribe ej. 55\", 65\" y presiona Enter..." : "+ Agregar valor..."}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' || e.key === ',') {
+                                    e.preventDefault();
+                                    addOptionValue(optIdx, e.currentTarget.value);
+                                    e.currentTarget.value = '';
+                                  }
+                                }}
+                                onBlur={(e) => {
+                                  if (e.currentTarget.value) {
+                                    addOptionValue(optIdx, e.currentTarget.value);
+                                    e.currentTarget.value = '';
+                                  }
+                                }}
+                                className="flex-1 min-w-[150px] text-xs font-semibold outline-none bg-transparent py-1 px-1 text-slate-900 placeholder:text-slate-400"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
+                    ))}
+                  </div>
+                )}
 
-                {/* MAIN ACTION BUTTON: + Agregar Modelo/Variante */}
-                <button
-                  type="button"
-                  onClick={addVariantBlock}
-                  className="w-full py-3.5 px-4 bg-slate-900 hover:bg-black text-white rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.99]"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>+ Agregar Modelo / Variante</span>
-                </button>
+                {/* ------------------------------------------------------------- */}
+                {/* VARIANT MATRIX TABLE                                          */}
+                {/* ------------------------------------------------------------- */}
+                {formData.hasOptions && formData.variants.length > 0 && (
+                  <div className="space-y-3 pt-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Layers className="w-4 h-4 text-blue-600" />
+                        <h4 className="text-xs font-black uppercase tracking-wider text-slate-800">
+                          Matriz de Variantes Generada ({formData.variants.length})
+                        </h4>
+                      </div>
+                      <span className="text-[11px] text-slate-500 font-medium hidden sm:inline">
+                        Ingresa el precio y stock individual por combinación
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-xs">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-extrabold uppercase tracking-wider">
+                            <th className="py-3 px-4">Variante Real</th>
+                            <th className="py-3 px-4 w-44">Precio ($ USD) *</th>
+                            <th className="py-3 px-4 w-36">Stock Físico</th>
+                            <th className="py-3 px-4 w-32">Cashea</th>
+                            <th className="py-3 px-4 text-right w-16"></th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 font-medium">
+                          {formData.variants.map((v, vIdx) => (
+                            <tr key={v.id || vIdx} className="hover:bg-slate-50/60 transition-colors">
+                              {/* Title / Combination */}
+                              <td className="py-2.5 px-4 font-black text-slate-900">
+                                <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-blue-50 text-blue-800 border border-blue-200/80 font-extrabold text-xs">
+                                  {v.title}
+                                </span>
+                              </td>
+
+                              {/* Price Input */}
+                              <td className="py-2.5 px-4">
+                                <div className="relative">
+                                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
+                                  <input
+                                    type="number"
+                                    step="0.01"
+                                    min="0.01"
+                                    required
+                                    placeholder="0.00"
+                                    value={v.price}
+                                    onChange={(e) => updateVariantField(vIdx, 'price', e.target.value)}
+                                    className="w-full pl-6 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-blue-700 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                                  />
+                                </div>
+                              </td>
+
+                              {/* Stock Input */}
+                              <td className="py-2.5 px-4">
+                                <input
+                                  type="number"
+                                  min="0"
+                                  placeholder="Ilimitado"
+                                  value={v.stock}
+                                  onChange={(e) => updateVariantField(vIdx, 'stock', e.target.value)}
+                                  className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                                />
+                              </td>
+
+                              {/* Cashea Toggle */}
+                              <td className="py-2.5 px-4">
+                                <label className="inline-flex items-center gap-1.5 cursor-pointer select-none">
+                                  <input
+                                    type="checkbox"
+                                    checked={v.hasCashea !== false}
+                                    onChange={(e) => updateVariantField(vIdx, 'hasCashea', e.target.checked)}
+                                    className="w-4 h-4 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer"
+                                  />
+                                  <span className="text-[11px] font-bold text-slate-700">Aplica</span>
+                                </label>
+                              </td>
+
+                              {/* Delete row */}
+                              <td className="py-2.5 px-4 text-right">
+                                <button
+                                  type="button"
+                                  onClick={() => removeVariantRow(vIdx)}
+                                  className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                  title="Eliminar esta combinación específica"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
               </div>
 
-              {/* GLOBAL CASHEA FINANCING CONFIGURATION */}
+              {/* GLOBAL CASHEA TOGGLE */}
               <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <span className="bg-[#FFE600] text-black px-2.5 py-1 rounded-lg font-black text-[10px] uppercase tracking-wider border border-amber-400 shadow-xs shrink-0">
@@ -1138,7 +1148,9 @@ export default function ProductManager() {
                   </span>
                   <div>
                     <span className="text-xs font-black text-slate-900 block">Habilitar Pago con Cashea</span>
-                    <span className="text-[11px] text-slate-500 font-medium">Permite a los clientes financiar este producto en cuotas con su cuenta Cashea</span>
+                    <span className="text-[11px] text-slate-500 font-medium">
+                      Permite a los clientes financiar este producto en cuotas con su cuenta Cashea
+                    </span>
                   </div>
                 </div>
 
@@ -1166,7 +1178,7 @@ export default function ProductManager() {
                 />
               </div>
 
-              {/* FLASH SALE / OFERTA RELÁMPAGO TOGGLE */}
+              {/* FLASH SALE TOGGLE */}
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
@@ -1201,10 +1213,11 @@ export default function ProductManager() {
                   Disponible en Stock para compra inmediata
                 </label>
               </div>
+
             </form>
 
-            {/* 3. FIXED MODAL FOOTER (Always visible, outside scroll container) */}
-            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50/90 shrink-0">
+            {/* 3. FIXED BOTTOM FOOTER */}
+            <div className="flex items-center justify-end gap-3 p-4 sm:p-6 border-t border-slate-200 bg-slate-50/80 shrink-0">
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
@@ -1212,11 +1225,12 @@ export default function ProductManager() {
               >
                 Cancelar
               </button>
+
               <button
                 type="submit"
-                form="product-admin-form"
+                form="product-form"
                 disabled={isSubmitting}
-                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs flex items-center gap-2 transition-all shadow-md shadow-blue-600/20 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-md shadow-blue-600/20 active:scale-95 transition-all disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>
@@ -1235,6 +1249,7 @@ export default function ProductManager() {
           </div>
         </div>
       )}
+
     </div>
   );
-}
+};

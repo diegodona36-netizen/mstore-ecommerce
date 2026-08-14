@@ -458,56 +458,7 @@ export default function ProductManager() {
     }
   };
 
-  // Safe Database Reset & Seed Catalog Restore
-  const handleResetToSeedCatalog = async () => {
-    const isConfirmed = confirm(
-      "⚠️ ¿Deseas limpiar y restaurar la base de datos con el catálogo oficial de M Store?\n\nEsta acción restablecerá los productos y variantes a su estado óptimo predeterminado."
-    );
-    if (!isConfirmed) return;
 
-    try {
-      setIsLoading(true);
-      // 1. Delete all existing docs
-      const q = query(collection(db, 'products'));
-      const snapshot = await getDocs(q);
-      const deletePromises = snapshot.docs.map(d => deleteDoc(doc(db, 'products', d.id)));
-      await Promise.all(deletePromises);
-
-      // 2. Insert standard initial products
-      const addPromises = INITIAL_PRODUCTS.map(p => {
-        const payload = {
-          name: p.name,
-          category: p.category || 'smartphones',
-          price: p.price || 0,
-          tag: p.tag || '',
-          description: p.description || '',
-          inStock: p.inStock !== false,
-          hasCashea: p.hasCashea !== false,
-          isFlashDeal: (p.tag && p.tag.toLowerCase().includes('oferta')) || false,
-          casheaInitialPercent: p.casheaInitialPercent || 40,
-          casheaInstallments: p.casheaInstallments || 3,
-          variants: Array.isArray(p.variants) ? p.variants : [],
-          colors: Array.isArray(p.colors) ? p.colors : [],
-          ramOptions: Array.isArray(p.ramOptions) ? p.ramOptions : [],
-          storageOptions: Array.isArray(p.storageOptions) ? p.storageOptions : [],
-          image: p.image || '',
-          rating: p.rating || 5.0,
-          reviewsCount: p.reviewsCount || 10,
-          createdAt: serverTimestamp()
-        };
-        return addDoc(collection(db, 'products'), payload);
-      });
-
-      await Promise.all(addPromises);
-      alert("✅ ¡Base de datos limpiada y restaurada exitosamente con el catálogo oficial de M Store!");
-      fetchProducts();
-    } catch (error) {
-      console.error("Error resetting catalog:", error);
-      alert("Error al restaurar el catálogo: " + error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   // Filtering
   const filteredProducts = products.filter((p) => {
@@ -531,26 +482,13 @@ export default function ProductManager() {
           <p className="text-slate-500 text-sm mt-1">Crea, edita y administra los modelos, inventario y financiamiento Cashea.</p>
         </div>
 
-        <div className="flex items-center gap-2.5 flex-wrap self-start sm:self-auto">
-          {/* Restore Seed Database Button */}
-          <button
-            type="button"
-            onClick={handleResetToSeedCatalog}
-            className="px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 border border-slate-200"
-            title="Limpiar y restaurar catálogo predeterminado"
-          >
-            <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
-            <span>Restaurar Catálogo Base</span>
-          </button>
-
-          <button
-            onClick={openCreateModal}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-md shadow-blue-600/20 active:scale-95"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Nuevo Producto</span>
-          </button>
-        </div>
+        <button
+          onClick={openCreateModal}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-md shadow-blue-600/20 active:scale-95 self-start sm:self-auto"
+        >
+          <Plus className="w-4 h-4" />
+          <span>Nuevo Producto</span>
+        </button>
       </div>
 
       {/* Filters & Search Toolbar */}

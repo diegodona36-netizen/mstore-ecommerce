@@ -60,6 +60,29 @@ export const Hero = ({ onCategorySelect, onExploreClick }) => {
     setCurrentSlideIndex((prev) => (prev - 1 + banners.length) % banners.length);
   };
 
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const minSwipeDistance = 50;
+    if (distance > minSwipeDistance) {
+      handleNextSlide();
+    } else if (distance < -minSwipeDistance) {
+      handlePrevSlide();
+    }
+  };
+
   return (
     <section className="relative w-full bg-white pt-3 pb-6 md:pt-4 font-sans select-none border-b border-slate-200/80">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-8 space-y-4">
@@ -70,6 +93,9 @@ export const Hero = ({ onCategorySelect, onExploreClick }) => {
           onClick={() => onExploreClick && onExploreClick()}
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
           
           {/* Banner Slides */}
@@ -90,11 +116,11 @@ export const Hero = ({ onCategorySelect, onExploreClick }) => {
             </div>
           ))}
 
-          {/* Navigation Arrows */}
+          {/* Navigation Arrows (DESKTOP ONLY - HIDDEN ON MOBILE) */}
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); handlePrevSlide(); }}
-            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-2.5 rounded-full bg-black/40 hover:bg-black/80 text-white backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 flex items-center justify-center shadow-md border border-white/10 active:scale-95"
+            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-2.5 rounded-full bg-black/40 hover:bg-black/80 text-white backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 hidden sm:flex items-center justify-center shadow-md border border-white/10 active:scale-95"
             aria-label="Anterior Banner"
           >
             <ChevronLeft className="w-5 h-5" />
@@ -103,7 +129,7 @@ export const Hero = ({ onCategorySelect, onExploreClick }) => {
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); handleNextSlide(); }}
-            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-2.5 rounded-full bg-black/40 hover:bg-black/80 text-white backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 flex items-center justify-center shadow-md border border-white/10 active:scale-95"
+            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-2.5 rounded-full bg-black/40 hover:bg-black/80 text-white backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 hidden sm:flex items-center justify-center shadow-md border border-white/10 active:scale-95"
             aria-label="Siguiente Banner"
           >
             <ChevronRight className="w-5 h-5" />

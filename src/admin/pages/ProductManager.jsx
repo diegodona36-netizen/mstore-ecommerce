@@ -30,24 +30,53 @@ import {
   Sparkles,
   Sliders,
   Tag,
-  Wand2
+  Wand2,
+  Palette
 } from 'lucide-react';
 import { CATEGORIES } from '../../data/products';
 
-// SMART 1-CLICK PRESETS BY CATEGORY
+// COMMON COLOR PRESETS (VISUAL SWATCHES ONLY - NO PRICE VARIANCE)
+const COMMON_COLOR_PRESETS = [
+  { name: 'Negro Mate', hex: '#121212' },
+  { name: 'Blanco Puro', hex: '#FFFFFF' },
+  { name: 'Acero Inoxidable', hex: '#94A3B8' },
+  { name: 'Gris Espacial', hex: '#475569' },
+  { name: 'Titanio Natural', hex: '#948B7D' },
+  { name: 'Azul Medianoche', hex: '#1E3A8A' },
+  { name: 'Titanio Desierto', hex: '#C2B280' },
+  { name: 'Verde Esmeralda', hex: '#059669' },
+  { name: 'Rojo Carmesí', hex: '#DC2626' }
+];
+
+// Helper to auto-suggest hex code from color name
+const getSuggestedHex = (name = '') => {
+  const n = name.toLowerCase().trim();
+  if (n.includes('negro') || n.includes('black') || n.includes('oscuro')) return '#121212';
+  if (n.includes('blanco') || n.includes('white') || n.includes('puro')) return '#FFFFFF';
+  if (n.includes('inox') || n.includes('acero') || n.includes('plata') || n.includes('silver')) return '#94A3B8';
+  if (n.includes('gris') || n.includes('grafito') || n.includes('espacial')) return '#475569';
+  if (n.includes('desierto') || n.includes('desert') || n.includes('arena')) return '#C2B280';
+  if (n.includes('titanio') || n.includes('natural')) return '#948B7D';
+  if (n.includes('azul') || n.includes('blue') || n.includes('marino') || n.includes('medianoche')) return '#1E3A8A';
+  if (n.includes('verde') || n.includes('green') || n.includes('oliva') || n.includes('esmeralda')) return '#059669';
+  if (n.includes('rojo') || n.includes('red') || n.includes('carmesi')) return '#DC2626';
+  if (n.includes('oro') || n.includes('gold') || n.includes('champan') || n.includes('champán')) return '#D97706';
+  if (n.includes('rosa') || n.includes('pink') || n.includes('rose')) return '#F472B6';
+  return '#334155';
+};
+
+// HARDWARE / SPEC PRESETS (THESE VARY THE PRICE)
 const CATEGORY_SMART_PRESETS = {
   'linea-blanca': [
     { label: '⚡ Voltaje (110V / 220V)', name: 'Voltaje', values: ['110V', '220V'] },
     { label: '🧊 Capacidad (Litros)', name: 'Capacidad', values: ['400 Litros', '600 Litros'] },
     { label: '🧺 Capacidad Carga (Kg)', name: 'Capacidad', values: ['12 Kg', '16 Kg', '20 Kg'] },
     { label: '🔥 Hornillas (Cocinas)', name: 'Hornillas', values: ['4 Hornillas', '6 Hornillas'] },
-    { label: '❄️ Capacidad BTU (Aires)', name: 'Capacidad BTU', values: ['12.000 BTU', '18.000 BTU', '24.000 BTU'] },
-    { label: '🎨 Color / Acabado', name: 'Color / Acabado', values: ['Acero Inoxidable', 'Negro Mate', 'Blanco'] }
+    { label: '❄️ Capacidad BTU (Aires)', name: 'Capacidad BTU', values: ['12.000 BTU', '18.000 BTU', '24.000 BTU'] }
   ],
   'smartphones': [
     { label: '💾 Almacenamiento', name: 'Almacenamiento', values: ['128GB', '256GB', '512GB', '1TB'] },
-    { label: '⚡ Memoria RAM', name: 'Memoria RAM', values: ['8GB', '12GB', '16GB'] },
-    { label: '🎨 Color del Equipo', name: 'Color', values: ['Negro Titanio', 'Titanio Natural', 'Azul Marino'] }
+    { label: '⚡ Memoria RAM', name: 'Memoria RAM', values: ['8GB', '12GB', '16GB'] }
   ],
   'televisores': [
     { label: '📺 Pulgadas de Pantalla', name: 'Pulgadas', values: ['43"', '50"', '55"', '65"', '75"'] },
@@ -59,16 +88,16 @@ const CATEGORY_SMART_PRESETS = {
     { label: '🧠 Procesador', name: 'Procesador', values: ['Intel Core i7', 'Intel Core i9', 'Apple M3 Pro'] }
   ],
   'audio': [
-    { label: '🎨 Color', name: 'Color', values: ['Negro Mate', 'Blanco Puro', 'Azul Medianoche'] },
-    { label: '📶 Conectividad', name: 'Conectividad', values: ['Bluetooth 5.3', 'Con Cable Hi-Res'] }
+    { label: '📶 Conectividad', name: 'Conectividad', values: ['Bluetooth 5.3', 'Con Cable Hi-Res'] },
+    { label: '🎧 Tipo', name: 'Tipo', values: ['In-Ear', 'Over-Ear'] }
   ],
   'hogar': [
     { label: '⚡ Voltaje (110V / 220V)', name: 'Voltaje', values: ['110V', '220V'] },
-    { label: '🎨 Color', name: 'Color', values: ['Blanco', 'Gris', 'Negro'] }
+    { label: '💨 Potencia', name: 'Potencia', values: ['1000W', '1500W'] }
   ],
   'gaming': [
     { label: '💾 Almacenamiento', name: 'Almacenamiento', values: ['512GB SSD', '1TB SSD', '2TB SSD'] },
-    { label: '🎨 Color / Edición', name: 'Edición', values: ['Estándar', 'Edición Limitada'] }
+    { label: '🎮 Edición', name: 'Edición', values: ['Estándar', 'Edición Limitada'] }
   ]
 };
 
@@ -136,7 +165,8 @@ export const ProductManager = () => {
     hasOptions: false,
     basePrice: '',
     baseStock: '',
-    options: [],
+    colors: [], // Visual Swatches [{ name: 'Negro Mate', hex: '#121212' }]
+    options: [], // Specs that vary price [{ name: 'Voltaje', values: ['110V', '220V'] }]
     variants: [],
     image: ''
   });
@@ -186,6 +216,10 @@ export const ProductManager = () => {
       hasOptions: false,
       basePrice: '',
       baseStock: '',
+      colors: [
+        { name: 'Negro Mate', hex: '#121212' },
+        { name: 'Acero Inoxidable', hex: '#94A3B8' }
+      ],
       options: [],
       variants: [],
       image: ''
@@ -198,22 +232,30 @@ export const ProductManager = () => {
   const openEditModal = (product) => {
     setEditingProduct(product);
 
+    let parsedColors = [];
     let parsedOptions = [];
     let parsedVariants = [];
     let hasOpts = false;
 
-    if (Array.isArray(product.options) && product.options.length > 0) {
-      parsedOptions = product.options;
-      parsedVariants = Array.isArray(product.variants) ? product.variants : [];
-      hasOpts = true;
-    } else if (Array.isArray(product.variants) && product.variants.length > 0) {
-      // Convert legacy variant fields into dynamic options
-      const detectedOptions = [];
+    // Parse Colors (Visual Swatches)
+    if (Array.isArray(product.colors) && product.colors.length > 0) {
+      parsedColors = product.colors.map(c => {
+        if (typeof c === 'object' && c.name) return { name: c.name, hex: c.hex || getSuggestedHex(c.name) };
+        return { name: String(c), hex: getSuggestedHex(String(c)) };
+      });
+    } else if (Array.isArray(product.variants) && product.variants.some(v => v.color)) {
+      const uniqueColors = Array.from(new Set(product.variants.map(v => v.color).filter(Boolean)));
+      parsedColors = uniqueColors.map(cName => ({ name: cName, hex: getSuggestedHex(cName) }));
+    }
 
-      if (product.variants.some(v => v.color)) {
-        const uniqueColors = Array.from(new Set(product.variants.map(v => v.color).filter(Boolean)));
-        if (uniqueColors.length > 0) detectedOptions.push({ id: 'opt_color', name: 'Color', values: uniqueColors });
-      }
+    // Parse Hardware / Price Options
+    if (Array.isArray(product.options) && product.options.length > 0) {
+      // Filter out Color from price options if it was previously there
+      parsedOptions = product.options.filter(o => !o.name.toLowerCase().includes('color'));
+      parsedVariants = Array.isArray(product.variants) ? product.variants : [];
+      hasOpts = parsedOptions.length > 0;
+    } else if (Array.isArray(product.variants) && product.variants.length > 0) {
+      const detectedOptions = [];
       if (product.variants.some(v => v.ram)) {
         const uniqueRams = Array.from(new Set(product.variants.map(v => v.ram).filter(Boolean)));
         if (uniqueRams.length > 0) detectedOptions.push({ id: 'opt_ram', name: 'Memoria RAM', values: uniqueRams });
@@ -226,9 +268,8 @@ export const ProductManager = () => {
       parsedOptions = detectedOptions;
       parsedVariants = product.variants.map((v, i) => ({
         id: v.id || `var_${Date.now()}_${i}`,
-        title: v.title || [v.color, v.ram, v.storage].filter(Boolean).join(' / ') || `Variante ${i + 1}`,
+        title: v.title || [v.ram, v.storage].filter(Boolean).join(' / ') || `Variante ${i + 1}`,
         options: v.options || {
-          ...(v.color ? { 'Color': v.color } : {}),
           ...(v.ram ? { 'Memoria RAM': v.ram } : {}),
           ...(v.storage ? { 'Almacenamiento': v.storage } : {})
         },
@@ -252,6 +293,7 @@ export const ProductManager = () => {
       hasOptions: hasOpts,
       basePrice: product.price || '',
       baseStock: product.stock || '',
+      colors: parsedColors,
       options: parsedOptions,
       variants: parsedVariants,
       image: product.image || ''
@@ -262,7 +304,37 @@ export const ProductManager = () => {
   };
 
   // -------------------------------------------------------------
-  // DYNAMIC OPTION BUILDER HANDLERS
+  // COLOR SWATCH BUILDER HANDLERS (VISUAL ONLY)
+  // -------------------------------------------------------------
+  const addColorSwatch = (colorName, hexVal) => {
+    const name = colorName.trim();
+    if (!name) return;
+    if (formData.colors.some(c => c.name.toLowerCase() === name.toLowerCase())) return;
+
+    const hex = hexVal || getSuggestedHex(name);
+    setFormData(prev => ({
+      ...prev,
+      colors: [...prev.colors, { name, hex }]
+    }));
+  };
+
+  const removeColorSwatch = (cIdx) => {
+    setFormData(prev => ({
+      ...prev,
+      colors: prev.colors.filter((_, i) => i !== cIdx)
+    }));
+  };
+
+  const updateColorHex = (cIdx, hex) => {
+    setFormData(prev => {
+      const updated = [...prev.colors];
+      updated[cIdx] = { ...updated[cIdx], hex };
+      return { ...prev, colors: updated };
+    });
+  };
+
+  // -------------------------------------------------------------
+  // DYNAMIC OPTION BUILDER HANDLERS (PRICE-VARYING SPECS)
   // -------------------------------------------------------------
   const addOptionBlock = () => {
     const newOption = {
@@ -283,11 +355,9 @@ export const ProductManager = () => {
     let updatedOptions = [...formData.options];
 
     if (existingIdx >= 0) {
-      // Merge unique values
       const mergedValues = Array.from(new Set([...updatedOptions[existingIdx].values, ...preset.values]));
       updatedOptions[existingIdx] = { ...updatedOptions[existingIdx], values: mergedValues };
     } else {
-      // Add new option
       updatedOptions.push({
         id: `opt_${Date.now()}_${updatedOptions.length + 1}`,
         name: preset.name,
@@ -442,6 +512,7 @@ export const ProductManager = () => {
         isFlashDeal: formData.isFlashDeal || false,
         casheaInitialPercent: parseInt(formData.casheaInitialPercent) || 40,
         casheaInstallments: parseInt(formData.casheaInstallments) || 3,
+        colors: formData.colors || [],
         options: formData.hasOptions ? formData.options : [],
         variants: cleanVariants,
         image: finalImageUrl,
@@ -580,7 +651,7 @@ export const ProductManager = () => {
                   <th className="py-3.5 px-4">Categoría</th>
                   <th className="py-3.5 px-4">Precio ($ USD)</th>
                   <th className="py-3.5 px-4">Plan Cashea</th>
-                  <th className="py-3.5 px-4">Variantes</th>
+                  <th className="py-3.5 px-4">Colores / Variantes</th>
                   <th className="py-3.5 px-4">Stock Total</th>
                   <th className="py-3.5 px-4 text-right">Acciones</th>
                 </tr>
@@ -590,6 +661,7 @@ export const ProductManager = () => {
                   const hasVariants = Array.isArray(p.variants) && p.variants.length > 0;
                   const variants = hasVariants ? p.variants : [];
                   const variantsCount = variants.length;
+                  const colorsCount = Array.isArray(p.colors) ? p.colors.length : 0;
 
                   // Price calculation with range support
                   const variantPrices = hasVariants 
@@ -644,7 +716,7 @@ export const ProductManager = () => {
                               <div className="font-black text-blue-700 text-xs sm:text-sm">
                                 ${minPrice.toFixed(2)} - ${maxPrice.toFixed(2)}
                               </div>
-                              <div className="text-[10px] font-bold text-slate-400">Rango según variante</div>
+                              <div className="text-[10px] font-bold text-slate-400">Rango según modelo</div>
                             </div>
                           ) : (
                             <div>
@@ -667,20 +739,38 @@ export const ProductManager = () => {
                           )}
                         </td>
 
-                        {/* Variants Accordion Button */}
+                        {/* Colors / Variants Preview */}
                         <td className="py-3 px-4">
-                          {hasVariants ? (
-                            <button
-                              onClick={() => toggleRowExpand(p.id)}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 font-extrabold text-xs rounded-xl border border-slate-200 transition-all shadow-xs"
-                            >
-                              <Layers className="w-3.5 h-3.5 text-blue-600" />
-                              <span>{variantsCount} {variantsCount === 1 ? 'variante' : 'variantes'}</span>
-                              {isExpanded ? <ChevronUp className="w-3.5 h-3.5 ml-1" /> : <ChevronDown className="w-3.5 h-3.5 ml-1" />}
-                            </button>
-                          ) : (
-                            <span className="text-slate-400 text-xs italic">Precio Directo</span>
-                          )}
+                          <div className="space-y-1">
+                            {hasVariants ? (
+                              <button
+                                onClick={() => toggleRowExpand(p.id)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 font-extrabold text-xs rounded-xl border border-slate-200 transition-all shadow-xs"
+                              >
+                                <Layers className="w-3.5 h-3.5 text-blue-600" />
+                                <span>{variantsCount} {variantsCount === 1 ? 'modelo' : 'modelos'}</span>
+                                {isExpanded ? <ChevronUp className="w-3.5 h-3.5 ml-1" /> : <ChevronDown className="w-3.5 h-3.5 ml-1" />}
+                              </button>
+                            ) : (
+                              <span className="text-slate-400 text-xs italic">Modelo Único</span>
+                            )}
+
+                            {colorsCount > 0 && (
+                              <div className="flex items-center gap-1">
+                                {p.colors.slice(0, 4).map((c, cIdx) => (
+                                  <span
+                                    key={cIdx}
+                                    className="w-2.5 h-2.5 rounded-full border border-slate-300 shadow-2xs inline-block"
+                                    style={{ backgroundColor: typeof c === 'object' ? c.hex : getSuggestedHex(c) }}
+                                    title={typeof c === 'object' ? c.name : c}
+                                  />
+                                ))}
+                                {colorsCount > 4 && (
+                                  <span className="text-[9px] text-slate-400 font-bold">+{colorsCount - 4}</span>
+                                )}
+                              </div>
+                            )}
+                          </div>
                         </td>
 
                         {/* Stock */}
@@ -744,7 +834,7 @@ export const ProductManager = () => {
                                   <thead>
                                     <tr className="text-slate-400 font-extrabold uppercase tracking-wider border-b border-slate-100">
                                       <th className="py-2 px-3">#</th>
-                                      <th className="py-2 px-3">Combinación / Modelo</th>
+                                      <th className="py-2 px-3">Especificación / Modelo</th>
                                       <th className="py-2 px-3">Precio Venta</th>
                                       <th className="py-2 px-3">Stock Físico</th>
                                       <th className="py-2 px-3">Cashea</th>
@@ -796,7 +886,7 @@ export const ProductManager = () => {
       </div>
 
       {/* ========================================================================= */}
-      {/* MODAL: CREAR / EDITAR PRODUCTO (DYNAMIC CATEGORY PRESETS + MATRIX)        */}
+      {/* MODAL: CREAR / EDITAR PRODUCTO                                            */}
       {/* ========================================================================= */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-fadeIn">
@@ -809,7 +899,7 @@ export const ProductManager = () => {
                   {editingProduct ? 'Editar Producto' : 'Crear Nuevo Producto'}
                 </h2>
                 <p className="text-xs text-slate-500 font-medium mt-0.5">
-                  Define el precio directo o agrega variaciones (Voltaje, Capacidad, Pulgadas, etc.)
+                  Los colores son visuales (no varían precio). Las especificaciones (Voltaje, Pulgadas, etc.) dictan la matriz.
                 </p>
               </div>
 
@@ -838,13 +928,7 @@ export const ProductManager = () => {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder={
-                      formData.category === 'linea-blanca'
-                        ? "ej. Nevera Samsung Side by Side Inverter 600L"
-                        : formData.category === 'televisores'
-                        ? "ej. Smart TV Samsung Neo QLED 4K 2026"
-                        : "ej. Samsung Galaxy S24 Ultra"
-                    }
+                    placeholder="ej. Nevera Samsung Side by Side Inverter 600L"
                     className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
                   />
                 </div>
@@ -929,7 +1013,78 @@ export const ProductManager = () => {
               </div>
 
               {/* ------------------------------------------------------------- */}
-              {/* SECTION: PRECIO DIRECTO O VARIACIONES DINÁMICAS (1-CLICK)     */}
+              {/* SECTION: COLORES DISPONIBLES (ESTÉTICOS - NO AFECTAN PRECIO)  */}
+              {/* ------------------------------------------------------------- */}
+              <div className="bg-slate-50/80 border border-slate-200 rounded-3xl p-4 sm:p-5 space-y-3">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-2.5">
+                  <div className="flex items-center gap-2">
+                    <Palette className="w-4 h-4 text-slate-700" />
+                    <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">
+                      Colores y Acabados Disponibles
+                    </h3>
+                  </div>
+                  <span className="text-[11px] text-slate-500 font-medium">
+                    (Selección visual en la tienda — no altera el precio)
+                  </span>
+                </div>
+
+                {/* Color presets chips */}
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-[11px] font-bold text-slate-600 mr-1">Sugeridos:</span>
+                  {COMMON_COLOR_PRESETS.map((preset, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => addColorSwatch(preset.name, preset.hex)}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 transition-all active:scale-95 shadow-2xs"
+                    >
+                      <span 
+                        className="w-3 h-3 rounded-full border border-slate-300 inline-block shrink-0" 
+                        style={{ backgroundColor: preset.hex }} 
+                      />
+                      <span>+ {preset.name}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Active Selected Colors */}
+                <div className="flex items-center gap-2 flex-wrap pt-1">
+                  {formData.colors.map((c, cIdx) => (
+                    <div 
+                      key={cIdx} 
+                      className="inline-flex items-center gap-2 p-1.5 pl-2.5 bg-white border border-slate-200 rounded-xl shadow-xs"
+                    >
+                      {/* Color Picker label */}
+                      <label 
+                        className="relative w-5 h-5 rounded-full border border-slate-300 cursor-pointer overflow-hidden shrink-0 flex items-center justify-center transition-transform hover:scale-110"
+                        style={{ backgroundColor: c.hex }}
+                        title="Haz clic para personalizar el tono exacto"
+                      >
+                        <input
+                          type="color"
+                          value={c.hex}
+                          onChange={(e) => updateColorHex(cIdx, e.target.value)}
+                          className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
+                        />
+                      </label>
+
+                      <span className="text-xs font-extrabold text-slate-900">{c.name}</span>
+
+                      <button
+                        type="button"
+                        onClick={() => removeColorSwatch(cIdx)}
+                        className="p-1 text-slate-400 hover:text-red-600 rounded-md text-xs font-bold transition-colors"
+                        title="Quitar este color"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ------------------------------------------------------------- */}
+              {/* SECTION: PRECIO DIRECTO O VARIACIONES DE HARDWARE (MATRIZ)    */}
               {/* ------------------------------------------------------------- */}
               <div className="bg-slate-50 border border-slate-200 rounded-3xl p-4 sm:p-6 space-y-5">
                 
@@ -938,11 +1093,11 @@ export const ProductManager = () => {
                     <div className="flex items-center gap-2">
                       <Sliders className="w-4 h-4 text-blue-600" />
                       <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">
-                        Precio y Modelos del Equipo
+                        Especificaciones y Precio de Venta
                       </h3>
                     </div>
                     <p className="text-[11px] text-slate-500 mt-0.5">
-                      Ingresa el precio directo o agrega variaciones (Voltaje, Capacidad, Pulgadas...) con 1 solo clic.
+                      Ingresa el precio directo o agrega variaciones de hardware (Voltaje, Capacidad, Pulgadas...) que alteren el costo.
                     </p>
                   </div>
 
@@ -952,7 +1107,7 @@ export const ProductManager = () => {
                     className="px-3.5 py-2 bg-slate-900 hover:bg-black text-white rounded-xl font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs active:scale-95 self-start sm:self-auto"
                   >
                     <Plus className="w-3.5 h-3.5" />
-                    <span>+ Agregar Opción</span>
+                    <span>+ Agregar Opción de Precio</span>
                   </button>
                 </div>
 
@@ -1043,7 +1198,7 @@ export const ProductManager = () => {
                           {/* Option Name */}
                           <div>
                             <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
-                              Nombre de la Opción *
+                              Nombre de la Especificación *
                             </label>
                             <input
                               type="text"
@@ -1058,7 +1213,7 @@ export const ProductManager = () => {
                           {/* Option Values (Tags) */}
                           <div className="sm:col-span-2">
                             <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
-                              Valores / Modelos * <span className="text-[10px] text-slate-400 font-normal">(Presiona Enter o coma para añadir)</span>
+                              Valores de Especificación * <span className="text-[10px] text-slate-400 font-normal">(Presiona Enter o coma para añadir)</span>
                             </label>
 
                             <div className="flex items-center gap-1.5 flex-wrap p-2 bg-slate-50 rounded-xl border border-slate-200 min-h-[42px] focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-600 transition-all">
@@ -1118,7 +1273,7 @@ export const ProductManager = () => {
                         </h4>
                       </div>
                       <span className="text-[11px] text-slate-500 font-medium hidden sm:inline">
-                        Define el precio individual por modelo
+                        Define el precio individual por modelo de hardware
                       </span>
                     </div>
 
@@ -1126,7 +1281,7 @@ export const ProductManager = () => {
                       <table className="w-full text-left text-xs border-collapse">
                         <thead>
                           <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-extrabold uppercase tracking-wider">
-                            <th className="py-3 px-4">Modelo / Variante</th>
+                            <th className="py-3 px-4">Modelo / Especificación</th>
                             <th className="py-3 px-4 w-44">Precio ($ USD) *</th>
                             <th className="py-3 px-4 w-36">Stock Físico</th>
                             <th className="py-3 px-4 w-32">Cashea</th>

@@ -120,17 +120,20 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
     return fallback;
   };
 
-  const colorsList = !dynamicOptions && hasExplicitVariants
-    ? Array.from(
-        new Map(
-          product.variants
-            .filter(v => v.color)
-            .map(v => [v.color, { name: v.color, hex: v.colorHex || getColorHexFromName(v.color) }])
-        ).values()
-      )
-    : (!dynamicOptions ? parseOptions(product.colors, []) : []);
+  // Parse visual colors list (independent of price)
+  const colorsList = Array.isArray(product.colors) && product.colors.length > 0
+    ? product.colors.map(c => typeof c === 'object' && c.name ? c : { name: String(c), hex: getColorHexFromName(String(c)) })
+    : (hasExplicitVariants && product.variants.some(v => v.color)
+        ? Array.from(
+            new Map(
+              product.variants
+                .filter(v => v.color)
+                .map(v => [v.color, { name: v.color, hex: v.colorHex || getColorHexFromName(v.color) }])
+            ).values()
+          )
+        : (product.colors ? parseOptions(product.colors, []) : []));
 
-  const [legacyColor, setLegacyColor] = useState(colorsList[0] || 'Negro');
+  const [selectedColor, setSelectedColor] = useState(colorsList[0] || 'Negro');
   const [legacyRam, setLegacyRam] = useState('');
   const [legacyStorage, setLegacyStorage] = useState('');
 
@@ -140,7 +143,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
         ? (product.variants.find(v => 
             v.options && Object.keys(selectedOptions).every(k => v.options[k] === selectedOptions[k])
           ) || product.variants[0])
-        : (product.variants.find(v => v.color === getColorDisplayName(legacyColor)) || product.variants[0]))
+        : (product.variants.find(v => v.color === getColorDisplayName(selectedColor)) || product.variants[0]))
     : null;
 
   // Price calculations
@@ -312,49 +315,49 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                 </div>
 
                 {/* ------------------------------------------------------------- */}
-                {/* 2. DYNAMIC SHOPIFY-STYLE OPTION SELECTORS                     */}
+                {/* 2. VISUAL COLOR SWATCHES (INDEPENDENT OF PRICE)               */}
                 {/* ------------------------------------------------------------- */}
-                {dynamicOptions && dynamicOptions.length > 0 ? (
-                  <div className="space-y-3.5 pt-2 border-t border-slate-100">
-                    {dynamicOptions.map((opt, oIdx) => {
-                      const optNameLower = opt.name.toLowerCase();
-                      const isColorOption = optNameLower.includes('color') || optNameLower.includes('tono');
-                      const selectedVal = selectedOptions[opt.name] || opt.values[0] || '';
-
-                      if (isColorOption) {
+                {colorsList.length > 0 && (
+                  <div className="space-y-2 pt-2 border-t border-slate-100">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-black text-slate-800">Color:</span>
+                      <span className="text-xs font-bold text-slate-600">{getColorDisplayName(selectedColor)}</span>
+                    </div>
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      {colorsList.map((col, idx) => {
+                        const hex = typeof col === 'object' && col.hex ? col.hex : getColorHexFromName(col);
+                        const name = getColorDisplayName(col);
+                        const isSel = getColorDisplayName(selectedColor) === name;
                         return (
-                          <div key={oIdx} className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs font-black text-slate-800">{opt.name}:</span>
-                              <span className="text-xs font-bold text-slate-600">{selectedVal}</span>
-                            </div>
-                            <div className="flex items-center gap-2.5 flex-wrap">
-                              {opt.values.map((val, vIdx) => {
-                                const hex = getColorHexFromName(val);
-                                const isSel = selectedVal === val;
-                                return (
-                                  <button
-                                    key={vIdx}
-                                    type="button"
-                                    onClick={() => handleDynamicOptionChange(opt.name, val)}
-                                    className={`w-7 h-7 rounded-full border-2 transition-all shadow-xs relative ${
-                                      isSel 
-                                        ? 'border-blue-600 scale-125 ring-2 ring-blue-600/30' 
-                                        : 'border-slate-300 hover:scale-110 hover:border-slate-400'
-                                    }`}
-                                    style={{ backgroundColor: hex }}
-                                    title={val}
-                                  >
-                                    {hex?.toUpperCase() === '#FFFFFF' && (
-                                      <span className="absolute inset-0 rounded-full border border-slate-200" />
-                                    )}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => { setSelectedColor(col); setHasUserInteracted(true); }}
+                            className={`w-7 h-7 rounded-full border-2 transition-all shadow-xs relative ${
+                              isSel 
+                                ? 'border-blue-600 scale-125 ring-2 ring-blue-600/30' 
+                                : 'border-slate-300 hover:scale-110 hover:border-slate-400'
+                            }`}
+                            style={{ backgroundColor: hex }}
+                            title={name}
+                          >
+                            {hex?.toUpperCase() === '#FFFFFF' && (
+                              <span className="absolute inset-0 rounded-full border border-slate-200" />
+                            )}
+                          </button>
                         );
-                      }
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* ------------------------------------------------------------- */}
+                {/* 3. HARDWARE & SPEC OPTIONS (DICTATE VARIANT PRICE & STOCK)   */}
+                {/* ------------------------------------------------------------- */}
+                {dynamicOptions && dynamicOptions.filter(o => !o.name.toLowerCase().includes('color')).length > 0 && (
+                  <div className="space-y-3.5 pt-2 border-t border-slate-100">
+                    {dynamicOptions.filter(o => !o.name.toLowerCase().includes('color')).map((opt, oIdx) => {
+                      const selectedVal = selectedOptions[opt.name] || opt.values[0] || '';
 
                       return (
                         <div key={oIdx} className="space-y-1.5">
@@ -403,41 +406,6 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                       );
                     })}
                   </div>
-                ) : (
-                  /* LEGACY COLOR SELECTOR */
-                  colorsList.length > 0 && (
-                    <div className="space-y-2 pt-2 border-t border-slate-100">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-black text-slate-800">Color:</span>
-                        <span className="text-xs font-bold text-slate-500">{getColorDisplayName(legacyColor)}</span>
-                      </div>
-                      <div className="flex items-center gap-3 flex-wrap">
-                        {colorsList.map((col, idx) => {
-                          const hex = typeof col === 'object' && col.hex ? col.hex : getColorHexFromName(col);
-                          const name = getColorDisplayName(col);
-                          const isSel = getColorDisplayName(legacyColor) === name;
-                          return (
-                            <button
-                              key={idx}
-                              type="button"
-                              onClick={() => { setLegacyColor(col); setHasUserInteracted(true); }}
-                              className={`w-7 h-7 rounded-full border-2 transition-all shadow-sm relative ${
-                                isSel 
-                                  ? 'border-blue-600 scale-125 ring-2 ring-blue-600/30' 
-                                  : 'border-slate-300 hover:scale-110 hover:border-slate-400'
-                              }`}
-                              style={{ backgroundColor: hex }}
-                              title={name}
-                            >
-                              {hex?.toUpperCase() === '#FFFFFF' && (
-                                <span className="absolute inset-0 rounded-full border border-slate-200" />
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )
                 )}
 
               </div>

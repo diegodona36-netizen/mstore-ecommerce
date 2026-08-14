@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageSquare, X, Send, User, Bot, CheckCheck } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, CheckCheck } from 'lucide-react';
 
 export const WhatsappButton = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,13 +8,13 @@ export const WhatsappButton = () => {
     {
       id: 1,
       sender: 'bot',
-      text: '👋 ¡Hola! Bienvenido a M Store. ¿En qué podemos ayudarte hoy? Un asesor responderá a tus dudas.',
+      text: '👋 ¡Hola! Bienvenido a M Store. ¿En qué podemos asesorarte hoy?',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
   const [isSending, setIsSending] = useState(false);
 
-  // Send message to internal API / Database
+  // Send message to internal API / WhatsApp
   const handleSendMessage = async (e) => {
     e.preventDefault();
     const text = inputText.trim();
@@ -28,48 +28,49 @@ export const WhatsappButton = () => {
       timestamp: userMessageTime
     };
 
-    // Append user message immediately
     setMessages(prev => [...prev, userMsgObj]);
     setInputText('');
     setIsSending(true);
 
     try {
-      // Internal API Integration Placeholder for future Admin Dashboard response
-      // Example: await fetch('/api/chat/send', { method: 'POST', body: JSON.stringify(userMsgObj) });
-      
-      // Simulate rapid server delivery & auto-confirmation response
       setTimeout(() => {
         const botResponseObj = {
           id: Date.now() + 1,
           sender: 'bot',
-          text: 'Tu mensaje ha sido enviado a un asesor. Te responderemos por aquí en breve.',
+          text: 'Tu mensaje fue recibido. Un asesor de M Store te atenderá en unos momentos.',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
         setMessages(prev => [...prev, botResponseObj]);
         setIsSending(false);
       }, 600);
-
     } catch (error) {
-      console.error('Error enviando mensaje a la API interna:', error);
+      console.error('Error enviando mensaje:', error);
       setIsSending(false);
     }
   };
 
   return (
-    <div className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-40 flex flex-col items-end font-sans">
-      
-      {/* Ventana Flotante del Chat Interno */}
+    <>
+      {/* Mobile Backdrop when chat is open */}
       {isOpen && (
-        <div className="mb-4 w-80 sm:w-96 bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden animate-fadeIn flex flex-col h-[420px]">
+        <div 
+          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 bg-black/50 backdrop-blur-xs z-40 md:hidden animate-fadeIn"
+        />
+      )}
+
+      {/* Ventana Flotante del Chat */}
+      {isOpen && (
+        <div className="fixed inset-x-3 bottom-20 sm:bottom-24 sm:inset-x-auto sm:right-6 z-50 w-auto sm:w-96 max-w-sm mx-auto sm:mx-0 h-[420px] max-h-[70vh] bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden flex flex-col animate-fadeIn">
           
-          {/* Header del Chat (Fondo Oscuro Premium slate-900) */}
-          <div className="bg-black px-5 py-3.5 border-b border-neutral-800 flex items-center justify-between shrink-0">
+          {/* Header del Chat */}
+          <div className="bg-slate-950 px-4 sm:px-5 py-3 border-b border-slate-800 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="w-9 h-9 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center text-white font-black text-xs">
-                  <Bot className="w-5 h-5 text-blue-400" />
+                <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-white font-black text-xs">
+                  <Bot className="w-4 h-4 text-blue-400" />
                 </div>
-                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-slate-900 animate-pulse"></span>
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-slate-950 animate-pulse" />
               </div>
               <div>
                 <h4 className="text-xs font-black text-white leading-snug">Soporte y Atención M Store</h4>
@@ -78,7 +79,7 @@ export const WhatsappButton = () => {
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-neutral-900 transition-colors"
+              className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors"
               aria-label="Cerrar chat"
             >
               <X className="w-4 h-4" />
@@ -86,7 +87,7 @@ export const WhatsappButton = () => {
           </div>
 
           {/* Historial de Mensajes */}
-          <div className="flex-1 p-4 overflow-y-auto bg-slate-50 space-y-3">
+          <div className="flex-1 p-3.5 overflow-y-auto bg-slate-50 space-y-2.5">
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -95,9 +96,9 @@ export const WhatsappButton = () => {
                 }`}
               >
                 <div
-                  className={`p-3 rounded-2xl text-xs leading-relaxed shadow-sm ${
+                  className={`p-3 rounded-2xl text-xs leading-relaxed shadow-xs ${
                     msg.sender === 'user'
-                      ? 'bg-black text-white rounded-br-none font-medium'
+                      ? 'bg-slate-900 text-white rounded-br-none font-medium'
                       : 'bg-white text-slate-800 border border-slate-200 rounded-bl-none font-medium'
                   }`}
                 >
@@ -112,14 +113,14 @@ export const WhatsappButton = () => {
 
             {isSending && (
               <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium italic p-2">
-                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce"></span>
-                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:0.2s]"></span>
-                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:0.4s]"></span>
+                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce" />
+                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:0.2s]" />
+                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:0.4s]" />
               </div>
             )}
           </div>
 
-          {/* Formulario de Envío (Input Real + Submit) */}
+          {/* Formulario de Envío */}
           <form onSubmit={handleSendMessage} className="p-3 bg-white border-t border-slate-200 flex items-center gap-2 shrink-0">
             <input
               type="text"
@@ -131,7 +132,7 @@ export const WhatsappButton = () => {
             <button
               type="submit"
               disabled={!inputText.trim()}
-              className="bg-black hover:bg-neutral-900 disabled:opacity-40 text-white p-2.5 rounded-xl transition-all shadow-sm shrink-0 active:scale-95"
+              className="bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white p-2.5 rounded-xl transition-all shadow-sm shrink-0 active:scale-95"
               title="Enviar mensaje"
             >
               <Send className="w-4 h-4" />
@@ -142,17 +143,20 @@ export const WhatsappButton = () => {
       )}
 
       {/* Botón Flotante para Abrir Chat */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-black hover:bg-neutral-900 text-white shadow-xl transition-all duration-300 transform hover:scale-110 active:scale-95 border border-neutral-800"
-        aria-label="Abrir Chat de Atención al Cliente"
-      >
-        <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center text-[9px] font-black text-white ring-2 ring-white">
-          1
-        </span>
-        <MessageSquare className="w-6 h-6 text-white" />
-      </button>
-
-    </div>
+      <div className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-40 font-sans">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="group relative flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-slate-900 hover:bg-black text-white shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95 border border-slate-800"
+          aria-label="Abrir Chat de Atención al Cliente"
+        >
+          <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center text-[9px] font-black text-white ring-2 ring-white">
+            1
+          </span>
+          <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+        </button>
+      </div>
+    </>
   );
 };
+
+export default WhatsappButton;

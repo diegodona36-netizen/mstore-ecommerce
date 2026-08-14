@@ -117,7 +117,6 @@ export function App() {
       
       <div>
         {/* 1. TOP HEADER & NAVIGATION */}
-        <TopAnnouncementBar />
         <Navbar 
           onOpenCart={() => setIsCartOpen(true)}
           onOpenMegaMenu={() => setIsMegaMenuOpen(true)}

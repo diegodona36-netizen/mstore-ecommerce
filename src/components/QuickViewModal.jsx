@@ -67,11 +67,9 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
     return '#334155';
   };
 
-  const thumbnails = product.images && product.images.length > 0 ? product.images : [
-    product.image,
-    product.image,
-    product.image
-  ];
+  const thumbnails = Array.isArray(product.images) && product.images.length > 0 
+    ? product.images 
+    : (product.image ? [product.image] : []);
 
   const hasExplicitVariants = Array.isArray(product.variants) && product.variants.length > 0;
 
@@ -223,23 +221,25 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                 />
               </div>
 
-              {/* Thumbnails */}
-              <div className="flex items-center gap-3 mt-4">
-                {thumbnails.map((img, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => setActiveThumbIdx(idx)}
-                    className={`w-14 h-14 rounded-2xl bg-white border-2 p-1.5 transition-all overflow-hidden flex items-center justify-center ${
-                      activeThumbIdx === idx
-                        ? 'border-blue-600 shadow-md scale-105'
-                        : 'border-slate-200 opacity-60 hover:opacity-100'
-                    }`}
-                  >
-                    <img src={img} alt="Miniatura" className="w-full h-full object-contain" />
-                  </button>
-                ))}
-              </div>
+              {/* Thumbnails ONLY if there are 2 or more images */}
+              {thumbnails.length > 1 && (
+                <div className="flex items-center gap-3 mt-4">
+                  {thumbnails.map((img, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setActiveThumbIdx(idx)}
+                      className={`w-14 h-14 rounded-2xl bg-white border-2 p-1.5 transition-all overflow-hidden flex items-center justify-center ${
+                        activeThumbIdx === idx
+                          ? 'border-blue-600 shadow-md scale-105'
+                          : 'border-slate-200 opacity-60 hover:opacity-100'
+                      }`}
+                    >
+                      <img src={img} alt="Miniatura" className="w-full h-full object-contain" />
+                    </button>
+                  ))}
+                </div>
+              )}
 
               {/* Garantía y Seguridad */}
               <div className="w-full mt-6 pt-4 border-t border-slate-200/80 flex items-center justify-between text-xs text-slate-500 font-medium">

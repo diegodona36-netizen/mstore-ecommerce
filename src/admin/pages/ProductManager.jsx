@@ -28,7 +28,8 @@ import {
   Zap,
   Palette,
   Copy,
-  Sparkles
+  Sparkles,
+  Image as ImageIcon
 } from 'lucide-react';
 import { CATEGORIES } from '../../data/products';
 
@@ -107,7 +108,8 @@ export const ProductManager = () => {
     baseStock: '',
     colors: [], // [{ name: 'Negro Mate', hex: '#121212' }]
     variants: [], // [{ id: 'var_1', title: '128GB', price: 899, stock: 10, hasCashea: true }]
-    image: ''
+    image: '',
+    additionalImages: [] // ['url1', 'url2']
   });
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -160,7 +162,8 @@ export const ProductManager = () => {
         { name: 'Acero Inox', hex: '#94A3B8' }
       ],
       variants: [],
-      image: ''
+      image: '',
+      additionalImages: []
     });
     setCustomColorName('');
     setCustomColorHex('#121212');
@@ -193,6 +196,12 @@ export const ProductManager = () => {
       hasCashea: v.hasCashea !== false
     })) : [];
 
+    // Parse additional images (exclude main image to avoid duplicate)
+    let addImgs = [];
+    if (Array.isArray(product.images) && product.images.length > 1) {
+      addImgs = product.images.slice(1);
+    }
+
     setFormData({
       name: product.name || '',
       category: product.category || 'linea-blanca',
@@ -208,7 +217,8 @@ export const ProductManager = () => {
       baseStock: product.stock || '',
       colors: parsedColors,
       variants: parsedVariants,
-      image: product.image || ''
+      image: product.image || '',
+      additionalImages: addImgs
     });
     setCustomColorName('');
     setCustomColorHex('#121212');
@@ -317,6 +327,29 @@ export const ProductManager = () => {
     }));
   };
 
+  // Additional Images Gallery Handlers
+  const handleAddAdditionalImage = () => {
+    setFormData(prev => ({
+      ...prev,
+      additionalImages: [...prev.additionalImages, '']
+    }));
+  };
+
+  const handleUpdateAdditionalImage = (index, value) => {
+    setFormData(prev => {
+      const updated = [...prev.additionalImages];
+      updated[index] = value;
+      return { ...prev, additionalImages: updated };
+    });
+  };
+
+  const handleRemoveAdditionalImage = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      additionalImages: prev.additionalImages.filter((_, i) => i !== index)
+    }));
+  };
+
   // Image Upload Handler
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -370,6 +403,10 @@ export const ProductManager = () => {
         finalStock = formData.baseStock !== '' ? parseInt(formData.baseStock) : null;
       }
 
+      // Format clean images array (Main image first, followed by valid additional images)
+      const validExtraImages = (formData.additionalImages || []).map(s => s.trim()).filter(Boolean);
+      const finalImagesList = [finalImageUrl, ...validExtraImages];
+
       // Convert simple variants into options array for universal storefront compatibility
       const optionsArray = (formData.hasVariants && cleanVariants.length > 0)
         ? [{ name: 'Versión', values: cleanVariants.map(v => v.title) }]
@@ -391,6 +428,7 @@ export const ProductManager = () => {
         options: optionsArray,
         variants: cleanVariants,
         image: finalImageUrl,
+        images: finalImagesList,
         rating: editingProduct?.rating || 5.0,
         reviewsCount: editingProduct?.reviewsCount || 1,
         updatedAt: serverTimestamp()
@@ -842,12 +880,23 @@ export const ProductManager = () => {
 
               </div>
 
-              {/* Product Image */}
-              <div>
-                <label className="block text-xs font-extrabold text-slate-700 mb-1">
-                  Foto del Producto
-                </label>
+              {/* Product Image & Gallery */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-extrabold text-slate-700">
+                    Foto Principal del Producto *
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleAddAdditionalImage}
+                    className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>+ Agregar otra foto (opcional)</span>
+                  </button>
+                </div>
                 
+                {/* Main Image */}
                 <div className="flex items-center gap-4 p-3 border border-slate-200 rounded-2xl bg-slate-50/50">
                   <div className="w-16 h-16 rounded-xl bg-white border border-slate-200 flex items-center justify-center overflow-hidden p-1 shrink-0 shadow-xs">
                     {previewUrl || formData.image ? (
@@ -880,11 +929,38 @@ export const ProductManager = () => {
                         setFormData({ ...formData, image: e.target.value });
                         setPreviewUrl(e.target.value);
                       }}
-                      placeholder="O pega una URL de la imagen..."
+                      placeholder="O pega una URL de la imagen principal..."
                       className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 transition-all"
                     />
                   </div>
                 </div>
+
+                {/* Additional Gallery Images */}
+                {formData.additionalImages && formData.additionalImages.length > 0 && (
+                  <div className="space-y-2 pt-1">
+                    <span className="text-[11px] font-bold text-slate-600">Fotos adicionales (Galería):</span>
+                    {formData.additionalImages.map((extraImg, imgIdx) => (
+                      <div key={imgIdx} className="flex items-center gap-2">
+                        <ImageIcon className="w-4 h-4 text-slate-400 shrink-0" />
+                        <input
+                          type="url"
+                          value={extraImg}
+                          onChange={(e) => handleUpdateAdditionalImage(imgIdx, e.target.value)}
+                          placeholder={`URL de foto adicional ${imgIdx + 2} (ej. vista trasera, caja)...`}
+                          className="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 transition-all"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveAdditionalImage(imgIdx)}
+                          className="p-1 text-slate-400 hover:text-red-600 rounded transition-colors text-xs font-bold"
+                          title="Quitar foto"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* ------------------------------------------------------------- */}

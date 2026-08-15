@@ -139,9 +139,10 @@ export const PRODUCTS = [
     originalPrice: 110,
     rating: 4.7,
     reviewsCount: 88,
+    stock: 5,
     description: 'Batería magnética translúcida de cristal templado con pantalla LED digital y USB-C PD 30W.',
-    image: 'https://images.unsplash.com/photo-1609592424082-70b16827376c?auto=format&fit=crop&w=800&q=80',
-    colors: ['#0A0A0A', '#00E5FF'],
+    image: 'https://images.unsplash.com/photo-1622445262464-84b1456045b6?auto=format&fit=crop&w=800&q=80',
+    colors: ['#0A0A0A', '#93C5FD', '#FDE68A'],
     specs: {
       capacidad: '10,000 mAh Li-Po alta densidad',
       inalambrico: '15W Qi2 MagSafe Certified',

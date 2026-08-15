@@ -7,7 +7,16 @@ import {
   ChevronDown,
   Sparkles,
   ArrowRight,
-  Eye
+  Eye,
+  Truck,
+  CreditCard,
+  Smartphone,
+  Laptop,
+  Headphones,
+  Tv,
+  Home as HomeIcon,
+  Gamepad2,
+  Tag
 } from 'lucide-react';
 import { Logo } from './Logo';
 
@@ -17,7 +26,7 @@ export const Navbar = ({
   onOpenMegaMenu,
   isMegaMenuOpen,
   cartCount = 0,
-  searchQuery,
+  searchQuery = '',
   onSearchChange,
   products = [],
   onQuickView,
@@ -54,41 +63,50 @@ export const Navbar = ({
     if (onSearchSubmit) onSearchSubmit();
   };
 
-  // Filter matching products for live search preview
+  // Real-time case-insensitive & accent-insensitive predictive search
+  const cleanStr = (str) => 
+    (str || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
   const searchResults = (searchQuery && searchQuery.trim().length > 0)
     ? products.filter(p => {
-        const q = searchQuery.toLowerCase();
+        const q = cleanStr(searchQuery);
+        const name = cleanStr(p.name);
+        const category = cleanStr(p.category);
+        const tag = cleanStr(p.tag);
+        const desc = cleanStr(p.description);
+        const id = cleanStr(p.id);
         return (
-          p.name?.toLowerCase().includes(q) ||
-          p.category?.toLowerCase().includes(q) ||
-          p.tag?.toLowerCase().includes(q) ||
-          p.description?.toLowerCase().includes(q)
+          name.includes(q) ||
+          category.includes(q) ||
+          tag.includes(q) ||
+          desc.includes(q) ||
+          id.includes(q)
         );
-      }).slice(0, 5)
+      }).slice(0, 6)
     : [];
 
   const navCategories = [
-    { label: 'Smartphones', id: 'smartphones' },
-    { label: 'Laptops & PC', id: 'computacion' },
-    { label: 'Audio Hi-Fi', id: 'audio' },
-    { label: 'Televisores', id: 'televisores' },
-    { label: 'Hogar Inteligente', id: 'hogar' },
-    { label: 'Gaming', id: 'gaming' },
-    { label: 'Ofertas', id: 'ofertas', isSpecial: true }
+    { label: 'Smartphones', id: 'smartphones', icon: Smartphone },
+    { label: 'Laptops & PC', id: 'computacion', icon: Laptop },
+    { label: 'Audio Hi-Fi', id: 'audio', icon: Headphones },
+    { label: 'Televisores', id: 'linea-blanca', icon: Tv },
+    { label: 'Hogar Inteligente', id: 'hogar', icon: HomeIcon },
+    { label: 'Gaming', id: 'gaming', icon: Gamepad2 },
+    { label: 'Ofertas', id: 'ofertas', icon: Tag, isSpecial: true }
   ];
 
   return (
     <header className="sticky top-0 z-50 w-full shadow-md font-sans transition-all duration-300">
       
-      {/* 1. MAIN HEADER (DEEP LUXURY SLATE / OBSIDIAN) */}
+      {/* 1. MAIN HEADER BAR (DEEP OBSIDIAN / LUXURY SLATE) */}
       <div className="bg-[#0B0F17] border-b border-white/10 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-3">
-          <div className="flex items-center justify-between gap-3 md:gap-5">
+          <div className="flex items-center justify-between gap-3 sm:gap-4 md:gap-6">
             
             {/* BRAND LOGO */}
             <div 
               onClick={() => onNavigateHome && onNavigateHome()} 
-              className="flex items-center shrink-0 cursor-pointer group"
+              className="flex items-center shrink-0 cursor-pointer group py-1"
               title="Volver a Inicio"
             >
               <Logo size="medium" />
@@ -98,7 +116,7 @@ export const Navbar = ({
             <button
               type="button"
               onClick={onOpenMegaMenu || onToggleMegaMenu}
-              className={`hidden md:flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all shrink-0 border ${
+              className={`hidden md:flex items-center gap-2.5 px-4 h-11 rounded-xl text-xs font-black transition-all shrink-0 border ${
                 isMegaMenuOpen 
                   ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-600/30' 
                   : 'bg-white/10 hover:bg-white/15 text-white border-white/15 hover:border-white/25 shadow-xs active:scale-95'
@@ -109,14 +127,14 @@ export const Navbar = ({
               <ChevronDown className="w-3.5 h-3.5 opacity-60 ml-0.5" />
             </button>
 
-            {/* SEARCH BAR & PREDICTIVE LIVE RESULTS (DESKTOP) */}
-            <div ref={searchContainerRef} className="flex-1 max-w-xl relative hidden md:block">
+            {/* EXPANSIVE SEARCH BAR & LIVE PREDICTIVE RESULTS (DESKTOP) */}
+            <div ref={searchContainerRef} className="flex-1 max-w-2xl relative hidden md:block">
               <form 
                 onSubmit={handleSearchFormSubmit}
                 className="w-full relative"
               >
-                <div className="relative flex items-center bg-white rounded-xl shadow-sm border border-slate-200 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all overflow-hidden">
-                  <Search className="w-4 h-4 text-slate-400 ml-3.5 pointer-events-none shrink-0" />
+                <div className="relative flex items-center bg-white rounded-xl shadow-sm border border-slate-200 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all overflow-hidden h-11">
+                  <Search className="w-4 h-4 text-slate-400 ml-4 pointer-events-none shrink-0" />
                   <input
                     type="text"
                     value={searchQuery || ''}
@@ -125,8 +143,8 @@ export const Navbar = ({
                       onSearchChange && onSearchChange(e.target.value);
                       setIsSearchFocused(true);
                     }}
-                    placeholder="Buscar en M Store (ej: iPhone 15 Pro, MacBook, Smart TV 4K)..."
-                    className="w-full text-slate-900 text-xs font-medium px-3 py-2.5 bg-transparent placeholder:text-slate-400 outline-none"
+                    placeholder="Buscar en M Store (ej: iPhone 15 Pro, MacBook, Smart TV 4K, S24 Ultra)..."
+                    className="w-full text-slate-900 text-xs font-semibold px-3 py-2.5 bg-transparent placeholder:text-slate-400 outline-none"
                   />
                   
                   {searchQuery && (
@@ -136,13 +154,13 @@ export const Navbar = ({
                       className="p-1.5 mr-1 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
                       title="Limpiar búsqueda"
                     >
-                      <X className="w-3.5 h-3.5" />
+                      <X className="w-4 h-4" />
                     </button>
                   )}
 
                   <button
                     type="submit"
-                    className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-4 py-2.5 text-xs font-bold flex items-center gap-1.5 transition-colors shrink-0"
+                    className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-5 h-full text-xs font-black flex items-center gap-1.5 transition-colors shrink-0"
                   >
                     <span>Buscar</span>
                   </button>
@@ -153,9 +171,9 @@ export const Navbar = ({
               {isSearchFocused && searchQuery && searchQuery.trim().length > 0 && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50 animate-fadeIn">
                   <div className="p-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-500">
-                    <span>Resultados coincidentes ({searchResults.length})</span>
-                    <span className="text-blue-600 font-extrabold cursor-pointer" onClick={handleSearchFormSubmit}>
-                      Ver catálogo completo →
+                    <span>Sugerencias instantáneas ({searchResults.length})</span>
+                    <span className="text-blue-600 font-black cursor-pointer hover:underline" onClick={handleSearchFormSubmit}>
+                      Ver catálogo completo &rarr;
                     </span>
                   </div>
 
@@ -172,14 +190,14 @@ export const Navbar = ({
                             setIsSearchFocused(false);
                             onQuickView && onQuickView(p);
                           }}
-                          className="p-3 flex items-center justify-between gap-3 hover:bg-blue-50/60 cursor-pointer transition-colors group"
+                          className="p-3 flex items-center justify-between gap-3 hover:bg-blue-50/70 cursor-pointer transition-colors group"
                         >
                           <div className="flex items-center gap-3 min-w-0">
-                            <div className="w-12 h-12 rounded-lg bg-slate-100 p-1 shrink-0 border border-slate-200 flex items-center justify-center">
+                            <div className="w-12 h-12 rounded-xl bg-slate-100 p-1 shrink-0 border border-slate-200 flex items-center justify-center">
                               <img src={p.image} alt={p.name} className="h-full object-contain" />
                             </div>
                             <div className="min-w-0">
-                              <h4 className="text-xs font-bold text-slate-900 truncate group-hover:text-blue-600 transition-colors">
+                              <h4 className="text-xs font-black text-slate-900 truncate group-hover:text-blue-600 transition-colors">
                                 {p.name}
                               </h4>
                               <div className="flex items-center gap-2 mt-0.5">
@@ -193,7 +211,7 @@ export const Navbar = ({
                             </div>
                           </div>
 
-                          <div className="text-right shrink-0 flex items-center gap-2">
+                          <div className="text-right shrink-0 flex items-center gap-2.5">
                             <div>
                               <div className="text-xs font-black text-slate-900 font-inter">
                                 ${parseFloat(p.price || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })} USD
@@ -212,9 +230,9 @@ export const Navbar = ({
                     <button
                       type="button"
                       onClick={handleSearchFormSubmit}
-                      className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
+                      className="text-xs font-extrabold text-blue-600 hover:text-blue-700 transition-colors"
                     >
-                      Presiona Enter para buscar en todo el catálogo
+                      Presiona Enter o clic en "Buscar" para explorar en vista cuadrícula
                     </button>
                   </div>
                 </div>
@@ -226,7 +244,7 @@ export const Navbar = ({
               onSubmit={handleSearchFormSubmit}
               className="flex-1 relative md:hidden"
             >
-              <div className="relative flex items-center bg-white rounded-xl shadow-xs border border-slate-200 focus-within:border-blue-500 overflow-hidden">
+              <div className="relative flex items-center bg-white rounded-xl shadow-xs border border-slate-200 focus-within:border-blue-500 overflow-hidden h-10">
                 <Search className="w-3.5 h-3.5 text-slate-400 ml-3 pointer-events-none shrink-0" />
                 <input
                   type="text"
@@ -247,14 +265,12 @@ export const Navbar = ({
               </div>
             </form>
 
-            {/* RIGHT ACTIONS GROUP (DESKTOP / TABLET ONLY) */}
-            <div className="hidden sm:flex items-center gap-2 sm:gap-3 shrink-0">
-              
-              {/* Shopping Cart Button */}
+            {/* RIGHT ACTIONS GROUP: SHOPPING CART BUTTON */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <button
                 type="button"
                 onClick={onOpenCart}
-                className="relative flex items-center gap-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white px-4 py-2.5 rounded-xl text-xs font-black shadow-md shadow-blue-600/25 active:scale-95 transition-all group"
+                className="relative flex items-center gap-2.5 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white px-4 h-11 rounded-xl text-xs font-black shadow-md shadow-blue-600/30 active:scale-95 transition-all group"
                 aria-label="Ver Carrito de Compras"
               >
                 <ShoppingCart className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
@@ -265,40 +281,61 @@ export const Navbar = ({
                   </span>
                 )}
               </button>
-
             </div>
 
           </div>
         </div>
       </div>
 
-      {/* 2. SUB-NAVIGATION CATEGORIES RIBBON */}
+      {/* 2. SUB-NAVIGATION CATEGORIES RIBBON + TRUST BADGES */}
       <div className="w-full bg-white border-b border-slate-200/90 shadow-xs overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-start md:justify-center gap-1 sm:gap-2 py-2">
-          {navCategories.map((cat) => {
-            if (cat.isSpecial) {
+        <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between gap-4 py-2">
+          
+          {/* CATEGORIES BUTTONS LIST */}
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            {navCategories.map((cat) => {
+              if (cat.isSpecial) {
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => onSelectCategory && onSelectCategory(cat.id)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-black text-xs uppercase tracking-wider text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-all shrink-0 active:scale-95 shadow-2xs"
+                  >
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>{cat.label}</span>
+                  </button>
+                );
+              }
+
               return (
                 <button
                   key={cat.id}
                   onClick={() => onSelectCategory && onSelectCategory(cat.id)}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-black text-xs uppercase tracking-wider text-emerald-700 bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 transition-all shrink-0 active:scale-95 shadow-2xs"
+                  className="px-3 py-1.5 rounded-xl font-extrabold text-xs uppercase tracking-wide text-slate-700 hover:text-blue-600 hover:bg-slate-100 transition-all shrink-0 whitespace-nowrap active:scale-95"
                 >
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>{cat.label}</span>
+                  {cat.label}
                 </button>
               );
-            }
+            })}
+          </div>
 
-            return (
-              <button
-                key={cat.id}
-                onClick={() => onSelectCategory && onSelectCategory(cat.id)}
-                className="px-3.5 py-1.5 rounded-xl font-bold text-xs uppercase tracking-wide text-slate-700 hover:text-blue-600 hover:bg-blue-50/70 transition-all shrink-0 whitespace-nowrap active:scale-95"
-              >
-                {cat.label}
-              </button>
-            );
-          })}
+          {/* RIGHT TRUST BADGES: CASHEA & ENVÍOS NACIONALES */}
+          <div className="hidden lg:flex items-center gap-3 shrink-0 pl-4 border-l border-slate-200">
+            
+            {/* Cashea Tag */}
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200/70 text-amber-900 text-[11px] font-black tracking-tight shrink-0">
+              <span className="bg-[#FFE600] text-black px-1.5 py-0.2 rounded font-black text-[9px]">CASHEA</span>
+              <span>Lleva hoy y paga en cuotas</span>
+            </div>
+
+            {/* Envíos Nacionales Tag */}
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 text-[11px] font-extrabold tracking-tight shrink-0">
+              <Truck className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+              <span>Envíos Nacionales: Zoom • MRW • Tealca</span>
+            </div>
+
+          </div>
+
         </div>
       </div>
 

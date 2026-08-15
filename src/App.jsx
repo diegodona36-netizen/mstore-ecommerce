@@ -138,9 +138,11 @@ export function App() {
           onOpenMegaMenu={() => setIsMegaMenuOpen(true)}
           cartCount={cartTotalCount}
           searchQuery={searchQuery}
-          onSearchChange={(q) => {
-            setSearchQuery(q);
-            if (q && viewMode !== 'catalog') setViewMode('catalog');
+          onSearchChange={(q) => setSearchQuery(q)}
+          onSearchSubmit={() => {
+            if (searchQuery.trim()) {
+              setViewMode('catalog');
+            }
           }}
           products={products}
           onQuickView={(p) => setQuickViewProduct(p)}

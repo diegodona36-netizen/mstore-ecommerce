@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
-import { TopAnnouncementBar } from './components/TopAnnouncementBar';
 import { Hero } from './components/Hero';
-import { SocialProofBar } from './components/SocialProofBar';
-import { TestimonialsSection } from './components/TestimonialsSection';
+import { TrustBar } from './components/TrustBar';
+import { PromoBanners } from './components/PromoBanners';
 import { ProductCarousel } from './components/ProductCarousel';
-import { BenefitsBanner } from './components/BenefitsBanner';
 import { LocationSection } from './components/LocationSection';
 import { Footer } from './components/Footer';
 import { CartDrawer } from './components/CartDrawer';
@@ -13,7 +11,6 @@ import { CategoryMegaMenu } from './components/CategoryMegaMenu';
 import { QuickViewModal } from './components/QuickViewModal';
 import { WhatsappButton } from './components/WhatsappButton';
 import { CategoryShowcaseSection } from './components/CategoryShowcaseSection';
-import { CategoryBubbles } from './components/CategoryBubbles';
 import { FlashDealsSection } from './components/FlashDealsSection';
 import { INITIAL_PRODUCTS } from './data/products';
 import { MobileBottomNav } from './components/MobileBottomNav';
@@ -38,65 +35,84 @@ export function App() {
       } else {
         setProducts(INITIAL_PRODUCTS);
       }
-    }, (error) => {
-      console.warn("Firestore products listener notice:", error);
-      setProducts(INITIAL_PRODUCTS);
     });
 
     return () => unsubscribe();
   }, []);
-  const [cart, setCart] = useState([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
-  const [toastProduct, setToastProduct] = useState(null);
-  
-  // VIEW MODE ROUTING: 'home' | 'catalog'
-  const [viewMode, setViewMode] = useState('home');
+
   const [activeCategory, setActiveCategory] = useState('todos');
   const [searchQuery, setSearchQuery] = useState('');
+  const [customCategories, setCustomCategories] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
-  const [wishlist, setWishlist] = useState([]);
-  const [customCategories] = useState([]);
+  const [toastProduct, setToastProduct] = useState(null);
+  const [viewMode, setViewMode] = useState('home'); // 'home' or 'catalog'
+  
+  // Cart state persisted in localStorage
+  const [cart, setCart] = useState(() => {
+    const saved = localStorage.getItem('mstore_cart');
+    return saved ? JSON.parse(saved) : [];
+  });
 
-  const handleToggleWishlist = (productId) => {
-    setWishlist(prev => 
-      prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]
-    );
-  };
+  useEffect(() => {
+    localStorage.setItem('mstore_cart', JSON.stringify(cart));
+  }, [cart]);
 
-  // Handler to open catalog view cleanly with specific category
-  const navigateToCatalog = (categoryFilterId = 'todos') => {
-    setActiveCategory(categoryFilterId);
+  // Navigate to catalog
+  const navigateToCatalog = (categoryId = 'todos') => {
+    setActiveCategory(categoryId);
     setViewMode('catalog');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Handler to return home
+  // Navigate to home
   const navigateToHome = () => {
     setViewMode('home');
+    setSearchQuery('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Add to cart logic SILENT (Does NOT open cart drawer, shows Toast notification)
-  const handleAddToCart = (product) => {
-    setCart((prevCart) => {
-      const existing = prevCart.find((item) => item.id === product.id);
+  // Add to Cart
+  const handleAddToCart = (product, selectedVariant = null) => {
+    setCart((prev) => {
+      const itemKey = selectedVariant 
+        ? `${product.id}-${selectedVariant.capacity || ''}-${selectedVariant.color || ''}`
+        : product.id;
+      
+      const existing = prev.find((item) => item.cartKey === itemKey || item.id === product.id);
+      
       if (existing) {
-        return prevCart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + (product.quantity || 1) } : item
+        return prev.map((item) =>
+          (item.cartKey === itemKey || item.id === product.id)
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         );
       }
-      return [...prevCart, { ...product, quantity: product.quantity || 1 }];
+
+      const itemPrice = selectedVariant?.price ? parseFloat(selectedVariant.price) : parseFloat(product.price || 0);
+
+      return [
+        ...prev,
+        {
+          ...product,
+          cartKey: itemKey,
+          price: itemPrice,
+          selectedStorage: selectedVariant?.capacity || selectedVariant?.storage || null,
+          selectedColor: selectedVariant?.color || null,
+          quantity: 1
+        }
+      ];
     });
 
-    // Show floating Toast notification silently without opening side drawer
+    // Disparar Toast flotante en lugar de forzar la apertura del Drawer
     setToastProduct(product);
   };
 
   // Update quantity
   const handleUpdateQuantity = (productId, newQty) => {
     if (newQty <= 0) {
-      setCart((prev) => prev.filter((item) => item.id !== productId));
+      handleRemoveItem(productId);
     } else {
       setCart((prev) =>
         prev.map((item) => (item.id === productId ? { ...item, quantity: newQty } : item))
@@ -154,17 +170,20 @@ export function App() {
               onQuickViewHero={(p) => setQuickViewProduct(p)}
             />
 
-            {/* 2. OFERTAS RELÁMPAGO CON CRONÓMETRO EN VIVO */}
+            {/* 2. BARRA DE CONFIANZA, GARANTÍAS Y MARCAS OFICIALES */}
+            <TrustBar />
+
+            {/* 3. OFERTAS RELÁMPAGO CON CRONÓMETRO EN VIVO */}
             <FlashDealsSection 
               products={products}
               onAddToCart={handleAddToCart}
               onQuickView={(p) => setQuickViewProduct(p)}
             />
 
-            {/* 3. SECCIONES CENTRALES DE PRODUCTOS DESTACADOS */}
+            {/* 4. SECCIONES CENTRALES DE PRODUCTOS DESTACADOS */}
             <main className="bg-slate-50 pb-16">
               
-              <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-16 sm:space-y-20">
+              <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 sm:py-12 space-y-14 sm:space-y-16">
                 
                 {/* Bloque 1: Smartphones */}
                 <CategoryShowcaseSection 
@@ -176,6 +195,9 @@ export function App() {
                   onAddToCart={handleAddToCart}
                   onQuickView={(p) => setQuickViewProduct(p)}
                 />
+
+                {/* BANNERS PROMOCIONALES DIVIDIDOS (FLAGSHIPS & GAMING) */}
+                <PromoBanners onSelectCategory={(catId) => navigateToCatalog(catId)} />
 
                 {/* Bloque 2: Smart TVs y Audio */}
                 <CategoryShowcaseSection 
@@ -200,7 +222,7 @@ export function App() {
                 />
               </div>
 
-              {/* 4. TIENDA FÍSICA & UBICACIÓN */}
+              {/* 5. TIENDA FÍSICA & UBICACIÓN */}
               <div className="max-w-7xl mx-auto px-4 md:px-8 pt-6">
                 <LocationSection isLightBg={true} />
               </div>

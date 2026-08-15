@@ -1,20 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { ShoppingCart, Search, LayoutGrid, X, ChevronDown, Shield, ArrowRight } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  Search, 
+  ShoppingCart, 
+  LayoutGrid, 
+  X, 
+  ChevronDown,
+  Sparkles,
+  ArrowRight,
+  Eye
+} from 'lucide-react';
 import { Logo } from './Logo';
 
-export const Navbar = ({ 
-  cartCount = 0, 
-  onOpenCart, 
+export const Navbar = ({
+  onOpenCart,
+  onToggleMegaMenu,
   onOpenMegaMenu,
-  onToggleMegaMenu, 
   isMegaMenuOpen,
-  searchQuery = '',
+  cartCount = 0,
+  searchQuery,
   onSearchChange,
+  products = [],
+  onQuickView,
   onSearchSubmit,
   onNavigateHome,
   onSelectCategory
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const searchContainerRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,10 +37,35 @@ export const Navbar = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Click outside to close search dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+        setIsSearchFocused(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const handleSearchFormSubmit = (e) => {
     e.preventDefault();
+    setIsSearchFocused(false);
     if (onSearchSubmit) onSearchSubmit();
   };
+
+  // Filter matching products for live search preview
+  const searchResults = (searchQuery && searchQuery.trim().length > 0)
+    ? products.filter(p => {
+        const q = searchQuery.toLowerCase();
+        return (
+          p.name?.toLowerCase().includes(q) ||
+          p.category?.toLowerCase().includes(q) ||
+          p.tag?.toLowerCase().includes(q) ||
+          p.description?.toLowerCase().includes(q)
+        );
+      }).slice(0, 5)
+    : [];
 
   const navCategories = [
     { label: 'Smartphones', id: 'smartphones' },
@@ -71,40 +109,117 @@ export const Navbar = ({
               <ChevronDown className="w-3.5 h-3.5 opacity-60 ml-0.5" />
             </button>
 
-            {/* SEARCH BAR (EXPANSIVE DESKTOP) */}
-            <form 
-              onSubmit={handleSearchFormSubmit}
-              className="flex-1 max-w-xl relative hidden md:block"
-            >
-              <div className="relative flex items-center bg-white rounded-xl shadow-sm border border-slate-200 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all overflow-hidden">
-                <Search className="w-4 h-4 text-slate-400 ml-3.5 pointer-events-none shrink-0" />
-                <input
-                  type="text"
-                  value={searchQuery || ''}
-                  onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
-                  placeholder="Buscar en M Store (ej: iPhone 15 Pro, MacBook, Smart TV 4K)..."
-                  className="w-full text-slate-900 text-xs font-medium px-3 py-2.5 bg-transparent placeholder:text-slate-400 outline-none"
-                />
-                
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => onSearchChange && onSearchChange('')}
-                    className="p-1.5 mr-1 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
-                    title="Limpiar búsqueda"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                )}
+            {/* SEARCH BAR & PREDICTIVE LIVE RESULTS (DESKTOP) */}
+            <div ref={searchContainerRef} className="flex-1 max-w-xl relative hidden md:block">
+              <form 
+                onSubmit={handleSearchFormSubmit}
+                className="w-full relative"
+              >
+                <div className="relative flex items-center bg-white rounded-xl shadow-sm border border-slate-200 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all overflow-hidden">
+                  <Search className="w-4 h-4 text-slate-400 ml-3.5 pointer-events-none shrink-0" />
+                  <input
+                    type="text"
+                    value={searchQuery || ''}
+                    onFocus={() => setIsSearchFocused(true)}
+                    onChange={(e) => {
+                      onSearchChange && onSearchChange(e.target.value);
+                      setIsSearchFocused(true);
+                    }}
+                    placeholder="Buscar en M Store (ej: iPhone 15 Pro, MacBook, Smart TV 4K)..."
+                    className="w-full text-slate-900 text-xs font-medium px-3 py-2.5 bg-transparent placeholder:text-slate-400 outline-none"
+                  />
+                  
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => onSearchChange && onSearchChange('')}
+                      className="p-1.5 mr-1 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
+                      title="Limpiar búsqueda"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
 
-                <button
-                  type="submit"
-                  className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-4 py-2.5 text-xs font-bold flex items-center gap-1.5 transition-colors shrink-0"
-                >
-                  <span>Buscar</span>
-                </button>
-              </div>
-            </form>
+                  <button
+                    type="submit"
+                    className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-4 py-2.5 text-xs font-bold flex items-center gap-1.5 transition-colors shrink-0"
+                  >
+                    <span>Buscar</span>
+                  </button>
+                </div>
+              </form>
+
+              {/* FLOATING PREDICTIVE RESULTS DROPDOWN */}
+              {isSearchFocused && searchQuery && searchQuery.trim().length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50 animate-fadeIn">
+                  <div className="p-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-500">
+                    <span>Resultados coincidentes ({searchResults.length})</span>
+                    <span className="text-blue-600 font-extrabold cursor-pointer" onClick={handleSearchFormSubmit}>
+                      Ver catálogo completo →
+                    </span>
+                  </div>
+
+                  {searchResults.length === 0 ? (
+                    <div className="p-6 text-center text-slate-500 text-xs font-medium">
+                      No encontramos productos para "<span className="font-bold text-slate-800">{searchQuery}</span>".
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-slate-100 max-h-80 overflow-y-auto">
+                      {searchResults.map((p) => (
+                        <div
+                          key={p.id}
+                          onClick={() => {
+                            setIsSearchFocused(false);
+                            onQuickView && onQuickView(p);
+                          }}
+                          className="p-3 flex items-center justify-between gap-3 hover:bg-blue-50/60 cursor-pointer transition-colors group"
+                        >
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="w-12 h-12 rounded-lg bg-slate-100 p-1 shrink-0 border border-slate-200 flex items-center justify-center">
+                              <img src={p.image} alt={p.name} className="h-full object-contain" />
+                            </div>
+                            <div className="min-w-0">
+                              <h4 className="text-xs font-bold text-slate-900 truncate group-hover:text-blue-600 transition-colors">
+                                {p.name}
+                              </h4>
+                              <div className="flex items-center gap-2 mt-0.5">
+                                <span className="text-[10px] text-slate-400 capitalize">{p.category || 'Tecnología'}</span>
+                                {p.hasCashea !== false && (
+                                  <span className="bg-[#FFE600] text-black px-1.5 py-0.2 rounded font-black text-[8px]">
+                                    CASHEA
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="text-right shrink-0 flex items-center gap-2">
+                            <div>
+                              <div className="text-xs font-black text-slate-900 font-inter">
+                                ${parseFloat(p.price || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })} USD
+                              </div>
+                            </div>
+                            <span className="p-1.5 rounded-lg bg-slate-100 group-hover:bg-blue-600 group-hover:text-white text-slate-500 transition-colors">
+                              <Eye className="w-3.5 h-3.5" />
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="p-2.5 bg-slate-100 text-center border-t border-slate-200">
+                    <button
+                      type="button"
+                      onClick={handleSearchFormSubmit}
+                      className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
+                    >
+                      Presiona Enter para buscar en todo el catálogo
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* SEARCH BAR (MOBILE) */}
             <form 

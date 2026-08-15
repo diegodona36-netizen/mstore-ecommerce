@@ -9,6 +9,7 @@ import {
   ArrowRight,
   Eye,
   Truck,
+  ShieldCheck,
   CreditCard,
   Smartphone,
   Laptop,

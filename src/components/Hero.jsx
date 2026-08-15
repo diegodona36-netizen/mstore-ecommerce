@@ -154,57 +154,6 @@ export const Hero = ({ onCategorySelect, onExploreClick }) => {
 
         </div>
 
-        {/* ULTRA-MINIMALIST CORPORATE VALUE STRIP (UNDER HERO) */}
-        <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-3 sm:p-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 divide-y md:divide-y-0 md:divide-x divide-slate-200/80">
-            
-            {/* Feature 1: Garantía */}
-            <div className="flex items-center gap-2.5 sm:gap-3 px-2 py-1">
-              <div className="p-2 rounded-xl bg-white border border-slate-200 text-blue-600 shrink-0 shadow-2xs">
-                <ShieldCheck className="w-4 h-4" />
-              </div>
-              <div className="min-w-0">
-                <span className="text-xs font-black text-slate-900 block truncate">1 Año de Garantía</span>
-                <span className="text-[11px] text-slate-500 font-medium block truncate">Equipos nuevos sellados</span>
-              </div>
-            </div>
-
-            {/* Feature 2: Envíos */}
-            <div className="flex items-center gap-2.5 sm:gap-3 px-2 py-1 pt-2 md:pt-1">
-              <div className="p-2 rounded-xl bg-white border border-slate-200 text-emerald-600 shrink-0 shadow-2xs">
-                <Truck className="w-4 h-4" />
-              </div>
-              <div className="min-w-0">
-                <span className="text-xs font-black text-slate-900 block truncate">Envíos Asegurados</span>
-                <span className="text-[11px] text-slate-500 font-medium block truncate">A toda Venezuela</span>
-              </div>
-            </div>
-
-            {/* Feature 3: Cashea */}
-            <div className="flex items-center gap-2.5 sm:gap-3 px-2 py-1 pt-2 md:pt-1">
-              <div className="px-1.5 py-1 rounded-xl bg-[#FFE600] border border-amber-400 text-black font-black text-[9px] uppercase tracking-wider shrink-0 shadow-2xs">
-                CASHEA
-              </div>
-              <div className="min-w-0">
-                <span className="text-xs font-black text-slate-900 block truncate">Paga en Cuotas</span>
-                <span className="text-[11px] text-slate-500 font-medium block truncate">Financiamiento sin interés</span>
-              </div>
-            </div>
-
-            {/* Feature 4: WhatsApp */}
-            <div className="flex items-center gap-2.5 sm:gap-3 px-2 py-1 pt-2 md:pt-1">
-              <div className="p-2 rounded-xl bg-white border border-slate-200 text-slate-700 shrink-0 shadow-2xs">
-                <MessageCircle className="w-4 h-4" />
-              </div>
-              <div className="min-w-0">
-                <span className="text-xs font-black text-slate-900 block truncate">Atención VIP 24/7</span>
-                <span className="text-[11px] text-slate-500 font-medium block truncate">Asesoría directa</span>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
       </div>
     </section>
   );

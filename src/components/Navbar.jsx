@@ -98,6 +98,27 @@ export const Navbar = ({
   return (
     <header className="sticky top-0 z-50 w-full shadow-md font-sans transition-all duration-300">
       
+      {/* 0. BARRA SUPERIOR DE ANUNCIOS: CASHEA, ENVÍOS Y GARANTÍAS */}
+      <div className="w-full bg-[#070A0F] text-slate-300 border-b border-white/10 py-1.5 px-4 font-sans text-xs">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 text-[11px]">
+          <div className="flex items-center gap-2">
+            <span className="bg-[#FFE600] text-black font-black text-[9px] px-1.5 py-0.5 rounded shadow-2xs">CASHEA</span>
+            <span className="text-slate-200 font-bold">Compra hoy y paga en cuotas sin interés con Cashea</span>
+          </div>
+          <div className="hidden sm:flex items-center gap-4 text-slate-400 font-medium">
+            <span className="flex items-center gap-1.5 text-slate-300 font-semibold">
+              <Truck className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+              <span>Envíos Gratis a Nivel Nacional (Zoom • MRW • Tealca)</span>
+            </span>
+            <span className="text-white/20">|</span>
+            <span className="flex items-center gap-1.5 text-slate-300 font-semibold">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span>1 Año de Garantía Oficial</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* 1. MAIN HEADER BAR (DEEP OBSIDIAN / LUXURY SLATE) */}
       <div className="bg-[#0B0F17] border-b border-white/10 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-3">
@@ -287,55 +308,33 @@ export const Navbar = ({
         </div>
       </div>
 
-      {/* 2. SUB-NAVIGATION CATEGORIES RIBBON + TRUST BADGES */}
+      {/* 2. SUB-NAVIGATION CATEGORIES RIBBON (SOLO CATEGORÍAS LIMPIO Y CENTRADO) */}
       <div className="w-full bg-white border-b border-slate-200/90 shadow-xs overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between gap-4 py-2">
-          
-          {/* CATEGORIES BUTTONS LIST */}
-          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-            {navCategories.map((cat) => {
-              if (cat.isSpecial) {
-                return (
-                  <button
-                    key={cat.id}
-                    onClick={() => onSelectCategory && onSelectCategory(cat.id)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-black text-xs uppercase tracking-wider text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-all shrink-0 active:scale-95 shadow-2xs"
-                  >
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>{cat.label}</span>
-                  </button>
-                );
-              }
-
+        <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-start md:justify-center gap-1 sm:gap-2 py-2">
+          {navCategories.map((cat) => {
+            if (cat.isSpecial) {
               return (
                 <button
                   key={cat.id}
                   onClick={() => onSelectCategory && onSelectCategory(cat.id)}
-                  className="px-3 py-1.5 rounded-xl font-extrabold text-xs uppercase tracking-wide text-slate-700 hover:text-blue-600 hover:bg-slate-100 transition-all shrink-0 whitespace-nowrap active:scale-95"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-black text-xs uppercase tracking-wider text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-all shrink-0 active:scale-95 shadow-2xs"
                 >
-                  {cat.label}
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>{cat.label}</span>
                 </button>
               );
-            })}
-          </div>
+            }
 
-          {/* RIGHT TRUST BADGES: CASHEA & ENVÍOS NACIONALES */}
-          <div className="hidden lg:flex items-center gap-3 shrink-0 pl-4 border-l border-slate-200">
-            
-            {/* Cashea Tag */}
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200/70 text-amber-900 text-[11px] font-black tracking-tight shrink-0">
-              <span className="bg-[#FFE600] text-black px-1.5 py-0.2 rounded font-black text-[9px]">CASHEA</span>
-              <span>Lleva hoy y paga en cuotas</span>
-            </div>
-
-            {/* Envíos Nacionales Tag */}
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 text-[11px] font-extrabold tracking-tight shrink-0">
-              <Truck className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-              <span>Envíos Nacionales: Zoom • MRW • Tealca</span>
-            </div>
-
-          </div>
-
+            return (
+              <button
+                key={cat.id}
+                onClick={() => onSelectCategory && onSelectCategory(cat.id)}
+                className="px-3.5 py-1.5 rounded-xl font-extrabold text-xs uppercase tracking-wide text-slate-700 hover:text-blue-600 hover:bg-slate-100 transition-all shrink-0 whitespace-nowrap active:scale-95"
+              >
+                {cat.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 

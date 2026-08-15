@@ -1,68 +1,16 @@
 import React from 'react';
-import { Truck, ShieldCheck, CreditCard, MessageCircle } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 
 export const TrustBar = () => {
-  const benefits = [
-    {
-      icon: Truck,
-      title: 'Envío Gratis Nacional',
-      desc: 'Zoom, MRW y Tealca asegurado',
-      accent: 'text-blue-600',
-      bg: 'bg-blue-50'
-    },
-    {
-      icon: ShieldCheck,
-      title: 'Garantía Oficial 1 Año',
-      desc: 'Respaldo y soporte técnico directo',
-      accent: 'text-emerald-600',
-      bg: 'bg-emerald-50'
-    },
-    {
-      icon: CreditCard,
-      title: 'Paga con Cashea',
-      desc: 'Lleva hoy y paga en cuotas 0% interés',
-      accent: 'text-amber-600',
-      bg: 'bg-amber-50'
-    },
-    {
-      icon: MessageCircle,
-      title: 'Asesoría VIP 24/7',
-      desc: 'Atención personalizada por WhatsApp',
-      accent: 'text-indigo-600',
-      bg: 'bg-indigo-50'
-    }
-  ];
-
   return (
-    <section className="w-full bg-white border-y border-slate-200/80 font-sans py-8">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-8">
+    <section className="w-full bg-white border-b border-slate-200/80 font-sans py-3.5">
+      <div className="max-w-7xl mx-auto px-4 md:px-8">
         
-        {/* 1. CUADRÍCULA DE 4 BENEFICIOS CLAVE */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {benefits.map((item, idx) => {
-            const Icon = item.icon;
-            return (
-              <div 
-                key={idx}
-                className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50/80 border border-slate-100 hover:border-slate-200 hover:shadow-xs transition-all group"
-              >
-                <div className={`p-3 rounded-xl ${item.bg} ${item.accent} shrink-0 group-hover:scale-110 transition-transform duration-300`}>
-                  <Icon className="w-5 h-5" />
-                </div>
-                <div className="min-w-0">
-                  <h4 className="text-xs font-black text-slate-900 tracking-tight">{item.title}</h4>
-                  <p className="text-[11px] font-medium text-slate-500 truncate">{item.desc}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* 2. CINTA DE MARCAS OFICIALES CON LOGOS VECTORIALES EN NEGRO PURO */}
-        <div className="pt-4 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-wider text-slate-400 shrink-0">
-            <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-            <span>Distribuidores Oficiales:</span>
+        {/* CINTA DE MARCAS OFICIALES CON LOGOS VECTORIALES EN NEGRO PURO */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-wider text-slate-500 shrink-0">
+            <ShieldCheck className="w-4 h-4 text-blue-600" />
+            <span>Distribuidores Oficiales & Garantía Directa:</span>
           </div>
 
           {/* Marcas Oficiales con Logos en Letra Negra Sobria */}

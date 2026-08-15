@@ -283,21 +283,15 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                   {product.name}
                 </h2>
 
-                {/* Clean USD Tag */}
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200/80 text-[11px] font-extrabold text-slate-700 tracking-wide uppercase">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
-                  <span>Dólares ($ USD)</span>
-                </div>
-
-                {/* 1. RANGO DE PRECIO DINÁMICO */}
+                {/* PRECIO EN NEGRO PURO PROFESIONAL */}
                 <div className="space-y-1 pt-1">
-                  <div className="text-3xl sm:text-4xl font-black text-blue-600 tracking-tight font-sans flex items-baseline gap-1.5">
+                  <div className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight font-sans flex items-baseline gap-1.5">
                     {!hasUserInteracted && hasPriceRange ? (
                       <span>${minVariantPrice.toFixed(2)} - ${maxVariantPrice.toFixed(2)}</span>
                     ) : (
                       <span>${currentPrice.toFixed(2)}</span>
                     )}
-                    <span className="text-sm font-black text-slate-400">USD</span>
+                    <span className="text-sm font-black text-slate-500">USD</span>
                   </div>
 
                   {/* Stock Status Badge */}

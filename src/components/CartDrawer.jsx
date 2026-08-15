@@ -140,7 +140,7 @@ export const CartDrawer = ({
                       <h4 className="text-xs font-extrabold text-slate-900 truncate leading-snug">{item.name}</h4>
                       
                       <div className="flex items-baseline gap-1 mt-0.5">
-                        <span className="text-xs font-black text-blue-600 font-inter">
+                        <span className="text-xs font-black text-slate-900 font-inter">
                           ${itemPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                         </span>
                         <span className="text-[10px] text-slate-500 font-bold">USD</span>
@@ -210,7 +210,7 @@ export const CartDrawer = ({
                 <div className="flex justify-between items-center text-sm font-black text-slate-900 pt-2.5 border-t border-slate-100">
                   <span>Total Estimado:</span>
                   <div className="flex items-baseline gap-1 text-right">
-                    <span className="text-xl text-blue-600 font-black">
+                    <span className="text-xl text-slate-900 font-black">
                       ${subtotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </span>
                     <span className="text-xs text-slate-500 font-bold">USD</span>

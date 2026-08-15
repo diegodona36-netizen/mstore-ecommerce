@@ -228,30 +228,33 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
           
           <div className="grid grid-cols-1 md:grid-cols-2">
             
-            {/* COLUMNA IZQUIERDA: GALERÍA DE IMÁGENES */}
-            <div className="p-6 sm:p-8 bg-[#F8FAFC] border-b md:border-b-0 md:border-r border-slate-200 flex flex-col justify-between items-center">
+            {/* COLUMNA IZQUIERDA: GALERÍA DE IMÁGENES ULTRA PREMIUM */}
+            <div className="p-6 sm:p-8 bg-gradient-to-b from-[#F8FAFC] via-[#F1F5F9] to-[#F8FAFC] border-b md:border-b-0 md:border-r border-slate-200/90 flex flex-col justify-between items-center relative overflow-hidden">
               
-              {/* Imagen Principal */}
-              <div className="w-full h-64 sm:h-80 flex items-center justify-center relative p-4">
+              {/* Background Ambient Glow */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+              {/* Imagen Principal con Marco y Profundidad */}
+              <div className="w-full h-72 sm:h-96 flex items-center justify-center relative p-4 rounded-3xl bg-white/70 backdrop-blur-xs border border-white shadow-xs group/img overflow-hidden">
                 <img
                   src={thumbnails[activeThumbIdx] || product.image}
                   alt={product.name}
-                  className="max-h-full max-w-full object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.12)] transition-all duration-300"
+                  className="max-h-full max-w-full object-contain filter drop-shadow-[0_18px_30px_rgba(0,0,0,0.14)] group-hover/img:scale-105 transition-transform duration-500"
                 />
               </div>
 
               {/* Thumbnails ONLY if there are 2 or more images */}
               {thumbnails.length > 1 && (
-                <div className="flex items-center gap-3 mt-4">
+                <div className="flex items-center gap-3 mt-4 z-10">
                   {thumbnails.map((img, idx) => (
                     <button
                       key={idx}
                       type="button"
                       onClick={() => setActiveThumbIdx(idx)}
-                      className={`w-14 h-14 rounded-2xl bg-white border-2 p-1.5 transition-all overflow-hidden flex items-center justify-center ${
+                      className={`w-14 h-14 rounded-2xl bg-white border-2 p-1.5 transition-all overflow-hidden flex items-center justify-center shadow-2xs ${
                         activeThumbIdx === idx
-                          ? 'border-blue-600 shadow-md scale-105'
-                          : 'border-slate-200 opacity-60 hover:opacity-100'
+                          ? 'border-blue-600 shadow-md scale-105 ring-2 ring-blue-600/20'
+                          : 'border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-300'
                       }`}
                     >
                       <img src={img} alt="Miniatura" className="w-full h-full object-contain" />
@@ -261,12 +264,12 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
               )}
 
               {/* Garantía y Seguridad */}
-              <div className="w-full mt-6 pt-4 border-t border-slate-200/80 flex items-center justify-between text-xs text-slate-500 font-medium">
-                <span className="flex items-center gap-1.5">
+              <div className="w-full mt-6 pt-4 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500 font-semibold z-10">
+                <span className="flex items-center gap-1.5 text-slate-700">
                   <ShieldCheck className="w-4 h-4 text-emerald-600" />
                   <span>1 Año de Garantía Oficial</span>
                 </span>
-                <span>Caja Sellada Original</span>
+                <span className="text-slate-400 font-medium">Caja Sellada Original</span>
               </div>
 
             </div>

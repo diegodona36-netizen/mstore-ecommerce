@@ -191,6 +191,25 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
     setTimeout(() => setAdded(false), 1500);
   };
 
+  const handleWhatsAppDirectBuy = () => {
+    let msg = `🛒 *HOLA M STORE, DESEO COMPRAR DIRECTAMENTE ESTE EQUIPO:*\n\n`;
+    msg += `▪️ *${product.name}*\n`;
+    if (selectedOptions && Object.keys(selectedOptions).length > 0) {
+      Object.entries(selectedOptions).forEach(([k, v]) => {
+        msg += `   • ${k}: ${v}\n`;
+      });
+    }
+    if (selectedColor) {
+      msg += `   • Color: ${getColorDisplayName(selectedColor)}\n`;
+    }
+    msg += `   • Cantidad: ${quantity}\n`;
+    msg += `💰 *PRECIO TOTAL: $${(currentPrice * quantity).toFixed(2)} USD*\n\n`;
+    msg += `¿Tienen disponibilidad y delivery inmediato? ¡Gracias!`;
+
+    const whatsappUrl = `https://wa.me/584120000000?text=${encodeURIComponent(msg)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/70 backdrop-blur-md animate-fadeIn select-none font-sans">
       <div className="bg-white rounded-3xl w-full max-w-4xl max-h-[92vh] overflow-hidden shadow-2xl border border-slate-200 relative flex flex-col">
@@ -422,7 +441,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                     >
                       <Minus className="w-4 h-4" />
                     </button>
-                    <span className="px-4 text-sm font-black text-slate-900 select-none">
+                    <span className="px-3.5 text-sm font-black text-slate-900 select-none">
                       {quantity}
                     </span>
                     <button
@@ -440,7 +459,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                     type="button"
                     onClick={handleAdd}
                     disabled={isOutOfStock}
-                    className={`flex-1 py-3.5 px-6 rounded-2xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 ${
+                    className={`flex-1 py-3.5 px-4 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 ${
                       isOutOfStock
                         ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
                         : added
@@ -452,17 +471,27 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                       <span>Agotado</span>
                     ) : added ? (
                       <>
-                        <Check className="w-5 h-5" />
-                        <span>¡Agregado al Carrito!</span>
+                        <Check className="w-4 h-4" />
+                        <span>¡Agregado!</span>
                       </>
                     ) : (
                       <>
-                        <ShoppingCart className="w-5 h-5" />
+                        <ShoppingCart className="w-4 h-4" />
                         <span>Añadir al Carrito</span>
                       </>
                     )}
                   </button>
                 </div>
+
+                {/* Direct WhatsApp Purchase Button */}
+                <button
+                  type="button"
+                  onClick={handleWhatsAppDirectBuy}
+                  className="w-full py-3 px-4 rounded-2xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white shadow-md shadow-emerald-600/25 active:scale-95 transition-all"
+                >
+                  <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 fill-white shrink-0" />
+                  <span>Comprar Directo por WhatsApp</span>
+                </button>
               </div>
 
             </div>

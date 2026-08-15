@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Star, ShoppingCart, Eye, ChevronRight, Check } from 'lucide-react';
+import { Star, ShoppingCart, Eye, ChevronRight, Check, MessageCircle } from 'lucide-react';
 
 export const CategoryShowcaseCard = ({ 
   product, 
@@ -31,21 +31,29 @@ export const CategoryShowcaseCard = ({
     setTimeout(() => setAdded(false), 1500);
   };
 
+  const handleWhatsAppQuickBuy = (e) => {
+    e.stopPropagation();
+    const currentPrice = minPrice || product.price || 0;
+    const msg = `Hola M Store 👋, me interesa comprar el producto: *${product.name}* ($${currentPrice.toFixed(2)} USD). ¿Tienen disponibilidad y delivery?`;
+    const whatsappUrl = `https://wa.me/584120000000?text=${encodeURIComponent(msg)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   return (
     <div 
       onClick={handleCardClick}
-      className="group relative bg-white rounded-3xl p-4 border border-slate-200 hover:border-slate-300 transition-all duration-300 hover:shadow-xl flex flex-col justify-between h-full cursor-pointer select-none"
+      className="group relative bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-4 border border-slate-200 hover:border-slate-300 transition-all duration-300 hover:shadow-xl flex flex-col justify-between h-full cursor-pointer select-none"
     >
-      {/* 1. TOP DEDICATED BADGES & ACTIONS ROW (NO OVERLAPS) */}
-      <div className="flex items-center justify-between gap-2 min-h-[26px] mb-2.5">
-        <div className="flex items-center gap-1.5 flex-wrap">
+      {/* 1. TOP DEDICATED BADGES & ACTIONS ROW */}
+      <div className="flex items-center justify-between gap-1.5 min-h-[24px] mb-2">
+        <div className="flex items-center gap-1 flex-wrap">
           {product.hasCashea !== false && (
-            <span className="bg-[#FFE600] text-black font-black text-[9px] uppercase px-2 py-0.5 rounded-md border border-amber-400 shadow-2xs shrink-0">
+            <span className="bg-[#FFE600] text-black font-black text-[8px] sm:text-[9px] uppercase px-1.5 sm:px-2 py-0.5 rounded-md border border-amber-400 shadow-2xs shrink-0">
               CASHEA
             </span>
           )}
           {product.tag && (
-            <span className="bg-blue-50 border border-blue-200 text-blue-700 font-extrabold text-[9px] uppercase px-2 py-0.5 rounded-md truncate max-w-[130px]">
+            <span className="bg-blue-50 border border-blue-200 text-blue-700 font-extrabold text-[8px] sm:text-[9px] uppercase px-1.5 sm:px-2 py-0.5 rounded-md truncate max-w-[90px] sm:max-w-[120px]">
               {product.tag}
             </span>
           )}
@@ -58,15 +66,15 @@ export const CategoryShowcaseCard = ({
             e.stopPropagation();
             onQuickView && onQuickView(product);
           }}
-          className="p-1.5 rounded-xl text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all opacity-0 group-hover:opacity-100 shrink-0"
+          className="p-1 sm:p-1.5 rounded-lg sm:rounded-xl text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all opacity-0 group-hover:opacity-100 shrink-0"
           title="Vista Rápida"
         >
-          <Eye className="w-4 h-4" />
+          <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         </button>
       </div>
 
-      {/* 2. DEDICATED CLEAN IMAGE CONTAINER (100% FREE OF ANY OVERLAYS) */}
-      <div className="w-full rounded-2xl bg-[#F8FAFC] p-4 flex items-center justify-center h-44 sm:h-48 border border-slate-100 mb-3 overflow-hidden">
+      {/* 2. DEDICATED CLEAN IMAGE CONTAINER */}
+      <div className="w-full rounded-xl sm:rounded-2xl bg-[#F8FAFC] p-2.5 sm:p-4 flex items-center justify-center h-32 sm:h-44 md:h-48 border border-slate-100 mb-2.5 sm:mb-3 overflow-hidden">
         <img
           src={product.image || product.img}
           alt={product.name}
@@ -76,66 +84,78 @@ export const CategoryShowcaseCard = ({
       </div>
 
       {/* 3. PRODUCT INFORMATION */}
-      <div className="space-y-3 flex flex-col justify-between flex-grow">
-        <div className="space-y-1.5">
+      <div className="space-y-2 sm:space-y-3 flex flex-col justify-between flex-grow">
+        <div className="space-y-1">
           {/* Rating */}
-          <div className="flex items-center gap-1 text-amber-500 text-[11px] font-bold">
-            <Star className="w-3.5 h-3.5 fill-amber-400" />
+          <div className="flex items-center gap-1 text-amber-500 text-[10px] sm:text-[11px] font-bold">
+            <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-amber-400" />
             <span>{product.rating || '5.0'}</span>
             <span className="text-slate-400 font-normal">({product.reviewsCount || 52})</span>
           </div>
 
           {/* Product Name */}
-          <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 leading-snug line-clamp-2 min-h-[38px] group-hover:text-blue-600 transition-colors">
+          <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 leading-snug line-clamp-2 min-h-[32px] sm:min-h-[38px] group-hover:text-blue-600 transition-colors">
             {product.name}
           </h3>
         </div>
 
-        {/* Price & Action Button */}
-        <div className="pt-2.5 border-t border-slate-100 mt-auto space-y-2.5">
+        {/* Price & Dual Action Buttons */}
+        <div className="pt-2 border-t border-slate-100 mt-auto space-y-2">
           <div className="flex items-baseline justify-between">
             <div>
-              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Precio</div>
+              <div className="text-[9px] sm:text-[10px] text-slate-400 uppercase font-bold tracking-wider">Precio</div>
               <div className="flex items-baseline gap-1">
-                <span className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+                <span className="text-sm sm:text-lg font-black text-slate-900 tracking-tight">
                   {hasPriceRange 
                     ? `$${minPrice.toFixed(0)} - $${maxPrice.toFixed(0)}`
                     : `$${minPrice.toFixed(2)}`
                   }
                 </span>
-                <span className="text-[10px] font-extrabold text-slate-600">USD</span>
+                <span className="text-[9px] sm:text-[10px] font-extrabold text-slate-600">USD</span>
               </div>
             </div>
 
             {product.oldPrice && (
-              <span className="text-xs text-slate-400 line-through">
+              <span className="text-[10px] sm:text-xs text-slate-400 line-through">
                 ${product.oldPrice}
               </span>
             )}
           </div>
 
-          {/* Add to cart CTA */}
-          <button
-            type="button"
-            onClick={handleAdd}
-            className={`w-full py-2.5 rounded-xl font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm min-h-[42px] active:scale-95 ${
-              added 
-                ? 'bg-emerald-600 text-white' 
-                : 'bg-slate-900 hover:bg-black text-white'
-            }`}
-          >
-            {added ? (
-              <>
-                <Check className="w-4 h-4" />
-                <span>Agregado</span>
-              </>
-            ) : (
-              <>
-                <ShoppingCart className="w-4 h-4" />
-                <span>Añadir al Carrito</span>
-              </>
-            )}
-          </button>
+          {/* Dual CTAs: WhatsApp + Add to Cart */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <button
+              type="button"
+              onClick={handleWhatsAppQuickBuy}
+              className="p-2 sm:px-3 sm:py-2 rounded-xl font-extrabold text-[11px] sm:text-xs transition-all flex items-center justify-center gap-1 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 hover:border-emerald-600 shadow-2xs active:scale-95 shrink-0"
+              title="Comprar rápido por WhatsApp"
+            >
+              <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" />
+              <span className="hidden sm:inline">WhatsApp</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleAdd}
+              className={`flex-1 py-2 sm:py-2.5 px-2.5 rounded-xl font-extrabold text-[11px] sm:text-xs transition-all flex items-center justify-center gap-1 shadow-sm min-h-[36px] sm:min-h-[40px] active:scale-95 ${
+                added 
+                  ? 'bg-emerald-600 text-white' 
+                  : 'bg-blue-600 hover:bg-blue-700 text-white'
+              }`}
+            >
+              {added ? (
+                <>
+                  <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span>¡Listo!</span>
+                </>
+              ) : (
+                <>
+                  <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span>Agregar</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -157,20 +177,20 @@ export const CategoryShowcaseSection = ({
   const categoryProducts = safeProducts.filter(p => {
     if (categoryFilterId === 'todos') return true;
     return p.category === categoryFilterId || (p.category && p.category.includes(categoryFilterId));
-  }).slice(0, 4);
+  }).slice(0, 8); // Displays up to 8 products (2 full rows of 4 on desktop, 4 rows of 2 on mobile)
 
   if (categoryProducts.length === 0) return null;
 
   return (
-    <section className="space-y-5 font-sans">
+    <section className="space-y-4 sm:space-y-5 font-sans">
       
       {/* Category Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-3 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-3 pb-2.5 sm:pb-3 border-b border-slate-200">
         <div>
-          <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+          <h2 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
             {title}
           </h2>
-          <p className="text-xs text-slate-500 font-medium mt-0.5">
+          <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5">
             {subtitle}
           </p>
         </div>
@@ -185,8 +205,8 @@ export const CategoryShowcaseSection = ({
         </button>
       </div>
 
-      {/* Products Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      {/* Products Grid: 2 Columns on Mobile, 3 on Tablet, 4 on Desktop */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
         {categoryProducts.map((product) => (
           <CategoryShowcaseCard
             key={product.id}

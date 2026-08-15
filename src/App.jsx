@@ -165,15 +165,15 @@ export function App() {
         {/* ========================================================================= */}
         {viewMode === 'home' && (
           <div className="animate-fadeIn">
-            {/* 1. HERO BANNER PRINCIPAL */}
+            {/* 1. BARRA DE CONFIANZA, CASHEA, ENVÍOS Y MARCAS OFICIALES (ARRIBA DEL HERO) */}
+            <TrustBar />
+
+            {/* 2. HERO BANNER PRINCIPAL */}
             <Hero 
               onCategorySelect={(catId) => navigateToCatalog(catId)}
               onExploreClick={() => navigateToCatalog('todos')}
               onQuickViewHero={(p) => setQuickViewProduct(p)}
             />
-
-            {/* 2. BARRA DE CONFIANZA, GARANTÍAS Y MARCAS OFICIALES */}
-            <TrustBar />
 
             {/* 3. OFERTAS RELÁMPAGO CON CRONÓMETRO EN VIVO */}
             <FlashDealsSection 
@@ -182,15 +182,15 @@ export function App() {
               onQuickView={(p) => setQuickViewProduct(p)}
             />
 
-            {/* 4. SECCIONES CENTRALES DE PRODUCTOS DESTACADOS */}
+            {/* 4. SECCIONES DE CATEGORÍAS COMPLETAS Y NO REPETITIVAS */}
             <main className="bg-slate-50 pb-16">
               
               <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 sm:py-12 space-y-14 sm:space-y-16">
                 
-                {/* Bloque 1: Smartphones */}
+                {/* Categoría 1: Smartphones */}
                 <CategoryShowcaseSection 
-                  title="Flagships & Smartphones Más Vendidos"
-                  subtitle="Última tecnología de Apple, Samsung y Xiaomi con garantía oficial de 1 año"
+                  title="Smartphones & Telefonía Insignia"
+                  subtitle="Última tecnología de Apple, Samsung, Google y Xiaomi con garantía oficial de 1 año"
                   categoryFilterId="smartphones"
                   products={products}
                   onSelectCategory={(catId) => navigateToCatalog(catId)}
@@ -201,10 +201,43 @@ export function App() {
                 {/* BANNERS PROMOCIONALES DIVIDIDOS (FLAGSHIPS & GAMING) */}
                 <PromoBanners onSelectCategory={(catId) => navigateToCatalog(catId)} />
 
-                {/* Bloque 2: Smart TVs y Audio */}
+                {/* Categoría 2: Laptops & Computación */}
                 <CategoryShowcaseSection 
-                  title="Smart TVs 4K & Entretenimiento"
-                  subtitle="Pantallas OLED, QLED y barras de sonido de alta fidelidad"
+                  title="Laptops & Computación Pro"
+                  subtitle="Equipos de alto rendimiento para trabajo profesional, desarrollo y creatividad"
+                  categoryFilterId="computacion"
+                  products={products}
+                  onSelectCategory={(catId) => navigateToCatalog(catId)}
+                  onAddToCart={handleAddToCart}
+                  onQuickView={(p) => setQuickViewProduct(p)}
+                />
+
+                {/* Categoría 3: Audio Hi-Fi */}
+                <CategoryShowcaseSection 
+                  title="Audio Hi-Fi & Auriculares Premium"
+                  subtitle="Cancelación de ruido líder, audio espacial y potencia acústica profesional"
+                  categoryFilterId="audio"
+                  products={products}
+                  onSelectCategory={(catId) => navigateToCatalog(catId)}
+                  onAddToCart={handleAddToCart}
+                  onQuickView={(p) => setQuickViewProduct(p)}
+                />
+
+                {/* Categoría 4: Gaming & Consolas */}
+                <CategoryShowcaseSection 
+                  title="Zona Gaming & Consolas"
+                  subtitle="PlayStation 5 Pro, Nintendo Switch OLED, consolas portátiles y controles pro"
+                  categoryFilterId="gaming"
+                  products={products}
+                  onSelectCategory={(catId) => navigateToCatalog(catId)}
+                  onAddToCart={handleAddToCart}
+                  onQuickView={(p) => setQuickViewProduct(p)}
+                />
+
+                {/* Categoría 5: Smart TVs 4K & Cine */}
+                <CategoryShowcaseSection 
+                  title="Smart TVs 4K & Cine en Casa"
+                  subtitle="Pantallas OLED, Mini LED 144Hz y sistemas de sonido envolvente"
                   categoryFilterId="linea-blanca"
                   products={products}
                   onSelectCategory={(catId) => navigateToCatalog(catId)}
@@ -212,16 +245,17 @@ export function App() {
                   onQuickView={(p) => setQuickViewProduct(p)}
                 />
 
-                {/* Bloque 3: Computación */}
+                {/* Categoría 6: Wearables & Smartwatches */}
                 <CategoryShowcaseSection 
-                  title="Laptops & Computación Pro"
-                  subtitle="Equipos de alto rendimiento para trabajo profesional, oficina y gaming"
-                  categoryFilterId="computacion"
+                  title="Smartwatches & Wearables"
+                  subtitle="Monitoreo de salud avanzado, GPS satelital y conectividad total en tu muñeca"
+                  categoryFilterId="wearables"
                   products={products}
                   onSelectCategory={(catId) => navigateToCatalog(catId)}
                   onAddToCart={handleAddToCart}
                   onQuickView={(p) => setQuickViewProduct(p)}
                 />
+
               </div>
 
               {/* 5. TIENDA FÍSICA & UBICACIÓN */}

@@ -400,20 +400,22 @@ export function App() {
 
       <WhatsappButton />
 
-      {/* 5. NAVEGACIÓN BOTTOM MÓVIL (NATIVA ESTILO APP - SOLO MÓVIL flex md:hidden) */}
-      <MobileBottomNav 
-        cartCount={cartTotalCount}
-        onOpenMegaMenu={() => setIsMegaMenuOpen(true)}
-        onOpenCart={() => setIsCartOpen(true)}
-        onScrollToHome={navigateToHome}
-        onScrollToLocation={() => {
-          navigateToHome();
-          setTimeout(() => {
-            const locEl = document.getElementById('ubicacion');
-            if (locEl) locEl.scrollIntoView({ behavior: 'smooth' });
-          }, 100);
-        }}
-      />
+      {/* 5. NAVEGACIÓN BOTTOM MÓVIL (NATIVA ESTILO APP - SOLO EN HOME Y CATÁLOGO) */}
+      {viewMode !== 'product' && (
+        <MobileBottomNav 
+          cartCount={cartTotalCount}
+          onOpenMegaMenu={() => setIsMegaMenuOpen(true)}
+          onOpenCart={() => setIsCartOpen(true)}
+          onScrollToHome={navigateToHome}
+          onScrollToLocation={() => {
+            navigateToHome();
+            setTimeout(() => {
+              const locEl = document.getElementById('ubicacion');
+              if (locEl) locEl.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+          }}
+        />
+      )}
     </div>
   );
 }

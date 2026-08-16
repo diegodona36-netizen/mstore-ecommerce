@@ -659,12 +659,12 @@ export const ProductDetailPage = ({
 
       </div>
 
-      {/* 4. MOBILE STICKY BOTTOM BUY BAR (ESTILO AMAZON / MERCADOLIBRE) */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 p-3 sm:hidden shadow-xl flex items-center justify-between gap-2.5">
+      {/* 4. MOBILE STICKY BOTTOM BUY BAR (ESTILO MERCADOLIBRE / APPLE) */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#0B0F17] text-white border-t border-slate-800 p-3 sm:hidden shadow-2xl flex items-center justify-between gap-3">
         <div>
-          <div className="text-[9px] text-slate-400 uppercase font-bold">Total</div>
-          <div className="text-base font-black text-slate-900 leading-none">
-            ${(currentPrice * quantity).toFixed(2)}
+          <div className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Precio Total</div>
+          <div className="text-base font-black text-white leading-none">
+            ${(currentPrice * quantity).toFixed(2)} <span className="text-[10px] text-slate-400 font-bold">USD</span>
           </div>
         </div>
 
@@ -672,7 +672,7 @@ export const ProductDetailPage = ({
           <button
             type="button"
             onClick={handleWhatsAppDirectBuy}
-            className="p-2.5 rounded-xl bg-emerald-600 text-white font-extrabold text-xs flex items-center justify-center gap-1 shadow-2xs active:scale-95 shrink-0"
+            className="p-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs flex items-center justify-center gap-1 shadow-md active:scale-95 shrink-0"
             title="Comprar por WhatsApp"
           >
             <MessageCircle className="w-4 h-4 fill-current" />
@@ -682,12 +682,12 @@ export const ProductDetailPage = ({
             type="button"
             onClick={handleAdd}
             disabled={isOutOfStock}
-            className={`flex-1 py-2.5 px-3 rounded-xl font-black text-xs transition-all flex items-center justify-center gap-1 shadow-sm active:scale-95 ${
+            className={`flex-1 py-2.5 px-3 rounded-xl font-black text-xs transition-all flex items-center justify-center gap-1 shadow-md active:scale-95 ${
               isOutOfStock 
-                ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
                 : added 
                   ? 'bg-emerald-600 text-white' 
-                  : 'bg-blue-600 text-white'
+                  : 'bg-blue-600 hover:bg-blue-700 text-white'
             }`}
           >
             {added ? (

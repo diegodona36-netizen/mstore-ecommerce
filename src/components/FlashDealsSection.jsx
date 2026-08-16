@@ -85,8 +85,8 @@ export const FlashDealsSection = ({ products = [], onAddToCart, onQuickView }) =
 
           </div>
 
-          {/* Flash Deals Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {/* Flash Deals Grid: 2 Columns on Mobile, 2 on Tablet, 4 on Desktop */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
             {flashProducts.map((p, idx) => {
               const isAdded = addedIds.includes(p.id);
               const discountPct = p.discountPct || (idx % 2 === 0 ? 15 : 20);
@@ -98,16 +98,16 @@ export const FlashDealsSection = ({ products = [], onAddToCart, onQuickView }) =
                 <div
                   key={p.id || idx}
                   onClick={() => onQuickView && onQuickView(p)}
-                  className="group relative bg-white rounded-3xl p-4 flex flex-col justify-between text-slate-900 border border-slate-200 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer select-none"
+                  className="group relative bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-4 flex flex-col justify-between text-slate-900 border border-slate-200 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer select-none"
                 >
-                  {/* 1. DEDICATED TOP BADGES & ACTIONS ROW (NO OVERLAYS ON IMAGE) */}
-                  <div className="flex items-center justify-between gap-2 min-h-[26px] mb-2.5">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="bg-slate-900 text-white font-black text-[9px] px-2 py-0.5 rounded-md">
-                        -{discountPct}% OFF
+                  {/* 1. DEDICATED TOP BADGES & ACTIONS ROW */}
+                  <div className="flex items-center justify-between gap-1 min-h-[24px] mb-2">
+                    <div className="flex items-center gap-1 flex-wrap">
+                      <span className="bg-slate-900 text-white font-black text-[8px] sm:text-[9px] px-1.5 sm:px-2 py-0.5 rounded-md">
+                        -{discountPct}%
                       </span>
                       {p.hasCashea !== false && (
-                        <span className="bg-[#FFE600] text-black font-black text-[9px] px-1.5 py-0.5 rounded border border-amber-400 shadow-2xs">
+                        <span className="bg-[#FFE600] text-black font-black text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded border border-amber-400 shadow-2xs">
                           CASHEA
                         </span>
                       )}
@@ -119,15 +119,15 @@ export const FlashDealsSection = ({ products = [], onAddToCart, onQuickView }) =
                         e.stopPropagation();
                         onQuickView && onQuickView(p);
                       }}
-                      className="p-1.5 rounded-xl text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all opacity-0 group-hover:opacity-100 shrink-0"
+                      className="p-1 sm:p-1.5 rounded-lg sm:rounded-xl text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all opacity-0 group-hover:opacity-100 shrink-0"
                       title="Vista Rápida"
                     >
-                      <Eye className="w-4 h-4" />
+                      <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </button>
                   </div>
 
-                  {/* 2. DEDICATED IMAGE CONTAINER (100% CLEAR) */}
-                  <div className="w-full h-44 rounded-2xl bg-[#F8FAFC] flex items-center justify-center p-4 mb-3 overflow-hidden border border-slate-100">
+                  {/* 2. DEDICATED IMAGE CONTAINER */}
+                  <div className="w-full h-32 sm:h-44 rounded-xl sm:rounded-2xl bg-[#F8FAFC] flex items-center justify-center p-2.5 sm:p-4 mb-2.5 overflow-hidden border border-slate-100">
                     <img
                       src={p.image}
                       alt={p.name}
@@ -136,27 +136,27 @@ export const FlashDealsSection = ({ products = [], onAddToCart, onQuickView }) =
                   </div>
 
                   {/* 3. CONTENT */}
-                  <div className="space-y-3 flex-1 flex flex-col justify-between">
+                  <div className="space-y-2 sm:space-y-3 flex-1 flex flex-col justify-between">
                     <div>
-                      <div className="flex items-center gap-1 text-amber-500 text-[11px] font-bold mb-1">
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
+                      <div className="flex items-center gap-1 text-amber-500 text-[10px] sm:text-[11px] font-bold mb-0.5">
+                        <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-amber-400" />
                         <span>{p.rating || '5.0'}</span>
                         <span className="text-slate-400">({p.reviewsCount || 64})</span>
                       </div>
 
-                      <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 leading-snug line-clamp-2 min-h-[36px] group-hover:text-blue-600 transition-colors">
+                      <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 leading-snug line-clamp-2 min-h-[32px] sm:min-h-[36px] group-hover:text-blue-600 transition-colors">
                         {p.name}
                       </h3>
                     </div>
 
                     {/* Stock Progress Bar */}
-                    <div className="space-y-1 bg-slate-50 p-2 rounded-xl border border-slate-100">
-                      <div className="flex items-center justify-between text-[10px] font-bold text-slate-600">
-                        <span className="flex items-center gap-1 text-slate-900">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                          ¡Quedan {unitsLeft} unid.!
+                    <div className="space-y-1 bg-slate-50 p-1.5 sm:p-2 rounded-xl border border-slate-100">
+                      <div className="flex items-center justify-between text-[9px] sm:text-[10px] font-bold text-slate-600">
+                        <span className="flex items-center gap-1 text-slate-900 truncate">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                          ¡Quedan {unitsLeft}!
                         </span>
-                        <span className="text-emerald-700 font-bold">En oferta</span>
+                        <span className="text-emerald-700 font-bold hidden sm:inline">En oferta</span>
                       </div>
                       <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
                         <div 
@@ -167,23 +167,23 @@ export const FlashDealsSection = ({ products = [], onAddToCart, onQuickView }) =
                     </div>
 
                     {/* Price & Action */}
-                    <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                    <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-1.5">
                       <div>
-                        <div className="flex items-baseline gap-1">
-                          <span className="text-lg font-black text-slate-900">
-                            ${basePrice.toFixed(2)}
+                        <div className="flex items-baseline gap-0.5 sm:gap-1">
+                          <span className="text-sm sm:text-lg font-black text-slate-900">
+                            ${basePrice.toFixed(0)}
                           </span>
-                          <span className="text-[10px] font-extrabold text-slate-600">USD</span>
+                          <span className="text-[9px] sm:text-[10px] font-extrabold text-slate-600">USD</span>
                         </div>
-                        <span className="text-[11px] text-slate-400 line-through">
-                          ${originalPrice.toFixed(2)}
+                        <span className="text-[10px] sm:text-[11px] text-slate-400 line-through">
+                          ${originalPrice.toFixed(0)}
                         </span>
                       </div>
 
                       <button
                         type="button"
                         onClick={(e) => handleAdd(e, p)}
-                        className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all shadow-sm active:scale-95 ${
+                        className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-black flex items-center gap-1 transition-all shadow-sm active:scale-95 shrink-0 ${
                           isAdded
                             ? 'bg-emerald-600 text-white'
                             : 'bg-blue-600 hover:bg-blue-700 text-white'
@@ -191,12 +191,12 @@ export const FlashDealsSection = ({ products = [], onAddToCart, onQuickView }) =
                       >
                         {isAdded ? (
                           <>
-                            <Check className="w-3.5 h-3.5" />
+                            <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                             <span>Listo</span>
                           </>
                         ) : (
                           <>
-                            <ShoppingCart className="w-3.5 h-3.5" />
+                            <ShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                             <span>Comprar</span>
                           </>
                         )}

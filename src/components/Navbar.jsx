@@ -287,8 +287,8 @@ export const Navbar = ({
               </div>
             </form>
 
-            {/* RIGHT ACTIONS GROUP: SHOPPING CART BUTTON */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* RIGHT ACTIONS GROUP: SHOPPING CART BUTTON (DESKTOP/TABLET ONLY - MOBILE USES BOTTOM NAV) */}
+            <div className="hidden sm:flex items-center gap-2 sm:gap-3 shrink-0">
               <button
                 type="button"
                 onClick={onOpenCart}

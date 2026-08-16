@@ -182,10 +182,10 @@ export function App() {
               onQuickView={(p) => setQuickViewProduct(p)}
             />
 
-            {/* 4. SECCIONES DE CATEGORÍAS COMPLETAS Y NO REPETITIVAS */}
-            <main className="bg-slate-50 pb-16">
+            {/* 4. SECCIONES DE CATEGORÍAS ENMARCADAS EN CONTENEDORES INDIVIDUALES */}
+            <main className="bg-[#F1F5F9] py-8 sm:py-12 border-t border-slate-200/60">
               
-              <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 sm:py-12 space-y-14 sm:space-y-16">
+              <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-8 sm:space-y-10">
                 
                 {/* Categoría 1: Smartphones */}
                 <CategoryShowcaseSection 

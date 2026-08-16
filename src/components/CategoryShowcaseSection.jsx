@@ -182,10 +182,10 @@ export const CategoryShowcaseSection = ({
   if (categoryProducts.length === 0) return null;
 
   return (
-    <section className="space-y-4 sm:space-y-5 font-sans">
+    <section className="bg-white rounded-3xl p-5 sm:p-7 md:p-8 border border-slate-200/90 shadow-sm space-y-5 sm:space-y-6 font-sans">
       
       {/* Category Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-3 pb-2.5 sm:pb-3 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-3 sm:pb-4 border-b border-slate-100">
         <div>
           <h2 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
             {title}
@@ -198,10 +198,10 @@ export const CategoryShowcaseSection = ({
         <button
           type="button"
           onClick={() => onSelectCategory && onSelectCategory(categoryFilterId)}
-          className="inline-flex items-center gap-1 text-xs font-black text-blue-600 hover:text-blue-700 transition-colors group self-start sm:self-auto"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-50 hover:bg-blue-50 text-xs font-black text-blue-600 hover:text-blue-700 border border-slate-200/80 hover:border-blue-200 transition-all group self-start sm:self-auto shrink-0"
         >
-          <span>Ver todos los modelos</span>
-          <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          <span>Ver catálogo completo</span>
+          <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
         </button>
       </div>
 

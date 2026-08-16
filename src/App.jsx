@@ -193,6 +193,7 @@ export function App() {
           onQuickView={(p) => openProductDetail(p)}
           onNavigateHome={navigateToHome}
           onSelectCategory={(catId) => navigateToCatalog(catId)}
+          hideCategoryRibbon={viewMode === 'product'}
         />
 
         <CategoryMegaMenu 

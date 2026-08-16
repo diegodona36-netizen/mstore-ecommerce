@@ -308,7 +308,7 @@ export const ProductDetailPage = ({
             {/* ------------------------------------------------------------- */}
             {/* COLUMNA IZQUIERDA: GALERÍA DE IMÁGENES DEDICADA               */}
             {/* ------------------------------------------------------------- */}
-            <div className="lg:col-span-6 space-y-4">
+            <div className="lg:col-span-6 space-y-6">
               
               {/* Imagen Principal Hero con Fondo Mate Suave */}
               <div className="w-full h-72 sm:h-96 md:h-[450px] rounded-3xl bg-[#F8FAFC] border border-slate-200/80 p-6 flex items-center justify-center relative overflow-hidden group shadow-2xs">
@@ -336,26 +336,28 @@ export const ProductDetailPage = ({
                 />
               </div>
 
-              {/* Carrusel de Miniaturas */}
+              {/* Carrusel de Miniaturas con Espaciado Generoso y sin Colisiones */}
               {thumbnails.length > 1 && (
-                <div className="flex items-center gap-3 overflow-x-auto pb-2 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-slate-200">
-                  {thumbnails.map((img, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => {
-                        switchImageSmoothly(img);
-                        setActiveThumbIdx(idx);
-                      }}
-                      className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white border-2 p-2 transition-all overflow-hidden flex items-center justify-center shrink-0 shadow-2xs ${
-                        (activeImage === img || (!activeImage && activeThumbIdx === idx))
-                          ? 'border-blue-600 shadow-md scale-105 ring-2 ring-blue-600/20'
-                          : 'border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-300'
-                      }`}
-                    >
-                      <img src={img} alt="Miniatura" className="w-full h-full object-contain" />
-                    </button>
-                  ))}
+                <div className="pt-2">
+                  <div className="flex items-center gap-3.5 overflow-x-auto py-3 px-2 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-slate-200">
+                    {thumbnails.map((img, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => {
+                          switchImageSmoothly(img);
+                          setActiveThumbIdx(idx);
+                        }}
+                        className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white border-2 p-2 transition-all overflow-hidden flex items-center justify-center shrink-0 shadow-2xs ${
+                          (activeImage === img || (!activeImage && activeThumbIdx === idx))
+                            ? 'border-blue-600 shadow-md ring-2 ring-blue-600/30 scale-105'
+                            : 'border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-300'
+                        }`}
+                      >
+                        <img src={img} alt="Miniatura" className="w-full h-full object-contain" />
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
 

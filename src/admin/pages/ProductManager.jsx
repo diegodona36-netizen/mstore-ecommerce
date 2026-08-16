@@ -95,7 +95,7 @@ export const ProductManager = () => {
   // Simplified Product Form State
   const [formData, setFormData] = useState({
     name: '',
-    category: 'linea-blanca',
+    category: 'smartphones',
     tag: '',
     description: '',
     inStock: true,
@@ -105,6 +105,7 @@ export const ProductManager = () => {
     casheaInstallments: 3,
     hasVariants: false,
     basePrice: '',
+    oldPrice: '',
     baseStock: '',
     colors: [], // [{ name: 'Negro Mate', hex: '#121212' }]
     variants: [], // [{ id: 'var_1', title: '128GB', price: 899, stock: 10, hasCashea: true }]
@@ -146,7 +147,7 @@ export const ProductManager = () => {
     setEditingProduct(null);
     setFormData({
       name: '',
-      category: 'linea-blanca',
+      category: 'smartphones',
       tag: '',
       description: '',
       inStock: true,
@@ -156,10 +157,11 @@ export const ProductManager = () => {
       casheaInstallments: 3,
       hasVariants: false,
       basePrice: '',
+      oldPrice: '',
       baseStock: '',
       colors: [
         { name: 'Negro Mate', hex: '#121212' },
-        { name: 'Acero Inox', hex: '#94A3B8' }
+        { name: 'Titanio Natural', hex: '#948B7D' }
       ],
       variants: [],
       image: '',
@@ -204,7 +206,7 @@ export const ProductManager = () => {
 
     setFormData({
       name: product.name || '',
-      category: product.category || 'linea-blanca',
+      category: product.category || 'smartphones',
       tag: product.tag || '',
       description: product.description || '',
       inStock: product.inStock !== false,
@@ -214,6 +216,7 @@ export const ProductManager = () => {
       casheaInstallments: product.casheaInstallments || 3,
       hasVariants: hasVars,
       basePrice: product.price || '',
+      oldPrice: product.oldPrice || '',
       baseStock: product.stock || '',
       colors: parsedColors,
       variants: parsedVariants,
@@ -416,6 +419,7 @@ export const ProductManager = () => {
         name: formData.name.trim(),
         category: formData.category,
         price: finalPrice,
+        oldPrice: formData.oldPrice ? (parseFloat(formData.oldPrice) || null) : null,
         stock: finalStock,
         tag: formData.tag.trim(),
         description: formData.description.trim(),
@@ -1110,7 +1114,7 @@ export const ProductManager = () => {
 
                 {/* Si NO tiene versiones -> Precio Directo */}
                 {!formData.hasVariants ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
                       <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
                         Precio de Venta ($ USD) *
@@ -1126,6 +1130,24 @@ export const ProductManager = () => {
                           onChange={(e) => setFormData({ ...formData, basePrice: e.target.value })}
                           placeholder="ej. 750.00"
                           className="w-full pl-8 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-blue-700 outline-none focus:ring-2 focus:ring-blue-600 transition-all"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
+                        Precio Anterior / Tachado <span className="text-[10px] text-slate-400 font-normal">(Opcional)</span>
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0.01"
+                          value={formData.oldPrice}
+                          onChange={(e) => setFormData({ ...formData, oldPrice: e.target.value })}
+                          placeholder="ej. 850.00"
+                          className="w-full pl-8 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-500 outline-none focus:ring-2 focus:ring-blue-600 transition-all"
                         />
                       </div>
                     </div>

@@ -320,8 +320,8 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                           <span className="block text-xs font-black text-slate-900">
                             Disponible con Cashea
                           </span>
-                          <span className="text-[11px] font-semibold text-amber-900">
-                            Paga en cuotas sin interés con tu cuenta Cashea
+                          <span className="text-[11px] font-bold text-amber-900">
+                            Llévatelo hoy y paga en cuotas • 0% de Interés
                           </span>
                         </div>
                       </div>

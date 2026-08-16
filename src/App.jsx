@@ -15,12 +15,22 @@ import { FlashDealsSection } from './components/FlashDealsSection';
 import { INITIAL_PRODUCTS } from './data/products';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { Toast } from './components/Toast';
+import { ProductDetailPage } from './components/ProductDetailPage';
 import { ArrowLeft, ChevronRight, Home } from 'lucide-react';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { db } from './lib/firebase';
 
 export function App() {
   const [products, setProducts] = useState(INITIAL_PRODUCTS);
+  const [activeCategory, setActiveCategory] = useState('todos');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [customCategories, setCustomCategories] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [selectedProductDetail, setSelectedProductDetail] = useState(null);
+  const [toastProduct, setToastProduct] = useState(null);
+  const [viewMode, setViewMode] = useState('home'); // 'home', 'catalog', or 'product'
 
   useEffect(() => {
     // Listen to Firebase products in real-time
@@ -40,14 +50,25 @@ export function App() {
     return () => unsubscribe();
   }, []);
 
-  const [activeCategory, setActiveCategory] = useState('todos');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [customCategories, setCustomCategories] = useState([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
-  const [quickViewProduct, setQuickViewProduct] = useState(null);
-  const [toastProduct, setToastProduct] = useState(null);
-  const [viewMode, setViewMode] = useState('home'); // 'home' or 'catalog'
+  // Listen to URL search params for deep linking (?producto=ID)
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const params = new URLSearchParams(window.location.search);
+      const prodId = params.get('producto');
+      if (prodId && products.length > 0) {
+        const found = products.find(p => String(p.id) === String(prodId));
+        if (found) {
+          setSelectedProductDetail(found);
+          setViewMode('product');
+          return;
+        }
+      }
+    };
+
+    window.addEventListener('popstate', handleUrlChange);
+    handleUrlChange();
+    return () => window.removeEventListener('popstate', handleUrlChange);
+  }, [products]);
   
   // Cart state persisted in localStorage
   const [cart, setCart] = useState(() => {
@@ -59,17 +80,41 @@ export function App() {
     localStorage.setItem('mstore_cart', JSON.stringify(cart));
   }, [cart]);
 
+  // Open Dedicated Product Detail Page
+  const openProductDetail = (product) => {
+    setSelectedProductDetail(product);
+    setViewMode('product');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set('producto', product.id);
+      window.history.pushState({ view: 'product', productId: product.id }, '', url.toString());
+    } catch(e) {}
+  };
+
   // Navigate to catalog
   const navigateToCatalog = (categoryId = 'todos') => {
     setActiveCategory(categoryId);
+    setSelectedProductDetail(null);
     setViewMode('catalog');
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('producto');
+      window.history.pushState({}, '', url.toString());
+    } catch(e) {}
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Navigate to home
   const navigateToHome = () => {
+    setSelectedProductDetail(null);
     setViewMode('home');
     setSearchQuery('');
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('producto');
+      window.history.pushState({}, '', url.toString());
+    } catch(e) {}
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -145,7 +190,7 @@ export function App() {
             }
           }}
           products={products}
-          onQuickView={(p) => setQuickViewProduct(p)}
+          onQuickView={(p) => openProductDetail(p)}
           onNavigateHome={navigateToHome}
           onSelectCategory={(catId) => navigateToCatalog(catId)}
         />
@@ -172,7 +217,7 @@ export function App() {
             <Hero 
               onCategorySelect={(catId) => navigateToCatalog(catId)}
               onExploreClick={() => navigateToCatalog('todos')}
-              onQuickViewHero={(p) => setQuickViewProduct(p)}
+              onQuickViewHero={(p) => openProductDetail(p)}
             />
 
             {/* 3. CONTENEDOR PRINCIPAL DE MÓDULOS PERFECTAMENTE SEGMENTADOS */}
@@ -184,7 +229,7 @@ export function App() {
                 <FlashDealsSection 
                   products={products}
                   onAddToCart={handleAddToCart}
-                  onQuickView={(p) => setQuickViewProduct(p)}
+                  onQuickView={(p) => openProductDetail(p)}
                 />
 
                 {/* Módulo 2: Categoría Smartphones */}
@@ -195,7 +240,7 @@ export function App() {
                   products={products}
                   onSelectCategory={(catId) => navigateToCatalog(catId)}
                   onAddToCart={handleAddToCart}
-                  onQuickView={(p) => setQuickViewProduct(p)}
+                  onQuickView={(p) => openProductDetail(p)}
                 />
 
                 {/* Módulo 3: Categoría Laptops & Computación */}
@@ -206,7 +251,7 @@ export function App() {
                   products={products}
                   onSelectCategory={(catId) => navigateToCatalog(catId)}
                   onAddToCart={handleAddToCart}
-                  onQuickView={(p) => setQuickViewProduct(p)}
+                  onQuickView={(p) => openProductDetail(p)}
                 />
 
                 {/* Módulo 4: BANNERS PROMOCIONALES DIVIDIDOS (FLAGSHIPS & GAMING) */}
@@ -220,7 +265,7 @@ export function App() {
                   products={products}
                   onSelectCategory={(catId) => navigateToCatalog(catId)}
                   onAddToCart={handleAddToCart}
-                  onQuickView={(p) => setQuickViewProduct(p)}
+                  onQuickView={(p) => openProductDetail(p)}
                 />
 
                 {/* Módulo 6: Categoría Gaming & Consolas */}
@@ -231,7 +276,7 @@ export function App() {
                   products={products}
                   onSelectCategory={(catId) => navigateToCatalog(catId)}
                   onAddToCart={handleAddToCart}
-                  onQuickView={(p) => setQuickViewProduct(p)}
+                  onQuickView={(p) => openProductDetail(p)}
                 />
 
                 {/* Módulo 7: Categoría Smart TVs 4K & Cine */}
@@ -242,7 +287,7 @@ export function App() {
                   products={products}
                   onSelectCategory={(catId) => navigateToCatalog(catId)}
                   onAddToCart={handleAddToCart}
-                  onQuickView={(p) => setQuickViewProduct(p)}
+                  onQuickView={(p) => openProductDetail(p)}
                 />
 
                 {/* Módulo 8: Categoría Wearables & Smartwatches */}
@@ -253,7 +298,7 @@ export function App() {
                   products={products}
                   onSelectCategory={(catId) => navigateToCatalog(catId)}
                   onAddToCart={handleAddToCart}
-                  onQuickView={(p) => setQuickViewProduct(p)}
+                  onQuickView={(p) => openProductDetail(p)}
                 />
 
                 {/* Módulo 9: TIENDA FÍSICA & UBICACIÓN ENMARCADA */}
@@ -301,13 +346,26 @@ export function App() {
                 activeCategory={activeCategory}
                 onCategoryChange={setActiveCategory}
                 onAddToCart={handleAddToCart}
-                onQuickView={(product) => setQuickViewProduct(product)}
+                onQuickView={(product) => openProductDetail(product)}
                 searchQuery={searchQuery}
                 customCategories={customCategories}
                 isLightBg={true}
               />
             </div>
           </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* VISTA 3: DEDICATED PRODUCT DETAIL VIEW (AMAZON / MERCADOLIBRE STYLE)     */}
+        {/* ========================================================================= */}
+        {viewMode === 'product' && selectedProductDetail && (
+          <ProductDetailPage
+            product={selectedProductDetail}
+            allProducts={products}
+            onBack={navigateToHome}
+            onAddToCart={handleAddToCart}
+            onSelectProduct={(product) => openProductDetail(product)}
+          />
         )}
       </div>
 

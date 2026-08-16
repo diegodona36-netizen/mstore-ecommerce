@@ -181,12 +181,12 @@ export const ProductManager = () => {
     let parsedColors = [];
     if (Array.isArray(product.colors) && product.colors.length > 0) {
       parsedColors = product.colors.map(c => {
-        if (typeof c === 'object' && c.name) return { name: c.name, hex: c.hex || getSuggestedHex(c.name) };
-        return { name: String(c), hex: getSuggestedHex(String(c)) };
+        if (typeof c === 'object' && c.name) return { name: c.name, hex: c.hex || getSuggestedHex(c.name), image: c.image || '' };
+        return { name: String(c), hex: getSuggestedHex(String(c)), image: '' };
       });
     } else if (Array.isArray(product.variants) && product.variants.some(v => v.color)) {
       const uniqueColors = Array.from(new Set(product.variants.map(v => v.color).filter(Boolean)));
-      parsedColors = uniqueColors.map(cName => ({ name: cName, hex: getSuggestedHex(cName) }));
+      parsedColors = uniqueColors.map(cName => ({ name: cName, hex: getSuggestedHex(cName), image: '' }));
     }
 
     const hasVars = Array.isArray(product.variants) && product.variants.length > 0;
@@ -195,7 +195,8 @@ export const ProductManager = () => {
       title: v.title || Object.values(v.options || {}).join(' / ') || [v.ram, v.storage].filter(Boolean).join(' / ') || `Versión ${i + 1}`,
       price: v.price !== undefined ? v.price : (product.price || ''),
       stock: v.stock !== undefined && v.stock !== null ? v.stock : '',
-      hasCashea: v.hasCashea !== false
+      hasCashea: v.hasCashea !== false,
+      image: v.image || ''
     })) : [];
 
     // Parse additional images (exclude main image to avoid duplicate)
@@ -289,7 +290,8 @@ export const ProductManager = () => {
       title: title,
       price: defaultPrice,
       stock: '',
-      hasCashea: true
+      hasCashea: true,
+      image: ''
     };
 
     setFormData(prev => ({
@@ -390,12 +392,18 @@ export const ProductManager = () => {
       if (formData.hasVariants && formData.variants.length > 0) {
         cleanVariants = formData.variants.map((v, i) => {
           const rawStock = v.stock !== '' && v.stock !== undefined && v.stock !== null ? parseInt(v.stock) : null;
+          // Fallback logic: If variant has no specific image, inherit parent image!
+          const variantImg = (v.image && typeof v.image === 'string' && v.image.trim()) 
+            ? v.image.trim() 
+            : finalImageUrl;
+
           return {
             id: v.id || `var_${Date.now()}_${i}`,
             title: v.title || `Versión ${i + 1}`,
             price: parseFloat(v.price) || 0,
             stock: isNaN(rawStock) ? null : rawStock,
-            hasCashea: v.hasCashea !== false
+            hasCashea: v.hasCashea !== false,
+            image: variantImg
           };
         });
 
@@ -415,6 +423,12 @@ export const ProductManager = () => {
         ? [{ name: 'Versión', values: cleanVariants.map(v => v.title) }]
         : [];
 
+      const cleanColors = (formData.colors || []).map(c => ({
+        name: c.name,
+        hex: c.hex || getSuggestedHex(c.name),
+        image: (c.image && typeof c.image === 'string' && c.image.trim()) ? c.image.trim() : null
+      }));
+
       const productPayload = {
         name: formData.name.trim(),
         category: formData.category,
@@ -428,7 +442,7 @@ export const ProductManager = () => {
         isFlashDeal: formData.isFlashDeal || false,
         casheaInitialPercent: parseInt(formData.casheaInitialPercent) || 40,
         casheaInstallments: parseInt(formData.casheaInstallments) || 3,
-        colors: formData.colors || [],
+        colors: cleanColors,
         options: optionsArray,
         variants: cleanVariants,
         image: finalImageUrl,
@@ -1231,12 +1245,13 @@ export const ProductManager = () => {
                         <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-2xs">
                           <table className="w-full text-left text-xs border-collapse">
                             <thead>
-                              <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-extrabold uppercase tracking-wider">
+                              <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-extrabold uppercase tracking-wider text-[11px]">
                                 <th className="py-2.5 px-3">Versión / Capacidad</th>
-                                <th className="py-2.5 px-3 w-40">Precio ($ USD) *</th>
-                                <th className="py-2.5 px-3 w-32">Stock</th>
-                                <th className="py-2.5 px-3 w-28">Cashea</th>
-                                <th className="py-2.5 px-3 text-right w-12"></th>
+                                <th className="py-2.5 px-3 w-56">Foto Variante (Opcional)</th>
+                                <th className="py-2.5 px-3 w-36">Precio ($ USD) *</th>
+                                <th className="py-2.5 px-3 w-28">Stock</th>
+                                <th className="py-2.5 px-3 w-24">Cashea</th>
+                                <th className="py-2.5 px-3 text-right w-10"></th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 font-medium">
@@ -1247,6 +1262,26 @@ export const ProductManager = () => {
                                     <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-100 font-extrabold text-xs">
                                       {v.title}
                                     </span>
+                                  </td>
+
+                                  {/* Variant Image */}
+                                  <td className="py-2 px-3">
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0 overflow-hidden shadow-2xs">
+                                        {v.image || previewUrl || formData.image ? (
+                                          <img src={v.image || previewUrl || formData.image} alt="Preview" className="w-full h-full object-contain" />
+                                        ) : (
+                                          <ImageIcon className="w-3.5 h-3.5 text-slate-400" />
+                                        )}
+                                      </div>
+                                      <input
+                                        type="url"
+                                        placeholder="URL foto (hereda la principal si está vacío)"
+                                        value={v.image || ''}
+                                        onChange={(e) => handleUpdateVariantField(vIdx, 'image', e.target.value)}
+                                        className="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg text-[11px] font-medium text-slate-800 outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all placeholder:text-slate-400"
+                                      />
+                                    </div>
                                   </td>
 
                                   {/* Price */}

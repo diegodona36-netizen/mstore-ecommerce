@@ -19,6 +19,14 @@ export const ProductCard = ({ product, onAddToCart, onQuickView, isLightBg = tru
     window.open(whatsappUrl, '_blank');
   };
 
+  const hasVariants = Array.isArray(product.variants) && product.variants.length > 0;
+  const variantPrices = hasVariants 
+    ? product.variants.map(v => parseFloat(v.price) || 0).filter(p => p > 0)
+    : [];
+  const minPrice = variantPrices.length > 0 ? Math.min(...variantPrices) : (parseFloat(product.price) || 0);
+  const maxPrice = variantPrices.length > 0 ? Math.max(...variantPrices) : (parseFloat(product.price) || 0);
+  const hasPriceRange = minPrice !== maxPrice && minPrice > 0;
+
   return (
     <div 
       onClick={() => onQuickView(product)}
@@ -53,7 +61,7 @@ export const ProductCard = ({ product, onAddToCart, onQuickView, isLightBg = tru
           className={`p-1 sm:p-1.5 rounded-xl transition-all opacity-0 group-hover:opacity-100 shrink-0 ${
             isLightBg 
               ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900' 
-              : 'bg-white/5 hover:bg-slate-700 text-slate-300 hover:text-white'
+              : 'bg-white/5 hover:bg-slate-700 text-slate-300 hover:white'
           }`}
           title="Vista Rápida"
         >
@@ -61,22 +69,23 @@ export const ProductCard = ({ product, onAddToCart, onQuickView, isLightBg = tru
         </button>
       </div>
 
-      {/* 2. PRODUCT IMAGE CONTAINER */}
-      <div className="relative h-32 sm:h-44 md:h-48 w-full flex items-center justify-center mb-2.5 sm:mb-3 overflow-hidden rounded-xl sm:rounded-2xl bg-[#F8FAFC] p-2.5 sm:p-4 border border-slate-100">
+      {/* 2. DEDICATED IMAGE CONTAINER */}
+      <div className="w-full rounded-xl sm:rounded-2xl bg-[#F8FAFC] p-3 sm:p-4 flex items-center justify-center h-32 sm:h-44 md:h-48 border border-slate-100 mb-3 overflow-hidden">
         <img
-          src={product.image}
+          src={product.image || product.img}
           alt={product.name}
-          className="max-h-full max-w-full object-contain transform group-hover:scale-105 transition-transform duration-500 filter drop-shadow-sm"
+          className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500 filter drop-shadow-sm"
+          loading="lazy"
         />
       </div>
 
-      {/* 3. PRODUCT DETAILS */}
+      {/* 3. PRODUCT INFO */}
       <div className="flex-1 flex flex-col justify-between space-y-2 sm:space-y-3">
         <div className="space-y-1">
-          {/* Rating & Reviews */}
-          <div className="flex items-center gap-1 text-amber-500">
-            <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
-            <span className={`text-[10px] sm:text-xs font-bold font-space ${isLightBg ? 'text-slate-900' : 'text-slate-200'}`}>
+          {/* Rating */}
+          <div className="flex items-center gap-1.5">
+            <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-amber-400 text-amber-400" />
+            <span className={`text-[10px] sm:text-xs font-bold font-inter ${isLightBg ? 'text-slate-900' : 'text-white'}`}>
               {product.rating || '5.0'}
             </span>
             <span className={`text-[10px] sm:text-[11px] font-inter ${isLightBg ? 'text-slate-500' : 'text-slate-400'}`}>
@@ -99,7 +108,10 @@ export const ProductCard = ({ product, onAddToCart, onQuickView, isLightBg = tru
               <div className="text-[9px] sm:text-[10px] text-slate-500 font-inter uppercase tracking-wider font-bold">Precio</div>
               <div className="flex items-baseline gap-1">
                 <span className={`text-sm sm:text-lg font-black font-inter tracking-tight ${isLightBg ? 'text-slate-900' : 'text-white'}`}>
-                  ${product.price ? (product.price.toFixed ? product.price.toFixed(2) : product.price) : '0.00'}
+                  {hasPriceRange 
+                    ? `$${minPrice.toFixed(0)} - $${maxPrice.toFixed(0)}`
+                    : `$${minPrice.toFixed(2)}`
+                  }
                 </span>
                 <span className="text-[9px] sm:text-xs font-extrabold text-slate-700 font-inter">USD</span>
               </div>

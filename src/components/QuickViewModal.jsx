@@ -10,10 +10,29 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
   const [added, setAdded] = useState(false);
   const [activeThumbIdx, setActiveThumbIdx] = useState(0);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [activeImage, setActiveImage] = useState(product?.image || '');
+  const [isImageFading, setIsImageFading] = useState(false);
 
   if (!product) return null;
 
   const rateVES = 60.5;
+
+  // Sync activeImage whenever product changes
+  useEffect(() => {
+    setActiveImage(product?.image || '');
+    setActiveThumbIdx(0);
+    setIsImageFading(false);
+  }, [product]);
+
+  // Smooth image switcher function (Apple / Amazon style)
+  const switchImageSmoothly = (newImageUrl) => {
+    if (!newImageUrl || newImageUrl === activeImage) return;
+    setIsImageFading(true);
+    setTimeout(() => {
+      setActiveImage(newImageUrl);
+      setIsImageFading(false);
+    }, 120);
+  };
 
   // Human-readable color map for HEX codes
   const colorNameMap = {
@@ -67,9 +86,13 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
     return '#334155';
   };
 
-  const thumbnails = Array.isArray(product.images) && product.images.length > 0 
+  const baseImages = Array.isArray(product.images) && product.images.length > 0 
     ? product.images 
     : (product.image ? [product.image] : []);
+
+  const thumbnails = activeImage && !baseImages.includes(activeImage)
+    ? [activeImage, ...baseImages]
+    : baseImages;
 
   const hasExplicitVariants = Array.isArray(product.variants) && product.variants.length > 0;
 
@@ -120,13 +143,13 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
 
   // Parse visual colors list (independent of price)
   const colorsList = Array.isArray(product.colors) && product.colors.length > 0
-    ? product.colors.map(c => typeof c === 'object' && c.name ? c : { name: String(c), hex: getColorHexFromName(String(c)) })
+    ? product.colors.map(c => typeof c === 'object' && c.name ? c : { name: String(c), hex: getColorHexFromName(String(c)), image: c.image || null })
     : (hasExplicitVariants && product.variants.some(v => v.color)
         ? Array.from(
             new Map(
               product.variants
                 .filter(v => v.color)
-                .map(v => [v.color, { name: v.color, hex: v.colorHex || getColorHexFromName(v.color) }])
+                .map(v => [v.color, { name: v.color, hex: v.colorHex || getColorHexFromName(v.color), image: v.image || null }])
             ).values()
           )
         : (product.colors ? parseOptions(product.colors, []) : []));
@@ -134,6 +157,30 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
   const [selectedColor, setSelectedColor] = useState(colorsList[0] || 'Negro');
   const [legacyRam, setLegacyRam] = useState('');
   const [legacyStorage, setLegacyStorage] = useState('');
+
+  // Color selection handler with immediate image switch
+  const handleColorSelect = (col) => {
+    setSelectedColor(col);
+    setHasUserInteracted(true);
+
+    // 1. Direct color image attached in admin
+    if (typeof col === 'object' && col.image) {
+      switchImageSmoothly(col.image);
+      return;
+    }
+
+    // 2. Variant image matching this color name
+    const colorName = getColorDisplayName(col).toLowerCase();
+    const matchingVariant = (product.variants || []).find(v => {
+      const vTitle = (v.title || '').toLowerCase();
+      const vColor = (v.color || '').toLowerCase();
+      return (vTitle.includes(colorName) || vColor.includes(colorName)) && v.image && v.image !== product.image;
+    });
+
+    if (matchingVariant && matchingVariant.image) {
+      switchImageSmoothly(matchingVariant.image);
+    }
+  };
 
   // Find active matched variant
   const matchedVariant = hasExplicitVariants
@@ -171,10 +218,22 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
     : null;
 
   const handleDynamicOptionChange = (optionName, value) => {
-    setSelectedOptions(prev => ({
-      ...prev,
-      [optionName]: value
-    }));
+    setSelectedOptions(prev => {
+      const updated = { ...prev, [optionName]: value };
+      
+      // Check if there is a variant matching this new configuration with a custom image
+      const matchingVar = (product.variants || []).find(v => {
+        if (v.title === value) return true;
+        if (v.options && Object.keys(updated).every(k => v.options[k] === updated[k])) return true;
+        return false;
+      });
+
+      if (matchingVar && matchingVar.image && matchingVar.image !== product.image) {
+        switchImageSmoothly(matchingVar.image);
+      }
+
+      return updated;
+    });
     setHasUserInteracted(true);
   };
 
@@ -185,6 +244,8 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
       price: currentPrice, 
       selectedOptions,
       selectedVariant: matchedVariant,
+      selectedColor: getColorDisplayName(selectedColor),
+      image: activeImage || product.image,
       quantity 
     });
     setAdded(true);
@@ -228,31 +289,36 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
           
           <div className="grid grid-cols-1 md:grid-cols-2">
             
-            {/* COLUMNA IZQUIERDA: GALERÍA DE IMÁGENES ULTRA PREMIUM */}
+            {/* COLUMNA IZQUIERDA: GALERÍA DE IMÁGENES ULTRA PREMIUM CON CAMBIO DINÁMICO */}
             <div className="p-6 sm:p-8 bg-gradient-to-b from-[#F8FAFC] via-[#F1F5F9] to-[#F8FAFC] border-b md:border-b-0 md:border-r border-slate-200/90 flex flex-col justify-between items-center relative overflow-hidden">
               
               {/* Background Ambient Glow */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
 
-              {/* Imagen Principal con Marco y Profundidad */}
+              {/* Imagen Principal con Marco, Profundidad y Transición Fluida Apple-Style */}
               <div className="w-full h-72 sm:h-96 flex items-center justify-center relative p-4 rounded-3xl bg-white/70 backdrop-blur-xs border border-white shadow-xs group/img overflow-hidden">
                 <img
-                  src={thumbnails[activeThumbIdx] || product.image}
+                  src={activeImage || thumbnails[activeThumbIdx] || product.image}
                   alt={product.name}
-                  className="max-h-full max-w-full object-contain filter drop-shadow-[0_18px_30px_rgba(0,0,0,0.14)] group-hover/img:scale-105 transition-transform duration-500"
+                  className={`max-h-full max-w-full object-contain filter drop-shadow-[0_18px_30px_rgba(0,0,0,0.14)] group-hover/img:scale-105 transition-all duration-300 ease-in-out ${
+                    isImageFading ? 'opacity-25 scale-95' : 'opacity-100 scale-100'
+                  }`}
                 />
               </div>
 
               {/* Thumbnails ONLY if there are 2 or more images */}
               {thumbnails.length > 1 && (
-                <div className="flex items-center gap-3 mt-4 z-10">
+                <div className="flex items-center gap-3 mt-4 z-10 flex-wrap justify-center">
                   {thumbnails.map((img, idx) => (
                     <button
                       key={idx}
                       type="button"
-                      onClick={() => setActiveThumbIdx(idx)}
+                      onClick={() => {
+                        switchImageSmoothly(img);
+                        setActiveThumbIdx(idx);
+                      }}
                       className={`w-14 h-14 rounded-2xl bg-white border-2 p-1.5 transition-all overflow-hidden flex items-center justify-center shadow-2xs ${
-                        activeThumbIdx === idx
+                        (activeImage === img || (!activeImage && activeThumbIdx === idx))
                           ? 'border-blue-600 shadow-md scale-105 ring-2 ring-blue-600/20'
                           : 'border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-300'
                       }`}
@@ -347,7 +413,7 @@ export const QuickViewModal = ({ product, onClose, onAddToCart }) => {
                           <button
                             key={idx}
                             type="button"
-                            onClick={() => { setSelectedColor(col); setHasUserInteracted(true); }}
+                            onClick={() => handleColorSelect(col)}
                             className={`w-7 h-7 rounded-full border-2 transition-all shadow-xs relative ${
                               isSel 
                                 ? 'border-blue-600 scale-125 ring-2 ring-blue-600/30' 

@@ -38,11 +38,9 @@ export const FlashDealsSection = ({ products = [], onAddToCart, onQuickView }) =
   if (flashProducts.length === 0) return null;
 
   return (
-    <section className="py-8 sm:py-12 bg-white font-sans">
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
-        
-        {/* Luxury Corporate Container */}
-        <div className="bg-[#0B0F17] rounded-3xl p-6 sm:p-8 md:p-10 border border-slate-800 shadow-xl text-white">
+    <section className="w-full font-sans">
+      {/* Luxury Corporate Container */}
+      <div className="bg-[#0B0F17] rounded-3xl p-5 sm:p-7 md:p-8 border border-slate-800 shadow-xl text-white">
           
           {/* Header with Title & 80h Countdown */}
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-white/10 mb-8">
@@ -211,8 +209,6 @@ export const FlashDealsSection = ({ products = [], onAddToCart, onQuickView }) =
           </div>
 
         </div>
-
-      </div>
     </section>
   );
 };

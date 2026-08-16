@@ -6,27 +6,32 @@ export const LocationSection = ({
   googleMapsUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3923.123456!2d-66.9!3d10.5!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDMwJzAwLjAiTiA2NsKwNTQnMDAuMCJX!5e0!3m2!1ses!2s!4v1625000000000!5m2!1ses!2s" 
 }) => {
   return (
-    <section id="ubicacion" className="py-12 sm:py-16 relative overflow-hidden font-sans">
-      <div className="max-w-7xl mx-auto space-y-8">
-        
-        {/* Section Header */}
-        <div className="text-center space-y-2.5 max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-blue-50 border border-blue-200 text-blue-700">
-            <MapPin className="w-3.5 h-3.5 text-blue-600" />
-            <span>Sucursal Principal & Retiro en Tienda</span>
+    <section id="ubicacion" className="bg-white rounded-3xl p-5 sm:p-8 md:p-10 border border-slate-200/90 shadow-sm font-sans space-y-8">
+      
+      {/* Section Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 sm:pb-6 border-b border-slate-100">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 sm:p-3 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100/80 shrink-0">
+            <Building2 className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
-          
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
-            Visita Nuestra <span className="text-blue-600">Tienda Física</span>
-          </h2>
-          
-          <p className="text-xs sm:text-sm text-slate-500 font-medium">
-            Conoce de cerca los últimos smartphones, laptops y equipos con atención personalizada y entrega inmediata.
-          </p>
+          <div>
+            <h2 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
+              Visita Nuestra <span className="text-blue-600">Tienda Física</span>
+            </h2>
+            <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5">
+              Sucursal Principal & Centro Oficial de Garantías en Caracas
+            </p>
+          </div>
         </div>
 
-        {/* Enterprise Grid: Business Info Card + Google Maps Embed */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider bg-emerald-50 border border-emerald-200 text-emerald-700 self-start sm:self-auto">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span>Atención Inmediata</span>
+        </div>
+      </div>
+
+      {/* Enterprise Grid: Business Info Card + Google Maps Embed */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           
           {/* Left Column: Business Details */}
           <div className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 space-y-6 flex flex-col justify-between border border-slate-200/90 shadow-md text-slate-900">
@@ -124,8 +129,6 @@ export const LocationSection = ({
           </div>
 
         </div>
-
-      </div>
     </section>
   );
 };

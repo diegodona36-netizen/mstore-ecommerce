@@ -3,12 +3,11 @@ import { ArrowRight, Sparkles, Zap, Shield, Smartphone, Gamepad2 } from 'lucide-
 
 export const PromoBanners = ({ onSelectCategory }) => {
   return (
-    <section className="w-full bg-slate-50 font-sans py-6">
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
-          {/* BANNER 1: FLAGSHIP SMARTPHONES */}
-          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#0B0F17] via-[#111827] to-[#1E293B] border border-slate-800 p-8 sm:p-10 flex flex-col justify-between text-white group shadow-lg min-h-[300px]">
+    <section className="w-full font-sans">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+        
+        {/* BANNER 1: FLAGSHIP SMARTPHONES */}
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#0B0F17] via-[#111827] to-[#1E293B] border border-slate-800 p-6 sm:p-8 md:p-10 flex flex-col justify-between text-white group shadow-md min-h-[280px]">
             {/* Background Glow */}
             <div className="absolute -right-16 -top-16 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl pointer-events-none group-hover:bg-blue-600/30 transition-all duration-700"></div>
 
@@ -82,7 +81,6 @@ export const PromoBanners = ({ onSelectCategory }) => {
           </div>
 
         </div>
-      </div>
-    </section>
+      </section>
   );
 };

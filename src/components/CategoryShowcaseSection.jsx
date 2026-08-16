@@ -1,5 +1,19 @@
 import React, { useState } from 'react';
-import { Star, ShoppingCart, Eye, ChevronRight, Check, MessageCircle } from 'lucide-react';
+import { 
+  Star, 
+  ShoppingCart, 
+  Eye, 
+  ChevronRight, 
+  Check, 
+  MessageCircle,
+  Smartphone,
+  Laptop,
+  Headphones,
+  Gamepad2,
+  Tv,
+  Watch,
+  Layers
+} from 'lucide-react';
 
 export const CategoryShowcaseCard = ({ 
   product, 
@@ -177,28 +191,44 @@ export const CategoryShowcaseSection = ({
   const categoryProducts = safeProducts.filter(p => {
     if (categoryFilterId === 'todos') return true;
     return p.category === categoryFilterId || (p.category && p.category.includes(categoryFilterId));
-  }).slice(0, 8); // Displays up to 8 products (2 full rows of 4 on desktop, 4 rows of 2 on mobile)
+  }).slice(0, 8);
 
   if (categoryProducts.length === 0) return null;
+
+  const categoryIcons = {
+    'smartphones': Smartphone,
+    'computacion': Laptop,
+    'audio': Headphones,
+    'gaming': Gamepad2,
+    'linea-blanca': Tv,
+    'wearables': Watch
+  };
+
+  const CategoryIcon = categoryIcons[categoryFilterId] || Layers;
 
   return (
     <section className="bg-white rounded-3xl p-5 sm:p-7 md:p-8 border border-slate-200/90 shadow-sm space-y-5 sm:space-y-6 font-sans">
       
-      {/* Category Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-3 sm:pb-4 border-b border-slate-100">
-        <div>
-          <h2 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
-            {title}
-          </h2>
-          <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5">
-            {subtitle}
-          </p>
+      {/* Category Section Header with Iconic Identification */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-slate-100">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 sm:p-3 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100/80 shrink-0">
+            <CategoryIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+          </div>
+          <div>
+            <h2 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
+              {title}
+            </h2>
+            <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5">
+              {subtitle}
+            </p>
+          </div>
         </div>
 
         <button
           type="button"
           onClick={() => onSelectCategory && onSelectCategory(categoryFilterId)}
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-50 hover:bg-blue-50 text-xs font-black text-blue-600 hover:text-blue-700 border border-slate-200/80 hover:border-blue-200 transition-all group self-start sm:self-auto shrink-0"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-50 hover:bg-blue-50 text-xs font-black text-blue-600 hover:text-blue-700 border border-slate-200/80 hover:border-blue-200 transition-all group self-start sm:self-auto shrink-0 shadow-2xs"
         >
           <span>Ver catálogo completo</span>
           <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />

@@ -175,19 +175,19 @@ export function App() {
               onQuickViewHero={(p) => setQuickViewProduct(p)}
             />
 
-            {/* 3. OFERTAS RELÁMPAGO CON CRONÓMETRO EN VIVO */}
-            <FlashDealsSection 
-              products={products}
-              onAddToCart={handleAddToCart}
-              onQuickView={(p) => setQuickViewProduct(p)}
-            />
-
-            {/* 4. SECCIONES DE CATEGORÍAS ENMARCADAS EN CONTENEDORES INDIVIDUALES */}
-            <main className="bg-[#F1F5F9] py-8 sm:py-12 border-t border-slate-200/60">
+            {/* 3. CONTENEDOR PRINCIPAL DE MÓDULOS PERFECTAMENTE SEGMENTADOS */}
+            <main className="bg-[#F1F5F9] py-8 sm:py-12 border-t border-slate-200/80">
               
               <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-8 sm:space-y-10">
                 
-                {/* Categoría 1: Smartphones */}
+                {/* Módulo 1: OFERTAS RELÁMPAGO (DARK TECH LUXURY CARD) */}
+                <FlashDealsSection 
+                  products={products}
+                  onAddToCart={handleAddToCart}
+                  onQuickView={(p) => setQuickViewProduct(p)}
+                />
+
+                {/* Módulo 2: Categoría Smartphones */}
                 <CategoryShowcaseSection 
                   title="Smartphones & Telefonía Insignia"
                   subtitle="Última tecnología de Apple, Samsung, Google y Xiaomi con garantía oficial de 1 año"
@@ -198,10 +198,7 @@ export function App() {
                   onQuickView={(p) => setQuickViewProduct(p)}
                 />
 
-                {/* BANNERS PROMOCIONALES DIVIDIDOS (FLAGSHIPS & GAMING) */}
-                <PromoBanners onSelectCategory={(catId) => navigateToCatalog(catId)} />
-
-                {/* Categoría 2: Laptops & Computación */}
+                {/* Módulo 3: Categoría Laptops & Computación */}
                 <CategoryShowcaseSection 
                   title="Laptops & Computación Pro"
                   subtitle="Equipos de alto rendimiento para trabajo profesional, desarrollo y creatividad"
@@ -212,7 +209,10 @@ export function App() {
                   onQuickView={(p) => setQuickViewProduct(p)}
                 />
 
-                {/* Categoría 3: Audio Hi-Fi */}
+                {/* Módulo 4: BANNERS PROMOCIONALES DIVIDIDOS (FLAGSHIPS & GAMING) */}
+                <PromoBanners onSelectCategory={(catId) => navigateToCatalog(catId)} />
+
+                {/* Módulo 5: Categoría Audio Hi-Fi */}
                 <CategoryShowcaseSection 
                   title="Audio Hi-Fi & Auriculares Premium"
                   subtitle="Cancelación de ruido líder, audio espacial y potencia acústica profesional"
@@ -223,7 +223,7 @@ export function App() {
                   onQuickView={(p) => setQuickViewProduct(p)}
                 />
 
-                {/* Categoría 4: Gaming & Consolas */}
+                {/* Módulo 6: Categoría Gaming & Consolas */}
                 <CategoryShowcaseSection 
                   title="Zona Gaming & Consolas"
                   subtitle="PlayStation 5 Pro, Nintendo Switch OLED, consolas portátiles y controles pro"
@@ -234,7 +234,7 @@ export function App() {
                   onQuickView={(p) => setQuickViewProduct(p)}
                 />
 
-                {/* Categoría 5: Smart TVs 4K & Cine */}
+                {/* Módulo 7: Categoría Smart TVs 4K & Cine */}
                 <CategoryShowcaseSection 
                   title="Smart TVs 4K & Cine en Casa"
                   subtitle="Pantallas OLED, Mini LED 144Hz y sistemas de sonido envolvente"
@@ -245,7 +245,7 @@ export function App() {
                   onQuickView={(p) => setQuickViewProduct(p)}
                 />
 
-                {/* Categoría 6: Wearables & Smartwatches */}
+                {/* Módulo 8: Categoría Wearables & Smartwatches */}
                 <CategoryShowcaseSection 
                   title="Smartwatches & Wearables"
                   subtitle="Monitoreo de salud avanzado, GPS satelital y conectividad total en tu muñeca"
@@ -256,11 +256,9 @@ export function App() {
                   onQuickView={(p) => setQuickViewProduct(p)}
                 />
 
-              </div>
-
-              {/* 5. TIENDA FÍSICA & UBICACIÓN */}
-              <div className="max-w-7xl mx-auto px-4 md:px-8 pt-6">
+                {/* Módulo 9: TIENDA FÍSICA & UBICACIÓN ENMARCADA */}
                 <LocationSection isLightBg={true} />
+
               </div>
 
             </main>

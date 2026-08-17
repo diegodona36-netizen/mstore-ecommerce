@@ -3,14 +3,14 @@ import { Smartphone, Laptop, Tv, Headphones, Clock, Gamepad2, Zap, Tag } from 'l
 
 export const CategoryBubbles = ({ onSelectCategory }) => {
   const categories = [
-    { id: 'smartphones', label: 'Smartphones', icon: Smartphone, color: 'from-blue-500 to-blue-600' },
-    { id: 'computacion', label: 'Laptops & PC', icon: Laptop, color: 'from-indigo-500 to-indigo-600' },
-    { id: 'linea-blanca', label: 'Smart TVs', icon: Tv, color: 'from-cyan-500 to-blue-500' },
-    { id: 'audio', label: 'Audio Hi-Fi', icon: Headphones, color: 'from-purple-500 to-indigo-600' },
-    { id: 'wearables', label: 'Smartwatches', icon: Clock, color: 'from-slate-600 to-slate-800' },
-    { id: 'gaming', label: 'Gaming', icon: Gamepad2, color: 'from-blue-600 to-indigo-700' },
+    { id: 'smartphones', label: 'Smartphones', icon: Smartphone, color: 'from-blue-600 to-blue-700' },
+    { id: 'computacion', label: 'Laptops & PC', icon: Laptop, color: 'from-slate-800 to-slate-900' },
+    { id: 'linea-blanca', label: 'Smart TVs', icon: Tv, color: 'from-sky-600 to-blue-700' },
+    { id: 'audio', label: 'Audio Hi-Fi', icon: Headphones, color: 'from-slate-700 to-slate-900' },
+    { id: 'wearables', label: 'Smartwatches', icon: Clock, color: 'from-teal-600 to-emerald-700' },
+    { id: 'gaming', label: 'Gaming', icon: Gamepad2, color: 'from-blue-700 to-slate-900' },
     { id: 'accesorios', label: 'Accesorios', icon: Zap, color: 'from-amber-500 to-amber-600' },
-    { id: 'ofertas', label: 'Ofertas TOP', icon: Tag, color: 'from-emerald-500 to-teal-600', isGreenPromo: true }
+    { id: 'ofertas', label: 'Ofertas TOP', icon: Tag, color: 'from-emerald-600 to-teal-700', isGreenPromo: true }
   ];
 
   return (

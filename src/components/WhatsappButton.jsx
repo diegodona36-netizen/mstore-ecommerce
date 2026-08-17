@@ -113,9 +113,9 @@ export const WhatsappButton = () => {
 
             {isSending && (
               <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium italic p-2">
-                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce" />
-                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:0.2s]" />
-                <span className="w-2 h-2 rounded-full bg-slate-400 animate-bounce [animation-delay:0.4s]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse [animation-delay:200ms]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse [animation-delay:400ms]" />
               </div>
             )}
           </div>

@@ -242,7 +242,7 @@ export const Navbar = ({
                                 ${parseFloat(p.price || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })} USD
                               </div>
                             </div>
-                            <span className="p-1.5 rounded-lg bg-slate-100 group-hover:bg-blue-600 group-hover:text-white text-slate-500 transition-colors">
+                            <span className="p-1.5 rounded-lg bg-slate-100 text-black group-hover:bg-blue-600 group-hover:text-white transition-colors shadow-2xs">
                               <Eye className="w-3.5 h-3.5" />
                             </span>
                           </div>

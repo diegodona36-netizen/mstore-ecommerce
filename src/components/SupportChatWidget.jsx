@@ -105,7 +105,7 @@ export const SupportChatWidget = ({ isHidden = false }) => {
       >
         <MessageSquare className="w-6 h-6 fill-black group-hover:scale-110 transition-transform" />
         {unreadCount > 0 && !isOpen && (
-          <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#0A0E17] text-[#00E5FF] border-2 border-[#00E5FF] font-extrabold text-[10px] flex items-center justify-center font-space shadow-[0_0_10px_#00E5FF] animate-bounce">
+          <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#0A0E17] text-[#00E5FF] border-2 border-[#00E5FF] font-extrabold text-[10px] flex items-center justify-center font-space shadow-[0_0_10px_#00E5FF] animate-pulse">
             {unreadCount}
           </span>
         )}

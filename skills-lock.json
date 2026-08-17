@@ -283,6 +283,12 @@
       "skillPath": "tools/image/image-upscaling/SKILL.md",
       "computedHash": "1cfa85f273d6b7b48cdff50db2eb468c506ed638fb5b38d4b11936d5161e932e"
     },
+    "impeccable": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/impeccable/SKILL.md",
+      "computedHash": "37354ec7825c618102ef4c03062c866f95752d799f7825da69438c697e0ee05e"
+    },
     "infsh-cli": {
       "source": "magentosh/skills",
       "sourceType": "github",
